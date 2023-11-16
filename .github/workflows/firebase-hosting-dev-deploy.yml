@@ -2,10 +2,7 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting Dev Environment
-'on':
-  push:
-    branches:
-      - dev-deploy
+'on': pull_request
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
