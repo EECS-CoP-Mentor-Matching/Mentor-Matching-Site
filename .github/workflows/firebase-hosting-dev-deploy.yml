@@ -18,9 +18,9 @@ jobs:
         working-directory: mentor-matching-site
         run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
-        working-directory: mentor-matching-site
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_DEV }}'
           channelId: live
           projectId: eecs-cop-mentor-matching-dev
+          entryPoint: mentor-matching-site
