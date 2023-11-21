@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './login/Login';
+import MenteePortal from './menteePortal/MenteePortal';
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       </div>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element = {<Login />}/>
+          <Route path='/' element = {<MenteePortal />}/>
         </Routes>
       </BrowserRouter>
     </div>
