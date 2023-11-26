@@ -1,17 +1,27 @@
-import React from 'react';
+import { useState } from "react";
+import "./Login.css";
+import EmailPassword from './EmailPassword';
+import { authService } from "../../service/authService";
 
 function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+
+  function login() {
+    authService.signIn(email, password);
+  }
+
   return (
-    <div>
-      <div>Hello, please login</div>
-      <div>
-        Email <input></input>
+    <div className='login'>
+      <div className='login-form'>
+        <div>Hello, please login</div>
+        <EmailPassword setEmail={setEmail} setPassword={setPassword} />
+        <div className='login-form-controls'>
+          <a>Login</a>
+          <a href="/create-account">Create an Account</a>
+        </div>
       </div>
-      <div>
-        Password <input></input>
-      </div>
-      <button>Login</button>
-      <a href="/create-account">Create an Account</a>
     </div>
   );
 }

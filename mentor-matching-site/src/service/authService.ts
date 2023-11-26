@@ -8,6 +8,7 @@ function createUser(email: string, password: string) {
     .then((userCredential) => {
       // Signed up 
       const user = userCredential.user;
+      console.log(user);
       // ...
     })
     .catch((error) => {

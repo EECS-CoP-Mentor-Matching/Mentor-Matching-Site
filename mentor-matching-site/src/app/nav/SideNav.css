@@ -21,11 +21,14 @@
   display: block;
   transition: 0.3s;
   cursor: pointer;
+  background-color: #111;
+  border: none;
 }
 
 /* When you mouse over the navigation links, change their color */
 .side-nav a:hover {
   color: #f1f1f1;
+  background-color: none;
 }
 
 /* Position and style the close button (top right corner) */
