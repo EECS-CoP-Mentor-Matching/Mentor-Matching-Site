@@ -10,6 +10,12 @@
   gap: 10px;
 }
 
+.email-password {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;  
+}
+
 .login-form-input > input { 
   width: 100px;
 }

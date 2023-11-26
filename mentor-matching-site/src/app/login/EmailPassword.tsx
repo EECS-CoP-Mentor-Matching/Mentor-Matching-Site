@@ -1,3 +1,5 @@
+import './Login.css';
+
 interface EmailPasswordProps {
   setEmail: (email: string) => void
   setPassword: (password: string) => void
@@ -5,7 +7,7 @@ interface EmailPasswordProps {
 
 function EmailPassword(props: EmailPasswordProps) {
   return (
-    <div>
+    <div className='email-password'>
       <div className='login-form-item'>
         <div className='login-form-input'>Email</div>
         <input onChange={(e) => {
