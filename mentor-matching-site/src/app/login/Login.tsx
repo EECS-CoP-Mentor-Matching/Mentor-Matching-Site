@@ -4,9 +4,14 @@ function Login() {
   return (
     <div>
       <div>Hello, please login</div>
-      <input></input>
+      <div>
+        Email <input></input>
+      </div>
+      <div>
+        Password <input></input>
+      </div>
       <button>Login</button>
-      <button>Create an Account</button>
+      <a href="/create-account">Create an Account</a>
     </div>
   );
 }

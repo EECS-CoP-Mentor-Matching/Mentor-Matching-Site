@@ -3,16 +3,19 @@ import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './login/Login';
 import MenteePortal from './menteePortal/MenteePortal';
+import TopNav from './nav/TopNav';
+import SideNav from './nav/SideNav';
 
 function App() {
   return (
     <div className="App">
       <div>
-        This is the top level of the application.
+        <TopNav />
+        <SideNav />
       </div>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element = {<MenteePortal />}/>
+          <Route path='/login' element = {<Login />}/>
         </Routes>
       </BrowserRouter>
     </div>

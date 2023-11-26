@@ -1,0 +1,31 @@
+.top-nav {
+  background-color: #DC4405;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.top-nav > a {
+  color: white;
+  background-color: black;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.top-nav > a:hover {
+  background-color: white;
+  color: #DC4405;
+  cursor: pointer;
+}
+
+.open-side-nav ~ svg, path {
+  stroke: white;
+}
+
+.open-side-nav:hover svg path {
+  fill: #DC4405;
+  stroke: #DC4405;
+}
