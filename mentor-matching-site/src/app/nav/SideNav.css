@@ -12,9 +12,12 @@
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
 }
 
+.side-nav > button {
+
+}
+
 /* The navigation menu links */
-.side-nav a {
-  padding: 8px 8px 8px 32px;
+.side-nav > a, button {
   text-decoration: none;
   font-size: 25px;
   color: #818181;
@@ -26,9 +29,9 @@
 }
 
 /* When you mouse over the navigation links, change their color */
-.side-nav a:hover {
+.side-nav > a:hover, button:hover {
   color: #f1f1f1;
-  background-color: none;
+  background-color: #111;
 }
 
 /* Position and style the close button (top right corner) */

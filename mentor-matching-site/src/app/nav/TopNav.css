@@ -7,7 +7,7 @@
   border: none;
 }
 
-.top-nav > a {
+.top-nav > a, button {
   color: white;
   background-color: black;
   text-decoration: none;
@@ -21,6 +21,10 @@
   background-color: white;
   color: #DC4405;
   cursor: pointer;
+}
+
+.open-side-nav:hover {
+  background-color: white;
 }
 
 .open-side-nav ~ svg, path {

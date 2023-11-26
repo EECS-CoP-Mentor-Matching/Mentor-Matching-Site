@@ -18,7 +18,7 @@ function Login() {
         <div>Hello, please login</div>
         <EmailPassword setEmail={setEmail} setPassword={setPassword} />
         <div className='login-form-controls'>
-          <a>Login</a>
+          <button onClick={login}>Login</button>
           <a href="/create-account">Create an Account</a>
         </div>
       </div>

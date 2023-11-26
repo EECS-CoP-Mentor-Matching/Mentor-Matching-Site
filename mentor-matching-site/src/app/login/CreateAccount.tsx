@@ -16,7 +16,7 @@ function CreateAccount() {
       <div>Hello, please login</div>
       <EmailPassword setEmail={setEmail} setPassword={setPassword} />
       <div className='login-form-controls'>
-        <a onClick={createNewUser}>Create an Account</a>
+        <button onClick={createNewUser}>Create an Account</button>
       </div>
     </div>
   </div>

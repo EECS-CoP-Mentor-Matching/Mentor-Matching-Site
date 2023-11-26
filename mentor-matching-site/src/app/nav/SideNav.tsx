@@ -1,6 +1,5 @@
 import "./SideNav.css";
 
-
 function SideNav() {
   function closeNav() {
     var sideNav = document.getElementById("sideNav");
@@ -12,10 +11,11 @@ function SideNav() {
 
   return (
     <div className="side-nav" id="sideNav">
-      <a className="closebtn" onClick={closeNav}>&times;</a>
-      <a>Mentee Portal</a>
-      <a>Mentor Portal</a>
-      <a>Profile</a>
+      <button className="closebtn" onClick={closeNav}>&times;</button>
+      <a href="/mentee-portal">Mentee Portal</a>
+      <a href="/mentor-portal">Mentor Portal</a>
+      {/* only show when logged in */}
+      <a href="/profile">Profile</a>
     </div>
   )
 }

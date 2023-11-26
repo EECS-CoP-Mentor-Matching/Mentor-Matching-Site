@@ -12,7 +12,7 @@ function TopNav() {
   // if not logged in, show login button
   return (
     <div className="top-nav">
-      <a className="open-side-nav" onClick={openSideNav}>{hamburger}</a>
+      <button className="open-side-nav" onClick={openSideNav}>{hamburger}</button>
       <a href="/login">Login</a>
     </div>
   )
