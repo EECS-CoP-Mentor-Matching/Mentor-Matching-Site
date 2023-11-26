@@ -1,9 +1,0 @@
-{
-  "short_name": "EECS Mentor Matching Site - DEV",
-  "name": "Dev environment for EECS Mentor Matching Site",
-  "icons": [],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
-}
