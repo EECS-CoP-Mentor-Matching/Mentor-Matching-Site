@@ -5,6 +5,7 @@ import Login from './login/Login';
 import TopNav from './nav/TopNav';
 import SideNav from './nav/SideNav';
 import CreateAccount from './login/CreateAccount';
+import MenteePortal from './menteePortal/MenteePortal';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path='/login' element = {<Login />}/>
           <Route path='/create-account' element = {<CreateAccount />}/>
+          <Route path='/mentee-portal' element = {<MenteePortal />}/>
         </Routes>
       </BrowserRouter>
     </div>
