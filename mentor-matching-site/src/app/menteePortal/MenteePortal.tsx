@@ -1,6 +1,8 @@
 import React from 'react';
 import menteeService from '../../service/menteeService';
 
+// in the match history, consolidate when multiple matches are made with the same mentor
+
 function MenteePortal() {
   function FetchInterests() {
     const read = async () => {
