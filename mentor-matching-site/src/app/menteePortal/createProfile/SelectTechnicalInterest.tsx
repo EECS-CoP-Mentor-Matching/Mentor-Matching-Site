@@ -1,6 +1,6 @@
-import Interest from "./Interest";
+import SelectInterest from "./SelectInterest";
 
-function TechnicalInterest() {
+function SelectTechnicalInterest() {
   const technicalInterest = [
     { label: '.NET', id: 1},
     { label: 'Software Engineering', id: 2},
@@ -9,8 +9,8 @@ function TechnicalInterest() {
   ];
 
   return (
-    <Interest options={technicalInterest} />
+    <SelectInterest options={technicalInterest} />
   );
 }
 
-export default TechnicalInterest;
+export default SelectTechnicalInterest;

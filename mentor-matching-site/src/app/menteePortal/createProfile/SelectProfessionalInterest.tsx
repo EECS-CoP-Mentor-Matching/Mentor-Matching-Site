@@ -1,7 +1,7 @@
 import { TextField, Autocomplete } from "@mui/material";
-import Interest from "./Interest";
+import SelectInterest from "./SelectInterest";
 
-function ProfessionalInterest() {
+function SelectProfessionalInterest() {
   const professionalInterests = [
     { label: 'Resume', id: 1 },
     { label: 'Interviews', id: 1 },
@@ -9,8 +9,8 @@ function ProfessionalInterest() {
   ]
 
   return (
-    <Interest options={professionalInterests} />
+    <SelectInterest options={professionalInterests} />
   );
 }
 
-export default ProfessionalInterest;
+export default SelectProfessionalInterest;

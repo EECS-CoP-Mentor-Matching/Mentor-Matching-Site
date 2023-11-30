@@ -1,12 +1,27 @@
-import React from 'react';
+import { useState } from 'react';
 import menteeService from '../../service/menteeService';
-import MenteeProfile from './MenteeProfile';
+import CreateMenteeProfile from './createProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
-import { FormLabel } from "@mui/material"
-
+import { FormLabel, Button } from "@mui/material"
+import ViewMenteeProfile from './viewProfile/ViewMenteeProfile';
+import { type Profile } from '../../types';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 function MenteePortal() {
+  const [createProfile, setCreateProfile] = useState(false);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+
+  function showCreateProfile() {
+    console.log('show');
+    setCreateProfile(true);
+  }
+
+  function addProfile(newProfile: Profile) {
+    let newProfiles = profiles;
+    newProfiles.push(newProfile);
+    setProfiles(newProfiles);
+  }
+
   function FetchInterests() {
     const read = async () => {
       const response = await menteeService.readInterests();
@@ -17,10 +32,22 @@ function MenteePortal() {
 
   // if no profiles for the user
   return (
-    <div className="mentee-portal">
-      <FormLabel>Profile 1</FormLabel>
-      <MenteeProfile />
-    </div>
+    <>
+      <ViewMenteeProfile />
+      {!createProfile &&
+        <div>
+          <Button onClick={showCreateProfile}>Create New Match Profile</Button>
+        </div>
+      }
+      {createProfile &&
+        <div className="mentee-portal">
+          <FormLabel>Profile 1</FormLabel>
+          <CreateMenteeProfile addProfile={addProfile} />
+        </div>
+      }
+    </>
+
+    
   );
 }
 

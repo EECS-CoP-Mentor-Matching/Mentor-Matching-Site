@@ -5,11 +5,11 @@ interface option {
   id: number
 }
 
-interface InterestProps {
+interface SelectInterestProps {
   options: option[]
 }
 
-function Interest(props: InterestProps) {
+function SelectInterest(props: SelectInterestProps) {
   return (
     <div>
       <Autocomplete 
@@ -22,4 +22,4 @@ function Interest(props: InterestProps) {
   );
 }
 
-export default Interest;
+export default SelectInterest;
