@@ -16,7 +16,7 @@ async function readInterests() {
           racial identity
           lgbtq+ member
         )*/
-async function PerformMatching(user: UserProfile, menteeProfile: MatchProfile) {
+async function performMatching(user: UserProfile, menteeProfile: MatchProfile) {
   // Pull stored matches
   // If stored matches have changed / profiles are inactive, remove the match
   // Refresh for new matches
@@ -28,7 +28,8 @@ async function PerformMatching(user: UserProfile, menteeProfile: MatchProfile) {
 }
 
 const menteeService = {
-  readInterests
+  readInterests,
+  performMatching
 }
 
 export default menteeService;

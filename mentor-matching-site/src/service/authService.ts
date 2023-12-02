@@ -49,7 +49,9 @@ function persistLogin(email: string, password: string) {
     });
 }
 
-export const authService = {
+const authService = {
   createUser,
   signIn
 }
+
+export default authService;

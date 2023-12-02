@@ -1,6 +1,8 @@
 import EmailPassword from "./EmailPassword";
 import { useState } from "react";
-import { authService } from "../../service/authService";
+import authService from "../../service/authService";
+import userService from "../../service/userService";
+import { UserProfile } from "../../types";
 
 function CreateAccount() {
   const [email, setEmail] = useState('');
@@ -8,6 +10,9 @@ function CreateAccount() {
 
   function createNewUser() {
     authService.createUser(email, password);
+    // const userProfile = new UserProfile()
+    // add user to the database with their UID as the key
+    // userService.createNewUser()
   }
 
   return (

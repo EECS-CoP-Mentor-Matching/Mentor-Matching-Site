@@ -2,7 +2,7 @@ import { MatchProfile, UserProfile } from "../types";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, doc, getDoc, query, QueryConstraint, where } from "firebase/firestore";
 
-async function SearchMentorsByProfileMatch(menteeUserProfile: UserProfile, menteeMatchProfile: MatchProfile) {
+async function searchMentorsByProfileMatch(menteeUserProfile: UserProfile, menteeMatchProfile: MatchProfile) {
   const conditions = []
   conditions.push(where("technicalInterests", "==", menteeMatchProfile.technicalInterest));
   conditions.push(where("technicalExperience", ">", menteeMatchProfile.technicalExperience));
@@ -20,7 +20,7 @@ async function SearchMentorsByProfileMatch(menteeUserProfile: UserProfile, mente
 }
 
 const mentorDb = {
-  SearchMentorsByProfileMatch
+  searchMentorsByProfileMatch
 };
 
 export default mentorDb;
