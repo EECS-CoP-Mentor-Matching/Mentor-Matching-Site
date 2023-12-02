@@ -12,7 +12,7 @@ function MenteePortal() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
 
   function showCreateProfile() {
-    console.log('show');
+    console.log("show");
     setCreateProfile(true);
   }
 

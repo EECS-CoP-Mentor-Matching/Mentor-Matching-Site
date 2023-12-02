@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./Login.css";
-import EmailPassword from './EmailPassword';
+import EmailPassword from "./EmailPassword";
 import { authService } from "../../service/authService";
 
 function Login() {

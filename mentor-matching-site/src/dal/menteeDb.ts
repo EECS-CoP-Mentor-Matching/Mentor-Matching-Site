@@ -1,5 +1,5 @@
 import { db } from "../firebaseConfig";
-import { collection, getDocs } from 'firebase/firestore/lite';
+import { collection, getDocs } from "firebase/firestore/lite";
 
 async function readInterests() {
   const interestsCollection = collection(db, "interests");
