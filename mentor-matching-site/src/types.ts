@@ -10,8 +10,8 @@ export interface UserProfile {
   contact: UserContactInformation
   personal: UserPersonalInformation
   demographics: UserDemographicInformation
-  consent: UserConsentInformation
-  status: UserStatusInformation
+  education: UserEducationInformation
+  accountSettings: UserAccountSettings
 }
 
 export interface UserContactInformation {
@@ -26,23 +26,24 @@ export interface UserPersonalInformation {
   firstName: string
   lastName: string
   middleName: string
+  dob: number
 }
 
 export interface UserDemographicInformation {
   racialIdentity: string
   lgbtqPlusCommunity: boolean
+}
+
+export interface UserEducationInformation {
   highestLevelOfEducation: string
   degreeProgram: string
-}
-
-export interface UserConsentInformation {
   studentStatus: boolean
-  consent: boolean
 }
 
-export interface UserStatusInformation {
+export interface UserAccountSettings {
   userStatus: string
   menteeProfilesEnabled: boolean
   mentorProfileEnabled: boolean
+  useDemographicsForMatching: boolean
 }
 

@@ -3,11 +3,11 @@ import "./CreateMenteeProfile.css";
 import SelectProfessionalInterest from "./SelectProfessionalInterest";
 import SelectTechnicalInterest from "./SelectTechnicalInterest";
 import { FormLabel, Button } from "@mui/material";
-import { type Profile } from '../../../types';
+import { type MatchProfile } from '../../../types';
 import { useState } from 'react';
 
 interface CreateMenteeProfileProps {
-  addProfile: (newProfile: Profile) => void
+  addProfile: (newProfile: MatchProfile) => void
 }
 
 function CreateMenteeProfile(props: CreateMenteeProfileProps) {
