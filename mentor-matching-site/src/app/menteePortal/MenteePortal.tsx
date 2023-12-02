@@ -4,19 +4,19 @@ import CreateMenteeProfile from './createProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
 import { FormLabel, Button } from "@mui/material"
 import ViewMenteeProfile from './viewProfile/ViewMenteeProfile';
-import { type Profile } from '../../types';
+import { type MatchProfile } from '../../types';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 function MenteePortal() {
   const [createProfile, setCreateProfile] = useState(false);
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [profiles, setProfiles] = useState<MatchProfile[]>([]);
 
   function showCreateProfile() {
     console.log("show");
     setCreateProfile(true);
   }
 
-  function addProfile(newProfile: Profile) {
+  function addProfile(newProfile: MatchProfile) {
     let newProfiles = profiles;
     newProfiles.push(newProfile);
     setProfiles(newProfiles);
