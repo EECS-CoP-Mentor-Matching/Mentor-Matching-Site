@@ -1,16 +1,28 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 // import "./Login.css";
 import EmailPassword from "./EmailPassword";
 import authService from "../../service/authService";
 import { Button, FormControl, FormGroup, FormLabel, Link } from "@mui/material";
 import "./Login.css";
+import { User } from "firebase/auth";
 
-function Login() {
+interface LoginProps {
+  setSignedIn: (signedIn: boolean) => void;
+}
+
+function Login(props: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  function login() {
-    authService.signIn(email, password);
+  async function login() {
+    const user = (await authService.signIn(email, password)) as User;
+    console.log(user);
+    if (user !== undefined) {
+      props.setSignedIn(true);
+      navigate("/");
+    }
   }
 
   return (

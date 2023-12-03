@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAuth, User, UserCredential } from "firebase/auth";
 import { app } from "../firebaseConfig";
 
 const auth = getAuth(app)
@@ -37,13 +37,11 @@ function signInSession(email: string, password: string) {
 }
 
 /** use this method if the device is not shared */
-function signIn(email: string, password: string) {
-  signInWithEmailAndPassword(auth, email, password)
+async function signIn(email: string, password: string): Promise<User | void> {
+  return signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in 
-      // const user = userCredential.user;
-      // ...
-      // persistLogin(email, password);
+      return userCredential.user;
     })
     .catch((error) => {
       // const errorCode = error.code;
@@ -51,10 +49,26 @@ function signIn(email: string, password: string) {
     });
 }
 
+function signOut() {
+  auth.signOut();
+}
+
+async function waitForAuthState() {
+  await auth.authStateReady();
+}
+
+async function getSignedInUser() {
+  await auth.authStateReady();
+  return auth.currentUser;
+}
+
 const authService = {
   createUser,
   signIn,
-  signInSession
+  signInSession,
+  getSignedInUser,
+  signOut,
+  waitForAuthState
 }
 
 export default authService;

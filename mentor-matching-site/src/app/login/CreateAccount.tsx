@@ -19,7 +19,7 @@ function CreateAccount() {
   return (
     <div className='login'>
       <FormGroup className="form-group">
-        <FormLabel>Hello, please login</FormLabel>
+        <FormLabel>Welcome, start by entering your email</FormLabel>
         <EmailPassword setEmail={setEmail} setPassword={setPassword} />
         <FormControl className="form-control">
           <Button onClick={createNewUser}>Create an Account</Button>

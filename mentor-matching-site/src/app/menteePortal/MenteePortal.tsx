@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import menteeService from '../../service/menteeService';
 import CreateMenteeProfile from './createProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
@@ -6,6 +6,8 @@ import { FormLabel, Button } from "@mui/material"
 import ViewMenteeProfile from './viewProfile/ViewMenteeProfile';
 import { type MatchProfile } from '../../types';
 import MenteePortalNav from './MenteePortalNav';
+import { User } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 export enum Pages {
@@ -14,10 +16,22 @@ export enum Pages {
   viewMatches
 }
 
-function MenteePortal() {
+interface MenteePortalProps {
+  user: User | undefined
+}
+
+function MenteePortal(props: MenteePortalProps) {
   const [createProfile, setCreateProfile] = useState(false);
   const [profiles, setProfiles] = useState<MatchProfile[]>([]);
   const [page, setPage] = useState(Pages.viewMatches)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(props.user);
+    if (props.user === undefined) {
+      navigate("/login");
+    }
+  });
 
   function showCreateProfile() {
     console.log("show");
