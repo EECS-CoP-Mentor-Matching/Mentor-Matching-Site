@@ -5,11 +5,19 @@ import "./MenteePortal.css"
 import { FormLabel, Button } from "@mui/material"
 import ViewMenteeProfile from './viewProfile/ViewMenteeProfile';
 import { type MatchProfile } from '../../types';
+import MenteePortalNav from './MenteePortalNav';
 // in the match history, consolidate when multiple matches are made with the same mentor
+
+export enum Pages {
+  activeProfiles,
+  createProfile,
+  viewMatches
+}
 
 function MenteePortal() {
   const [createProfile, setCreateProfile] = useState(false);
   const [profiles, setProfiles] = useState<MatchProfile[]>([]);
+  const [page, setPage] = useState(Pages.viewMatches)
 
   function showCreateProfile() {
     console.log("show");
@@ -33,16 +41,21 @@ function MenteePortal() {
   // if no profiles for the user
   return (
     <>
-      <ViewMenteeProfile />
-      {!createProfile &&
-        <div>
-          <Button onClick={showCreateProfile}>Create New Match Profile</Button>
-        </div>
-      }
-      {createProfile &&
+      <MenteePortalNav setPage={setPage} />
+      {page == Pages.createProfile &&
         <div className="mentee-portal">
           <FormLabel>Profile 1</FormLabel>
           <CreateMenteeProfile addProfile={addProfile} />
+        </div>
+      }
+      {page == Pages.activeProfiles &&
+        <div className="mentee-portal">
+          profiles...
+        </div>
+      }
+      {page == Pages.viewMatches &&
+        <div className="mentee-portal">
+          matches...
         </div>
       }
     </>
