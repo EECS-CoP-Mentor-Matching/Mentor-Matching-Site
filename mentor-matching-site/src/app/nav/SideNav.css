@@ -12,10 +12,6 @@
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
 }
 
-.side-nav > button {
-
-}
-
 /* The navigation menu links */
 .side-nav > a, button {
   text-decoration: none;

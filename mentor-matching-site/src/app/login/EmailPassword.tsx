@@ -1,3 +1,4 @@
+import { InputLabel, Input, FormControl, FormGroup } from "@mui/material";
 import "./Login.css";
 
 interface EmailPasswordProps {
@@ -7,20 +8,20 @@ interface EmailPasswordProps {
 
 function EmailPassword(props: EmailPasswordProps) {
   return (
-    <div className='email-password'>
-      <div className='login-form-item'>
-        <div className='login-form-input'>Email</div>
-        <input onChange={(e) => {
+    <FormGroup className="form-group">
+      <FormControl className="form-control">
+        <InputLabel>Email</InputLabel>
+        <Input onChange={(e) => {
           props.setEmail(e.target.value);
         }}/>
-      </div>
-      <div className='login-form-item'>
-        <div className='login-form-input'>Password</div>
-        <input onChange={(e) => {
+      </FormControl>
+      <FormControl className="form-control">
+        <InputLabel>Password</InputLabel>
+        <Input onChange={(e) => {
           props.setPassword(e.target.value);
         }}/>
-      </div>
-    </div>
+      </FormControl>
+    </FormGroup>
   )
 }
 

@@ -1,5 +1,6 @@
 import "./TopNav.css";
 import { hamburger } from "../../icons/icons";
+import { Button } from "@mui/material";
 
 function TopNav() {
   function openSideNav() {
@@ -12,8 +13,8 @@ function TopNav() {
   // if not logged in, show login button
   return (
     <div className="top-nav">
-      <button className="open-side-nav" onClick={openSideNav}>{hamburger}</button>
-      <a href="/login">Login</a>
+      <Button onClick={openSideNav}>{hamburger}</Button>
+      <Button href="/login">Login</Button>
     </div>
   )
 }
