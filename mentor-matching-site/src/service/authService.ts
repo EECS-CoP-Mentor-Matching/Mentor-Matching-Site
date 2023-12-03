@@ -4,12 +4,11 @@ import { app } from "../firebaseConfig";
 const auth = getAuth(app)
 
 /** create a new user and store in firebase */
-function createUser(email: string, password: string) {
-  createUserWithEmailAndPassword(auth, email, password)
+async function createUser(email: string, password: string): Promise<User | void> {
+  return await createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed up 
-      const user = userCredential.user;
-      return user;
+      return userCredential.user;
     })
     .catch((error) => {
       // const errorCode = error.code;

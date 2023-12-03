@@ -12,17 +12,16 @@ import theme from "./theme";
 import { useEffect, useState } from 'react';
 import authService from '../service/authService';
 import { User } from 'firebase/auth';
+import Home from './Home';
 
 function App() {
   const [signedin, setSignedIn] = useState(false);
-  const [user, setUser] = useState<User | undefined>();
 
   useEffect(() => {
     const checkSignedIn = async () => {
       const user = await authService.getSignedInUser();
       if (user !== null) {
         setSignedIn(true);
-        setUser(user);
       }
     }
     checkSignedIn();
@@ -37,10 +36,11 @@ function App() {
         </div>
         <BrowserRouter>
           <Routes>
-            <Route path='/login' element = {<Login setSignedIn={setSignedIn} />}/>
-            <Route path='/create-account' element = {<CreateAccount />}/>
-            <Route path='/mentee-portal' element = {<MenteePortal user={user} />}/>
-            <Route path='/profile' element = {<UserProfile />}/>
+            <Route path="/" element = {<Home/>} />
+            <Route path="/login" element = {<Login setSignedIn={setSignedIn} />}/>
+            <Route path="/create-account" element = {<CreateAccount setSignedIn={setSignedIn} />}/>
+            <Route path="/mentee-portal" element = {<MenteePortal />}/>
+            <Route path="/profile" element = {<UserProfile />}/>
           </Routes>
         </BrowserRouter>
       </div>

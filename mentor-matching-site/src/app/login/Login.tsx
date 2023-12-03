@@ -18,7 +18,6 @@ function Login(props: LoginProps) {
 
   async function login() {
     const user = (await authService.signIn(email, password)) as User;
-    console.log(user);
     if (user !== undefined) {
       props.setSignedIn(true);
       navigate("/");

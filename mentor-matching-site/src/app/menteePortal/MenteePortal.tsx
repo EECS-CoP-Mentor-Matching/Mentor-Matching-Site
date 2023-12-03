@@ -8,6 +8,7 @@ import { type MatchProfile } from '../../types';
 import MenteePortalNav from './MenteePortalNav';
 import { User } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import authService from '../../service/authService';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 export enum Pages {
@@ -17,7 +18,7 @@ export enum Pages {
 }
 
 interface MenteePortalProps {
-  user: User | undefined
+  
 }
 
 function MenteePortal(props: MenteePortalProps) {
@@ -27,10 +28,13 @@ function MenteePortal(props: MenteePortalProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(props.user);
-    if (props.user === undefined) {
-      navigate("/login");
+    const checkAuthState = async () => {
+      const user = await authService.getSignedInUser();
+      if (user === undefined) {
+        navigate("/login");
+      }
     }
+    checkAuthState();
   });
 
   function showCreateProfile() {

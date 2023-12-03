@@ -4,16 +4,26 @@ import authService from "../../service/authService";
 import userService from "../../service/userService";
 import { UserProfile } from "../../types";
 import { FormControl, Button, FormLabel, FormGroup } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-function CreateAccount() {
+interface CreateAccountProps {
+  setSignedIn: (signedIn: boolean) => void;
+}
+
+function CreateAccount(props: CreateAccountProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  function createNewUser() {
-    authService.createUser(email, password);
+  async function createNewUser() {
+    const user = await authService.createUser(email, password);
     // const userProfile = new UserProfile()
     // add user to the database with their UID as the key
     // userService.createNewUser()
+    if (user !== undefined) {
+      props.setSignedIn(true);
+      navigate("/");
+    }
   }
 
   return (
