@@ -3,6 +3,7 @@ import { useState } from "react";
 import authService from "../../service/authService";
 import userService from "../../service/userService";
 import { UserProfile } from "../../types";
+import { FormControl, Button, FormLabel, FormGroup } from "@mui/material";
 
 function CreateAccount() {
   const [email, setEmail] = useState('');
@@ -17,14 +18,14 @@ function CreateAccount() {
 
   return (
     <div className='login'>
-    <div className='login-form'>
-      <div>Hello, please login</div>
-      <EmailPassword setEmail={setEmail} setPassword={setPassword} />
-      <div className='login-form-controls'>
-        <button onClick={createNewUser}>Create an Account</button>
-      </div>
+      <FormGroup className="form-group">
+        <FormLabel>Hello, please login</FormLabel>
+        <EmailPassword setEmail={setEmail} setPassword={setPassword} />
+        <FormControl className="form-control">
+          <Button onClick={createNewUser}>Create an Account</Button>
+        </FormControl>
+      </FormGroup>
     </div>
-  </div>
   )
 }
 
