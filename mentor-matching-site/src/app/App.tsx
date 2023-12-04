@@ -6,22 +6,46 @@ import TopNav from './nav/TopNav';
 import SideNav from './nav/SideNav';
 import CreateAccount from './login/CreateAccount';
 import MenteePortal from './menteePortal/MenteePortal';
+import UserProfile from './userProfile/UserProfile';
+import { ThemeProvider } from '@emotion/react';
+import theme from "./theme";
+import { useEffect, useState } from 'react';
+import authService from '../service/authService';
+import { User } from 'firebase/auth';
+import Home from './Home';
 
 function App() {
+  const [signedin, setSignedIn] = useState(false);
+
+  useEffect(() => {
+    const checkSignedIn = async () => {
+      const user = await authService.getSignedInUser();
+      if (user !== null) {
+        setSignedIn(true);
+      }
+    }
+    checkSignedIn();
+  });
+
   return (
-    <div className="App">
-      <div>
-        <TopNav />
-        <SideNav />
+    <ThemeProvider theme={theme} >
+      <div className="App">
+        <div>
+          <TopNav signedIn={signedin} />
+          <SideNav />
+        </div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element = {<Home/>} />
+            <Route path="/login" element = {<Login setSignedIn={setSignedIn} />}/>
+            <Route path="/create-account" element = {<CreateAccount setSignedIn={setSignedIn} />}/>
+            <Route path="/mentee-portal" element = {<MenteePortal />}/>
+            <Route path="/profile" element = {<UserProfile />}/>
+          </Routes>
+        </BrowserRouter>
       </div>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/login' element = {<Login />}/>
-          <Route path='/create-account' element = {<CreateAccount />}/>
-          <Route path='/mentee-portal' element = {<MenteePortal />}/>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    </ThemeProvider>
+
   );
 }
 

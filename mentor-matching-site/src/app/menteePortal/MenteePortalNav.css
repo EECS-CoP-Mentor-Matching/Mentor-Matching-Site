@@ -1,0 +1,9 @@
+.nav {
+  background-color: white;
+  border-bottom: #DC4405 solid 1px;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
