@@ -1,5 +1,7 @@
 import { InputLabel, Input, TextareaAutosize, FormLabel } from "@mui/material";
 import "./UserProfile.css";
+import { useNavigate } from 'react-router-dom';
+
 
 function UserProfile() {
   const email = "p.a.tasabia@gmail.com";
@@ -11,8 +13,31 @@ function UserProfile() {
   const racialIdentity = "Hispanic";
   const timeZone = "Eastern US";
   const userBio = "Hi! My name is philip and I am a senior in the OSU Computer Science program."
+  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
+  const navigate = useNavigate();
 
+
+  
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      const currentUser = await authService.getSignedInUser();
+      if (currentUser) {
+        const profile = await userService.getUserProfile(currentUser.uid);
+        setUserProfile(profile);
+      }
+    };
+
+    loadUserProfile();
+  }, []);
+
+  if (!userProfile) {
+    return <div>Loading profile...</div>;
+  }
   return (
+    <div className="user-profile">
+      <button onClick={() => navigate('/profile/edit')}>Edit Profile</button>
+    </div>
     <div className="user-profile">
       <div>
         <FormLabel>Contact Information</FormLabel>

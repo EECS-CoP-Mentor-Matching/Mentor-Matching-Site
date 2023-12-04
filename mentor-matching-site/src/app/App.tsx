@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import authService from '../service/authService';
 import { User } from 'firebase/auth';
 import Home from './Home';
+import ProfileEdit from '../component/ProfileEdit';
 
 function App() {
   const [signedin, setSignedIn] = useState(false);
@@ -41,6 +42,7 @@ function App() {
             <Route path="/create-account" element = {<CreateAccount setSignedIn={setSignedIn} />}/>
             <Route path="/mentee-portal" element = {<MenteePortal />}/>
             <Route path="/profile" element = {<UserProfile />}/>
+            <Route path="/profile/edit" element={<ProfileEdit userId={UID} />} />
           </Routes>
         </BrowserRouter>
       </div>
