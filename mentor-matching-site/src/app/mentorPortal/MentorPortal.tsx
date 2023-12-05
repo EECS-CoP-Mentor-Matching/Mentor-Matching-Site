@@ -4,7 +4,7 @@ import TopNavigationBar from "./components/TopNavigationBar";
 import {Box} from "@mui/material";
 import {ActiveProfiles} from "./components/ActiveProfiles";
 
-export function MentorPortal() {
+function MentorPortal() {
     const navItems = ['Create Profile', 'Active Profiles'];
     const [selectedTab, setSelectedTab] = useState('Create Profile');
     const handleNavChange = (newValue: string) => {
@@ -27,3 +27,5 @@ export function MentorPortal() {
         </Box>
     );
 }
+
+export default MentorPortal;

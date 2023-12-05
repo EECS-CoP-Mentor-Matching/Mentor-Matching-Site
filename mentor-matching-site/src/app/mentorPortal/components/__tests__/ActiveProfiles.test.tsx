@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import {ActiveProfiles} from "./ActiveProfiles";
+import {ActiveProfiles} from "../ActiveProfiles";
 
 describe('Active Profiles', () => {
     test('renders Active Profiles title', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import TopNavigationBar from './TopNavigationBar';
+import TopNavigationBar from '../TopNavigationBar';
 
 describe('Top Navigation Bar', () => {
     const navItems = ['Test1', 'Test2'];

@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import ContentContainer from "./ContentContainer";
+import ContentContainer from "../ContentContainer";
 
 describe("MentorPortal Content Container", () => {
 
