@@ -40,7 +40,10 @@ function TopNav(props: TopNavProps) {
           <Button href="/logout" onClick={logout}>Logout</Button>
           }
           {!props.signedIn && 
-            <Button href="/login">Login</Button>
+          <div>
+            <Button style={{ marginRight: '10px' }} href="/login">Login</Button>
+            <Button  href="/create-account">Create Account</Button>
+          </div>
           }
         </>
       }
