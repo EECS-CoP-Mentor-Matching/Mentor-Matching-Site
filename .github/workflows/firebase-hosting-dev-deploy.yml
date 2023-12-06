@@ -1,0 +1,24 @@
+name: Deploy to Firebase Hosting Dev Environment
+on:
+  push:
+    branches:
+      - none
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: npm Install
+        working-directory: mentor-matching-site
+        run: npm install
+      - name: npm Build
+        working-directory: mentor-matching-site
+        run: npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_DEV }}'
+          channelId: live
+          projectId: eecs-cop-mentor-matching-dev
+          entryPoint: mentor-matching-site

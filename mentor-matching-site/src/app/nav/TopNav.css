@@ -1,0 +1,9 @@
+.top-nav {
+  background-color: #DC4405;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: none;
+}
+
