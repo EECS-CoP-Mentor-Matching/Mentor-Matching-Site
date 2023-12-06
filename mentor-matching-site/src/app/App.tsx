@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import authService from '../service/authService';
 import Home from './Home';
 import MentorPortal from "./mentorPortal/MentorPortal";
+import AdminPortal from './adminPortal/AdminPortal';
 
 function App() {
   const [signedin, setSignedIn] = useState(false);
@@ -39,7 +40,8 @@ function App() {
             <Route path="/" element = {<Home/>} />
             <Route path="/login" element = {<Login setSignedIn={setSignedIn} />}/>
             <Route path="/create-account" element = {<CreateAccount setSignedIn={setSignedIn} />}/>
-            <Route path="/mentee-portal" element = {<MenteePortal />}/>
+            <Route path="/mentee-portal" element = {<MenteePortal />}/
+            <Route path="/admin-portal" element={<AdminPortal />} />
             <Route path="/mentor-portal" element = {<MentorPortal />}/>
             <Route path="/profile" element = {<UserProfilePage />}/>
           </Routes>

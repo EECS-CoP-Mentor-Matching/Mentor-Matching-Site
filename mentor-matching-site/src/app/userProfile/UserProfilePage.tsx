@@ -31,9 +31,6 @@ function UserProfilePage() {
     loadUserProfile();
   }, []);
 
-  if (!userProfile) {
-    return <div>Loading profile...</div>;
-  }
   return (
     <>
       <div className="user-profile">
