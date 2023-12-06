@@ -11,8 +11,8 @@ import { ThemeProvider } from '@emotion/react';
 import theme from "./theme";
 import { useEffect, useState } from 'react';
 import authService from '../service/authService';
-import { User } from 'firebase/auth';
 import Home from './Home';
+import MentorPortal from "./mentorPortal/MentorPortal";
 
 function App() {
   const [signedin, setSignedIn] = useState(false);
