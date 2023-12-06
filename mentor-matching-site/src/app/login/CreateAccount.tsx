@@ -16,13 +16,22 @@ function CreateAccount(props: CreateAccountProps) {
   const navigate = useNavigate();
 
   async function createNewUser() {
-    const user = await authService.createUser(email, password);
-    // const userProfile = new UserProfile()
-    // add user to the database with their UID as the key
-    // userService.createNewUser()
-    if (user !== undefined) {
-      props.setSignedIn(true);
-      navigate("/");
+    try {
+      const user = await authService.createUser(email, password);
+      if (user) {
+        // Create a new user profile
+        // const newUserProfile: UserProfile = {
+        //   UID: user.uid,
+        //   // Set other initial values for the user profile
+        // };
+        // await userService.createNewUser(newUserProfile);
+        // // Set signed-in state and navigate
+        props.setSignedIn(true);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error('Failed to create a new user:', error);
+      // Handle error (show message to user, etc.)
     }
   }
 

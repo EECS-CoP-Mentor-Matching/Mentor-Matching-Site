@@ -13,6 +13,12 @@ export interface UserProfile {
   education: UserEducationInformation
   accountSettings: UserAccountSettings
   matchHistory: MatchHistoryItem[]
+  profilePictureUrl: string;
+  preferences: UserPreferences;
+}
+
+export interface UserPreferences {
+  // Define preferences structure
 }
 
 export interface UserContactInformation {

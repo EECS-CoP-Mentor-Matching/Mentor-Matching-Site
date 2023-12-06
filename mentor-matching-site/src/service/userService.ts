@@ -4,8 +4,18 @@ async function createNewUser(userProfile: UserProfile) {
 
 }
 
+async function getUserProfile(uid: string) {
+
+}
+
+async function updateUserProfile(uid: string, userProfile: UserProfile) {
+
+}
+
 const userService = {
-  createNewUser
+  createNewUser,
+  getUserProfile,
+  updateUserProfile
 }
 
 export default userService;
