@@ -6,7 +6,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 };
 
-export function ActiveProfiles() {
+function ActiveProfiles() {
     return (
         <ContentContainer
             title="Active Profiles"
@@ -18,3 +18,5 @@ export function ActiveProfiles() {
         </ContentContainer>
     );
 }
+
+export default ActiveProfiles;

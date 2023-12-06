@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import {CreateProfile} from "../CreateProfile";
+import CreateProfile from "../CreateProfile";
 
 describe('Create Profile', () => {
     test('renders Mentor Portal title', () => {
