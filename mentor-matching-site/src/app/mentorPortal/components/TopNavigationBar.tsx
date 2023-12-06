@@ -15,7 +15,7 @@ const TopNavigationBar = ({ navItems, selected, onNavChange }: TopNavigationBarP
     };
     return (
         <AppBar position="static" style={{ backgroundColor: '#DC4405', boxShadow: 'none' }}>
-            <Box sx={{ width: '100%', marginLeft: '350px', marginBottom: '2px' }}>
+            <Box sx={{ width: '100%', marginLeft: '20%', marginBottom: '2px',  overflowX: 'auto' }}>
                 <Tabs
                     value={selected}
                     onChange={handleNavChange}
@@ -26,10 +26,19 @@ const TopNavigationBar = ({ navItems, selected, onNavChange }: TopNavigationBarP
                         '.MuiTab-root': {
                             color: '#FFFFFF',
                             fontWeight: 'bold',
-                            fontSize: '1rem',
+                            fontSize: {
+                                xs: '0.75rem',
+                                sm: '0.875rem',
+                                md: '1rem',
+                            },
                             textTransform: 'none',
                             '&:hover': {
                                 backgroundColor: 'transparent',
+                            },
+                            padding: {
+                                xs: 1,
+                                sm: 1.5,
+                                md: 2,
                             },
                         },
                         '.Mui-selected': {
@@ -41,7 +50,7 @@ const TopNavigationBar = ({ navItems, selected, onNavChange }: TopNavigationBarP
                     }}
                 >
                     {navItems?.map(item => (
-                        <Tab value={item} label={item} />
+                        <Tab key={item} value={item} label={item} />
                     ))}
                 </Tabs>
             </Box>

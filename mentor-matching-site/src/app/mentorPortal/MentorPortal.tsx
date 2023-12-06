@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {CreateProfile} from "./components/CreateProfile";
+import CreateProfile from "./components/CreateProfile";
 import TopNavigationBar from "./components/TopNavigationBar";
 import {Box} from "@mui/material";
-import {ActiveProfiles} from "./components/ActiveProfiles";
+import ActiveProfiles from "./components/ActiveProfiles";
 
 function MentorPortal() {
     const navItems = ['Create Profile', 'Active Profiles'];
