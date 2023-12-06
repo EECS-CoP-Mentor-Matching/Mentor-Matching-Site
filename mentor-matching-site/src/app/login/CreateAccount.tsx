@@ -20,12 +20,12 @@ function CreateAccount(props: CreateAccountProps) {
       const user = await authService.createUser(email, password);
       if (user) {
         // Create a new user profile
-        const newUserProfile: UserProfile = {
-          UID: user.uid,
-          // Set other initial values for the user profile
-        };
-        await userService.createNewUser(newUserProfile);
-        // Set signed-in state and navigate
+        // const newUserProfile: UserProfile = {
+        //   UID: user.uid,
+        //   // Set other initial values for the user profile
+        // };
+        // await userService.createNewUser(newUserProfile);
+        // // Set signed-in state and navigate
         props.setSignedIn(true);
         navigate("/");
       }
