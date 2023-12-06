@@ -40,6 +40,7 @@ function App() {
             <Route path="/login" element = {<Login setSignedIn={setSignedIn} />}/>
             <Route path="/create-account" element = {<CreateAccount setSignedIn={setSignedIn} />}/>
             <Route path="/mentee-portal" element = {<MenteePortal />}/>
+            <Route path="/mentee-portal" element = {<MentorPortal />}/>
             <Route path="/profile" element = {<UserProfilePage />}/>
           </Routes>
         </BrowserRouter>
