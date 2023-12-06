@@ -6,7 +6,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 };
 
-export function CreateProfile() {
+function CreateProfile() {
     const [personalInterest, setPersonalInterest] = useState('');
     const [personalExperience, setPersonalExperience] = useState('');
     const [technicalInterest, setTechnicalInterest] = useState('');
@@ -119,3 +119,5 @@ export function CreateProfile() {
         </ContentContainer>
     );
 }
+
+export default CreateProfile;
