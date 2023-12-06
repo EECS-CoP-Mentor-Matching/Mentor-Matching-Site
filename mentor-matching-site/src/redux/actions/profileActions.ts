@@ -1,7 +1,7 @@
 // Actions for profile management:
 
 import { Action } from "redux";
-import { UserProfile } from "../types";
+import { UserProfile } from "../../types";
 
 export interface UserProfileAction extends Action {
   payload: UserProfile

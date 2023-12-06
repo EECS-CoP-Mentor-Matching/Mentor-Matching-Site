@@ -1,6 +1,6 @@
 // This reducer will handle the user profile state:
 
-import { UserProfileAction } from "../profileActions";
+import { UserProfileAction } from "../actions/profileActions";
 
 const initialState = {
     userProfile: null,
