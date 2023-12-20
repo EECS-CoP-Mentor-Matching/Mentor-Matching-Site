@@ -5,8 +5,8 @@ async function createNewUser(userProfile: UserProfile) {
   userDb.createNewUser(userProfile);
 }
 
-async function getUserProfile(uid: string) {
-
+async function getUserProfile(uid: string) : Promise<UserProfile> {
+  return await userDb.getUserProfile(uid);
 }
 
 async function updateUserProfile(uid: string, userProfile: UserProfile) {

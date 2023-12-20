@@ -6,11 +6,11 @@ import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserProfile } from '../../types';
 
-interface ProfileEditProps {
+interface EditUserProfileProps {
     uid: string
 }
 
-function ProfileEdit(props: ProfileEditProps) {
+function EditUserProfile(props: EditUserProfileProps) {
     const [displayName, setDisplayName] = useState('');
     const [profilePicture, setProfilePicture] = useState(null); // Holds the selected file
 
@@ -62,4 +62,4 @@ function ProfileEdit(props: ProfileEditProps) {
     );
 }
 
-export default ProfileEdit;
+export default EditUserProfile;

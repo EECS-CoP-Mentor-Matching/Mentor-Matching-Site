@@ -6,7 +6,7 @@ import TopNav from './nav/TopNav';
 import SideNav from './nav/SideNav';
 import CreateAccount from './createAccount/CreateAccount';
 import MenteePortal from './menteePortal/MenteePortal';
-import UserProfilePage from './userProfile/UserProfilePage';
+import ViewUserProfile from './userProfile/ViewUserProfile';
 import { ThemeProvider } from '@emotion/react';
 import theme from "./theme";
 import { useEffect, useState } from 'react';
@@ -44,7 +44,7 @@ function App() {
             <Route path="/mentee-portal" element = {<MenteePortal />}/>
             <Route path="/admin-portal" element={<AdminPortal />} />
             <Route path="/mentor-portal" element = {<MentorPortal />}/>
-            <Route path="/profile" element = {<UserProfilePage />}/>
+            <Route path="/profile" element = {<ViewUserProfile />}/>
           </Routes>
         </BrowserRouter>
       </div>

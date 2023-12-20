@@ -5,8 +5,8 @@
   flex-wrap: wrap;
   gap: 25px;
   justify-content: center;
-  align-items: start;
-  padding-left: 25vw;
+  align-items: center;
+  padding-top: 25px;
 }
 
 .profile-section {

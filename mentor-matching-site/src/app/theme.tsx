@@ -42,6 +42,14 @@ const theme = createTheme({
           gap: '15px'
         }
       }]
+    },
+    MuiTextField: {
+      variants: [{
+        props: {},
+        style: {
+          maxWidth: '200px'
+        }
+      }]
     }
   }
 });
