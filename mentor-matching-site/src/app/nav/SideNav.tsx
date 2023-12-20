@@ -1,6 +1,10 @@
 import "./SideNav.css";
 
-function SideNav() {
+interface SideNavProps {
+  signedIn: boolean
+}
+
+function SideNav(props: SideNavProps) {
   function closeNav() {
     var sideNav = document.getElementById("sideNav");
     if (sideNav != null) {
@@ -11,11 +15,13 @@ function SideNav() {
   return (
     <div className="side-nav" id="sideNav">
       <button className="closebtn" onClick={closeNav}>&times;</button>
+      { props.signedIn && <>
+          <a href="/mentee-portal">Mentee Portal</a>
+          <a href="/mentor-portal">Mentor Portal</a>
+          <a href="/admin-portal">Admin Portal</a>
+          <a href="/profile">Profile</a>
+      </>}
       <a href="/">Home</a>
-      <a href="/mentee-portal">Mentee Portal</a>
-      <a href="/mentor-portal">Mentor Portal</a>
-      <a href="/admin-portal">Admin Portal</a>
-      <a href="/profile">Profile</a>
     </div>
   )
 }

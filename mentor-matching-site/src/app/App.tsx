@@ -14,7 +14,6 @@ import authService from '../service/authService';
 import Home from './Home';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
-import NewUserProfile from './createAccount/newUserProfile/NewUserProfile';
 
 function App() {
   const [signedin, setSignedIn] = useState(false);
@@ -34,7 +33,7 @@ function App() {
       <div className="App">
         <div>
           <TopNav signedIn={signedin} />
-          <SideNav />
+          <SideNav signedIn={signedin} />
         </div>
         <BrowserRouter>
           <Routes>
