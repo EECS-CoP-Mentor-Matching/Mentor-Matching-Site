@@ -33,6 +33,15 @@ const theme = createTheme({
           }
         }
       }]
+    },
+    MuiFormGroup: {
+      variants: [{
+        props: {},
+        style: {
+          display: 'flex',
+          gap: '15px'
+        }
+      }]
     }
   }
 });

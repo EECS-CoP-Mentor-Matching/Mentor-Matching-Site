@@ -1,5 +1,5 @@
 import { TextField, Autocomplete } from "@mui/material";
-import SelectInterest from "./SelectInterest";
+import DropDownControl from "../../common/DropDownControl";
 
 function SelectProfessionalInterest() {
   const professionalInterests = [
@@ -9,7 +9,7 @@ function SelectProfessionalInterest() {
   ]
 
   return (
-    <SelectInterest options={professionalInterests} />
+    <DropDownControl inputLabel="Interests" options={professionalInterests} onSelect={() => {}}/>
   );
 }
 

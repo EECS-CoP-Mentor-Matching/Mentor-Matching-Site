@@ -4,7 +4,7 @@ import Login from './login/Login';
 // import MenteePortal from './menteePortal/MenteePortal';
 import TopNav from './nav/TopNav';
 import SideNav from './nav/SideNav';
-import CreateAccount from './login/CreateAccount';
+import CreateAccount from './createAccount/CreateAccount';
 import MenteePortal from './menteePortal/MenteePortal';
 import UserProfilePage from './userProfile/UserProfilePage';
 import { ThemeProvider } from '@emotion/react';
@@ -14,6 +14,7 @@ import authService from '../service/authService';
 import Home from './Home';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
+import NewUserProfile from './createAccount/newUserProfile/NewUserProfile';
 
 function App() {
   const [signedin, setSignedIn] = useState(false);
@@ -48,7 +49,6 @@ function App() {
         </BrowserRouter>
       </div>
     </ThemeProvider>
-
   );
 }
 

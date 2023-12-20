@@ -1,11 +1,11 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAuth, User, UserCredential } from "firebase/auth";
 import { app } from "../firebaseConfig";
 
-const auth = getAuth(app)
+const firebaseAuth = getAuth(app)
 
 /** create a new user and store in firebase */
 async function createUser(email: string, password: string): Promise<User | void> {
-  return await createUserWithEmailAndPassword(auth, email, password)
+  return await createUserWithEmailAndPassword(firebaseAuth, email, password)
     .then((userCredential) => {
       // Signed up 
       return userCredential.user;
@@ -19,14 +19,14 @@ async function createUser(email: string, password: string): Promise<User | void>
 
 /** use this method if the device is shared i.e. computer labs */ 
 function signInSession(email: string, password: string) {
-  setPersistence(auth, browserSessionPersistence)
+  setPersistence(firebaseAuth, browserSessionPersistence)
   .then(() => {
     // Existing and future Auth states are now persisted in the current
     // session only. Closing the window would clear any existing state even
     // if a user forgets to sign out.
     // ...
     // New sign-in will be persisted with session persistence.
-    return signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(firebaseAuth, email, password);
   })
   .catch((error) => {
     // Handle Errors here.
@@ -37,7 +37,7 @@ function signInSession(email: string, password: string) {
 
 /** use this method if the device is not shared */
 async function signIn(email: string, password: string): Promise<User | void> {
-  return signInWithEmailAndPassword(auth, email, password)
+  return signInWithEmailAndPassword(firebaseAuth, email, password)
     .then((userCredential) => {
       // Signed in 
       return userCredential.user;
@@ -49,16 +49,16 @@ async function signIn(email: string, password: string): Promise<User | void> {
 }
 
 function signOut() {
-  auth.signOut();
+  firebaseAuth.signOut();
 }
 
 async function waitForAuthState() {
-  await auth.authStateReady();
+  await firebaseAuth.authStateReady();
 }
 
 async function getSignedInUser() {
-  await auth.authStateReady();
-  return auth.currentUser;
+  await firebaseAuth.authStateReady();
+  return firebaseAuth.currentUser;
 }
 
 const authService = {

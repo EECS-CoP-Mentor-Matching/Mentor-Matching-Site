@@ -13,7 +13,7 @@ export interface UserProfile {
   education: UserEducationInformation
   accountSettings: UserAccountSettings
   matchHistory: MatchHistoryItem[]
-  profilePictureUrl: string;
+  profilePictureUrl: string | undefined;
   preferences: UserPreferences;
 }
 

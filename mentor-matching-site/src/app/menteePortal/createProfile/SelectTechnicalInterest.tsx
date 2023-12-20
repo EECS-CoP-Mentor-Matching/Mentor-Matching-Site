@@ -1,4 +1,4 @@
-import SelectInterest from "./SelectInterest";
+import DropDownControl from "../../common/DropDownControl";
 
 function SelectTechnicalInterest() {
   const technicalInterest = [
@@ -9,7 +9,7 @@ function SelectTechnicalInterest() {
   ];
 
   return (
-    <SelectInterest options={technicalInterest} />
+    <DropDownControl inputLabel="Interests" options={technicalInterest} onSelect={() => {}} />
   );
 }
 
