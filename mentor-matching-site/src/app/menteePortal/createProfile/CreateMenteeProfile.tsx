@@ -12,9 +12,9 @@ interface CreateMenteeProfileProps {
 
 function CreateMenteeProfile(props: CreateMenteeProfileProps) {
   const [technicalInterest, setTechnicalInterest] = useState('');
-  const [technicalExperience, setTechnicalExperience] = useState('');
+  const [technicalExperience, setTechnicalExperience] = useState(-1);
   const [professionalInterest, setProfessionalInterest] = useState('');
-  const [professionalExperience, setProfessionalExperience] = useState('');
+  const [professionalExperience, setProfessionalExperience] = useState(-1);
 
   return (
     <div className="mentee-profile">

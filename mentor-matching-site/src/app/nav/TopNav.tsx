@@ -42,7 +42,7 @@ function TopNav(props: TopNavProps) {
           {!props.signedIn && 
           <div>
             <Button style={{ marginRight: '10px' }} href="/login">Login</Button>
-            <Button  href="/create-account">Create Account</Button>
+            <Button href="/create-account">Create Account</Button>
           </div>
           }
         </>

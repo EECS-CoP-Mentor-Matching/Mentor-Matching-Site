@@ -1,8 +1,8 @@
 export interface MatchProfile {
   technicalInterest: string
-  technicalExperience: string
+  technicalExperience: number
   professionalInterest: string
-  professionalExperience: string
+  professionalExperience: number
 }
 
 export interface UserProfile {
@@ -67,42 +67,29 @@ export interface EmailDenyList {
 }
 
 export interface ExperienceLevel {
-  experienceLevelID: string
   experienceLevel: string
-  minYear: number
-  maxYear: number
+  levelHeirarchy: number
 }
 
 export interface EducationLevel {
-  educationLevelID: string
-  levelHeirarchy: number
   educationLevel: string
+  levelHeirarchy: number
 }
 
 export interface UserStatus {
-  userStatusID: string
   name: string
 }
 
 export interface TimeZone {
-  timeZoneID: string
   timeZone: string
 }
 
 export interface TechincalInterest {
-  technicalInterestID: string
-  technicalInterest: string
-  enabled: boolean
+  broadInterest: string
+  specificInterests: string[]
 }
 
 export interface ProfessionalInterest {
-  professionaInterestID: string
   professionaInterest: string
-  enabled: boolean
-}
-
-export interface InterestExperienceLevel {
-  interestExperienceLevelID: string
-  interestExperienceLevel: string
 }
 

@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import adminService from '../../service/adminService';
 import "./AdminPortal.css";
 import { Button } from "@mui/material";
-import AdminPortalNav from './AdminPortalNav';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../service/authService';
 import ManageUsers from './manageUsers/ManageUsers';
 import ViewReports from './viewReports/ViewReports';
 import Settings from './settings/Settings';
+import PageNav from '../common/PageNav';
 
 export enum Pages {
   manageUsers,
@@ -32,12 +32,17 @@ function AdminPortal(props: AdminPortalProps) {
     checkAuthState();
   });
 
+  const pages = [
+    {pageId: 0, label: "manage users", component: <ManageUsers />}
+  ]
+
   return (
     <>
-      <AdminPortalNav setPage={setPage} />
-      {page === Pages.manageUsers && <ManageUsers />}
+      <PageNav pages={pages} defaultPage={0} />
+      {/* <AdminPortalNav setPage={setPage} /> */}
+      {/* {page === Pages.manageUsers && <ManageUsers />}
       {page === Pages.viewReports && <ViewReports />}
-      {page === Pages.settings && <Settings />}
+      {page === Pages.settings && <Settings />} */}
     </>
   );
 }
