@@ -36,6 +36,8 @@ function CreateAccount(props: CreateAccountProps) {
       { currentStep == Step.CheckEmail && <>
           <FormLabel>Welcome, start by entering your email</FormLabel>
           <Email setEmail={setEmail} />
+          <FormLabel>Note that if you do not have a valid Oregon State University email, you will not be able to create a mentee profile.</FormLabel>
+          <FormLabel>Please use your Oregon State email if you have it.</FormLabel>
           <FormControl className="form-control">
             <Button onClick={checkUserExists}>Create an Account</Button>
           </FormControl>
