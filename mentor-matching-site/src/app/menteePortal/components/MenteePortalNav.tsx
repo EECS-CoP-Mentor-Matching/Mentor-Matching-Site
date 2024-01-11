@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import "./MenteePortalNav.css";
-import { Pages } from "./MenteePortal";
+import { Pages } from "../MenteePortal";
 
 interface MenteePortalNavProps {
   setPage: (page: Pages) => void

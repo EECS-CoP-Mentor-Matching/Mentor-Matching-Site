@@ -1,14 +1,14 @@
 import { InputLabel, Input, TextareaAutosize, FormLabel, Button } from "@mui/material";
 import "./UserProfile.css";
 import { useNavigate } from 'react-router-dom';
-import authService from "../../service/authService";
-import userService from "../../service/userService";
+import authService from "../../../service/authService";
+import userService from "../../../service/userService";
 import { useState, useEffect } from "react";
-import { UserProfile } from "../../types";
-import FormGroupCols from "../common/FormGroupCols";
-import TextInputControl from "../common/TextInputControl";
-import TextDisplay from "../common/TextDisplay";
-import FormGroupRows from "../common/FormGroupRows";
+import { UserProfile } from "../../../types";
+import FormGroupCols from "../../common/forms/FormGroupCols";
+import TextInputControl from "../../common/forms/TextInputControl";
+import TextDisplay from "../../common/forms/TextDisplay";
+import FormGroupRows from "../../common/forms/FormGroupRows";
 
 function ViewUserProfile() {
   const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);

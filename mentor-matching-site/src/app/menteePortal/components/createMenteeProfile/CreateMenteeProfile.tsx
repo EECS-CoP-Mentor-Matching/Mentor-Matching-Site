@@ -1,9 +1,9 @@
-import ExperienceLevel from "./ExperienceLevel";
+import ExperienceLevel from "./components/ExperienceLevel";
 import "./CreateMenteeProfile.css";
-import SelectProfessionalInterest from "./SelectProfessionalInterest";
-import SelectTechnicalInterest from "./SelectTechnicalInterest";
+import SelectProfessionalInterest from "./components/SelectProfessionalInterest";
+import SelectTechnicalInterest from "./components/SelectTechnicalInterest";
 import { FormLabel, Button } from "@mui/material";
-import { type MatchProfile } from '../../../types';
+import { type MatchProfile } from '../../../../types';
 import { useState } from 'react';
 
 interface CreateMenteeProfileProps {
@@ -21,19 +21,21 @@ function CreateMenteeProfile(props: CreateMenteeProfileProps) {
       <FormLabel>Technical</FormLabel>
       <div className="mentee-interest">
         <SelectTechnicalInterest />
-        <ExperienceLevel label="Experience Level"/>
+        <ExperienceLevel label="Experience Level" />
       </div>
       <FormLabel>Professional</FormLabel>
       <div className="mentee-interest">
         <SelectProfessionalInterest />
-        <ExperienceLevel label="Experience Level"/>
+        <ExperienceLevel label="Experience Level" />
       </div>
-      <Button onClick={() => {props.addProfile({
-        technicalInterest: technicalInterest,
-        technicalExperience: technicalExperience,
-        professionalInterest: professionalInterest,
-        professionalExperience: professionalExperience
-      });}}>Add Profile</Button>
+      <Button onClick={() => {
+        props.addProfile({
+          technicalInterest: technicalInterest,
+          technicalExperience: technicalExperience,
+          professionalInterest: professionalInterest,
+          professionalExperience: professionalExperience
+        });
+      }}>Add Profile</Button>
     </div>
   )
 }

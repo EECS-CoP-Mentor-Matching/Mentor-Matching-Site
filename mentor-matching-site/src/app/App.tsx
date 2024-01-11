@@ -6,7 +6,7 @@ import TopNav from './nav/TopNav';
 import SideNav from './nav/SideNav';
 import CreateAccount from './createAccount/CreateAccount';
 import MenteePortal from './menteePortal/MenteePortal';
-import ViewUserProfile from './userProfile/ViewUserProfile';
+import ViewUserProfile from './userProfile/components/ViewUserProfile';
 import { ThemeProvider } from '@emotion/react';
 import theme from "./theme";
 import { useEffect, useState } from 'react';
@@ -37,13 +37,13 @@ function App() {
         </div>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element = {<Home/>} />
-            <Route path="/login" element = {<Login setSignedIn={setSignedIn} />}/>
-            <Route path="/create-account" element = {<CreateAccount setSignedIn={setSignedIn} />}/>
-            <Route path="/mentee-portal" element = {<MenteePortal />}/>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login setSignedIn={setSignedIn} />} />
+            <Route path="/create-account" element={<CreateAccount setSignedIn={setSignedIn} />} />
+            <Route path="/mentee-portal" element={<MenteePortal />} />
             <Route path="/admin-portal" element={<AdminPortal />} />
-            <Route path="/mentor-portal" element = {<MentorPortal />}/>
-            <Route path="/profile" element = {<ViewUserProfile />}/>
+            <Route path="/mentor-portal" element={<MentorPortal />} />
+            <Route path="/profile" element={<ViewUserProfile />} />
           </Routes>
         </BrowserRouter>
       </div>

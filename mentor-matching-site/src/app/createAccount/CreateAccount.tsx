@@ -1,10 +1,10 @@
-import Email from "./Email";
+import Email from "./components/Email";
 import { useState } from "react";
 import authService from "../../service/authService";
 import userService from "../../service/userService";
 import { UserProfile } from "../../types";
 import { FormControl, Button, FormLabel, FormGroup } from "@mui/material";
-import NewUserProfile from "./newUserProfile/NewUserProfile";
+import NewUserProfile from "./components/newUserProfile/NewUserProfile";
 
 interface CreateAccountProps {
     setSignedIn: (signedIn: boolean) => void;

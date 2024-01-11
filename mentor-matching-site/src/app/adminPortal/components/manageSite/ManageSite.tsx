@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import FormGroupCols from "../../common/FormGroupCols";
+import FormGroupCols from "../../../common/forms/FormGroupCols";
 
 function ManageSite() {
   return (

@@ -4,9 +4,9 @@ import "./AdminPortal.css";
 import { Button } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import authService from '../../service/authService';
-import ManageUsers from './manageUsers/ManageUsers';
-import ViewReports from './viewReports/ViewReports';
-import Settings from './settings/Settings';
+import ManageUsers from './components/manageUsers/ManageUsers';
+import ViewReports from './components/viewReports/ViewReports';
+import Settings from './components/settings/Settings';
 import PageNav from '../common/PageNav';
 
 export enum Pages {
@@ -33,7 +33,7 @@ function AdminPortal(props: AdminPortalProps) {
   });
 
   const pages = [
-    {pageId: 0, label: "manage users", component: <ManageUsers />}
+    { pageId: 0, label: "manage users", component: <ManageUsers /> }
   ]
 
   return (

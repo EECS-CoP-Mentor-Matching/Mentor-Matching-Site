@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import menteeService from '../../service/menteeService';
-import CreateMenteeProfile from './createProfile/CreateMenteeProfile';
+import CreateMenteeProfile from './components/createMenteeProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
 import { FormLabel, Button } from "@mui/material"
-import ViewMenteeProfile from './viewProfile/ViewMenteeProfile';
+import ViewMenteeProfile from './components/viewMenteeProfile/ViewMenteeProfile';
 import { type MatchProfile } from '../../types';
-import MenteePortalNav from './MenteePortalNav';
+import MenteePortalNav from './components/MenteePortalNav';
 import { User } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../service/authService';
@@ -18,7 +18,7 @@ export enum Pages {
 }
 
 interface MenteePortalProps {
-  
+
 }
 
 function MenteePortal(props: MenteePortalProps) {
@@ -78,7 +78,7 @@ function MenteePortal(props: MenteePortalProps) {
       }
     </>
 
-    
+
   );
 }
 

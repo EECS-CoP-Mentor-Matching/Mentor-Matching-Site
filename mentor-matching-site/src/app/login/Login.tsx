@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import "./Login.css";
-import EmailPassword from "./EmailPassword";
+import EmailPassword from "./components/EmailPassword";
 import authService from "../../service/authService";
 import { Button, FormControl, FormGroup, FormLabel, Link } from "@mui/material";
 import "./Login.css";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import FormGroupRows from "./FormGroupRows";
+import FormGroupRows from "./forms/FormGroupRows";
 import { Button } from "@mui/material";
 
 interface Page {
@@ -39,12 +39,12 @@ function PageNav(props: PageNavProps) {
     <div>
       <FormGroupRows>
         {props.pages.map(page =>
-          <Button onClick={() => {setCurrentPageId(page.pageId);}}>{page.label}</Button>
+          <Button onClick={() => { setCurrentPageId(page.pageId); }}>{page.label}</Button>
         )}
       </FormGroupRows>
       {currentPage()}
     </div>
-    
+
   );
 }
 

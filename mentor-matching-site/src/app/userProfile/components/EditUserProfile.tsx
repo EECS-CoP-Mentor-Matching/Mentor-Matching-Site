@@ -1,10 +1,10 @@
 // Allows users to edit their profile:
 
 import React, { useState } from 'react';
-import userService from '../../service/userService';
-import { storage } from '../../firebaseConfig';
+import userService from '../../../service/userService';
+import { storage } from '../../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { UserProfile } from '../../types';
+import { UserProfile } from '../../../types';
 
 interface EditUserProfileProps {
     uid: string
@@ -46,15 +46,15 @@ function EditUserProfile(props: EditUserProfileProps) {
 
     return (
         <form onSubmit={handleSubmit}>
-            <input 
-                type="text" 
-                value={displayName} 
-                onChange={e => setDisplayName(e.target.value)} 
-                placeholder="Display Name" 
+            <input
+                type="text"
+                value={displayName}
+                onChange={e => setDisplayName(e.target.value)}
+                placeholder="Display Name"
             />
-            <input 
-                type="file" 
-                onChange={handleFileChange} 
+            <input
+                type="file"
+                onChange={handleFileChange}
             />
             {/* Add inputs for other preferences */}
             <button type="submit">Save Changes</button>
