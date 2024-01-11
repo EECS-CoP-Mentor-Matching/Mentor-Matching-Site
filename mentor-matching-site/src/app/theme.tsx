@@ -2,6 +2,36 @@ import { createTheme } from "@mui/material";
 
 const theme = createTheme({
   components: {
+    MuiTabs: {
+      variants: [{
+        props: {},
+        style: {
+          color: '',
+          breakpoints: {
+            fontSize: {
+              xs: '0.75rem',
+              sm: '0.875rem',
+              md: '1rem',
+            },
+            padding: {
+              xs: 1,
+              sm: 1.5,
+              md: 2,
+            },
+          },
+          textTransform: 'none',
+          '.MuiTab-root:hover': {
+            backgroundColor: 'transparent',
+          },
+          '.Mui-selected': {
+            color: '#f7ebeb',
+          },
+          '.MuiTabs-indicator': {
+            backgroundColor: '#f7ebeb',
+          },
+        }
+      }]
+    },
     MuiButton: {
       variants: [{
         props: { variant: 'text' },
