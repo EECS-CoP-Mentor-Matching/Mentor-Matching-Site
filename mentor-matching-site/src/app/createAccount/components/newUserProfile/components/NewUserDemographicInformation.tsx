@@ -1,7 +1,7 @@
-import { UserDemographicInformation } from "../../../../types";
-import CheckboxControl from "../../../common/CheckboxControl";
-import FormGroupCols from "../../../common/FormGroupCols";
-import TextInputControl from "../../../common/TextInputControl";
+import { UserDemographicInformation } from "../../../../../types";
+import CheckboxControl from "../../../../common/forms/CheckboxControl";
+import FormGroupCols from "../../../../common/forms/FormGroupCols";
+import TextInputControl from "../../../../common/forms/TextInputControl";
 import { FormLabel } from "@mui/material";
 
 interface NewUserDemographicInformationProps {
@@ -25,7 +25,7 @@ function NewUserDemographicInformation(props: NewUserDemographicInformationProps
       <FormLabel>User Demographics</FormLabel>
       <TextInputControl label="Racial Identity" onInput={setRacialIdentity}
         value={props.demographicInformation.racialIdentity} />
-      <CheckboxControl label="Do you identify as a member of the LGBTQ+ Community?" onChange={setLgbtqPlusCommunity} 
+      <CheckboxControl label="Do you identify as a member of the LGBTQ+ Community?" onChange={setLgbtqPlusCommunity}
         checked={props.demographicInformation.lgbtqPlusCommunity} />
     </FormGroupCols>
   );

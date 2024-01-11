@@ -1,4 +1,4 @@
-import DropDownControl from "../../../common/DropDownControl";
+import DropDownControl from "../../../../common/forms/DropDownControl";
 
 interface SelectTimeZoneProps {
   onSelect: (value: string | undefined) => void
@@ -12,8 +12,8 @@ function SelectTimeZone(props: SelectTimeZoneProps) {
   ]
 
   return (
-    <DropDownControl inputLabel="Timezone" 
-      options={timeZones} 
+    <DropDownControl inputLabel="Timezone"
+      options={timeZones}
       onSelect={props.onSelect}
     />
   );

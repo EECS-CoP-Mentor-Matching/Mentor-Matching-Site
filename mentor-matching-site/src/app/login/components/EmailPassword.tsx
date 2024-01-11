@@ -1,5 +1,5 @@
 import { InputLabel, Input, FormControl, FormGroup } from "@mui/material";
-import "./Login.css";
+import "../Login.css";
 import SensitiveTextInputControl from "../../common/forms/SensitiveTextInputControl";
 import TextInputControl from "../../common/forms/TextInputControl";
 

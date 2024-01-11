@@ -1,8 +1,8 @@
-import FormGroupCols from "../../../common/FormGroupCols";
-import FormGroupRows from "../../../common/FormGroupRows";
-import TextInputControl from "../../../common/TextInputControl";
+import FormGroupCols from "../../../../common/forms/FormGroupCols";
+import FormGroupRows from "../../../../common/forms/FormGroupRows";
+import TextInputControl from "../../../../common/forms/TextInputControl";
 import { useState } from "react";
-import { UserPersonalInformation } from "../../../../types";
+import { UserPersonalInformation } from "../../../../../types";
 import { FormLabel } from "@mui/material";
 
 interface NewUserPersonalInformationProps {
@@ -18,10 +18,10 @@ function NewUserPersonalInformation(props: NewUserPersonalInformationProps) {
     <FormGroupCols>
       <FormLabel>User Personal Information</FormLabel>
       <FormGroupRows>
-          <TextInputControl label="First Name" onInput={setFirstName}/>
-          <TextInputControl label="Last Name" onInput={setLastName}/>
-        </FormGroupRows>
-        <TextInputControl label="Last Name" onInput={setLastName}/>
+        <TextInputControl label="First Name" onInput={setFirstName} />
+        <TextInputControl label="Last Name" onInput={setLastName} />
+      </FormGroupRows>
+      <TextInputControl label="Last Name" onInput={setLastName} />
     </FormGroupCols>
   );
 }

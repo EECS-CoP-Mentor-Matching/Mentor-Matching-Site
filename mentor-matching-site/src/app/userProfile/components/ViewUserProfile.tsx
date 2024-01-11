@@ -1,5 +1,5 @@
 import { InputLabel, Input, TextareaAutosize, FormLabel, Button } from "@mui/material";
-import "./UserProfile.css";
+import "../UserProfile.css";
 import { useNavigate } from 'react-router-dom';
 import authService from "../../../service/authService";
 import userService from "../../../service/userService";

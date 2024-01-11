@@ -1,10 +1,10 @@
 import { useState } from "react";
-import FormGroupCols from "../../../common/FormGroupCols";
-import TextInputControl from "../../../common/TextInputControl";
+import FormGroupCols from "../../../../common/forms/FormGroupCols";
+import TextInputControl from "../../../../common/forms/TextInputControl";
 import { FormLabel } from "@mui/material";
 import SelectTimeZone from "./SelectTimeZone";
-import { UserContactInformation } from "../../../../types";
-import TextAreaControl from "../../../common/TextAreaControl";
+import { UserContactInformation } from "../../../../../types";
+import TextAreaControl from "../../../../common/forms/TextAreaControl";
 
 interface NewUserContactInformationProps {
   contactInformation: UserContactInformation
@@ -36,12 +36,12 @@ function NewUserContactInformation(props: NewUserContactInformationProps) {
     <FormGroupCols>
       <FormLabel>Welcome! Start by entering your contact information.</FormLabel>
       <div>Email: {props.contactInformation.email}</div>
-      <SelectTimeZone onSelect={setTimeZone}/>
-      <TextInputControl label="Pronouns" onInput={setPronouns} 
+      <SelectTimeZone onSelect={setTimeZone} />
+      <TextInputControl label="Pronouns" onInput={setPronouns}
         value={props.contactInformation.pronouns} />
-      <TextInputControl label="Display Name" onInput={setDisplayName} 
+      <TextInputControl label="Display Name" onInput={setDisplayName}
         value={props.contactInformation.displayName} />
-      <TextInputControl label="Bio" onInput={setBio} 
+      <TextInputControl label="Bio" onInput={setBio}
         value={props.contactInformation.userBio} />
     </FormGroupCols>
   );

@@ -1,8 +1,8 @@
-import { UserEducationInformation } from "../../../../types";
-import FormGroupCols from "../../../common/FormGroupCols";
+import { UserEducationInformation } from "../../../../../types";
+import FormGroupCols from "../../../../common/forms/FormGroupCols";
 import { FormLabel } from "@mui/material";
-import TextInputControl from "../../../common/TextInputControl";
-import CheckboxControl from "../../../common/CheckboxControl";
+import TextInputControl from "../../../../common/forms/TextInputControl";
+import CheckboxControl from "../../../../common/forms/CheckboxControl";
 
 interface NewUserEducationInformationProps {
   educationInformation: UserEducationInformation
@@ -20,7 +20,7 @@ function NewUserEducationInformation(props: NewUserEducationInformationProps) {
       <FormLabel>User Eductation</FormLabel>
       <CheckboxControl label="Are you a student?"
         onChange={setStudentStatus}
-        checked={props.educationInformation.studentStatus}/>
+        checked={props.educationInformation.studentStatus} />
     </FormGroupCols>
   );
 }
