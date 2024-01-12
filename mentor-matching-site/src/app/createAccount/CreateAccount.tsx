@@ -16,7 +16,6 @@ enum Step {
     NewUser
 }
 
-
 function CreateAccount(props: CreateAccountProps) {
     const [email, setEmail] = useState('');
     const [currentStep, setCurrentStep] = useState(Step.CheckEmail);
@@ -31,12 +30,19 @@ function CreateAccount(props: CreateAccountProps) {
         }
     }
 
+    function validateValue(currEmailValue: string): boolean {
+        const regex = new RegExp("^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$");
+        return regex.test(currEmailValue);
+    }
+
     return (
         <div className='login'>
             <FormGroup className="form-group">
                 {currentStep == Step.CheckEmail && <>
                     <FormLabel>Welcome, start by entering your email</FormLabel>
-                    <Email setEmail={setEmail} />
+                    <Email setEmail={setEmail}
+                        submitEmail={checkUserExists}
+                        emailValidation={validateValue} />
                     <FormLabel>Note that if you do not have a valid Oregon State University email, you will not be able to create a mentee profile.</FormLabel>
                     <FormLabel>Please use your Oregon State email if you have it.</FormLabel>
                     <FormControl className="form-control">

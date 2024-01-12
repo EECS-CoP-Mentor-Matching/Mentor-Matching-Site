@@ -1,19 +1,19 @@
 import { InputLabel, Input, FormControl, FormGroup } from "@mui/material";
+import TextInputControl from "../../common/forms/TextInputControl";
 
 interface EmailProps {
   setEmail: (email: string) => void
+  submitEmail: () => void
+  emailValidation: (email: string) => boolean
 }
 
 function Email(props: EmailProps) {
   return (
-    <FormGroup className="form-group">
-      <FormControl className="form-control">
-        <InputLabel>Email</InputLabel>
-        <Input onChange={(e) => {
-          props.setEmail(e.target.value);
-        }}/>
-      </FormControl>
-    </FormGroup>
+    <>
+      <TextInputControl onInput={props.setEmail} label="Email"
+        onSubmit={props.submitEmail}
+        onSubmitValidation={props.emailValidation} />
+    </>
   );
 }
 
