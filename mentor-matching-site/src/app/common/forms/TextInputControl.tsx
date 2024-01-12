@@ -1,5 +1,5 @@
 import { Input, FormControl, InputLabel, StepLabel } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface TextInputControlProps {
   onInput?: (data: string) => void
@@ -19,19 +19,33 @@ function TextInputControl(props: TextInputControlProps) {
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter") {
       if (props.onSubmit !== undefined) {
-        if (props.onSubmitValidation !== undefined && value !== undefined) {
-          if (props.onSubmitValidation(value)) {
-            props.onSubmit();
-          }
-          else {
-            setIsValid(false);
-          }
+        if (checkModelState(props.onSubmitValidation, value)) {
+          props.onSubmit();
         }
         else {
-          props.onSubmit();
+          setIsValid(false);
         }
       }
     }
+  }
+
+  function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
+    setValue(e.target.value);
+    if (props.onInput !== undefined) {
+      if (checkModelState(props.onInputValidation, value)) {
+        props.onInput(e.target.value);
+      }
+      else {
+        setIsValid(false);
+      }
+    }
+  }
+
+  function checkModelState(validation?: (value: string) => boolean, value?: string) {
+    if (validation !== undefined) {
+      return value !== undefined && validation(value);
+    }
+    return true;
   }
 
   return (
@@ -39,12 +53,7 @@ function TextInputControl(props: TextInputControlProps) {
       <InputLabel>{props.label}</InputLabel>
       <Input value={props.value}
         readOnly={props.readonly}
-        onChange={(e) => {
-          setValue(e.target.value);
-          if (props.onInput !== undefined) {
-            props.onInput(e.target.value);
-          }
-        }}
+        onChange={handleInput}
         onKeyDown={handleKeyDown} />
       {!isValid &&
         <div style={{ color: 'red' }}>Invalid Input</div>
