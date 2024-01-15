@@ -3,7 +3,7 @@ import mentorDb from "../dal/mentorDb";
 import { MatchProfile, UserProfile } from "../types";
 
 async function readInterests() {
-  return await menteeDb.readInterests();
+  return await menteeDb.readInterestsAsync();
 }
 
 /* query for matching mentee to mentor
@@ -21,10 +21,10 @@ async function performMatching(user: UserProfile, menteeProfile: MatchProfile) {
   // If stored matches have changed / profiles are inactive, remove the match
   // Refresh for new matches
   // check the current user's profiles against existing profiles 
-  const mentorProfile = { } as MatchProfile // pull from db
+  const mentorProfile = {} as MatchProfile // pull from db
   // 
 
-  
+
 }
 
 const menteeService = {

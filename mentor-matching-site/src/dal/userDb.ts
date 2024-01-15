@@ -4,31 +4,31 @@ import { collection, getDocs, doc, getDoc, query, QueryConstraint, where, setDoc
 
 const collectionName = "userProfile";
 
-async function createNewUser(userProfile: UserProfile) : Promise<boolean> {
+async function createNewUserAsync(userProfile: UserProfile): Promise<boolean> {
   await setDoc(doc(db, collectionName, userProfile.UID), userProfile);
   return true;
 }
 
-async function userExists(email: string) : Promise<boolean> {
+async function userExistsAsync(email: string): Promise<boolean> {
   const conditions = [];
   conditions.push(where("contact.email", "==", email));
-  const users = await search(conditions);
+  const users = await searchAsync(conditions);
   return users.length !== 0;
 }
 
-async function getUserProfile(uid: string) : Promise<UserProfile> {
+async function getUserProfileAsync(uid: string): Promise<UserProfile> {
   const conditions = [];
   conditions.push(where("UID", "==", uid));
-  const users = await search(conditions);
+  const users = await searchAsync(conditions);
   if (users.length === 1) {
     return users[0];
   }
   else {
     throw "More than one result was found for " + uid;
-  }  
+  }
 }
 
-async function search(conditions: any[]) : Promise<UserProfile[]> {
+async function searchAsync(conditions: any[]): Promise<UserProfile[]> {
   const userQuery = query(collection(db, collectionName), ...conditions);
   const usersFound = await getDocs(userQuery);
   const users = usersFound.docs.map((doc) => doc.data());
@@ -36,9 +36,9 @@ async function search(conditions: any[]) : Promise<UserProfile[]> {
 }
 
 const userDb = {
-  createNewUser,
-  userExists,
-  getUserProfile
+  createNewUserAsync,
+  userExistsAsync,
+  getUserProfileAsync
 }
 
 export default userDb;

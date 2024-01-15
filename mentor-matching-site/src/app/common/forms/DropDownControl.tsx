@@ -1,12 +1,8 @@
 import { TextField, Autocomplete, FormControl } from "@mui/material";
-
-interface option {
-  label: string
-  id: number
-}
+import { DropDownOption } from "../../../types";
 
 interface DropDownControlProps {
-  options: option[]
+  options: DropDownOption[]
   inputLabel: string
   onSelect: (value: string | undefined) => void
 }
@@ -14,14 +10,14 @@ interface DropDownControlProps {
 function DropDownControl(props: DropDownControlProps) {
   return (
     <FormControl>
-      <Autocomplete 
+      <Autocomplete
         options={props.options}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         sx={{ width: 225 }}
         onChange={(e, option) => {
           props.onSelect(option?.label);
         }}
-        renderInput={(params) => 
+        renderInput={(params) =>
           <TextField {...params} label={props.inputLabel} />}
       />
     </FormControl>

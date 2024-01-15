@@ -93,3 +93,7 @@ export interface ProfessionalInterest {
   professionaInterest: string
 }
 
+export interface DropDownOption {
+  label: string,
+  id: number
+}

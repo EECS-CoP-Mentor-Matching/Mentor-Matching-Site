@@ -3,10 +3,8 @@ import { createTheme } from "@mui/material";
 const theme = createTheme({
   components: {
     MuiTabs: {
-      variants: [{
-        props: {},
-        style: {
-          color: '',
+      styleOverrides: {
+        root: {
           breakpoints: {
             fontSize: {
               xs: '0.75rem',
@@ -30,12 +28,11 @@ const theme = createTheme({
             backgroundColor: '#f7ebeb',
           },
         }
-      }]
+      }
     },
     MuiButton: {
-      variants: [{
-        props: { variant: 'text' },
-        style: {
+      styleOverrides: {
+        root: {
           color: "white",
           backgroundColor: "black",
           padding: "5px",
@@ -48,7 +45,6 @@ const theme = createTheme({
           },
           borderBottom: "solid black 2px",
           borderRight: "solid black 2px",
-
           "&:hover": {
             color: "#DC4405",
             backgroundColor: "white",
@@ -62,24 +58,22 @@ const theme = createTheme({
             borderRight: "solid #DC4405 2px",
           }
         }
-      }]
+      }
     },
     MuiFormGroup: {
-      variants: [{
-        props: {},
-        style: {
+      styleOverrides: {
+        root: {
           display: 'flex',
           gap: '15px'
         }
-      }]
+      }
     },
     MuiTextField: {
-      variants: [{
-        props: {},
-        style: {
+      styleOverrides: {
+        root: {
           maxWidth: '200px'
         }
-      }]
+      }
     }
   }
 });

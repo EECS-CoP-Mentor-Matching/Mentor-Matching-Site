@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import CreateProfile from "./components/CreateProfile";
-import TopNavigationBar from "./components/TopNavigationBar";
-import {Box} from "@mui/material";
+import PortalNavigationBar from "../common/navigation/PortalNavigationBar";
+import { Box } from "@mui/material";
 import ActiveProfiles from "./components/ActiveProfiles";
 
 function MentorPortal() {
@@ -22,7 +22,7 @@ function MentorPortal() {
 
     return (
         <Box>
-            <TopNavigationBar navItems={navItems} selected={selectedTab} onNavChange={handleNavChange} />
+            <PortalNavigationBar navItems={navItems} selected={selectedTab} onNavChange={handleNavChange} />
             {renderTabContent()}
         </Box>
     );
