@@ -11,8 +11,8 @@ interface EmailPasswordProps {
 function EmailPassword(props: EmailPasswordProps) {
   return (
     <FormGroup className="form-group">
-      <TextInputControl onInput={props.setEmail} label="Email" />
-      <SensitiveTextInputControl onInput={props.setPassword} label="Password" />
+      <TextInputControl onInput={props.setEmail} label="Email" widthMulti={.25} />
+      <TextInputControl onInput={props.setPassword} label="Password" widthMulti={.25} sensitive={true} />
     </FormGroup>
   )
 }

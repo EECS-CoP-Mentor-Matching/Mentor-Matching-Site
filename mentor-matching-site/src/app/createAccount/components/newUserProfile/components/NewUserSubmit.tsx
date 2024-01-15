@@ -15,8 +15,8 @@ function NewUserSubmit(props: NewUserSubmitProps) {
 
   return (
     <FormGroupCols>
-      <SensitiveTextInputControl label="Password" onInput={setPassword} />
-      <SensitiveTextInputControl label="Confirm Password" onInput={setConfirmPassword} />
+      <TextInputControl label="Password" onInput={setPassword} sensitive={true} />
+      <TextInputControl label="Confirm Password" onInput={setConfirmPassword} sensitive={true} />
       <Button onClick={() => { props.createNewUser(password); }}>Create Account</Button>
     </FormGroupCols>
   );

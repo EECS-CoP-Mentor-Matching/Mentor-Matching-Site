@@ -7,7 +7,7 @@ interface FormGroupRowsProps {
 
 function FormGroupRows(props: FormGroupRowsProps) {
   return (
-    <FormGroup style={{ flexDirection: 'row'}}>
+    <FormGroup style={{ flexDirection: 'row' }}>
       {props.children}
     </FormGroup>
   );

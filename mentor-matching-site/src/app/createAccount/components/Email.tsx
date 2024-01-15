@@ -7,12 +7,13 @@ interface EmailProps {
   emailValidation: (email: string) => boolean
 }
 
-function Email(props: EmailProps) {
+function Email({ setEmail, submitEmail, emailValidation }: EmailProps) {
   return (
     <>
-      <TextInputControl onInput={props.setEmail} label="Email"
-        onSubmit={props.submitEmail}
-        onSubmitValidation={props.emailValidation} />
+      <TextInputControl onInput={setEmail} label="Email"
+        onSubmit={submitEmail}
+        onSubmitValidation={emailValidation}
+        widthMulti={.25} />
     </>
   );
 }

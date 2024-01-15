@@ -9,12 +9,15 @@ import MenteePortalNav from './components/MenteePortalNav';
 import { User } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../service/authService';
+import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
+import navUtilities from '../common/navigation/navUtilities';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
+
 export enum Pages {
-  activeProfiles,
-  createProfile,
-  viewMatches
+  activeProfiles = "Active Profiles",
+  createProfile = "Create Profile",
+  viewMatches = "View Matches"
 }
 
 interface MenteePortalProps {
@@ -24,7 +27,7 @@ interface MenteePortalProps {
 function MenteePortal(props: MenteePortalProps) {
   const [createProfile, setCreateProfile] = useState(false);
   const [profiles, setProfiles] = useState<MatchProfile[]>([]);
-  const [page, setPage] = useState(Pages.viewMatches)
+  const [selectedPage, setSelectedPage] = useState(Pages.activeProfiles.toString())
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,19 +62,19 @@ function MenteePortal(props: MenteePortalProps) {
   // if no profiles for the user
   return (
     <>
-      <MenteePortalNav setPage={setPage} />
-      {page == Pages.createProfile &&
+      <PortalNavigationBar onNavChange={setSelectedPage} selected={selectedPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
+      {selectedPage === Pages.createProfile &&
         <div className="mentee-portal">
           <FormLabel>Profile 1</FormLabel>
           <CreateMenteeProfile addProfile={addProfile} />
         </div>
       }
-      {page == Pages.activeProfiles &&
+      {selectedPage === Pages.activeProfiles &&
         <div className="mentee-portal">
           profiles...
         </div>
       }
-      {page == Pages.viewMatches &&
+      {selectedPage === Pages.viewMatches &&
         <div className="mentee-portal">
           matches...
         </div>

@@ -1,5 +1,6 @@
 import { Input, FormControl, InputLabel, StepLabel } from "@mui/material";
 import React, { useState } from "react";
+import SensitiveTextInputControl from "./SensitiveTextInputControl";
 
 interface TextInputControlProps {
   onInput?: (data: string) => void
@@ -9,18 +10,23 @@ interface TextInputControlProps {
   label: string
   value?: string
   readonly?: boolean
-
+  widthMulti?: number
+  sensitive?: boolean
 }
 
-function TextInputControl(props: TextInputControlProps) {
+function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive }: TextInputControlProps) {
+  const style = {
+    width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`
+  }
+
   const [isValid, setIsValid] = useState(true);
-  const [value, setValue] = useState("");
+  const [currValue, setCurrValue] = useState("");
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter") {
-      if (props.onSubmit !== undefined) {
-        if (checkModelState(props.onSubmitValidation, value)) {
-          props.onSubmit();
+      if (onSubmit !== undefined) {
+        if (checkModelState(onSubmitValidation, currValue)) {
+          onSubmit();
         }
         else {
           setIsValid(false);
@@ -30,10 +36,14 @@ function TextInputControl(props: TextInputControlProps) {
   }
 
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value);
-    if (props.onInput !== undefined) {
-      if (checkModelState(props.onInputValidation, value)) {
-        props.onInput(e.target.value);
+    handleInputValue(e.target.value);
+  }
+
+  function handleInputValue(value: string) {
+    setCurrValue(value);
+    if (onInput !== undefined) {
+      if (checkModelState(onInputValidation, value)) {
+        onInput(value);
       }
       else {
         setIsValid(false);
@@ -50,11 +60,17 @@ function TextInputControl(props: TextInputControlProps) {
 
   return (
     <FormControl className="form-control">
-      <InputLabel>{props.label}</InputLabel>
-      <Input value={props.value}
-        readOnly={props.readonly}
-        onChange={handleInput}
-        onKeyDown={handleKeyDown} />
+      {sensitive &&
+        <SensitiveTextInputControl onInput={handleInputValue} label={label} style={style} />
+      }
+      {!sensitive && <>
+        <InputLabel>{label}</InputLabel>
+        <Input value={value}
+          readOnly={readonly}
+          onChange={handleInput}
+          onKeyDown={handleKeyDown}
+          sx={style} />
+      </>}
       {!isValid &&
         <div style={{ color: 'red' }}>Invalid Input</div>
       }

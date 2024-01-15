@@ -7,7 +7,7 @@ interface FormGroupColsProps {
 
 function FormGroupCols(props: FormGroupColsProps) {
   return (
-    <FormGroup style={{ flexDirection: 'column'}}>
+    <FormGroup style={{ flexDirection: 'column' }}>
       {props.children}
     </FormGroup>
   );
