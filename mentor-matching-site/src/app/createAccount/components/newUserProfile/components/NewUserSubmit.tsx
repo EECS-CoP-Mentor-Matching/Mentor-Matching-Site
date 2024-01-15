@@ -3,7 +3,6 @@ import { Button } from "@mui/material";
 import TextInputControl from "../../../../common/forms/TextInputControl";
 import { useState } from "react";
 import FormGroupCols from "../../../../common/forms/FormGroupCols";
-import SensitiveTextInputControl from "../../../../common/forms/SensitiveTextInputControl";
 
 interface NewUserSubmitProps {
   createNewUser: (password: string) => void

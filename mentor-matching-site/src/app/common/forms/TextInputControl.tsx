@@ -1,6 +1,5 @@
 import { Input, FormControl, InputLabel, StepLabel } from "@mui/material";
 import React, { useState } from "react";
-import SensitiveTextInputControl from "./SensitiveTextInputControl";
 
 interface TextInputControlProps {
   onInput?: (data: string) => void
