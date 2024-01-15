@@ -6,13 +6,14 @@ import TextInputControl from "../../common/forms/TextInputControl";
 interface EmailPasswordProps {
   setEmail: (email: string) => void
   setPassword: (password: string) => void
+  onSubmit: () => void
 }
 
-function EmailPassword(props: EmailPasswordProps) {
+function EmailPassword({ setEmail, setPassword, onSubmit }: EmailPasswordProps) {
   return (
     <FormGroup className="form-group">
-      <TextInputControl onInput={props.setEmail} label="Email" widthMulti={.25} />
-      <TextInputControl onInput={props.setPassword} label="Password" widthMulti={.25} sensitive={true} />
+      <TextInputControl onInput={setEmail} label="Email" widthMulti={.25} onSubmit={onSubmit} />
+      <TextInputControl onInput={setPassword} label="Password" widthMulti={.25} sensitive={true} onSubmit={onSubmit} />
     </FormGroup>
   )
 }

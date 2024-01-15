@@ -16,11 +16,24 @@ interface TextInputControlProps {
 
 function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive }: TextInputControlProps) {
   const style = {
-    width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`
+    width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`,
+    color: sensitive ? "transparent" : ""
   }
 
   const [isValid, setIsValid] = useState(true);
   const [currValue, setCurrValue] = useState("");
+  const [maskedValue, setMaskedValue] = useState('');
+
+  function updateMasked(value: string) {
+    let masked = '';
+    for (let i = 0; i < value.length; i++) {
+      masked += '•';
+    }
+    setMaskedValue(masked);
+    if (onInput !== undefined) {
+      onInput(value);
+    }
+  }
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter") {
@@ -36,6 +49,9 @@ function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValida
   }
 
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
+    if (sensitive) {
+      updateMasked(e.target.value);
+    }
     handleInputValue(e.target.value);
   }
 
@@ -60,17 +76,15 @@ function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValida
 
   return (
     <FormControl className="form-control">
+      <InputLabel>{label}</InputLabel>
+      <Input value={value}
+        readOnly={readonly}
+        onChange={handleInput}
+        onKeyDown={handleKeyDown}
+        sx={{ ...style }} />
       {sensitive &&
-        <SensitiveTextInputControl onInput={handleInputValue} label={label} style={style} />
+        <div style={{ zIndex: 100, position: 'absolute', bottom: 5, backgroundColor: 'white', fontSize: '1.5rem' }}>{maskedValue}</div>
       }
-      {!sensitive && <>
-        <InputLabel>{label}</InputLabel>
-        <Input value={value}
-          readOnly={readonly}
-          onChange={handleInput}
-          onKeyDown={handleKeyDown}
-          sx={style} />
-      </>}
       {!isValid &&
         <div style={{ color: 'red' }}>Invalid Input</div>
       }

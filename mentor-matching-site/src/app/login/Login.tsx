@@ -17,10 +17,15 @@ function Login(props: LoginProps) {
   const navigate = useNavigate();
 
   async function login() {
-    const user = (await authService.signIn(email, password)) as User;
-    if (user !== undefined) {
-      props.setSignedIn(true);
-      navigate("/");
+    try {
+      const user = (await authService.signIn(email, password)) as User;
+      if (user !== undefined) {
+        props.setSignedIn(true);
+        navigate("/");
+      }
+    }
+    catch (error) {
+      console.log(error);
     }
   }
 
@@ -28,7 +33,7 @@ function Login(props: LoginProps) {
     <div className="login">
       <FormGroup className="form-group">
         <FormLabel>Hello, please login</FormLabel>
-        <EmailPassword setEmail={setEmail} setPassword={setPassword} />
+        <EmailPassword setEmail={setEmail} setPassword={setPassword} onSubmit={login} />
         <FormControl className="form-control">
           <Button onClick={login}>Login</Button>
           <Button href="/create-account">Create an Account</Button>

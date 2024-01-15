@@ -4,13 +4,14 @@ import { useState } from "react";
 
 interface SensitiveTextInputControlProps {
   onInput?: (data: string) => void
+  onSubmit?: () => void
   label: string
   value?: string
   readonly?: boolean
   style: object
 }
 
-function SensitiveTextInputControl({ onInput, label, value, readonly, style }: SensitiveTextInputControlProps) {
+function SensitiveTextInputControl({ onInput, onSubmit, label, value, readonly, style }: SensitiveTextInputControlProps) {
   const [maskedValue, setMaskedValue] = useState('');
 
   function updateMasked(value: string) {

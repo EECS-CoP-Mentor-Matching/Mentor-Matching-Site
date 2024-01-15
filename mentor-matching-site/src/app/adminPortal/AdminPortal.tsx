@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
-import adminService from '../../service/adminService';
 import "./AdminPortal.css";
-import { Button } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import authService from '../../service/authService';
-import ManageUsers from './components/manageUsers/ManageUsers';
-import ViewReports from './components/viewReports/ViewReports';
-import Settings from './components/settings/Settings';
-import PageNav from '../common/PageNav';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 
