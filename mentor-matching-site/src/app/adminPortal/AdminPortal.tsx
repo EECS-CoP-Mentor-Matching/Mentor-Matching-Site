@@ -8,18 +8,20 @@ import ManageUsers from './components/manageUsers/ManageUsers';
 import ViewReports from './components/viewReports/ViewReports';
 import Settings from './components/settings/Settings';
 import PageNav from '../common/PageNav';
+import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
+import navUtilities from '../common/navigation/navUtilities';
 
 export enum Pages {
-  manageUsers,
-  viewReports,
-  settings
+  manageUsers = "Manage Users",
+  viewReports = "View Reports",
+  settings = "Settings"
 }
 
 interface AdminPortalProps {
 }
 
 function AdminPortal(props: AdminPortalProps) {
-  const [page, setPage] = useState(Pages.manageUsers);
+  const [page, setPage] = useState(Pages.manageUsers.toString());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,13 +34,9 @@ function AdminPortal(props: AdminPortalProps) {
     checkAuthState();
   });
 
-  const pages = [
-    { pageId: 0, label: "manage users", component: <ManageUsers /> }
-  ]
-
   return (
     <>
-      <PageNav pages={pages} defaultPage={0} />
+      <PortalNavigationBar selected={page} onNavChange={setPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
       {/* <AdminPortalNav setPage={setPage} /> */}
       {/* {page === Pages.manageUsers && <ManageUsers />}
       {page === Pages.viewReports && <ViewReports />}
