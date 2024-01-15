@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import ContentContainer from "./ContentContainer";
-import {Box, Button, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import React, { useState } from 'react';
+import ContentContainer from "../../common/ContentContainer";
+import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

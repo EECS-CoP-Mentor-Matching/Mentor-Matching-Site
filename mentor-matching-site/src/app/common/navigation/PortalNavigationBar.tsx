@@ -2,15 +2,30 @@ import * as React from 'react';
 import { AppBar, Tabs, Tab, Box } from '@mui/material';
 import PortalNavigationTabs from './PortalNavigationTabs';
 
+const widthOffset = {
+  xs: 0,
+  sm: 10,
+  md: 10,
+  lg: 15,
+  xl: 30
+}
+
 const boxStyle = {
-  width: '100%',
-  paddingLeft: {
-    xs: '0%',
-    sm: '10%',
-    md: '10%',
-    lg: '15%',
-    xl: '30%'
+  width: {
+    xs: `${100 - widthOffset.xs}%`,
+    sm: `${100 - widthOffset.sm}%`,
+    md: `${100 - widthOffset.md}%`,
+    lg: `${100 - widthOffset.lg}%`,
+    xl: `${100 - widthOffset.xl}%`
   },
+  paddingLeft: {
+    xs: `${widthOffset.xs}%`,
+    sm: `${widthOffset.sm}%`,
+    md: `${widthOffset.md}%`,
+    lg: `${widthOffset.lg}%`,
+    xl: `${widthOffset.xl}%`
+  },
+  border: 'none',
   marginBottom: '2px',
   overflowX: 'auto'
 }

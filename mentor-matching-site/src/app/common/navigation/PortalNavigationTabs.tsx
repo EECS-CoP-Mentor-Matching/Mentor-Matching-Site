@@ -2,9 +2,9 @@ import { Tab, Tabs } from "@mui/material";
 
 const style = {
   fontSize: {
-    xs: '0.6rem',
-    sm: '0.75rem',
-    md: '0.9rem',
+    xs: '0.75rem',
+    sm: '0.875rem',
+    md: '1.00rem',
     lg: '1.00rem',
     xl: '1.00rem'
   },
@@ -14,7 +14,7 @@ const style = {
     md: '1.50rem',
     lg: '1.50rem',
     xl: '1.50rem'
-  }
+  },
 }
 
 interface TabProps {
@@ -31,6 +31,7 @@ function PortalNavigationTabs({ navItems, selected, handleNavChange }: TabProps)
       aria-label="navigation tabs"
       textColor="inherit"
       indicatorColor="secondary"
+      sx={{ border: 'none' }}
     >
       {navItems?.map(item => (
         <Tab sx={style} key={item} value={item} label={item} />

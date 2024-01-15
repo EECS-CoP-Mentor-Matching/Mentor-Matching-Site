@@ -5,18 +5,6 @@ const theme = createTheme({
     MuiTabs: {
       styleOverrides: {
         root: {
-          breakpoints: {
-            fontSize: {
-              xs: '0.75rem',
-              sm: '0.875rem',
-              md: '1rem',
-            },
-            padding: {
-              xs: 1,
-              sm: 1.5,
-              md: 2,
-            },
-          },
           textTransform: 'none',
           '.MuiTab-root:hover': {
             backgroundColor: 'transparent',

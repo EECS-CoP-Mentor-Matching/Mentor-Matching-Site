@@ -9,7 +9,7 @@ type ContentContainerProps = {
 
 const ContentContainer = ({ title, subtitle, children }: ContentContainerProps) => {
     return (
-        <Box sx={{marginTop: '35px'}}>
+        <Box sx={{ marginTop: '35px' }}>
             {title && <Typography variant="h4">{title}</Typography>}
             {subtitle && <Typography variant="h6">{subtitle}</Typography>}
             <div>
