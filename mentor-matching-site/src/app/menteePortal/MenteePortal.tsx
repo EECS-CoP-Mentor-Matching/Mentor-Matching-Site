@@ -27,7 +27,7 @@ interface MenteePortalProps {
 function MenteePortal(props: MenteePortalProps) {
   const [createProfile, setCreateProfile] = useState(false);
   const [profiles, setProfiles] = useState<MatchProfile[]>([]);
-  const [selectedPage, setSelectedPage] = useState(Pages.activeProfiles.toString())
+  const [selectedPage, setSelectedPage] = useState(Pages.activeProfiles.toString());
   const navigate = useNavigate();
 
   useEffect(() => {
