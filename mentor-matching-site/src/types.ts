@@ -1,4 +1,5 @@
 export interface MatchProfile {
+  UID: string
   technicalInterest: string
   technicalExperience: number
   professionalInterest: string
