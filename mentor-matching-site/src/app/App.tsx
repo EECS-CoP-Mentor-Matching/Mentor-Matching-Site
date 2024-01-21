@@ -14,6 +14,7 @@ import authService from '../service/authService';
 import Home from './Home';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
+import ReduxProvider from '../redux/store';
 
 function App() {
   const [signedin, setSignedIn] = useState(false);
@@ -30,23 +31,25 @@ function App() {
 
   return (
     <ThemeProvider theme={theme} >
-      <div className="App">
-        <div>
-          <TopNav signedIn={signedin} />
-          <SideNav signedIn={signedin} />
+      <ReduxProvider>
+        <div className="App">
+          <div>
+            <TopNav signedIn={signedin} />
+            <SideNav signedIn={signedin} />
+          </div>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login setSignedIn={setSignedIn} />} />
+              <Route path="/create-account" element={<CreateAccount setSignedIn={setSignedIn} />} />
+              <Route path="/mentee-portal" element={<MenteePortal />} />
+              <Route path="/admin-portal" element={<AdminPortal />} />
+              <Route path="/mentor-portal" element={<MentorPortal />} />
+              <Route path="/profile" element={<ViewUserProfile />} />
+            </Routes>
+          </BrowserRouter>
         </div>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login setSignedIn={setSignedIn} />} />
-            <Route path="/create-account" element={<CreateAccount setSignedIn={setSignedIn} />} />
-            <Route path="/mentee-portal" element={<MenteePortal />} />
-            <Route path="/admin-portal" element={<AdminPortal />} />
-            <Route path="/mentor-portal" element={<MentorPortal />} />
-            <Route path="/profile" element={<ViewUserProfile />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
+      </ReduxProvider>
     </ThemeProvider>
   );
 }

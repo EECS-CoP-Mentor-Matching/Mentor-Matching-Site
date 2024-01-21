@@ -56,7 +56,7 @@ function ViewUserProfile() {
       </FormGroupCols>
     </>}
       {showEdit && <>
-        <EditUserProfile uid={(userProfile as UserProfile).UID} />
+        <EditUserProfile userProfile={(userProfile as UserProfile)} />
       </>}
     </>
 

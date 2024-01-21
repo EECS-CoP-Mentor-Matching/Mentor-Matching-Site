@@ -11,31 +11,15 @@ import { updateProfile } from '../../../redux/reducers/profileReducer';
 
 
 interface EditUserProfileProps {
-    uid: string;
+    userProfile: UserProfile;
 }
 
-function EditUserProfile({ uid }: EditUserProfileProps) {
+function EditUserProfile({ userProfile }: EditUserProfileProps) {
     const dispatch = useAppDispatch();
-    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [displayName, setDisplayName] = useState<string>('');
     const [profilePicture, setProfilePicture] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const profileData = await userService.getUserProfile(uid);
-                setUserProfile(profileData);
-                setDisplayName(profileData.contact.displayName || '');
-                // Initialize additional fields here
-            } catch (error) {
-                console.error('Error fetching user profile:', error);
-            }
-        };
-
-        fetchUserProfile();
-    }, [uid]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -47,7 +31,7 @@ function EditUserProfile({ uid }: EditUserProfileProps) {
         setIsUploading(true);
         setUploadError(null);
         try {
-            const fileRef = ref(storage, `profilePictures/${uid}`);
+            const fileRef = ref(storage, `profilePictures/${userProfile.UID}`);
             const snapshot = await uploadBytes(fileRef, file);
             const downloadURL = await getDownloadURL(snapshot.ref);
             setIsUploading(false);
@@ -63,8 +47,6 @@ function EditUserProfile({ uid }: EditUserProfileProps) {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-
-
             let profilePictureUrl = userProfile?.profilePictureUrl || '';
             if (profilePicture) {
                 profilePictureUrl = await uploadFile(profilePicture);
@@ -79,7 +61,7 @@ function EditUserProfile({ uid }: EditUserProfileProps) {
                 // Include other updated preferences here
             } as UserProfile;
 
-            await userService.updateUserProfile(uid, updatedProfileData);
+            await userService.updateUserProfile(updatedProfileData.UID, updatedProfileData);
             dispatch(updateProfile(updatedProfileData));
             alert('Profile updated successfully');
         } catch (error) {
