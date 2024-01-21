@@ -11,7 +11,7 @@ const initialState = {
       case 'SET_USER_PROFILE':
         return {
           ...state,
-          userProfile: action,
+          userProfile: action.payload,
         };
       // handle other actions if necessary
       default:

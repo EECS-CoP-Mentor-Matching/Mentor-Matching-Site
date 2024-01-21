@@ -6,6 +6,7 @@ export interface MatchProfile {
 }
 
 export interface UserProfile {
+  displayName: string
   UID: string
   contact: UserContactInformation
   personal: UserPersonalInformation

@@ -10,7 +10,7 @@ async function getUserProfile(uid: string): Promise<UserProfile> {
 }
 
 async function updateUserProfile(uid: string, userProfile: UserProfile) {
-
+  return await userDb.updateUserProfileAsync(uid, userProfile);
 }
 
 async function userExists(email: string): Promise<boolean> {
