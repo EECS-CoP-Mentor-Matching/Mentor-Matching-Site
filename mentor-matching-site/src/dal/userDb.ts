@@ -1,8 +1,13 @@
 import { MatchProfile, UserProfile } from "../types";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, doc, getDoc, query, QueryConstraint, where, setDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, query, QueryConstraint, where, setDoc, updateDoc} from "firebase/firestore";
 
 const collectionName = "userProfile";
+
+async function updateUserProfileAsync(uid: string, userProfile: UserProfile): Promise<void> {
+  const userDocRef = doc(db, collectionName, uid);
+  await updateDoc(userDocRef, userProfile as { [key: string]: any });
+}
 
 async function createNewUserAsync(userProfile: UserProfile): Promise<boolean> {
   await setDoc(doc(db, collectionName, userProfile.UID), userProfile);
@@ -38,7 +43,8 @@ async function searchAsync(conditions: any[]): Promise<UserProfile[]> {
 const userDb = {
   createNewUserAsync,
   userExistsAsync,
-  getUserProfileAsync
+  getUserProfileAsync,
+  updateUserProfileAsync
 }
 
 export default userDb;
