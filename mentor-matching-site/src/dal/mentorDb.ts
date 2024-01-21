@@ -1,6 +1,6 @@
 import { MatchProfile, UserProfile } from "../types";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, doc, getDoc, query, QueryConstraint, where } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, addDoc, query, QueryConstraint, where } from "firebase/firestore";
 
 async function searchMentorsByProfileMatchAsync(menteeUserProfile: UserProfile, menteeMatchProfile: MatchProfile) {
   const conditions = []
@@ -19,8 +19,19 @@ async function searchMentorsByProfileMatchAsync(menteeUserProfile: UserProfile, 
   return matchProfiles;
 }
 
+async function createMentorProfileAsync(mentorMatchProfile: MatchProfile) {
+  try {
+      const doc = await addDoc(collection(db, "mentorProfile"), mentorMatchProfile);
+
+      return { success: true, id: doc.id };
+  } catch (error) {
+    return { success: false, error: error };
+  }
+}
+
 const mentorDb = {
-  searchMentorsByProfileMatchAsync
+  searchMentorsByProfileMatchAsync,
+  createMentorProfileAsync
 };
 
 export default mentorDb;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CreateProfile from "./components/CreateProfile";
+import CreateMentorProfile from "./components/CreateMentorProfile";
 import PortalNavigationBar from "../common/navigation/PortalNavigationBar";
 import { Box } from "@mui/material";
 import ActiveProfiles from "./components/ActiveProfiles";
@@ -16,7 +16,7 @@ function MentorPortal() {
             case 'Active Profiles':
                 return <ActiveProfiles />;
             default:
-                return <CreateProfile />;
+                return <CreateMentorProfile />;
         }
     };
 

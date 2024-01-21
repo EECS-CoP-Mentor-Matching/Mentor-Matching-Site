@@ -1,16 +1,40 @@
 import React, { useState } from 'react';
 import ContentContainer from "../../common/ContentContainer";
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import {Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography} from "@mui/material";
+import {mentorService} from "../../../service/mentorService";
+import {MatchProfile} from "../../../types";
+import authService from "../../../service/authService";
 
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-};
-
-function CreateProfile() {
+function CreateMentorProfile() {
     const [personalInterest, setPersonalInterest] = useState('');
     const [personalExperience, setPersonalExperience] = useState('');
     const [technicalInterest, setTechnicalInterest] = useState('');
     const [technicalExperience, setTechnicalExperience] = useState('');
+
+    const [statusMessage, setStatusMessage] = useState('');
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const user = await authService.getSignedInUser();
+        if (user) {
+            const matchFormData: MatchProfile = {
+                UID: user.uid,
+                technicalInterest,
+                technicalExperience: Number(technicalExperience),
+                professionalInterest: personalInterest,
+                professionalExperience: Number(personalExperience)
+            };
+
+            try {
+                const response = await mentorService.createMentorProfile(matchFormData);
+                setStatusMessage(response.success ? "Successfully created profile" : response.error as string);
+            } catch (error) {
+                setStatusMessage("An error occurred while creating the profile: " + error);
+            }
+        } else {
+            setStatusMessage("Error authenticating user");
+        }
+    };
 
     const technicalInterestOptions = [
         '.NET',
@@ -24,10 +48,10 @@ function CreateProfile() {
         'Job Applications'
     ];
     const experienceOptions = [
-        'Novice (0 - 1 years)',
-        'Intermediate (1 - 3 years)',
-        'Advanced (3 - 5 years)',
-        'Expert (5+ years)'
+        { label: 'Novice (0 - 1 years)', value: 1 },
+        { label: 'Intermediate (1 - 3 years)', value: 2 },
+        { label: 'Advanced (3 - 5 years)', value: 3 },
+        { label: 'Expert (5+ years)', value: 4 }
     ];
 
     return (
@@ -73,9 +97,11 @@ function CreateProfile() {
                                 label="Experience Level"
                                 onChange={(e) => setTechnicalExperience(e.target.value)}
                             >
-                                {experienceOptions.map((option, index) => (
-                                    <MenuItem key={index} value={option}>{option}</MenuItem>
-                                ))}
+                                {
+                                    experienceOptions.map((option, index) => (
+                                        <MenuItem key={index} value={option.value}>{option.label}</MenuItem>
+                                    ))
+                                }
                             </Select>
                         </FormControl>
                     </Grid>
@@ -102,9 +128,11 @@ function CreateProfile() {
                                 label="Experience Level"
                                 onChange={(e) => setPersonalExperience(e.target.value)}
                             >
-                                {experienceOptions.map((option, index) => (
-                                    <MenuItem key={index} value={option}>{option}</MenuItem>
-                                ))}
+                                {
+                                    experienceOptions.map((option, index) => (
+                                        <MenuItem key={index} value={option.value}>{option.label}</MenuItem>
+                                    ))
+                                }
                             </Select>
                         </FormControl>
                     </Grid>
@@ -113,11 +141,18 @@ function CreateProfile() {
                         <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, maxWidth: 300 }}>
                             Submit
                         </Button>
+
+                        {statusMessage && (
+                            <Typography color="primary.light" sx={{ mt: 2 }}>
+                                {statusMessage}
+                            </Typography>
+                        )}
                     </Grid>
+
                 </Grid>
             </Box>
         </ContentContainer>
     );
 }
 
-export default CreateProfile;
+export default CreateMentorProfile;

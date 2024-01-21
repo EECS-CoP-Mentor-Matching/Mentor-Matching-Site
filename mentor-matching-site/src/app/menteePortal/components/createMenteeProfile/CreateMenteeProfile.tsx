@@ -30,6 +30,7 @@ function CreateMenteeProfile(props: CreateMenteeProfileProps) {
       </div>
       <Button onClick={() => {
         props.addProfile({
+          UID: "Placeholder",
           technicalInterest: technicalInterest,
           technicalExperience: technicalExperience,
           professionalInterest: professionalInterest,
