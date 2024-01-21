@@ -6,14 +6,16 @@ import { useDispatch } from 'react-redux';
 import { storage } from '../../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserProfile } from '../../../types';
-import { updateUserProfileAction } from '../../../redux/actions/profileActions';
+import { useAppSelector, useAppDispatch } from '../../../redux/hooks'
+import { updateProfile } from '../../../redux/reducers/profileReducer';
+
 
 interface EditUserProfileProps {
     uid: string;
 }
 
 function EditUserProfile({ uid }: EditUserProfileProps) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [displayName, setDisplayName] = useState<string>('');
     const [profilePicture, setProfilePicture] = useState<File | null>(null);
@@ -61,6 +63,8 @@ function EditUserProfile({ uid }: EditUserProfileProps) {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
+
+
             let profilePictureUrl = userProfile?.profilePictureUrl || '';
             if (profilePicture) {
                 profilePictureUrl = await uploadFile(profilePicture);
@@ -76,7 +80,7 @@ function EditUserProfile({ uid }: EditUserProfileProps) {
             } as UserProfile;
 
             await userService.updateUserProfile(uid, updatedProfileData);
-            dispatch(updateUserProfileAction(uid, updatedProfileData));
+            dispatch(updateProfile(updatedProfileData));
             alert('Profile updated successfully');
         } catch (error) {
             console.error('Error updating profile:', error);
