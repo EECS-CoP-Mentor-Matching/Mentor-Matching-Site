@@ -8,7 +8,9 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserProfile } from '../../../types';
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks'
 import { updateProfile } from '../../../redux/reducers/profileReducer';
-
+import { Button, FormGroup } from '@mui/material';
+import FormGroupCols from '../../common/forms/FormGroupCols';
+import FormGroupRows from '../../common/forms/FormGroupRows';
 
 interface EditUserProfileProps {
     userProfile: UserProfile;
@@ -70,22 +72,25 @@ function EditUserProfile({ userProfile }: EditUserProfileProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                value={displayName}
-                onChange={e => setDisplayName(e.target.value)}
-                placeholder="Display Name"
-            />
-            <input
-                type="file"
-                onChange={handleFileChange}
-            />
-            {/* Add inputs for other editable fields of the user profile */}
-            {isUploading && <div>Loading...</div>}
-            {uploadError && <div className="error-message">{uploadError}</div>}
-            <button type="submit" disabled={isUploading}>Save Changes</button>
-        </form>
+        <FormGroup>
+            <FormGroupCols>
+                <FormGroupRows>
+                    <input
+                        type="text"
+                        value={displayName}
+                        onChange={e => setDisplayName(e.target.value)}
+                        placeholder="Display Name"
+                    />
+                    <input type="file" onChange={handleFileChange} />
+                    {/* Add inputs for other editable fields of the user profile */}
+                    {isUploading && <div>Loading...</div>}
+                    {uploadError && <div className="error-message">{uploadError}</div>}
+                </FormGroupRows>
+                <FormGroupRows>
+                    <Button disabled={isUploading}>Save Changes</Button>
+                </FormGroupRows>
+            </FormGroupCols>
+        </FormGroup>
     );
 }
 

@@ -12,16 +12,19 @@ interface NewUserPersonalInformationProps {
 
 function NewUserPersonalInformation(props: NewUserPersonalInformationProps) {
   const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
   const [lastName, setLastName] = useState('');
 
   return (
     <FormGroupCols>
       <FormLabel>User Personal Information</FormLabel>
       <FormGroupRows>
-        <TextInputControl label="First Name" onInput={setFirstName} />
-        <TextInputControl label="Last Name" onInput={setLastName} />
+        <TextInputControl label="First Name" onInput={setFirstName} widthMulti={.25} />
+        <TextInputControl label="Middle Name" onInput={setMiddleName} widthMulti={.25} />
       </FormGroupRows>
-      <TextInputControl label="Last Name" onInput={setLastName} />
+      <FormGroupRows>
+        <TextInputControl label="Last Name" onInput={setLastName} widthMulti={.50} />
+      </FormGroupRows>
     </FormGroupCols>
   );
 }

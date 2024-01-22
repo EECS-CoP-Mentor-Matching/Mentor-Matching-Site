@@ -24,7 +24,7 @@ function NewUserDemographicInformation(props: NewUserDemographicInformationProps
     <FormGroupCols>
       <FormLabel>User Demographics</FormLabel>
       <TextInputControl label="Racial Identity" onInput={setRacialIdentity}
-        value={props.demographicInformation.racialIdentity} />
+        value={props.demographicInformation.racialIdentity} widthMulti={.15} />
       <CheckboxControl label="Do you identify as a member of the LGBTQ+ Community?" onChange={setLgbtqPlusCommunity}
         checked={props.demographicInformation.lgbtqPlusCommunity} />
     </FormGroupCols>

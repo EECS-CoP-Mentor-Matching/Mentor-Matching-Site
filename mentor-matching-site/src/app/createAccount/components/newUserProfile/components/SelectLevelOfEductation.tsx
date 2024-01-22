@@ -11,22 +11,24 @@ function SelectLevelOfEducation(props: SelectLevelOfEducationProps) {
   const [educationLevels, setEducationLevels] = useState<DropDownOption[]>(new Array<DropDownOption>);
 
   useEffect(() => {
-    const fetchOptions = (async () => {
-      const levels = await selectionItemsDb.educationLevelsAsync();
-      const options = loadOptions(levels);
-      setEducationLevels(options);
-    });
-
-    fetchOptions();
-  });
+    if (educationLevels.length === 0) {
+      const fetchOptions = (async () => {
+        const levels = await selectionItemsDb.educationLevelsAsync();
+        const options = loadOptions(levels);
+        setEducationLevels(options);
+      });
+      fetchOptions();
+    }
+  }, [educationLevels, setEducationLevels]);
 
   const loadOptions = ((levels: EducationLevel[]): DropDownOption[] => {
     const loadOptions = new Array<DropDownOption>;
 
     levels.forEach(currLevel => {
+      console.log("curr level", currLevel)
       loadOptions.push({
-        label: currLevel.educationLevel,
-        id: currLevel.levelHeirarchy
+        label: currLevel.level,
+        id: currLevel.hierarchy
       });
     });
 
