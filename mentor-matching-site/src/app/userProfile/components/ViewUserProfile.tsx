@@ -36,7 +36,7 @@ function ViewUserProfile() {
   }
 
   const dataDisplay = (
-    <>{!showEdit && <>
+    <>
       <FormGroupCols>
         <FormGroupRows>
           <TextDisplay value={userProfile?.personal.firstName} label="First Name" />
@@ -54,7 +54,6 @@ function ViewUserProfile() {
         </FormGroupRows>
         <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
       </FormGroupCols>
-    </>}
       {showEdit && <>
         <EditUserProfile userProfile={(userProfile as UserProfile)} />
       </>}

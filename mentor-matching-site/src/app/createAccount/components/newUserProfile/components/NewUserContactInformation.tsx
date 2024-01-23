@@ -38,11 +38,11 @@ function NewUserContactInformation(props: NewUserContactInformationProps) {
       <div>Email: {props.contactInformation.email}</div>
       <SelectTimeZone onSelect={setTimeZone} />
       <TextInputControl label="Pronouns" onInput={setPronouns}
-        value={props.contactInformation.pronouns} />
+        value={props.contactInformation.pronouns} widthMulti={.15} />
       <TextInputControl label="Display Name" onInput={setDisplayName}
-        value={props.contactInformation.displayName} />
+        value={props.contactInformation.displayName} widthMulti={.15} />
       <TextInputControl label="Bio" onInput={setBio}
-        value={props.contactInformation.userBio} />
+        value={props.contactInformation.userBio} widthMulti={.15} />
     </FormGroupCols>
   );
 }

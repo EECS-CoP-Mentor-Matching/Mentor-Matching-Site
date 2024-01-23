@@ -10,7 +10,7 @@ function TextDisplay(props: TextDisplayProps) {
   return (
     <FormControl className="form-display">
       <div>{props.label}</div>
-      <TextField value={props.value} />
+      <TextField value={props.value} aria-readonly />
     </FormControl>
   );
 }

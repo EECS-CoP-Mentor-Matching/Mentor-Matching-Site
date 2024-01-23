@@ -69,13 +69,13 @@ export interface EmailDenyList {
 }
 
 export interface ExperienceLevel {
-  experienceLevel: string
-  levelHeirarchy: number
+  level: string
+  hierarchy: number
 }
 
 export interface EducationLevel {
-  educationLevel: string
-  levelHeirarchy: number
+  level: string
+  hierarchy: number
 }
 
 export interface UserStatus {

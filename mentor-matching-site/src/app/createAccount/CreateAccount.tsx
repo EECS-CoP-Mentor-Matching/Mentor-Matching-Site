@@ -7,6 +7,7 @@ import { FormControl, Button, FormLabel, FormGroup } from "@mui/material";
 import NewUserProfile from "./components/newUserProfile/NewUserProfile";
 import SubmitButton from "../common/forms/SubmitButton";
 import { useNavigate } from "react-router-dom";
+import SelectLevelOfEducation from "./components/newUserProfile/components/SelectLevelOfEductation";
 
 interface CreateAccountProps {
     setSignedIn: (signedIn: boolean) => void;
@@ -42,6 +43,10 @@ function CreateAccount({ setSignedIn }: CreateAccountProps) {
         navigate("/login");
     }
 
+    const onSelect = () => {
+
+    }
+
     return (
         <div className='login'>
             <FormGroup className="form-group">
@@ -53,7 +58,7 @@ function CreateAccount({ setSignedIn }: CreateAccountProps) {
                     <FormLabel>Note that if you do not have a valid Oregon State University email, you will not be able to create a mentee profile.</FormLabel>
                     <FormLabel>Please use your Oregon State email if you have it.</FormLabel>
                     <FormControl className="form-control">
-                        <SubmitButton onSubmit={checkUserExists} text="Create an Account" widthMulti={.15} />
+                        <SubmitButton onClick={checkUserExists} text="Create an Account" widthMulti={.15} />
                     </FormControl>
                 </>}
                 {currentStep == Step.NewUser && <>
@@ -62,7 +67,7 @@ function CreateAccount({ setSignedIn }: CreateAccountProps) {
                 </>}
                 {currentStep == Step.UserExists && <>
                     <FormLabel>User already exists with this email</FormLabel>
-                    <SubmitButton text="Login?" onSubmit={toLoginPage} />
+                    <SubmitButton text="Login?" onClick={toLoginPage} />
                 </>}
             </FormGroup>
         </div>

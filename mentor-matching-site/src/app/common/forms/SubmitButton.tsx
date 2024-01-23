@@ -2,12 +2,12 @@
 import { Button } from "@mui/material";
 
 interface SubmitButtonProps {
-  onSubmit?: () => void
+  onClick?: () => void
   text: string
   widthMulti?: number
 }
 
-function SubmitButton({ onSubmit, text, widthMulti }: SubmitButtonProps) {
+function SubmitButton({ onClick, text, widthMulti }: SubmitButtonProps) {
   const style = {
     paddingLeft: '1.00rem',
     paddingRight: '1.00rem',
@@ -15,7 +15,11 @@ function SubmitButton({ onSubmit, text, widthMulti }: SubmitButtonProps) {
   }
 
   return (
-    <Button onSubmit={onSubmit} sx={style}>{text}</Button>
+    <Button onClick={() => {
+      if (onClick !== undefined) {
+        onClick();
+      }
+    }} sx={style}>{text}</Button>
   );
 }
 

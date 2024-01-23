@@ -7,6 +7,7 @@ async function educationLevelsAsync(): Promise<EducationLevel[]> {
   const matches = await getDocs(matchQuery)
   const dbResults = matches.docs.map((doc) => doc.data());
   const educationLevels = dbResults as EducationLevel[];
+  console.log("educationLevels", educationLevels)
   return educationLevels;
 }
 
