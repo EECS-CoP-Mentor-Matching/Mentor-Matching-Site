@@ -1,8 +1,8 @@
-import FormGroupRows from "../../../../common/forms/FormGroupRows";
+import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import { Button } from "@mui/material";
-import TextInputControl from "../../../../common/forms/TextInputControl";
+import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
 import { useState } from "react";
-import FormGroupCols from "../../../../common/forms/FormGroupCols";
+import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 
 interface NewUserSubmitProps {
   createNewUser: (password: string) => void

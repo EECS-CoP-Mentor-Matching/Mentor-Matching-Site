@@ -3,12 +3,13 @@ import "./UserProfile.css";
 import authService from "../../service/authService";
 import userService from "../../service/userService";
 import { useState, useEffect } from "react";
-import UploadUserProfileImage from "./components/UploadUserProfileImage";
-import UpdatePersonalInformation from "./components/UpdatePersonalInformation";
+import UploadUserProfileImage from "../userProfileCommon/imageUpload/UploadUserProfileImage";
+import UpdatePersonalInformation from "../userProfileCommon/UpdatePersonalInformation";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/profileReducer";
-import UpdateUserContactInformation from "./components/UpdateUserContactInformation";
-import UpdateUserDemographicInformation from "./components/UpdateDemographicsInformation";
+import UpdateUserContactInformation from "../userProfileCommon/UpdateUserContactInformation";
+import UpdateUserDemographicInformation from "../userProfileCommon/UpdateDemographicsInformation";
+import UpdateEducationInformation from "../userProfileCommon/UpdateEducationInformation";
 
 function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);
@@ -57,6 +58,7 @@ function UpdateUserProfile() {
       <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} />
       <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} />
       <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+      <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} />
     </FormGroup>
   );
 

@@ -1,5 +1,5 @@
 import { osuIcon } from "../../icons/icons";
-import FormGroupRows from "../common/forms/FormGroupRows";
+import FormGroupRows from "../common/forms/layout/FormGroupRows";
 import "./SideNav.css";
 
 interface SideNavProps {

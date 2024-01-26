@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import FormGroupRows from "./forms/FormGroupRows";
+import FormGroupRows from "./forms/layout/FormGroupRows";
 import { Button } from "@mui/material";
 
 interface Page {

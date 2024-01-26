@@ -1,6 +1,6 @@
-import FormGroupCols from "../../../../common/forms/FormGroupCols";
-import FormGroupRows from "../../../../common/forms/FormGroupRows";
-import TextInputControl from "../../../../common/forms/TextInputControl";
+import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
+import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
+import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
 import { useState } from "react";
 import { UserPersonalInformation } from "../../../../../types/userProfile";
 import { FormLabel } from "@mui/material";

@@ -1,10 +1,10 @@
 import { FormControl, Button, FormLabel, FormGroup, Input, InputLabel } from "@mui/material";
-import SelectTimeZone from "./components/SelectTimeZone";
+import SelectTimeZone from "../../../userProfileCommon/dropdowns/SelectTimeZone";
 import authService from "../../../../service/authService";
-import TextInputControl from "../../../common/forms/TextInputControl";
+import TextInputControl from "../../../common/forms/textInputs/TextInputControl";
 import { useState } from "react";
-import FormGroupCols from "../../../common/forms/FormGroupCols";
-import FormGroupRows from "../../../common/forms/FormGroupRows";
+import FormGroupCols from "../../../common/forms/layout/FormGroupCols";
+import FormGroupRows from "../../../common/forms/layout/FormGroupRows";
 import NewUserContactInformation from "./components/NewUserContactInformation";
 import NewUserPersonalInformation from "./components/NewUserPersonalInformation";
 import NewUserDemographicInformation from "./components/NewUserDemographicInformation";

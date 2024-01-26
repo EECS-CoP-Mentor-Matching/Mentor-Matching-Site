@@ -97,16 +97,16 @@ export const initUserEducationInformation = () => {
 
 export interface UserAccountSettings {
   userStatus: string
-  menteeProfilesEnabled: boolean
-  mentorProfileEnabled: boolean
+  menteePortalEnabled: boolean
+  mentorPortalEnabled: boolean
   useDemographicsForMatching: boolean
 }
 
 export const initUserAccountSettings = () => {
   return {
     userStatus: "",
-    menteeProfilesEnabled: false,
-    mentorProfileEnabled: false,
+    menteePortalEnabled: false,
+    mentorPortalEnabled: false,
     useDemographicsForMatching: false
   } as UserAccountSettings
 }
@@ -120,4 +120,20 @@ export interface MatchHistoryItem {
 
 export interface UserStatus {
   name: string
+}
+
+export interface RacialIdentity {
+  id: number
+  identityName: string
+}
+
+export interface TimeZone {
+  id: number
+  timeZoneName: string
+  utcOffset: number
+}
+
+export interface DegreeProgram {
+  id: number
+  degreeProgramName: string
 }

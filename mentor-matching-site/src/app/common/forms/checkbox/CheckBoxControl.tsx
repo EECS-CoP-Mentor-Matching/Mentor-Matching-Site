@@ -1,12 +1,12 @@
 import { Checkbox, FormControl, FormLabel, InputLabel } from "@mui/material";
 
-interface CheckboxControlProps {
+interface CheckBoxControlProps {
   onChange: (isChecked: boolean) => void
   label: string
   checked?: boolean
 }
 
-function CheckboxControl(props: CheckboxControlProps) {
+function CheckBoxControl(props: CheckBoxControlProps) {
   return (
     <FormControl>
       <FormLabel>{props.label}</FormLabel>
@@ -16,4 +16,4 @@ function CheckboxControl(props: CheckboxControlProps) {
   );
 }
 
-export default CheckboxControl;
+export default CheckBoxControl;

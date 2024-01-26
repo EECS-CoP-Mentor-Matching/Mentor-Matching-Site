@@ -1,9 +1,9 @@
 import { UserEducationInformation } from "../../../../../types/userProfile";
-import FormGroupCols from "../../../../common/forms/FormGroupCols";
+import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import { FormLabel, Select } from "@mui/material";
-import TextInputControl from "../../../../common/forms/TextInputControl";
-import CheckboxControl from "../../../../common/forms/CheckboxControl";
-import SelectLevelOfEducation from "./SelectLevelOfEductation";
+import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
+import CheckBoxControl from "../../../../common/forms/checkbox/CheckBoxControl";
+import SelectLevelOfEducation from "../../../../userProfileCommon/dropdowns/SelectLevelOfEductation";
 
 interface NewUserEducationInformationProps {
   educationInformation: UserEducationInformation
@@ -26,10 +26,10 @@ function NewUserEducationInformation(props: NewUserEducationInformationProps) {
   return (
     <FormGroupCols>
       <FormLabel>User Eductation</FormLabel>
-      <CheckboxControl label="Are you currently a student?"
+      <CheckBoxControl label="Are you currently a student?"
         onChange={setStudentStatus}
         checked={props.educationInformation.studentStatus} />
-      <SelectLevelOfEducation onSelect={setLevelOfEductation} />
+      {/* <SelectLevelOfEducation onSelect={setLevelOfEductation} /> */}
     </FormGroupCols>
   );
 }
