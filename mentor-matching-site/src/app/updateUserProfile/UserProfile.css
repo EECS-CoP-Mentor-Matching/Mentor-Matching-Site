@@ -1,26 +1,8 @@
-
 .user-profile {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: 25px;
-  justify-content: center;
-  align-items: center;
-  padding-top: 25px;
+  padding-top: 2.75rem;
+
 }
 
 .profile-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: center;
-  margin: 20px;
-}
-
-.profile-item {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-  justify-content: start;
-  align-items: center;
+  margin-bottom: 5rem;
 }

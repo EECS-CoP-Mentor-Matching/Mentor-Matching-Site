@@ -1,9 +1,8 @@
-import { Button } from "@mui/material";
+import { Button, FormGroup } from "@mui/material";
 import "./UserProfile.css";
 import authService from "../../service/authService";
 import userService from "../../service/userService";
 import { useState, useEffect } from "react";
-import FormGroupCols from "../common/forms/FormGroupCols";
 import UploadUserProfileImage from "./components/UploadUserProfileImage";
 import UpdatePersonalInformation from "./components/UpdatePersonalInformation";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -16,6 +15,10 @@ function UpdateUserProfile() {
   const dispatch = useAppDispatch();
   const selector = useAppSelector;
   const userProfileState = selector(state => state.profile.userProfile);
+
+  const showEditStyle = {
+    borderBottom: showEdit ? "solid orange 1px" : ""
+  }
 
   useEffect(() => {
     const loadUserProfile = async () => {
@@ -43,27 +46,22 @@ function UpdateUserProfile() {
   }
 
   const dataDisplay = (
-    <>
-      <FormGroupCols>
-        <UploadUserProfileImage userProfile={(userProfileState)} />
-        <UpdatePersonalInformation showEdit={showEdit} />
-        <UpdateUserContactInformation showEdit={showEdit} />
-        <UpdateUserDemographicInformation showEdit={showEdit} />
-        {!showEdit &&
-          <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
-        }
-        {showEdit &&
-          <Button onClick={saveChanges}>Save Profile</Button>
-        }
-      </FormGroupCols>
-    </>
-
+    <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
+      <UploadUserProfileImage userProfile={(userProfileState)} />
+      {!showEdit &&
+        <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
+      }
+      {showEdit &&
+        <Button onClick={saveChanges}>Save Profile</Button>
+      }
+      <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+      <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+      <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+    </FormGroup>
   );
 
   return (
-    <div className="user-profile">
-      {dataIsLoading()}
-    </div>
+    <>{dataIsLoading()}</>
   );
 }
 

@@ -15,9 +15,10 @@ interface TextInputControlReduxProps {
   readonly?: boolean
   widthMulti?: number
   sensitive?: boolean
+  style?: any
 }
 
-function TextInputControlRedux({ onInputDispatch, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive }: TextInputControlReduxProps) {
+function TextInputControlRedux({ onInputDispatch, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive, style }: TextInputControlReduxProps) {
   const dispatch = useAppDispatch();
 
   const onInput = (data: string) => { dispatch(onInputDispatch(data)); }
@@ -32,6 +33,7 @@ function TextInputControlRedux({ onInputDispatch, onInputValidation, onSubmit, o
       readonly={readonly}
       widthMulti={widthMulti}
       sensitive={sensitive}
+      style={style}
     />
   );
 }

@@ -6,10 +6,11 @@ import FormGroupRows from "../../common/forms/FormGroupRows";
 import TextInputControlRedux from "../../common/forms/TextInputControlRedux";
 
 interface UpdateUserContactInformationProps {
-  showEdit: boolean
+  showEdit: boolean,
+  showEditStyle: any
 }
 
-function UpdateUserContactInformation({ showEdit }: UpdateUserContactInformationProps) {
+function UpdateUserContactInformation({ showEdit, showEditStyle }: UpdateUserContactInformationProps) {
   const selector = useAppSelector;
   const contactInformation = selector(state => state.profile.userProfile.contact);
 
@@ -18,12 +19,12 @@ function UpdateUserContactInformation({ showEdit }: UpdateUserContactInformation
       <FormGroupCols>
         <FormLabel>Contact Information</FormLabel>
         <FormGroupRows>
-          <TextInputControlRedux value={contactInformation.email} label="Email" readonly={!showEdit} onInputDispatch={updateEmail} />
-          <TextInputControlRedux value={contactInformation.displayName} label="Display Name" readonly={!showEdit} onInputDispatch={updateDisplayName} />
+          <TextInputControlRedux value={contactInformation.email} label="Email" readonly={!showEdit} onInputDispatch={updateEmail} style={showEditStyle} widthMulti={.15} />
+          <TextInputControlRedux value={contactInformation.displayName} label="Display Name" readonly={!showEdit} onInputDispatch={updateDisplayName} style={showEditStyle} widthMulti={.15} />
         </FormGroupRows>
         <FormGroupRows>
-          <TextInputControlRedux value={contactInformation.pronouns} label="Pronouns" readonly={!showEdit} onInputDispatch={updatePronouns} />
-          <TextInputControlRedux value={contactInformation.timeZone} label="Time Zone" readonly={!showEdit} onInputDispatch={updateTimeZone} />
+          <TextInputControlRedux value={contactInformation.pronouns} label="Pronouns" readonly={!showEdit} onInputDispatch={updatePronouns} style={showEditStyle} />
+          <TextInputControlRedux value={contactInformation.timeZone} label="Time Zone" readonly={!showEdit} onInputDispatch={updateTimeZone} style={showEditStyle} />
         </FormGroupRows>
       </FormGroupCols>
     }</>

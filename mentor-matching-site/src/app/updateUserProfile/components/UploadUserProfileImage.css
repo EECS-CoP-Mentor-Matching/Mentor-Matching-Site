@@ -1,0 +1,11 @@
+.profile-image {
+  background-color: transparent;
+}
+
+.profile-image:hover {
+  background-color: transparent;
+}
+
+.profile-image:hover>svg {
+  fill: gray;
+}

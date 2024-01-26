@@ -6,10 +6,11 @@ import FormGroupCols from "../../common/forms/FormGroupCols";
 import { FormLabel } from "@mui/material";
 
 interface UpdatePersonalInformationProps {
-  showEdit: boolean
+  showEdit: boolean,
+  showEditStyle: any
 }
 
-function UpdatePersonalInformation({ showEdit, }: UpdatePersonalInformationProps) {
+function UpdatePersonalInformation({ showEdit, showEditStyle }: UpdatePersonalInformationProps) {
   const selector = useAppSelector;
   const personalInformation = selector(state => state.profile.userProfile.personal);
 
@@ -18,12 +19,12 @@ function UpdatePersonalInformation({ showEdit, }: UpdatePersonalInformationProps
       <FormGroupCols>
         <FormLabel>Personal Information</FormLabel>
         <FormGroupRows>
-          <TextInputControlRedux value={personalInformation.firstName} label="First Name" readonly={!showEdit} onInputDispatch={updateFirstName} />
-          <TextInputControlRedux value={personalInformation.middleName} label="Middle Name" readonly={!showEdit} onInputDispatch={updateMiddleName} />
-          <TextInputControlRedux value={personalInformation.lastName} label="Last Name" readonly={!showEdit} onInputDispatch={updateLastName} />
+          <TextInputControlRedux value={personalInformation.firstName} label="First Name" readonly={!showEdit} onInputDispatch={updateFirstName} style={showEditStyle} />
+          <TextInputControlRedux value={personalInformation.middleName} label="Middle Name" readonly={!showEdit} onInputDispatch={updateMiddleName} style={showEditStyle} />
+          <TextInputControlRedux value={personalInformation.lastName} label="Last Name" readonly={!showEdit} onInputDispatch={updateLastName} style={showEditStyle} />
         </FormGroupRows>
         <FormGroupRows>
-          <TextInputControlRedux value={personalInformation.dob} label="Date of Birth" readonly={!showEdit} onInputDispatch={updateDob} />
+          <TextInputControlRedux value={personalInformation.dob} label="Date of Birth" readonly={!showEdit} onInputDispatch={updateDob} style={showEditStyle} />
         </FormGroupRows>
       </FormGroupCols>
     }</>
