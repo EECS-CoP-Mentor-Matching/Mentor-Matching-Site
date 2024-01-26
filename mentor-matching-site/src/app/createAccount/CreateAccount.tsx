@@ -43,10 +43,6 @@ function CreateAccount({ setSignedIn }: CreateAccountProps) {
         navigate("/login");
     }
 
-    const onSelect = () => {
-
-    }
-
     return (
         <div className='login'>
             <FormGroup className="form-group">

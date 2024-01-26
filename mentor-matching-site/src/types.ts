@@ -6,6 +6,16 @@ export interface MatchProfile {
   professionalExperience: number
 }
 
+export const initMatchProfile = () => {
+  return {
+    UID: "",
+    technicalInterest: "",
+    technicalExperience: -1,
+    professionalInterest: "",
+    professionalExperience: -1
+  } as MatchProfile
+}
+
 export interface UserProfile {
   displayName: string
   UID: string
@@ -19,8 +29,27 @@ export interface UserProfile {
   preferences: UserPreferences;
 }
 
+export const initUserProfile = () => {
+  return {
+    displayName: "",
+    UID: "",
+    contact: initUserContactInformation(),
+    personal: initUserPersonalInformation(),
+    demographics: initUserDemographicInformation(),
+    education: initUserEducationInformation(),
+    accountSettings: initUserAccountSettings(),
+    matchHistory: Array<MatchHistoryItem>(),
+    profilePictureUrl: "",
+    preferences: initUserPreferences()
+  } as UserProfile
+}
+
 export interface UserPreferences {
-  // Define preferences structure
+
+}
+
+export const initUserPreferences = () => {
+  return {} as UserPreferences
 }
 
 export interface UserContactInformation {
@@ -31,16 +60,42 @@ export interface UserContactInformation {
   userBio: string
 }
 
+export const initUserContactInformation = () => {
+  return {
+    email: "",
+    timeZone: "",
+    displayName: "",
+    pronouns: "",
+    userBio: ""
+  } as UserContactInformation
+}
+
 export interface UserPersonalInformation {
   firstName: string
   lastName: string
   middleName: string
-  dob: number
+  dob: string
+}
+
+export const initUserPersonalInformation = () => {
+  return {
+    firstName: "",
+    lastName: "",
+    middleName: "",
+    dob: ""
+  } as UserPersonalInformation
 }
 
 export interface UserDemographicInformation {
   racialIdentity: string
   lgbtqPlusCommunity: boolean
+}
+
+export const initUserDemographicInformation = () => {
+  return {
+    racialIdentity: "",
+    lgbtqPlusCommunity: false
+  } as UserDemographicInformation
 }
 
 export interface UserEducationInformation {
@@ -49,11 +104,28 @@ export interface UserEducationInformation {
   studentStatus: boolean
 }
 
+export const initUserEducationInformation = () => {
+  return {
+    highestLevelOfEducation: "",
+    degreeProgram: "",
+    studentStatus: false
+  } as UserEducationInformation
+}
+
 export interface UserAccountSettings {
   userStatus: string
   menteeProfilesEnabled: boolean
   mentorProfileEnabled: boolean
   useDemographicsForMatching: boolean
+}
+
+export const initUserAccountSettings = () => {
+  return {
+    userStatus: "",
+    menteeProfilesEnabled: false,
+    mentorProfileEnabled: false,
+    useDemographicsForMatching: false
+  } as UserAccountSettings
 }
 
 export interface MatchHistoryItem {

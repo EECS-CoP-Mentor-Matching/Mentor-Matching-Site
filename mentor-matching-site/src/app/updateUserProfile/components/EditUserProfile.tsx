@@ -14,9 +14,10 @@ import FormGroupRows from '../../common/forms/FormGroupRows';
 
 interface EditUserProfileProps {
     userProfile: UserProfile;
+    saveChanges: () => void
 }
 
-function EditUserProfile({ userProfile }: EditUserProfileProps) {
+function EditUserProfile({ userProfile, saveChanges }: EditUserProfileProps) {
     const dispatch = useAppDispatch();
     const [displayName, setDisplayName] = useState<string>('');
     const [profilePicture, setProfilePicture] = useState<File | null>(null);
@@ -46,8 +47,7 @@ function EditUserProfile({ userProfile }: EditUserProfileProps) {
         }
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSubmit = async () => {
         try {
             let profilePictureUrl = userProfile?.profilePictureUrl || '';
             if (profilePicture) {
@@ -66,6 +66,7 @@ function EditUserProfile({ userProfile }: EditUserProfileProps) {
             await userService.updateUserProfile(updatedProfileData.UID, updatedProfileData);
             dispatch(updateProfile(updatedProfileData));
             alert('Profile updated successfully');
+            saveChanges();
         } catch (error) {
             console.error('Error updating profile:', error);
         }
@@ -87,7 +88,7 @@ function EditUserProfile({ userProfile }: EditUserProfileProps) {
                     {uploadError && <div className="error-message">{uploadError}</div>}
                 </FormGroupRows>
                 <FormGroupRows>
-                    <Button disabled={isUploading}>Save Changes</Button>
+                    <Button onClick={handleSubmit} disabled={isUploading}>Save Changes</Button>
                 </FormGroupRows>
             </FormGroupCols>
         </FormGroup>
