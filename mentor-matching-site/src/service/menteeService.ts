@@ -1,6 +1,6 @@
 import menteeDb from "../dal/menteeDb";
-import mentorDb from "../dal/mentorDb";
-import { MatchProfile, UserProfile } from "../types";
+import { UserProfile } from "../types/userProfile";
+import { MatchProfile } from "../types/matchProfile";
 
 async function readInterests() {
   return await menteeDb.readInterestsAsync();

@@ -1,13 +1,10 @@
 import Email from "./components/Email";
 import { useState } from "react";
-import authService from "../../service/authService";
 import userService from "../../service/userService";
-import { UserProfile } from "../../types";
-import { FormControl, Button, FormLabel, FormGroup } from "@mui/material";
+import { FormControl, FormLabel, FormGroup } from "@mui/material";
 import NewUserProfile from "./components/newUserProfile/NewUserProfile";
 import SubmitButton from "../common/forms/SubmitButton";
 import { useNavigate } from "react-router-dom";
-import SelectLevelOfEducation from "./components/newUserProfile/components/SelectLevelOfEductation";
 
 interface CreateAccountProps {
     setSignedIn: (signedIn: boolean) => void;

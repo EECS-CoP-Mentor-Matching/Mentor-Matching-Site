@@ -1,6 +1,6 @@
-import { MatchProfile, UserProfile } from "../types";
+import { UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, doc, getDoc, query, QueryConstraint, where, setDoc, updateDoc} from "firebase/firestore";
+import { collection, getDocs, doc, query, where, setDoc, updateDoc } from "firebase/firestore";
 
 const collectionName = "userProfile";
 

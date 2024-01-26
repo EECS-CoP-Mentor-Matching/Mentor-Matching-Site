@@ -1,4 +1,4 @@
-import { UserPreferences } from "../../../../../types";
+import { UserPreferences } from "../../../../../types/userProfile";
 import { FormLabel } from "@mui/material";
 import FormGroupCols from "../../../../common/forms/FormGroupCols";
 

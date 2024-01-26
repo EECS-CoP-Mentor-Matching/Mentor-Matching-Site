@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { EducationLevel } from "../types";
+import { EducationLevel } from "../types/matchProfile";
 
 async function educationLevelsAsync(): Promise<EducationLevel[]> {
   const matchQuery = collection(db, "educationLevels");

@@ -1,10 +1,8 @@
-import { useState } from "react";
 import FormGroupCols from "../../../../common/forms/FormGroupCols";
 import TextInputControl from "../../../../common/forms/TextInputControl";
 import { FormLabel } from "@mui/material";
 import SelectTimeZone from "./SelectTimeZone";
-import { UserContactInformation } from "../../../../../types";
-import TextAreaControl from "../../../../common/forms/TextAreaControl";
+import { UserContactInformation } from "../../../../../types/userProfile";
 
 interface NewUserContactInformationProps {
   contactInformation: UserContactInformation

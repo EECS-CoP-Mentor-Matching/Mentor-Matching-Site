@@ -1,4 +1,4 @@
-import { UserDemographicInformation } from "../../../../../types";
+import { UserDemographicInformation } from "../../../../../types/userProfile";
 import CheckboxControl from "../../../../common/forms/CheckboxControl";
 import FormGroupCols from "../../../../common/forms/FormGroupCols";
 import TextInputControl from "../../../../common/forms/TextInputControl";

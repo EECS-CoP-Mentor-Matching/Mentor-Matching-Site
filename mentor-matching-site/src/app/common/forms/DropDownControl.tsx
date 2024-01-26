@@ -1,5 +1,5 @@
 import { TextField, Autocomplete, FormControl } from "@mui/material";
-import { DropDownOption } from "../../../types";
+import { DropDownOption } from "../../../types/types";
 
 interface DropDownControlProps {
   options: DropDownOption[]

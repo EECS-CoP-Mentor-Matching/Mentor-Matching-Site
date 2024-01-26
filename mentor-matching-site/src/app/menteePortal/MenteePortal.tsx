@@ -2,11 +2,8 @@ import { useEffect, useState } from 'react';
 import menteeService from '../../service/menteeService';
 import CreateMenteeProfile from './components/createMenteeProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
-import { FormLabel, Button } from "@mui/material"
-import ViewMenteeProfile from './components/viewMenteeProfile/ViewMenteeProfile';
-import { type MatchProfile } from '../../types';
-import MenteePortalNav from './components/MenteePortalNav';
-import { User } from 'firebase/auth';
+import { FormLabel } from "@mui/material"
+import { type MatchProfile } from '../../types/matchProfile';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../service/authService';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';

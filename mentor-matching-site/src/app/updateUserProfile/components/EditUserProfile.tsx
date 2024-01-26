@@ -1,12 +1,9 @@
-// Allows users to edit their profile:
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import userService from '../../../service/userService';
-import { useDispatch } from 'react-redux';
 import { storage } from '../../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { UserProfile } from '../../../types';
-import { useAppSelector, useAppDispatch } from '../../../redux/hooks'
+import { UserProfile } from '../../../types/userProfile';
+import { useAppDispatch } from '../../../redux/hooks'
 import { updateProfile } from '../../../redux/reducers/profileReducer';
 import { Button, FormGroup } from '@mui/material';
 import FormGroupCols from '../../common/forms/FormGroupCols';

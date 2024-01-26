@@ -1,24 +1,23 @@
-import { InputLabel, Input, TextareaAutosize, FormLabel, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import "./UserProfile.css";
-import { useNavigate } from 'react-router-dom';
 import authService from "../../service/authService";
 import userService from "../../service/userService";
 import { useState, useEffect } from "react";
-import { UserProfile } from "../../types";
+import { UserProfile, initUserProfile } from "../../types/userProfile";
 import FormGroupCols from "../common/forms/FormGroupCols";
 import TextInputControl from "../common/forms/TextInputControl";
-import TextDisplay from "../common/forms/TextDisplay";
 import FormGroupRows from "../common/forms/FormGroupRows";
 import EditUserProfile from "./components/EditUserProfile";
-import { initUserProfile } from "../../types";
 import UpdatePersonalInformation from "./components/UpdatePersonalInformation";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/profileReducer";
 
 function UpdateUserProfile() {
   const [userProfile, setUserProfile] = useState<UserProfile>(initUserProfile());
   const [showEdit, setShowEdit] = useState(false);
   const dispatch = useAppDispatch();
+  const selector = useAppSelector;
+  const profileState = selector(state => state.profile.userProfile);
 
   useEffect(() => {
     const loadUserProfile = async () => {
@@ -31,6 +30,11 @@ function UpdateUserProfile() {
     };
     loadUserProfile();
   }, []);
+
+  const saveChanges = async () => {
+    await userService.updateUserProfile(profileState.UID, profileState);
+    setShowEdit(!showEdit);
+  }
 
   const dataIsLoading = () => {
     if (userProfile === undefined) {
@@ -60,7 +64,7 @@ function UpdateUserProfile() {
         }
       </FormGroupCols>
       {showEdit && <>
-        <EditUserProfile userProfile={(userProfile as UserProfile)} saveChanges={() => { setShowEdit(!showEdit); }} />
+        <EditUserProfile userProfile={(userProfile as UserProfile)} saveChanges={saveChanges} />
       </>}
     </>
 

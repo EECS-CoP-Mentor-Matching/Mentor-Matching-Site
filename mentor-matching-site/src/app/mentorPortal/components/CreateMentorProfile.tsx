@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ContentContainer from "../../common/ContentContainer";
-import {Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography} from "@mui/material";
-import {mentorService} from "../../../service/mentorService";
-import {MatchProfile} from "../../../types";
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { mentorService } from "../../../service/mentorService";
+import { MatchProfile } from "../../../types/matchProfile";
 import authService from "../../../service/authService";
 
 function CreateMentorProfile() {

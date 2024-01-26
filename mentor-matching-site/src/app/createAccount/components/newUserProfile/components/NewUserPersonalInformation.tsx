@@ -2,7 +2,7 @@ import FormGroupCols from "../../../../common/forms/FormGroupCols";
 import FormGroupRows from "../../../../common/forms/FormGroupRows";
 import TextInputControl from "../../../../common/forms/TextInputControl";
 import { useState } from "react";
-import { UserPersonalInformation } from "../../../../../types";
+import { UserPersonalInformation } from "../../../../../types/userProfile";
 import { FormLabel } from "@mui/material";
 
 interface NewUserPersonalInformationProps {

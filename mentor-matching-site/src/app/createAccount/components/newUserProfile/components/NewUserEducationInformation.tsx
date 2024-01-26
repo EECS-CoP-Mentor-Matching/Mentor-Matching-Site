@@ -1,4 +1,4 @@
-import { UserEducationInformation } from "../../../../../types";
+import { UserEducationInformation } from "../../../../../types/userProfile";
 import FormGroupCols from "../../../../common/forms/FormGroupCols";
 import { FormLabel, Select } from "@mui/material";
 import TextInputControl from "../../../../common/forms/TextInputControl";

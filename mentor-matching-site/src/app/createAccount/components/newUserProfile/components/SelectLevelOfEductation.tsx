@@ -1,5 +1,6 @@
 import selectionItemsDb from "../../../../../dal/selectionItemsDb";
-import { EducationLevel, DropDownOption } from "../../../../../types";
+import { EducationLevel } from "../../../../../types/matchProfile";
+import { DropDownOption } from "../../../../../types/types";
 import DropDownControl from "../../../../common/forms/DropDownControl";
 import { useEffect, useState } from "react";
 

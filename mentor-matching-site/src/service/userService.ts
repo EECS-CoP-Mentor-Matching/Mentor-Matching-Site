@@ -1,5 +1,5 @@
 import userDb from "../dal/userDb";
-import { UserProfile } from "../types";
+import { UserProfile } from "../types/userProfile";
 
 async function createNewUser(userProfile: UserProfile) {
   userDb.createNewUserAsync(userProfile);

@@ -10,7 +10,7 @@ import NewUserPersonalInformation from "./components/NewUserPersonalInformation"
 import NewUserDemographicInformation from "./components/NewUserDemographicInformation";
 import NewUserEducationInformation from "./components/NewUserEducationInformation";
 import NewUserPreferences from "./components/NewUserPreferences";
-import { UserContactInformation, UserDemographicInformation, UserEducationInformation, UserPersonalInformation, UserProfile } from "../../../../types";
+import { UserContactInformation, UserDemographicInformation, UserEducationInformation, UserPersonalInformation, UserProfile } from "../../../../types/userProfile";
 import { UserPreferences } from "typescript";
 import NewUserSubmit from "./components/NewUserSubmit";
 import NewUserNavigation from "./components/NewUserNavigation";
