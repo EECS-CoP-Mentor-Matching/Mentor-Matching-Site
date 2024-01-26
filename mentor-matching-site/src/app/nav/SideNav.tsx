@@ -23,7 +23,7 @@ function SideNav(props: SideNavProps) {
           <a href="/mentee-portal">Mentee Portal</a>
           <a href="/mentor-portal">Mentor Portal</a>
           <a href="/admin-portal">Admin Portal</a>
-          <a href="/profile">Profile</a>
+          <a href="/update-profile">Profile</a>
         </>}
         <a href="/">Home</a>
       </div>
