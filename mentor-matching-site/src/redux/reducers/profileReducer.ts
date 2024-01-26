@@ -1,6 +1,6 @@
 // This reducer will handle the user profile state:
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { UserPersonalInformation, UserProfile, UserContactInformation, UserDemographicInformation, initUserProfile } from "../../types/userProfile";
+import { UserPersonalInformation, UserProfile, UserContactInformation, UserDemographicInformation, initUserProfile, UserEducationInformation, UserAccountSettings } from "../../types/userProfile";
 import { RootState } from "../store";
 
 const initialState = {
@@ -34,7 +34,16 @@ export const profileSlice = createSlice({
     updatePronouns: (state, action: PayloadAction<string>) => { state.userProfile.contact.pronouns = action.payload; },
     updateUserBio: (state, action: PayloadAction<string>) => { state.userProfile.contact.userBio = action.payload; },
     // update education information
+    updateEducationInformation: (state, action: PayloadAction<UserEducationInformation>) => { state.userProfile.education = action.payload; },
+    updateHighestLevelOfEducation: (state, action: PayloadAction<string>) => { state.userProfile.education.highestLevelOfEducation = action.payload; },
+    updateDegreeProgram: (state, action: PayloadAction<string>) => { state.userProfile.education.degreeProgram = action.payload; },
+    updateStudentStatus: (state, action: PayloadAction<boolean>) => { state.userProfile.education.studentStatus = action.payload; },
     // update account settings
+    updateAccountSettings: (state, action: PayloadAction<UserAccountSettings>) => { state.userProfile.accountSettings = action.payload; },
+    updateUserStatus: (state, action: PayloadAction<string>) => { state.userProfile.accountSettings.userStatus = action.payload; },
+    updateMenteePortalEnabled: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.menteePortalEnabled = action.payload; },
+    updateMentorPortalEnabled: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.mentorPortalEnabled = action.payload; },
+    updateUseDemographicsForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.useDemographicsForMatching = action.payload; },
     // profile image
     updateProfileImageUrl: (state, action: PayloadAction<string>) => { state.userProfile.profilePictureUrl = action.payload; }
   }
@@ -48,6 +57,10 @@ export const {
   updateDemographicInformation, updateLgbtqPlus, updateRacialIdentity,
   // update contact information
   updateContactInformation, updateDisplayName, updateEmail, updateTimeZone, updatePronouns, updateUserBio,
+  // education information
+  updateEducationInformation, updateHighestLevelOfEducation, updateDegreeProgram, updateStudentStatus,
+  // account settings
+  updateAccountSettings, updateUserStatus, updateMenteePortalEnabled, updateMentorPortalEnabled, updateUseDemographicsForMatching,
   // profile image
   updateProfileImageUrl
 } = profileSlice.actions

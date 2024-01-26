@@ -1,4 +1,4 @@
-import FormGroupRows from "../../../../common/forms/FormGroupRows";
+import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import { Button } from "@mui/material";
 
 interface NewUserNavigationProps {

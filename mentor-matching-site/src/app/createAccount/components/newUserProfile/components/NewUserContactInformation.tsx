@@ -1,7 +1,7 @@
-import FormGroupCols from "../../../../common/forms/FormGroupCols";
-import TextInputControl from "../../../../common/forms/TextInputControl";
+import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
+import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
 import { FormLabel } from "@mui/material";
-import SelectTimeZone from "./SelectTimeZone";
+import SelectTimeZone from "../../../../userProfileCommon/dropdowns/SelectTimeZone";
 import { UserContactInformation } from "../../../../../types/userProfile";
 
 interface NewUserContactInformationProps {
@@ -34,7 +34,7 @@ function NewUserContactInformation(props: NewUserContactInformationProps) {
     <FormGroupCols>
       <FormLabel>Welcome! Start by entering your contact information.</FormLabel>
       <div>Email: {props.contactInformation.email}</div>
-      <SelectTimeZone onSelect={setTimeZone} />
+      {/* <SelectTimeZone onSelect={setTimeZone} /> */}
       <TextInputControl label="Pronouns" onInput={setPronouns}
         value={props.contactInformation.pronouns} widthMulti={.15} />
       <TextInputControl label="Display Name" onInput={setDisplayName}

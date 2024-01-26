@@ -1,5 +1,5 @@
 import { InputLabel, Input, FormControl, FormGroup } from "@mui/material";
-import TextInputControl from "../../common/forms/TextInputControl";
+import TextInputControl from "../../common/forms/textInputs/TextInputControl";
 
 interface EmailProps {
   setEmail: (email: string) => void

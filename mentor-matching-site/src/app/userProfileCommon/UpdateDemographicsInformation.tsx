@@ -1,9 +1,9 @@
 import { FormLabel } from "@mui/material";
-import { useAppSelector } from "../../../redux/hooks";
-import { updateLgbtqPlus, updateRacialIdentity } from "../../../redux/reducers/profileReducer";
-import FormGroupCols from "../../common/forms/FormGroupCols";
-import FormGroupRows from "../../common/forms/FormGroupRows";
-import TextInputControlRedux from "../../common/forms/TextInputControlRedux";
+import { useAppSelector } from "../../redux/hooks";
+import { updateLgbtqPlus, updateRacialIdentity } from "../../redux/reducers/profileReducer";
+import FormGroupCols from "../common/forms/layout/FormGroupCols";
+import FormGroupRows from "../common/forms/layout/FormGroupRows";
+import TextInputControlRedux from "../common/forms/textInputs/TextInputControlRedux";
 
 interface UpdateUserDemographicInformationProps {
   showEdit: boolean
