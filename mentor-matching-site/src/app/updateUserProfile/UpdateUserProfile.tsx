@@ -3,28 +3,25 @@ import "./UserProfile.css";
 import authService from "../../service/authService";
 import userService from "../../service/userService";
 import { useState, useEffect } from "react";
-import { UserProfile, initUserProfile } from "../../types/userProfile";
 import FormGroupCols from "../common/forms/FormGroupCols";
-import TextInputControl from "../common/forms/TextInputControl";
-import FormGroupRows from "../common/forms/FormGroupRows";
-import EditUserProfile from "./components/EditUserProfile";
+import UploadUserProfileImage from "./components/UploadUserProfileImage";
 import UpdatePersonalInformation from "./components/UpdatePersonalInformation";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/profileReducer";
+import UpdateUserContactInformation from "./components/UpdateUserContactInformation";
+import UpdateUserDemographicInformation from "./components/UpdateDemographicsInformation";
 
 function UpdateUserProfile() {
-  const [userProfile, setUserProfile] = useState<UserProfile>(initUserProfile());
   const [showEdit, setShowEdit] = useState(false);
   const dispatch = useAppDispatch();
   const selector = useAppSelector;
-  const profileState = selector(state => state.profile.userProfile);
+  const userProfileState = selector(state => state.profile.userProfile);
 
   useEffect(() => {
     const loadUserProfile = async () => {
       const currentUser = await authService.getSignedInUser();
       if (currentUser) {
         const profile = await userService.getUserProfile(currentUser.uid);
-        setUserProfile(profile);
         dispatch(updateProfile(profile));
       }
     };
@@ -32,12 +29,12 @@ function UpdateUserProfile() {
   }, []);
 
   const saveChanges = async () => {
-    await userService.updateUserProfile(profileState.UID, profileState);
+    await userService.updateUserProfile(userProfileState.UID, userProfileState);
     setShowEdit(!showEdit);
   }
 
   const dataIsLoading = () => {
-    if (userProfile === undefined) {
+    if (userProfileState === undefined) {
       return (<>Data is loading...</>)
     }
     else {
@@ -48,24 +45,17 @@ function UpdateUserProfile() {
   const dataDisplay = (
     <>
       <FormGroupCols>
+        <UploadUserProfileImage userProfile={(userProfileState)} />
         <UpdatePersonalInformation showEdit={showEdit} />
-        <FormGroupRows>
-          <TextInputControl value={userProfile.contact.email} label="Email" readonly={!showEdit} />
-          <TextInputControl value={userProfile.contact.displayName} label="Display Name" readonly={!showEdit} />
-          <TextInputControl value={userProfile.contact.pronouns} label="Pronouns" readonly={!showEdit} />
-          <TextInputControl value={userProfile.contact.timeZone} label="Time Zone" readonly={!showEdit} />
-        </FormGroupRows>
-        <FormGroupRows>
-          <TextInputControl value={userProfile.demographics.lgbtqPlusCommunity ? 'Yes' : 'No'} label="Identify as LGBTQ+" readonly={!showEdit} />
-          <TextInputControl value={userProfile.demographics.racialIdentity} label="Racial Identity" readonly={!showEdit} />
-        </FormGroupRows>
+        <UpdateUserContactInformation showEdit={showEdit} />
+        <UpdateUserDemographicInformation showEdit={showEdit} />
         {!showEdit &&
           <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
         }
+        {showEdit &&
+          <Button onClick={saveChanges}>Save Profile</Button>
+        }
       </FormGroupCols>
-      {showEdit && <>
-        <EditUserProfile userProfile={(userProfile as UserProfile)} saveChanges={saveChanges} />
-      </>}
     </>
 
   );

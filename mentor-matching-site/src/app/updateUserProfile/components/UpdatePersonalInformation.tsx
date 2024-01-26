@@ -3,6 +3,7 @@ import FormGroupRows from "../../common/forms/FormGroupRows";
 import { updateFirstName, updateLastName, updateMiddleName, updateDob } from "../../../redux/reducers/profileReducer";
 import TextInputControlRedux from "../../common/forms/TextInputControlRedux";
 import FormGroupCols from "../../common/forms/FormGroupCols";
+import { FormLabel } from "@mui/material";
 
 interface UpdatePersonalInformationProps {
   showEdit: boolean
@@ -15,6 +16,7 @@ function UpdatePersonalInformation({ showEdit, }: UpdatePersonalInformationProps
   return (
     <>{personalInformation !== undefined &&
       <FormGroupCols>
+        <FormLabel>Personal Information</FormLabel>
         <FormGroupRows>
           <TextInputControlRedux value={personalInformation.firstName} label="First Name" readonly={!showEdit} onInputDispatch={updateFirstName} />
           <TextInputControlRedux value={personalInformation.middleName} label="Middle Name" readonly={!showEdit} onInputDispatch={updateMiddleName} />

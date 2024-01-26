@@ -1,11 +1,11 @@
 // This reducer will handle the user profile state:
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { UserPersonalInformation, UserProfile, UserContactInformation } from "../../types/userProfile";
+import { UserPersonalInformation, UserProfile, UserContactInformation, UserDemographicInformation, initUserProfile } from "../../types/userProfile";
 import { RootState } from "../store";
 
 const initialState = {
-  userProfile: {} as UserProfile,
-} as UserProfileState;
+  userProfile: initUserProfile()
+}
 
 export interface UserProfileState {
   userProfile: UserProfile
@@ -23,6 +23,9 @@ export const profileSlice = createSlice({
     updateMiddleName: (state, action: PayloadAction<string>) => { state.userProfile.personal.middleName = action.payload; },
     updateDob: (state, action: PayloadAction<string>) => { state.userProfile.personal.dob = action.payload; },
     // update demographic information
+    updateDemographicInformation: (state, action: PayloadAction<UserDemographicInformation>) => { state.userProfile.demographics = action.payload; },
+    updateLgbtqPlus: (state, action: PayloadAction<boolean>) => { state.userProfile.demographics.lgbtqPlusCommunity = action.payload; },
+    updateRacialIdentity: (state, action: PayloadAction<string>) => { state.userProfile.demographics.racialIdentity = action.payload; },
     // update contact information
     updateContactInformation: (state, action: PayloadAction<UserContactInformation>) => { state.userProfile.contact = action.payload; },
     updateDisplayName: (state, action: PayloadAction<string>) => { state.userProfile.contact.displayName = action.payload; },
@@ -32,6 +35,8 @@ export const profileSlice = createSlice({
     updateUserBio: (state, action: PayloadAction<string>) => { state.userProfile.contact.userBio = action.payload; },
     // update education information
     // update account settings
+    // profile image
+    updateProfileImageUrl: (state, action: PayloadAction<string>) => { state.userProfile.profilePictureUrl = action.payload; }
   }
 });
 
@@ -40,8 +45,11 @@ export const {
   // update personal information
   updatePersonalInformation, updateFirstName, updateLastName, updateMiddleName, updateDob,
   // update demographics
+  updateDemographicInformation, updateLgbtqPlus, updateRacialIdentity,
   // update contact information
-  updateContactInformation, updateDisplayName, updateEmail, updateTimeZone, updatePronouns, updateUserBio
+  updateContactInformation, updateDisplayName, updateEmail, updateTimeZone, updatePronouns, updateUserBio,
+  // profile image
+  updateProfileImageUrl
 } = profileSlice.actions
 
 export const selectProfile = (state: RootState) => state.profile

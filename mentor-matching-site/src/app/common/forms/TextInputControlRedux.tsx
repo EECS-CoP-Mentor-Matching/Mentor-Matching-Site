@@ -3,8 +3,8 @@ import { useAppDispatch } from "../../../redux/hooks";
 import TextInputControl from "./TextInputControl";
 
 interface TextInputControlReduxProps {
-  onInputDispatch(payload: string): {
-    payload: string
+  onInputDispatch(payload: any): {
+    payload: any
     type: string
   }
   onInputValidation?: (value: string) => boolean
