@@ -1,5 +1,5 @@
 import selectionItemsDb from "../../../dal/selectionItemsDb";
-import { TimeZone } from "../../../types/matchProfile";
+import { TimeZone } from "../../../types/userProfile";
 import { DropDownOption } from "../../../types/types";
 import DropDownControlLoaderRedux from "../../common/forms/dropDowns/DropDownControlLoaderRedux";
 
@@ -16,7 +16,7 @@ function SelectTimeZone({ onSelectDispatch, currentValue }: SelectTimeZoneProps)
     const options = new Array<DropDownOption>;
     levels.forEach(currLevel => {
       options.push({
-        label: currLevel.timeZone,
+        label: currLevel.timeZoneName,
         id: currLevel.id
       } as DropDownOption);
     });

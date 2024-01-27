@@ -2,9 +2,9 @@ import { useAppSelector } from "../../../../../redux/hooks";
 import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
-import { FormLabel } from "@mui/material";
+import { FormControlLabel, FormLabel } from "@mui/material";
 import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
-import { updateDob, updateFirstName, updateLastName, updateMiddleName } from "../../../../../redux/reducers/profileReducer";
+import { updateDob, updateDobDay, updateDobMonth, updateDobYear, updateFirstName, updateLastName, updateMiddleName } from "../../../../../redux/reducers/profileReducer";
 
 function NewUserPersonalInformation() {
   const selector = useAppSelector;
@@ -19,7 +19,10 @@ function NewUserPersonalInformation() {
         <TextInputControlRedux value={personalInformation.lastName} label="Last Name" onInputDispatch={updateLastName} />
       </FormGroupRows>
       <FormGroupRows>
-        <TextInputControlRedux value={personalInformation.dob} label="Date of Birth" onInputDispatch={updateDob} />
+        <FormLabel>Date of Birth</FormLabel>
+        <TextInputControlRedux value={personalInformation.dob.month} onInputDispatch={updateDobMonth} widthMulti={.025} />/
+        <TextInputControlRedux value={personalInformation.dob.day} onInputDispatch={updateDobDay} widthMulti={.025} />/
+        <TextInputControlRedux value={personalInformation.dob.year} onInputDispatch={updateDobYear} widthMulti={.05} />
       </FormGroupRows>
     </FormGroupCols>
   );

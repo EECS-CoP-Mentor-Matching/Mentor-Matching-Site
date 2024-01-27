@@ -5,12 +5,9 @@ import { FormControl, FormLabel, FormGroup } from "@mui/material";
 import NewUserProfile from "./components/newUserProfile/NewUserProfile";
 import SubmitButton from "../common/forms/SubmitButton";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateEmail } from "../../redux/reducers/profileReducer";
-
-interface CreateAccountProps {
-    setSignedIn: (signedIn: boolean) => void;
-}
+import authService from "../../service/authService";
 
 enum Step {
     CheckEmail,
@@ -18,11 +15,12 @@ enum Step {
     NewUser
 }
 
-function CreateAccount({ setSignedIn }: CreateAccountProps) {
-    const [email, setEmail] = useState('');
+function CreateAccount() {
     const [currentStep, setCurrentStep] = useState(Step.CheckEmail);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const selector = useAppSelector;
+    const email = selector(state => state.profile.userProfile.contact.email);
 
     const checkUserExists = async () => {
         const userExists = await userService.userExists(email);
@@ -49,9 +47,7 @@ function CreateAccount({ setSignedIn }: CreateAccountProps) {
             <FormGroup className="form-group">
                 {currentStep == Step.CheckEmail && <>
                     <FormLabel>Welcome, start by entering your email</FormLabel>
-                    <Email setEmail={setEmail}
-                        submitEmail={checkUserExists}
-                        emailValidation={validateValue} />
+                    <Email submitEmail={checkUserExists} emailValidation={validateValue} />
                     <FormLabel>Note that if you do not have a valid Oregon State University email, you will not be able to create a mentee profile.</FormLabel>
                     <FormLabel>Please use your Oregon State email if you have it.</FormLabel>
                     <FormControl className="form-control">
@@ -60,7 +56,7 @@ function CreateAccount({ setSignedIn }: CreateAccountProps) {
                 </>}
                 {currentStep == Step.NewUser && <>
                     <FormLabel></FormLabel>
-                    <NewUserProfile setSignedIn={setSignedIn} />
+                    <NewUserProfile />
                 </>}
                 {currentStep == Step.UserExists && <>
                     <FormLabel>User already exists with this email</FormLabel>

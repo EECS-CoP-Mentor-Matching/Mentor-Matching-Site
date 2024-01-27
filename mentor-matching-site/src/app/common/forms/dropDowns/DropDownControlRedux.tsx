@@ -9,7 +9,7 @@ interface DropDownControlProps {
     type: string
   }
   options: DropDownOption[]
-  label: string
+  label?: string
   selectedOption?: any
 }
 

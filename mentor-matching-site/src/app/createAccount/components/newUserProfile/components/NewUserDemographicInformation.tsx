@@ -13,8 +13,8 @@ function NewUserDemographicInformation() {
   return (
     <FormGroupCols>
       <FormLabel>User Demographics</FormLabel>
-      <SelectRacialIdentity onSelectDispatch={updateRacialIdentity} />
-      <CheckBoxControlRedux label="Do you identify as a member of the LGBTQ+ Community?" onChangeDispatch={updateLgbtqPlus} />
+      <SelectRacialIdentity onSelectDispatch={updateRacialIdentity} currentValue={demographicInformation.racialIdentity} />
+      <CheckBoxControlRedux label="Do you identify as a member of the LGBTQ+ Community?" onChangeDispatch={updateLgbtqPlus} checked={demographicInformation.lgbtqPlusCommunity} />
     </FormGroupCols>
   );
 }

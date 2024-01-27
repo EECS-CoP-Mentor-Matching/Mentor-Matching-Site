@@ -31,11 +31,6 @@ export interface EducationLevel {
   hierarchy: number
 }
 
-export interface TimeZone {
-  id: string
-  timeZone: string
-}
-
 export interface TechincalInterest {
   broadInterest: string
   specificInterests: string[]

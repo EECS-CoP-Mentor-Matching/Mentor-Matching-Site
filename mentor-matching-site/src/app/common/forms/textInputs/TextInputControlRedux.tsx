@@ -10,8 +10,8 @@ interface TextInputControlReduxProps {
   onInputValidation?: (value: string) => boolean
   onSubmit?: () => void
   onSubmitValidation?: (value: string) => boolean
-  label: string
-  value: string
+  label?: string
+  value?: any
   readonly?: boolean
   widthMulti?: number
   sensitive?: boolean
