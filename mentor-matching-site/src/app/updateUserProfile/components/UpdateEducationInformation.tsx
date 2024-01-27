@@ -1,11 +1,11 @@
 import { FormLabel } from "@mui/material";
-import { useAppSelector } from "../../redux/hooks";
-import { updateDegreeProgram, updateEducationInformation, updateStudentStatus } from "../../redux/reducers/profileReducer";
-import FormGroupCols from "../common/forms/layout/FormGroupCols";
-import FormGroupRows from "../common/forms/layout/FormGroupRows";
-import SelectLevelOfEducation from "./dropdowns/SelectLevelOfEductation";
-import SelectDegreeProgram from "./dropdowns/SelectDegreeProgram";
-import CheckboxControlRedux from "../common/forms/checkbox/CheckBoxControlRedux";
+import { useAppSelector } from "../../../redux/hooks";
+import { updateDegreeProgram, updateEducationInformation, updateStudentStatus } from "../../../redux/reducers/profileReducer";
+import FormGroupCols from "../../common/forms/layout/FormGroupCols";
+import FormGroupRows from "../../common/forms/layout/FormGroupRows";
+import SelectLevelOfEducation from "../../userProfileCommon/dropdowns/SelectLevelOfEductation";
+import SelectDegreeProgram from "../../userProfileCommon/dropdowns/SelectDegreeProgram";
+import CheckboxControlRedux from "../../common/forms/checkbox/CheckBoxControlRedux";
 
 interface UpdateEducationInformationProps {
   showEdit: boolean,

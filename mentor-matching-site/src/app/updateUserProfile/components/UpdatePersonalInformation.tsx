@@ -1,8 +1,8 @@
-import { useAppSelector } from "../../redux/hooks";
-import FormGroupRows from "../common/forms/layout/FormGroupRows";
-import { updateFirstName, updateLastName, updateMiddleName, updateDob } from "../../redux/reducers/profileReducer";
-import TextInputControlRedux from "../common/forms/textInputs/TextInputControlRedux";
-import FormGroupCols from "../common/forms/layout/FormGroupCols";
+import { useAppSelector } from "../../../redux/hooks";
+import FormGroupRows from "../../common/forms/layout/FormGroupRows";
+import { updateFirstName, updateLastName, updateMiddleName, updateDob } from "../../../redux/reducers/profileReducer";
+import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
+import FormGroupCols from "../../common/forms/layout/FormGroupCols";
 import { FormLabel } from "@mui/material";
 
 interface UpdatePersonalInformationProps {

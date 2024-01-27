@@ -16,6 +16,9 @@ import NewUserSubmit from "./components/NewUserSubmit";
 import NewUserNavigation from "./components/NewUserNavigation";
 import userService from "../../../../service/userService";
 import { useNavigate } from "react-router-dom";
+import UpdateUserContactInformation from "../../../updateUserProfile/components/UpdateUserContactInformation";
+import { useAppSelector } from "../../../../redux/hooks";
+import UpdateUserDemographicInformation from "../../../updateUserProfile/components/UpdateDemographicsInformation";
 
 enum FormStep {
   Contact = 1,
@@ -31,36 +34,28 @@ interface NewUserProfileProps {
   setSignedIn: (signedIn: boolean) => void
 }
 
-function NewUserProfile(props: NewUserProfileProps) {
+function NewUserProfile({ email, setSignedIn }: NewUserProfileProps) {
   const [currentStep, setCurrentStep] = useState(FormStep.Contact);
-  const [contactInformation, setContactInformation] = useState<UserContactInformation>({ email: props.email } as UserContactInformation);
-  const [personalInformation, setPersonalInformation] = useState<UserPersonalInformation>({} as UserPersonalInformation);
-  const [demographicInformation, setDemographicInformation] = useState<UserDemographicInformation>({} as UserDemographicInformation);
-  const [educationInformation, setEducationInformation] = useState<UserEducationInformation>({} as UserEducationInformation);
-  const [userPreferences, setUserPreferences] = useState<UserPreferences>({} as UserPreferences);
   const navigate = useNavigate();
+  const selector = useAppSelector;
+  const userProfile = selector(state => state.profile.userProfile);
 
   async function createNewUser(password: string) {
-    console.log("Contact: ", contactInformation);
-    console.log("Personal: ", personalInformation);
-    console.log("Demographic: ", demographicInformation);
-    console.log("Education: ", educationInformation);
-
     try {
-      const user = await authService.createUser(props.email, password);
+      const user = await authService.createUser(email, password);
       if (user) {
         const uid = user.uid;
-        const userProfile = {
-          UID: uid,
-          contact: contactInformation,
-          personal: personalInformation,
-          demographics: demographicInformation,
-          education: educationInformation,
-          preferences: userPreferences,
-        } as UserProfile;
-        await userService.createNewUser(userProfile);
+        // const userProfile = {
+        //   UID: uid,
+        //   contact: contactInformation,
+        //   personal: personalInformation,
+        //   demographics: demographicInformation,
+        //   education: educationInformation,
+        //   preferences: userPreferences,
+        // } as UserProfile;
+        // await userService.createNewUser(userProfile);
 
-        props.setSignedIn(true);
+        setSignedIn(true);
         navigate("/");
       }
     } catch (error) {
@@ -83,32 +78,32 @@ function NewUserProfile(props: NewUserProfileProps) {
 
   const loadCurrentFormStep = () => {
     switch (currentStep) {
-      case FormStep.Contact:
-        return <NewUserContactInformation
-          contactInformation={contactInformation}
-          setContactInformation={setContactInformation} />
-      case FormStep.Demographic:
-        return <NewUserDemographicInformation
-          demographicInformation={demographicInformation}
-          setDemographicInformation={setDemographicInformation} />
-      case FormStep.Educational:
-        return <NewUserEducationInformation
-          educationInformation={educationInformation}
-          setEducationInformation={setEducationInformation} />
-      case FormStep.Personal:
-        return <NewUserPersonalInformation
-          personalInformation={personalInformation}
-          setPersonalInformation={setPersonalInformation} />
-      case FormStep.Preferences:
-        return <NewUserPreferences
-          userPreferences={userPreferences}
-          setUserPreferences={setUserPreferences} />
-      case FormStep.Submit:
-        return <NewUserSubmit createNewUser={createNewUser} />
-      default:
-        return (
-          <div>Invalid step</div>
-        )
+      // case FormStep.Contact:
+      //   return <NewUserContactInformation
+      //     contactInformation={contactInformation}
+      //     setContactInformation={setContactInformation} />
+      // case FormStep.Demographic:
+      //   return <NewUserDemographicInformation
+      //     demographicInformation={demographicInformation}
+      //     setDemographicInformation={setDemographicInformation} />
+      // case FormStep.Educational:
+      //   return <NewUserEducationInformation
+      //     educationInformation={educationInformation}
+      //     setEducationInformation={setEducationInformation} />
+      // case FormStep.Personal:
+      //   return <NewUserPersonalInformation
+      //     personalInformation={personalInformation}
+      //     setPersonalInformation={setPersonalInformation} />
+      // case FormStep.Preferences:
+      //   return <NewUserPreferences
+      //     userPreferences={userPreferences}
+      //     setUserPreferences={setUserPreferences} />
+      // case FormStep.Submit:
+      //   return <NewUserSubmit createNewUser={createNewUser} />
+      // default:
+      //   return (
+      //     <div>Invalid step</div>
+      //   )
     }
   }
 

@@ -1,16 +1,20 @@
 import { FormControl, TextField } from "@mui/material";
-import "./Display.css";
 
 interface TextDisplayProps {
   label: string
   value?: string
+  widthMulti: number
 }
 
-function TextDisplay(props: TextDisplayProps) {
+function TextDisplay({ label, value, widthMulti }: TextDisplayProps) {
+  const controlStyle = {
+    width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`,
+  }
+
   return (
-    <FormControl className="form-display">
-      <div>{props.label}</div>
-      <TextField value={props.value} aria-readonly />
+    <FormControl>
+      <div>{label}</div>
+      <div>{value}</div>
     </FormControl>
   );
 }

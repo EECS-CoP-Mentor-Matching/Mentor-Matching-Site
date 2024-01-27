@@ -4,12 +4,12 @@ import authService from "../../service/authService";
 import userService from "../../service/userService";
 import { useState, useEffect } from "react";
 import UploadUserProfileImage from "../userProfileCommon/imageUpload/UploadUserProfileImage";
-import UpdatePersonalInformation from "../userProfileCommon/UpdatePersonalInformation";
+import UpdatePersonalInformation from "./components/UpdatePersonalInformation";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/profileReducer";
-import UpdateUserContactInformation from "../userProfileCommon/UpdateUserContactInformation";
-import UpdateUserDemographicInformation from "../userProfileCommon/UpdateDemographicsInformation";
-import UpdateEducationInformation from "../userProfileCommon/UpdateEducationInformation";
+import UpdateUserContactInformation from "./components/UpdateUserContactInformation";
+import UpdateUserDemographicInformation from "./components/UpdateDemographicsInformation";
+import UpdateEducationInformation from "./components/UpdateEducationInformation";
 
 function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);

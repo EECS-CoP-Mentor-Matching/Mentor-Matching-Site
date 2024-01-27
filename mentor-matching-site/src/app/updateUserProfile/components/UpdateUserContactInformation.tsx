@@ -1,9 +1,10 @@
 import { FormLabel } from "@mui/material";
-import { useAppSelector } from "../../redux/hooks";
-import { updateDisplayName, updateEmail, updatePronouns, updateTimeZone } from "../../redux/reducers/profileReducer";
-import FormGroupCols from "../common/forms/layout/FormGroupCols";
-import FormGroupRows from "../common/forms/layout/FormGroupRows";
-import TextInputControlRedux from "../common/forms/textInputs/TextInputControlRedux";
+import { useAppSelector } from "../../../redux/hooks";
+import { updateDisplayName, updateEmail, updatePronouns, updateTimeZone } from "../../../redux/reducers/profileReducer";
+import FormGroupCols from "../../common/forms/layout/FormGroupCols";
+import FormGroupRows from "../../common/forms/layout/FormGroupRows";
+import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
+import TextDisplay from "../../common/forms/textInputs/TextDisplay";
 
 interface UpdateUserContactInformationProps {
   showEdit: boolean,
@@ -19,7 +20,9 @@ function UpdateUserContactInformation({ showEdit, showEditStyle }: UpdateUserCon
       <FormGroupCols>
         <FormLabel>Contact Information</FormLabel>
         <FormGroupRows>
-          <TextInputControlRedux value={contactInformation.email} label="Email" readonly={!showEdit} onInputDispatch={updateEmail} style={showEditStyle} widthMulti={.15} />
+          <TextDisplay value={contactInformation.email} label="Email" widthMulti={.15} />
+        </FormGroupRows>
+        <FormGroupRows>
           <TextInputControlRedux value={contactInformation.displayName} label="Display Name" readonly={!showEdit} onInputDispatch={updateDisplayName} style={showEditStyle} widthMulti={.15} />
         </FormGroupRows>
         <FormGroupRows>
