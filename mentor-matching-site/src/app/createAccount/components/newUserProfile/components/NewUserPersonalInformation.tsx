@@ -1,29 +1,25 @@
+import { useAppSelector } from "../../../../../redux/hooks";
 import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
-import { useState } from "react";
-import { UserPersonalInformation } from "../../../../../types/userProfile";
 import { FormLabel } from "@mui/material";
+import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
+import { updateDob, updateFirstName, updateLastName, updateMiddleName } from "../../../../../redux/reducers/profileReducer";
 
-interface NewUserPersonalInformationProps {
-  personalInformation: UserPersonalInformation
-  setPersonalInformation: (value: UserPersonalInformation) => void
-}
-
-function NewUserPersonalInformation(props: NewUserPersonalInformationProps) {
-  const [firstName, setFirstName] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [lastName, setLastName] = useState('');
+function NewUserPersonalInformation() {
+  const selector = useAppSelector;
+  const personalInformation = selector(state => state.profile.userProfile.personal);
 
   return (
     <FormGroupCols>
-      <FormLabel>User Personal Information</FormLabel>
+      <FormLabel>Personal Information</FormLabel>
       <FormGroupRows>
-        <TextInputControl label="First Name" onInput={setFirstName} widthMulti={.25} />
-        <TextInputControl label="Middle Name" onInput={setMiddleName} widthMulti={.25} />
+        <TextInputControlRedux value={personalInformation.firstName} label="First Name" onInputDispatch={updateFirstName} />
+        <TextInputControlRedux value={personalInformation.middleName} label="Middle Name" onInputDispatch={updateMiddleName} />
+        <TextInputControlRedux value={personalInformation.lastName} label="Last Name" onInputDispatch={updateLastName} />
       </FormGroupRows>
       <FormGroupRows>
-        <TextInputControl label="Last Name" onInput={setLastName} widthMulti={.50} />
+        <TextInputControlRedux value={personalInformation.dob} label="Date of Birth" onInputDispatch={updateDob} />
       </FormGroupRows>
     </FormGroupCols>
   );

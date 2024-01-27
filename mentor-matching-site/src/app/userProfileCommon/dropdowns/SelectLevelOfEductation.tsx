@@ -2,8 +2,6 @@ import selectionItemsDb from "../../../dal/selectionItemsDb";
 import { EducationLevel } from "../../../types/matchProfile";
 import { DropDownOption } from "../../../types/types";
 import DropDownControlLoaderRedux from "../../common/forms/dropDowns/DropDownControlLoaderRedux";
-import DropDownControlRedux from "../../common/forms/dropDowns/DropDownControlRedux";
-import { useEffect, useState } from "react";
 
 interface SelectLevelOfEducationProps {
   onSelectDispatch(payload: any): {
@@ -27,12 +25,11 @@ function SelectLevelOfEducation({ onSelectDispatch, currentValue }: SelectLevelO
   });
 
   return (
-    <DropDownControlLoaderRedux
+    <DropDownControlLoaderRedux label="Level of Education"
       onSelectDispatch={onSelectDispatch}
       dbSearchAsync={selectionItemsDb.educationLevelsAsync}
       mappingMethod={mapOptions}
       selectedOption={currentValue}
-      label="Level of Education"
     />
   );
 }

@@ -5,6 +5,8 @@ import { FormControl, FormLabel, FormGroup } from "@mui/material";
 import NewUserProfile from "./components/newUserProfile/NewUserProfile";
 import SubmitButton from "../common/forms/SubmitButton";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/hooks";
+import { updateEmail } from "../../redux/reducers/profileReducer";
 
 interface CreateAccountProps {
     setSignedIn: (signedIn: boolean) => void;
@@ -20,9 +22,11 @@ function CreateAccount({ setSignedIn }: CreateAccountProps) {
     const [email, setEmail] = useState('');
     const [currentStep, setCurrentStep] = useState(Step.CheckEmail);
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const checkUserExists = async () => {
         const userExists = await userService.userExists(email);
+        dispatch(updateEmail(email));
         if (userExists) {
             setCurrentStep(Step.UserExists);
         }
@@ -56,7 +60,7 @@ function CreateAccount({ setSignedIn }: CreateAccountProps) {
                 </>}
                 {currentStep == Step.NewUser && <>
                     <FormLabel></FormLabel>
-                    <NewUserProfile email={email} setSignedIn={setSignedIn} />
+                    <NewUserProfile setSignedIn={setSignedIn} />
                 </>}
                 {currentStep == Step.UserExists && <>
                     <FormLabel>User already exists with this email</FormLabel>

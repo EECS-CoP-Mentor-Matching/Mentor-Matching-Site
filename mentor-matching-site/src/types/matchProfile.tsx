@@ -32,6 +32,7 @@ export interface EducationLevel {
 }
 
 export interface TimeZone {
+  id: string
   timeZone: string
 }
 

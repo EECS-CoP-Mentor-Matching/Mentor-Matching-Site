@@ -1,4 +1,7 @@
-import DropDownControlRedux from "../../common/forms/dropDowns/DropDownControlRedux";
+import selectionItemsDb from "../../../dal/selectionItemsDb";
+import { TimeZone } from "../../../types/matchProfile";
+import { DropDownOption } from "../../../types/types";
+import DropDownControlLoaderRedux from "../../common/forms/dropDowns/DropDownControlLoaderRedux";
 
 interface SelectTimeZoneProps {
   onSelectDispatch(payload: any): {
@@ -9,17 +12,24 @@ interface SelectTimeZoneProps {
 }
 
 function SelectTimeZone({ onSelectDispatch, currentValue }: SelectTimeZoneProps) {
-  const timeZones = [
-    { label: 'EST', id: 1 },
-    { label: 'PST', id: 2 },
-    { label: 'CST', id: 3 },
-  ]
+  const mapOptions = ((levels: TimeZone[]): DropDownOption[] => {
+    const options = new Array<DropDownOption>;
+    levels.forEach(currLevel => {
+      options.push({
+        label: currLevel.timeZone,
+        id: currLevel.id
+      } as DropDownOption);
+    });
+    return options;
+  });
 
   return (
-    <DropDownControlRedux label="Time Zone"
-      options={timeZones}
+    <DropDownControlLoaderRedux
       onSelectDispatch={onSelectDispatch}
+      dbSearchAsync={selectionItemsDb.timeZonesAsync}
+      mappingMethod={mapOptions}
       selectedOption={currentValue}
+      label="Time Zone"
     />
   );
 }

@@ -30,15 +30,15 @@ enum FormStep {
 }
 
 interface NewUserProfileProps {
-  email: string
   setSignedIn: (signedIn: boolean) => void
 }
 
-function NewUserProfile({ email, setSignedIn }: NewUserProfileProps) {
+function NewUserProfile({ setSignedIn }: NewUserProfileProps) {
   const [currentStep, setCurrentStep] = useState(FormStep.Contact);
   const navigate = useNavigate();
   const selector = useAppSelector;
   const userProfile = selector(state => state.profile.userProfile);
+  const email = selector(state => state.profile.userProfile.contact.email);
 
   async function createNewUser(password: string) {
     try {
@@ -78,32 +78,22 @@ function NewUserProfile({ email, setSignedIn }: NewUserProfileProps) {
 
   const loadCurrentFormStep = () => {
     switch (currentStep) {
-      // case FormStep.Contact:
-      //   return <NewUserContactInformation
-      //     contactInformation={contactInformation}
-      //     setContactInformation={setContactInformation} />
-      // case FormStep.Demographic:
-      //   return <NewUserDemographicInformation
-      //     demographicInformation={demographicInformation}
-      //     setDemographicInformation={setDemographicInformation} />
-      // case FormStep.Educational:
-      //   return <NewUserEducationInformation
-      //     educationInformation={educationInformation}
-      //     setEducationInformation={setEducationInformation} />
-      // case FormStep.Personal:
-      //   return <NewUserPersonalInformation
-      //     personalInformation={personalInformation}
-      //     setPersonalInformation={setPersonalInformation} />
-      // case FormStep.Preferences:
-      //   return <NewUserPreferences
-      //     userPreferences={userPreferences}
-      //     setUserPreferences={setUserPreferences} />
-      // case FormStep.Submit:
-      //   return <NewUserSubmit createNewUser={createNewUser} />
-      // default:
-      //   return (
-      //     <div>Invalid step</div>
-      //   )
+      case FormStep.Contact:
+        return <NewUserContactInformation />
+      case FormStep.Demographic:
+        return <NewUserDemographicInformation />
+      case FormStep.Educational:
+        return <NewUserEducationInformation />
+      case FormStep.Personal:
+        return <NewUserPersonalInformation />
+      case FormStep.Preferences:
+        return <NewUserPreferences />
+      case FormStep.Submit:
+        return <NewUserSubmit createNewUser={createNewUser} />
+      default:
+        return (
+          <div>Invalid step</div>
+        )
     }
   }
 

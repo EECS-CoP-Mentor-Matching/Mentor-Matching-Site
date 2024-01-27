@@ -1,4 +1,4 @@
-import DropDownControlRedux from "../../common/forms/dropDowns/DropDownControlRedux";
+import DropDownControlLoaderRedux from "../../common/forms/dropDowns/DropDownControlLoaderRedux";
 import { useState, useEffect } from "react";
 import { DropDownOption } from "../../../types/types";
 import { RacialIdentity } from "../../../types/userProfile";
@@ -9,26 +9,13 @@ interface SelectRacialIdentityProps {
     payload: any
     type: string
   }
-  currentValue: any
+  currentValue?: any
 }
 
 function SelectRacialIdentity({ onSelectDispatch, currentValue }: SelectRacialIdentityProps) {
-  const [racialIdentities, setRacialIdentities] = useState<DropDownOption[]>(new Array<DropDownOption>);
 
-  useEffect(() => {
-    if (racialIdentities.length === 0) {
-      const fetchOptions = (async () => {
-        const identities = await selectionItemsDb.racialIdentitiesAsync();
-        const options = loadOptions(identities);
-        setRacialIdentities(options);
-      });
-      fetchOptions();
-    }
-  }, [racialIdentities, setRacialIdentities]);
-
-  const loadOptions = ((identities: RacialIdentity[]): DropDownOption[] => {
+  const mapOptions = ((identities: RacialIdentity[]): DropDownOption[] => {
     const loadOptions = new Array<DropDownOption>;
-
     identities.forEach(currIdentity => {
       loadOptions.push({
         label: currIdentity.identityName,
@@ -39,10 +26,11 @@ function SelectRacialIdentity({ onSelectDispatch, currentValue }: SelectRacialId
   });
 
   return (
-    <DropDownControlRedux label="Racial Identity"
-      options={racialIdentities}
+    <DropDownControlLoaderRedux label="Racial Identity"
+      mappingMethod={mapOptions}
       onSelectDispatch={onSelectDispatch}
       selectedOption={currentValue}
+      dbSearchAsync={selectionItemsDb.racialIdentitiesAsync}
     />
   );
 }

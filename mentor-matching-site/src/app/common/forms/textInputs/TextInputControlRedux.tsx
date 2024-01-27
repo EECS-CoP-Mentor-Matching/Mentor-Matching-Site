@@ -18,7 +18,7 @@ interface TextInputControlReduxProps {
   style?: any
 }
 
-function TextInputControlRedux({ onInputDispatch, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive, style }: TextInputControlReduxProps) {
+function TextInputControlRedux({ onInputDispatch, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly = false, widthMulti, sensitive, style }: TextInputControlReduxProps) {
   const dispatch = useAppDispatch();
 
   const onInput = (data: string) => { dispatch(onInputDispatch(data)); }
