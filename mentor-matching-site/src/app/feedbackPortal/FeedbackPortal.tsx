@@ -42,9 +42,9 @@ function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
         onNavChange={setPage}
         navItems={navUtilities.navItemsFromEnum(FeedbackPages)}
       />
-      {page === FeedbackPages.submitFeedback && <SubmitFeedback userEmail={userEmail} />}
-      {page === FeedbackPages.viewFeedback && <ViewFeedback />}
-      {page === FeedbackPages.settings && <FeedbackSettings />}
+      {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback userEmail={userEmail} /> </div>}
+      {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
+      {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}
     </>
   );
 }

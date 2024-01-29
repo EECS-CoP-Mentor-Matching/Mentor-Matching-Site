@@ -21,11 +21,11 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
 
     try {
 
-      /*
+    
     const response = await feedbackService.submitFeedback(feedbackData);
     alert(response.success ? 'Feedback submitted successfully!' : `Error: ${response.error}`);
     
-    */
+  
     } catch (error) {
       console.error('Error submitting feedback:', error);
       alert('An error occurred while submitting feedback.');

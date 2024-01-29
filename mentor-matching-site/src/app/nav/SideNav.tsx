@@ -20,6 +20,7 @@ function SideNav() {
           <a href="/mentor-portal">Mentor Portal</a>
           <a href="/admin-portal">Admin Portal</a>
           <a href="/update-profile">Profile</a>
+          <a href="/feedback-portal">Feedback Portal</a> 
         </AuthenticatedView>
         <a href="/">Home</a>
       </div>

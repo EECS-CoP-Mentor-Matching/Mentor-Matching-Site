@@ -14,14 +14,15 @@ interface FeedbackResponse {
 }
 
 /** Submit feedback to Firebase */
-async function submitFeedback(feedbackData: FeedbackData): Promise<void> {
+async function submitFeedback(feedbackData: FeedbackData): Promise<{ success: boolean; error?: string }> {
   try {
     await addDoc(collection(db, "feedback"), feedbackData);
     // Feedback submitted successfully
+    return { success: true };
   } catch (error) {
     // Handle error
     console.error("Error submitting feedback:", error);
-    throw error;
+    return { success: false, error: (error as Error).message };
   }
 }
 
@@ -35,11 +36,12 @@ async function fetchFeedbackEntries(): Promise<FeedbackResponse> {
     querySnapshot.forEach((doc) => {
       feedbackEntries.push(doc.data() as FeedbackData);
     });
+    console.log(feedbackEntries);
     return { data: feedbackEntries };
   } catch (error) {
     // Handle error
     console.error("Error fetching feedback entries:", error);
-    throw error;
+    return { data: [] }; // Return an empty array if there's an error
   }
 }
 
