@@ -3,16 +3,14 @@ import TextInputControlRedux from "../../common/forms/textInputs/TextInputContro
 
 interface EmailProps {
   submitEmail: () => void
-  emailValidation: (email: string) => boolean
 }
 
-function Email({ submitEmail, emailValidation }: EmailProps) {
+function Email({ submitEmail }: EmailProps) {
   return (
     <TextInputControlRedux
       onInputDispatch={updateEmail}
       label="Email"
       onSubmit={submitEmail}
-      onSubmitValidation={emailValidation}
       widthMulti={.25} />
   );
 }
