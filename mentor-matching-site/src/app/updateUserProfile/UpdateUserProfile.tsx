@@ -10,6 +10,9 @@ import { updateProfile } from "../../redux/reducers/profileReducer";
 import UpdateUserContactInformation from "./components/UpdateUserContactInformation";
 import UpdateUserDemographicInformation from "./components/UpdateDemographicsInformation";
 import UpdateEducationInformation from "./components/UpdateEducationInformation";
+import { doc, getDoc } from "@firebase/firestore";
+import { db } from "../../firebaseConfig";
+import { UserProfile } from '../../types/userProfile';
 
 function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);
@@ -27,6 +30,15 @@ function UpdateUserProfile() {
       if (currentUser) {
         const profile = await userService.getUserProfile(currentUser.uid);
         dispatch(updateProfile(profile));
+
+        // Load the image URL from the database
+        const userRef = doc(db, 'users', currentUser.uid); // Replace 'users' with actual collection name
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const userProfile = userSnap.data() as UserProfile;
+          dispatch(updateProfile(userProfile)); // Update the redux store
+        }
       }
     };
     loadUserProfile();
@@ -48,7 +60,7 @@ function UpdateUserProfile() {
 
   const dataDisplay = (
     <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
-      <UploadUserProfileImage userProfile={(userProfileState)} />
+      <UploadUserProfileImage userProfile={{...userProfileState, imageUrl: 'http://example.com/image.jpg'}} />
       {!showEdit &&
         <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
       }
