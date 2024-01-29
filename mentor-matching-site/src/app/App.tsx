@@ -34,14 +34,14 @@ function App() {
       <ReduxProvider>
         <div className="App">
           <div>
-            <TopNav signedIn={signedin} />
-            <SideNav signedIn={signedin} />
+            <TopNav />
+            <SideNav />
           </div>
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login setSignedIn={setSignedIn} />} />
-              <Route path="/create-account" element={<CreateAccount setSignedIn={setSignedIn} />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/create-account" element={<CreateAccount />} />
               <Route path="/mentee-portal" element={<MenteePortal />} />
               <Route path="/admin-portal" element={<AdminPortal />} />
               <Route path="/mentor-portal" element={<MentorPortal />} />

@@ -5,7 +5,6 @@ export interface UserProfileProps {
 }
 
 export interface UserProfile {
-  displayName: string
   UID: string
   contact: UserContactInformation
   personal: UserPersonalInformation
@@ -20,7 +19,6 @@ export interface UserProfile {
 
 export const initUserProfile = () => {
   return {
-    displayName: "",
     UID: "",
     contact: initUserContactInformation(),
     personal: initUserPersonalInformation(),
@@ -63,7 +61,7 @@ export interface UserPersonalInformation {
   firstName: string
   lastName: string
   middleName: string
-  dob: string
+  dob: DateOfBirth
 }
 
 export const initUserPersonalInformation = () => {
@@ -71,7 +69,7 @@ export const initUserPersonalInformation = () => {
     firstName: "",
     lastName: "",
     middleName: "",
-    dob: ""
+    dob: initDateOfBirth()
   } as UserPersonalInformation
 }
 
@@ -122,6 +120,20 @@ export interface MatchHistoryItem {
   mentorProfileID: string
   matchDateTime: Date
   matchStatus: boolean
+}
+
+export interface DateOfBirth {
+  month: number
+  day: number
+  year: number
+}
+
+export const initDateOfBirth = () => {
+  return {
+    month: 0,
+    day: 0,
+    year: 1900
+  }
 }
 
 export interface UserStatus {

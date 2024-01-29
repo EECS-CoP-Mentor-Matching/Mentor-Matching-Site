@@ -9,7 +9,7 @@ interface DropDownControlLoaderReduxProps {
   }
   dbSearchAsync: () => Promise<any[]>
   mappingMethod: (values: any[]) => DropDownOption[]
-  label: string
+  label?: string
   selectedOption?: any
 }
 

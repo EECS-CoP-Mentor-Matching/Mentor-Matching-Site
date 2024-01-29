@@ -1,6 +1,7 @@
-import { UserProfile } from "../types/userProfile";
+import { MatchHistoryItem, UserAccountSettings, UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, doc, query, where, setDoc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, doc, query, where, setDoc, updateDoc, addDoc } from "firebase/firestore";
+import { User } from "firebase/auth";
 
 const collectionName = "userProfile";
 
@@ -9,8 +10,24 @@ async function updateUserProfileAsync(uid: string, userProfile: UserProfile): Pr
   await updateDoc(userDocRef, userProfile as { [key: string]: any });
 }
 
-async function createNewUserAsync(userProfile: UserProfile): Promise<boolean> {
-  await setDoc(doc(db, collectionName, userProfile.UID), userProfile);
+async function createNewUserAsync(user: User, userProfile: UserProfile): Promise<boolean> {
+  const initialUserProfile = {
+    UID: user.uid,
+    contact: userProfile.contact,
+    personal: userProfile.personal,
+    demographics: userProfile.demographics,
+    education: userProfile.education,
+    accountSettings: {
+      userStatus: "active",
+      menteePortalEnabled: userProfile.accountSettings.menteePortalEnabled,
+      mentorPortalEnabled: userProfile.accountSettings.mentorPortalEnabled,
+      useDemographicsForMatching: userProfile.accountSettings.useDemographicsForMatching
+    } as UserAccountSettings,
+    matchHistory: Array<MatchHistoryItem>(),
+    profilePictureUrl: userProfile.profilePictureUrl,
+    preferences: userProfile.preferences
+  } as UserProfile;
+  await setDoc(doc(db, collectionName, user.uid), initialUserProfile);
   return true;
 }
 
@@ -25,7 +42,7 @@ async function getUserProfileAsync(uid: string): Promise<UserProfile> {
   const conditions = [];
   conditions.push(where("UID", "==", uid));
   const users = await searchAsync(conditions);
-  if (users.length === 1) {
+  if (users.length >= 1) {
     return users[0];
   }
   else {
