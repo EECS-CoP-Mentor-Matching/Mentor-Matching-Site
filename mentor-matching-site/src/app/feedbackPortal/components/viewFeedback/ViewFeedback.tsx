@@ -10,10 +10,13 @@ interface FeedbackEntry {
 export default function ViewFeedback() {
   const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>([]);
 
+  
+
   useEffect(() => {
     const fetchFeedbackEntries = async () => {
       try {
         const response = await feedbackService.fetchFeedbackEntries();
+setFeedbackEntries(response.data);
         setFeedbackEntries(response.data);
       } catch (error) {
         console.error('Error fetching feedback entries:', error);

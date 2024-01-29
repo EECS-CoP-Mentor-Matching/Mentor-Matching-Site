@@ -9,6 +9,8 @@ import SubmitFeedback from './components/submitFeedback/SubmitFeedback';
 import ViewFeedback from './components/viewFeedback/ViewFeedback';
 import FeedbackSettings from './components/FeedbackSettings/FeedbackSettings';
 
+import React from 'react';
+
 export enum FeedbackPages {
   submitFeedback = 'Submit Feedback',
   viewFeedback = 'View Feedback',
