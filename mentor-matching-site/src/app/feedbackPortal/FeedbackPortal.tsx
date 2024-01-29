@@ -5,7 +5,7 @@ import authService from '../../service/authService';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 
-import SubmitFeedback from './components/FeedbackSettings/FeedbackSettings';
+import SubmitFeedback from './components/submitFeedback/SubmitFeedback';
 import ViewFeedback from './components/viewFeedback/ViewFeedback';
 import FeedbackSettings from './components/FeedbackSettings/FeedbackSettings';
 

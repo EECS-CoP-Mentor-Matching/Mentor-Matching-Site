@@ -5,7 +5,7 @@ interface SubmitFeedbackProps {
   userEmail: string;
 }
 
-export default function SubmitFeedback ({ userEmail }) {
+export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
   const [feedbackType, setFeedbackType] = useState<string>('');
   const [feedbackContent, setFeedbackContent] = useState<string>('');
 
