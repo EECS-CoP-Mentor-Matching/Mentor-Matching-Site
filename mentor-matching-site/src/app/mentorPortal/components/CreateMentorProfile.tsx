@@ -1,17 +1,65 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ContentContainer from "../../common/ContentContainer";
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { mentorService } from "../../../service/mentorService";
-import { MatchProfile } from "../../../types/matchProfile";
+import {ExperienceLevel, MatchProfile} from "../../../types/matchProfile";
 import authService from "../../../service/authService";
+import {interestsService} from "../../../service/interestsService";
 
 function CreateMentorProfile() {
-    const [personalInterest, setPersonalInterest] = useState('');
-    const [personalExperience, setPersonalExperience] = useState('');
+    const [technicalInterestOptions, setTechnicalInterestOptions] = useState<string[]>([]);
     const [technicalInterest, setTechnicalInterest] = useState('');
     const [technicalExperience, setTechnicalExperience] = useState('');
 
+    const [professionalInterestOptions, setProfessionalInterestOptions] = useState<string[]>([]);
+    const [professionalInterest, setProfessionalInterest] = useState('');
+    const [professionalExperience, setProfessionalExperience] = useState('');
+
+    const [experienceLevelOptions, setExperienceLevelOptions] = useState<ExperienceLevel[]>([]);
+
     const [statusMessage, setStatusMessage] = useState('');
+
+    useEffect(() => {
+        const fetchTechnicalInterests = async () => {
+            try {
+                const interests = await interestsService.getTechnicalInterests();
+                const combinedInterests = interests.flatMap(interest =>
+                    [interest.broadInterest, ...interest.specificInterests]
+                );
+                setTechnicalInterestOptions(combinedInterests);
+            } catch (error) {
+                console.error("Error fetching technical interests:", error);
+            }
+        };
+
+        const fetchProfessionalInterests = async () => {
+            try {
+                const interests = await interestsService.getProfessionalInterests();
+                const combinedInterests = interests.flatMap(interest =>
+                    [interest.professionalInterest]
+                )
+                setProfessionalInterestOptions(combinedInterests);
+            } catch (error) {
+                console.error("Error fetching professional interests:", error);
+            }
+        };
+
+        const fetchExperienceLevels = async () => {
+            try {
+                let experienceLevels = await interestsService.getExperienceLevels();
+
+                experienceLevels = experienceLevels.sort((a, b) => a.hierarchy - b.hierarchy);
+
+                setExperienceLevelOptions(experienceLevels);
+            } catch (error) {
+                console.error("Error fetching experience levels:", error);
+            }
+        };
+
+        fetchTechnicalInterests();
+        fetchProfessionalInterests();
+        fetchExperienceLevels();
+    }, []);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -21,8 +69,8 @@ function CreateMentorProfile() {
                 UID: user.uid,
                 technicalInterest,
                 technicalExperience: Number(technicalExperience),
-                professionalInterest: personalInterest,
-                professionalExperience: Number(personalExperience)
+                professionalInterest: professionalInterest,
+                professionalExperience: Number(professionalExperience)
             };
 
             try {
@@ -35,24 +83,6 @@ function CreateMentorProfile() {
             setStatusMessage("Error authenticating user");
         }
     };
-
-    const technicalInterestOptions = [
-        '.NET',
-        'Software Engineering',
-        'Electrical Engineering',
-        'AutoCAD'
-    ];
-    const personalInterestOptions = [
-        'Resume',
-        'Interviews',
-        'Job Applications'
-    ];
-    const experienceOptions = [
-        { label: 'Novice (0 - 1 years)', value: 1 },
-        { label: 'Intermediate (1 - 3 years)', value: 2 },
-        { label: 'Advanced (3 - 5 years)', value: 3 },
-        { label: 'Expert (5+ years)', value: 4 }
-    ];
 
     return (
         <ContentContainer
@@ -98,8 +128,8 @@ function CreateMentorProfile() {
                                 onChange={(e) => setTechnicalExperience(e.target.value)}
                             >
                                 {
-                                    experienceOptions.map((option, index) => (
-                                        <MenuItem key={index} value={option.value}>{option.label}</MenuItem>
+                                    experienceLevelOptions.map((option, index) => (
+                                        <MenuItem key={index} value={option.hierarchy}>{option.level}</MenuItem>
                                     ))
                                 }
                             </Select>
@@ -108,13 +138,13 @@ function CreateMentorProfile() {
 
                     <Grid item xs={12} md={6}>
                         <FormControl fullWidth margin="normal">
-                            <InputLabel>Personal Interests</InputLabel>
+                            <InputLabel>Professional Interests</InputLabel>
                             <Select
-                                value={personalInterest}
-                                label="Personal Interests"
-                                onChange={(e) => setPersonalInterest(e.target.value)}
+                                value={professionalInterest}
+                                label="Professional Interests"
+                                onChange={(e) => setProfessionalInterest(e.target.value)}
                             >
-                                {personalInterestOptions.map((option, index) => (
+                                {professionalInterestOptions.map((option, index) => (
                                     <MenuItem key={index} value={option}>{option}</MenuItem>
                                 ))}
                             </Select>
@@ -124,13 +154,13 @@ function CreateMentorProfile() {
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Experience Level</InputLabel>
                             <Select
-                                value={personalExperience}
+                                value={professionalExperience}
                                 label="Experience Level"
-                                onChange={(e) => setPersonalExperience(e.target.value)}
+                                onChange={(e) => setProfessionalExperience(e.target.value)}
                             >
                                 {
-                                    experienceOptions.map((option, index) => (
-                                        <MenuItem key={index} value={option.value}>{option.label}</MenuItem>
+                                    experienceLevelOptions.map((option, index) => (
+                                        <MenuItem key={index} value={option.hierarchy}>{option.level}</MenuItem>
                                     ))
                                 }
                             </Select>
