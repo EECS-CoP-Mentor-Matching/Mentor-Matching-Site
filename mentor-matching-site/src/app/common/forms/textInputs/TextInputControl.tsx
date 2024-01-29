@@ -6,17 +6,20 @@ interface TextInputControlProps {
   onInputValidation?: (value: string) => boolean
   onSubmit?: () => void
   onSubmitValidation?: (value: string) => boolean
-  label: string
-  value?: string
+  label?: string
+  value?: any
   readonly?: boolean
   widthMulti?: number
   sensitive?: boolean
+  editColor?: string
+  style?: any
 }
 
-function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive }: TextInputControlProps) {
-  const style = {
+function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive, editColor, style }: TextInputControlProps) {
+  const controlStyle = {
     width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`,
-    color: sensitive ? "transparent" : ""
+    color: sensitive ? "transparent" : "",
+    borderBottomColor: editColor !== undefined ? editColor : ""
   }
 
   const [isValid, setIsValid] = useState(true);
@@ -80,7 +83,7 @@ function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValida
         readOnly={readonly}
         onChange={handleInput}
         onKeyDown={handleKeyDown}
-        sx={{ ...style }} />
+        sx={{ ...controlStyle, ...style }} />
       {sensitive &&
         <div style={{ zIndex: 100, position: 'absolute', bottom: 5, backgroundColor: 'white', fontSize: '1.5rem' }}>{maskedValue}</div>
       }

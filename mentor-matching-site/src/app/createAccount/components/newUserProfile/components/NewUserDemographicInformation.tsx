@@ -1,32 +1,20 @@
-import { UserDemographicInformation } from "../../../../../types";
-import CheckboxControl from "../../../../common/forms/CheckboxControl";
-import FormGroupCols from "../../../../common/forms/FormGroupCols";
-import TextInputControl from "../../../../common/forms/TextInputControl";
+import { useAppSelector } from "../../../../../redux/hooks";
+import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import { FormLabel } from "@mui/material";
+import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
+import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
+import SelectRacialIdentity from "../../../../userProfileCommon/dropdowns/SelectRacialIdentity";
+import { updateLgbtqPlus, updateRacialIdentity } from "../../../../../redux/reducers/profileReducer";
 
-interface NewUserDemographicInformationProps {
-  demographicInformation: UserDemographicInformation
-  setDemographicInformation: (value: UserDemographicInformation) => void
-}
-
-function NewUserDemographicInformation(props: NewUserDemographicInformationProps) {
-  function setRacialIdentity(value: string) {
-    props.demographicInformation.racialIdentity = value;
-    props.setDemographicInformation(props.demographicInformation);
-  }
-
-  function setLgbtqPlusCommunity(value: boolean) {
-    props.demographicInformation.lgbtqPlusCommunity = value;
-    props.setDemographicInformation(props.demographicInformation);
-  }
+function NewUserDemographicInformation() {
+  const selector = useAppSelector;
+  const demographicInformation = selector(state => state.profile.userProfile.demographics);
 
   return (
     <FormGroupCols>
       <FormLabel>User Demographics</FormLabel>
-      <TextInputControl label="Racial Identity" onInput={setRacialIdentity}
-        value={props.demographicInformation.racialIdentity} widthMulti={.15} />
-      <CheckboxControl label="Do you identify as a member of the LGBTQ+ Community?" onChange={setLgbtqPlusCommunity}
-        checked={props.demographicInformation.lgbtqPlusCommunity} />
+      <SelectRacialIdentity onSelectDispatch={updateRacialIdentity} currentValue={demographicInformation.racialIdentity} />
+      <CheckBoxControlRedux label="Do you identify as a member of the LGBTQ+ Community?" onChangeDispatch={updateLgbtqPlus} checked={demographicInformation.lgbtqPlusCommunity} />
     </FormGroupCols>
   );
 }

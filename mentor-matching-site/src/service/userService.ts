@@ -1,8 +1,9 @@
+import { User } from "firebase/auth";
 import userDb from "../dal/userDb";
-import { UserProfile } from "../types";
+import { UserProfile } from "../types/userProfile";
 
-async function createNewUser(userProfile: UserProfile) {
-  userDb.createNewUserAsync(userProfile);
+async function createNewUser(user: User, userProfile: UserProfile) {
+  userDb.createNewUserAsync(user, userProfile);
 }
 
 async function getUserProfile(uid: string): Promise<UserProfile> {

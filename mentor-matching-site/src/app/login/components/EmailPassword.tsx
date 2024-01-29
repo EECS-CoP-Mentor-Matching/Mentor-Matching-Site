@@ -1,6 +1,6 @@
 import { FormGroup } from "@mui/material";
 import "../Login.css";
-import TextInputControl from "../../common/forms/TextInputControl";
+import TextInputControl from "../../common/forms/textInputs/TextInputControl";
 
 interface EmailPasswordProps {
   setEmail: (email: string) => void

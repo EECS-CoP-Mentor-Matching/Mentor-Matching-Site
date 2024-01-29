@@ -1,20 +1,19 @@
-import { InputLabel, Input, FormControl, FormGroup } from "@mui/material";
-import TextInputControl from "../../common/forms/TextInputControl";
+import { updateEmail } from "../../../redux/reducers/profileReducer";
+import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
 
 interface EmailProps {
-  setEmail: (email: string) => void
   submitEmail: () => void
   emailValidation: (email: string) => boolean
 }
 
-function Email({ setEmail, submitEmail, emailValidation }: EmailProps) {
+function Email({ submitEmail, emailValidation }: EmailProps) {
   return (
-    <>
-      <TextInputControl onInput={setEmail} label="Email"
-        onSubmit={submitEmail}
-        onSubmitValidation={emailValidation}
-        widthMulti={.25} />
-    </>
+    <TextInputControlRedux
+      onInputDispatch={updateEmail}
+      label="Email"
+      onSubmit={submitEmail}
+      onSubmitValidation={emailValidation}
+      widthMulti={.25} />
   );
 }
 

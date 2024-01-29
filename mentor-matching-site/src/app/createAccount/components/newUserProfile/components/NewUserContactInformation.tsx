@@ -1,48 +1,22 @@
-import { useState } from "react";
-import FormGroupCols from "../../../../common/forms/FormGroupCols";
-import TextInputControl from "../../../../common/forms/TextInputControl";
+import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import { FormLabel } from "@mui/material";
-import SelectTimeZone from "./SelectTimeZone";
-import { UserContactInformation } from "../../../../../types";
-import TextAreaControl from "../../../../common/forms/TextAreaControl";
+import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
+import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
+import { useAppSelector } from "../../../../../redux/hooks";
+import { updateDisplayName, updatePronouns, updateTimeZone } from "../../../../../redux/reducers/profileReducer";
+import SelectTimeZone from "../../../../userProfileCommon/dropdowns/SelectTimeZone";
 
-interface NewUserContactInformationProps {
-  contactInformation: UserContactInformation
-  setContactInformation: (value: UserContactInformation) => void
-}
-
-function NewUserContactInformation(props: NewUserContactInformationProps) {
-  function setDisplayName(value: string) {
-    props.contactInformation.displayName = value;
-    props.setContactInformation(props.contactInformation);
-  }
-
-  function setTimeZone(value: string | undefined) {
-    props.contactInformation.timeZone = value != undefined ? value : '';
-    props.setContactInformation(props.contactInformation);
-  }
-
-  function setPronouns(value: string) {
-    props.contactInformation.pronouns = value;
-    props.setContactInformation(props.contactInformation);
-  }
-
-  function setBio(value: string) {
-    props.contactInformation.userBio = value;
-    props.setContactInformation(props.contactInformation);
-  }
+function NewUserContactInformation() {
+  const selector = useAppSelector;
+  const contactInformation = selector(state => state.profile.userProfile.contact);
 
   return (
     <FormGroupCols>
-      <FormLabel>Welcome! Start by entering your contact information.</FormLabel>
-      <div>Email: {props.contactInformation.email}</div>
-      <SelectTimeZone onSelect={setTimeZone} />
-      <TextInputControl label="Pronouns" onInput={setPronouns}
-        value={props.contactInformation.pronouns} widthMulti={.15} />
-      <TextInputControl label="Display Name" onInput={setDisplayName}
-        value={props.contactInformation.displayName} widthMulti={.15} />
-      <TextInputControl label="Bio" onInput={setBio}
-        value={props.contactInformation.userBio} widthMulti={.15} />
+      <FormLabel>Contact Information</FormLabel>
+      <TextInputControl value={contactInformation.email} readonly={true} label="Email" widthMulti={.15} />
+      <TextInputControlRedux value={contactInformation.displayName} label="Display Name" onInputDispatch={updateDisplayName} widthMulti={.15} />
+      <TextInputControlRedux value={contactInformation.pronouns} label="Pronouns" onInputDispatch={updatePronouns} />
+      <SelectTimeZone onSelectDispatch={updateTimeZone} currentValue={contactInformation.timeZone} />
     </FormGroupCols>
   );
 }

@@ -1,21 +1,16 @@
-import { FormControl, Button, FormLabel, FormGroup, Input, InputLabel } from "@mui/material";
-import SelectTimeZone from "./components/SelectTimeZone";
 import authService from "../../../../service/authService";
-import TextInputControl from "../../../common/forms/TextInputControl";
 import { useState } from "react";
-import FormGroupCols from "../../../common/forms/FormGroupCols";
-import FormGroupRows from "../../../common/forms/FormGroupRows";
+import FormGroupCols from "../../../common/forms/layout/FormGroupCols";
 import NewUserContactInformation from "./components/NewUserContactInformation";
 import NewUserPersonalInformation from "./components/NewUserPersonalInformation";
 import NewUserDemographicInformation from "./components/NewUserDemographicInformation";
 import NewUserEducationInformation from "./components/NewUserEducationInformation";
 import NewUserPreferences from "./components/NewUserPreferences";
-import { UserContactInformation, UserDemographicInformation, UserEducationInformation, UserPersonalInformation, UserProfile } from "../../../../types";
-import { UserPreferences } from "typescript";
 import NewUserSubmit from "./components/NewUserSubmit";
 import NewUserNavigation from "./components/NewUserNavigation";
 import userService from "../../../../service/userService";
-import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../../redux/hooks";
+import { refreshNavigate } from "../../../common/auth/refreshNavigate";
 
 enum FormStep {
   Contact = 1,
@@ -23,49 +18,30 @@ enum FormStep {
   Educational = 3,
   Personal = 4,
   Preferences = 5,
-  Submit = 6
+  Submit = 6,
+  AccountCreated = 7
 }
 
-interface NewUserProfileProps {
-  email: string
-  setSignedIn: (signedIn: boolean) => void
-}
-
-function NewUserProfile(props: NewUserProfileProps) {
+function NewUserProfile() {
   const [currentStep, setCurrentStep] = useState(FormStep.Contact);
-  const [contactInformation, setContactInformation] = useState<UserContactInformation>({ email: props.email } as UserContactInformation);
-  const [personalInformation, setPersonalInformation] = useState<UserPersonalInformation>({} as UserPersonalInformation);
-  const [demographicInformation, setDemographicInformation] = useState<UserDemographicInformation>({} as UserDemographicInformation);
-  const [educationInformation, setEducationInformation] = useState<UserEducationInformation>({} as UserEducationInformation);
-  const [userPreferences, setUserPreferences] = useState<UserPreferences>({} as UserPreferences);
-  const navigate = useNavigate();
+  const selector = useAppSelector;
+  const userProfile = selector(state => state.profile.userProfile);
+  const email = selector(state => state.profile.userProfile.contact.email);
 
   async function createNewUser(password: string) {
-    console.log("Contact: ", contactInformation);
-    console.log("Personal: ", personalInformation);
-    console.log("Demographic: ", demographicInformation);
-    console.log("Education: ", educationInformation);
-
+    console.log(userProfile);
     try {
-      const user = await authService.createUser(props.email, password);
+      const user = await authService.createUser(email, password);
       if (user) {
-        const uid = user.uid;
-        const userProfile = {
-          UID: uid,
-          contact: contactInformation,
-          personal: personalInformation,
-          demographics: demographicInformation,
-          education: educationInformation,
-          preferences: userPreferences,
-        } as UserProfile;
-        await userService.createNewUser(userProfile);
-
-        props.setSignedIn(true);
-        navigate("/");
+        await userService.createNewUser(user, userProfile);
+        const userCreated = await userService.getUserProfile(user.uid);
+        if (userCreated !== undefined) {
+          refreshNavigate("/");
+        }
       }
     } catch (error) {
+      // delete the user from firebase?
       console.error('Failed to create a new user:', error);
-      // Handle error (show message to user, etc.)
     }
   }
 
@@ -84,25 +60,15 @@ function NewUserProfile(props: NewUserProfileProps) {
   const loadCurrentFormStep = () => {
     switch (currentStep) {
       case FormStep.Contact:
-        return <NewUserContactInformation
-          contactInformation={contactInformation}
-          setContactInformation={setContactInformation} />
+        return <NewUserContactInformation />
       case FormStep.Demographic:
-        return <NewUserDemographicInformation
-          demographicInformation={demographicInformation}
-          setDemographicInformation={setDemographicInformation} />
+        return <NewUserDemographicInformation />
       case FormStep.Educational:
-        return <NewUserEducationInformation
-          educationInformation={educationInformation}
-          setEducationInformation={setEducationInformation} />
+        return <NewUserEducationInformation />
       case FormStep.Personal:
-        return <NewUserPersonalInformation
-          personalInformation={personalInformation}
-          setPersonalInformation={setPersonalInformation} />
+        return <NewUserPersonalInformation />
       case FormStep.Preferences:
-        return <NewUserPreferences
-          userPreferences={userPreferences}
-          setUserPreferences={setUserPreferences} />
+        return <NewUserPreferences />
       case FormStep.Submit:
         return <NewUserSubmit createNewUser={createNewUser} />
       default:
@@ -117,9 +83,10 @@ function NewUserProfile(props: NewUserProfileProps) {
       <FormGroupCols>
         {loadCurrentFormStep()}
         <NewUserNavigation nextStep={nextStep}
-          hideNext={currentStep == FormStep.Submit}
+          hideNext={currentStep === FormStep.Submit}
           previousStep={previousStep}
-          hidePrevious={currentStep == FormStep.Contact} />
+          hidePrevious={currentStep === FormStep.Contact}
+        />
       </FormGroupCols>
     </div>
   );

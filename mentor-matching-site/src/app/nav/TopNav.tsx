@@ -1,24 +1,11 @@
 import "./TopNav.css";
 import { hamburger } from "../../icons/icons";
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
 import authService from "../../service/authService";
+import AuthenticatedView from "../common/auth/AuthenticatedView";
+import UnauthenticatedView from "../common/auth/UnauthenticatedView";
 
-interface TopNavProps {
-  signedIn: boolean
-}
-
-function TopNav(props: TopNavProps) {
-  const [showLogin, setShowLogin] = useState(false);
-
-  useEffect(() => {
-    const checkAuthState = async () => {
-      await authService.waitForAuthState()
-      setShowLogin(true);
-    }
-    checkAuthState();
-  });
-
+function TopNav() {
   async function logout() {
     await authService.signOut();
   }
@@ -34,19 +21,15 @@ function TopNav(props: TopNavProps) {
   return (
     <div className="top-nav">
       <Button onClick={openSideNav}>{hamburger}</Button>
-      {showLogin && 
-        <>
-          {props.signedIn &&
-          <Button href="/logout" onClick={logout}>Logout</Button>
-          }
-          {!props.signedIn && 
-          <div>
-            <Button style={{ marginRight: '10px' }} href="/login">Login</Button>
-            <Button href="/create-account">Create Account</Button>
-          </div>
-          }
-        </>
-      }
+      <AuthenticatedView>
+        <Button href="/logout" onClick={logout}>Logout</Button>
+      </AuthenticatedView>
+      <UnauthenticatedView>
+        <div>
+          <Button style={{ marginRight: '10px' }} href="/login">Login</Button>
+          <Button href="/create-account">Create Account</Button>
+        </div>
+      </UnauthenticatedView>
     </div>
   )
 }

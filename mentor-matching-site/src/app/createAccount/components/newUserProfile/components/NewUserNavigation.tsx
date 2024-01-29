@@ -1,5 +1,6 @@
-import FormGroupRows from "../../../../common/forms/FormGroupRows";
+import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import { Button } from "@mui/material";
+import { refreshNavigate } from "../../../../common/auth/refreshNavigate";
 
 interface NewUserNavigationProps {
   nextStep: () => void
@@ -8,11 +9,11 @@ interface NewUserNavigationProps {
   hidePrevious?: boolean
 }
 
-function NewUserNavigation(props: NewUserNavigationProps) {
+function NewUserNavigation({ nextStep, hideNext, previousStep, hidePrevious }: NewUserNavigationProps) {
   return (
     <FormGroupRows>
-      {!props.hidePrevious && <Button onClick={props.previousStep}>Previous</Button>}
-      {!props.hideNext && <Button onClick={props.nextStep}>Next</Button>}
+      {!hidePrevious && <Button onClick={previousStep}>Previous</Button>}
+      {!hideNext && <Button onClick={nextStep}>Next</Button>}
     </FormGroupRows>
   );
 }

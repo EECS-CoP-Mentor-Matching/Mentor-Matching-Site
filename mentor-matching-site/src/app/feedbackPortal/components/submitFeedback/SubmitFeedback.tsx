@@ -5,7 +5,7 @@ interface SubmitFeedbackProps {
   userEmail: string;
 }
 
-export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
+export default function SubmitFeedback ({ userEmail }) {
   const [feedbackType, setFeedbackType] = useState<string>('');
   const [feedbackContent, setFeedbackContent] = useState<string>('');
 
@@ -20,16 +20,16 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
     };
 
     try {
-    
-        /*
-      const response = await feedbackService.submitFeedback(feedbackData);
-      alert(response.success ? 'Feedback submitted successfully!' : `Error: ${response.error}`);
-      // Optionally, you can redirect or perform additional actions after successful submission
-      */
+
+      /*
+    const response = await feedbackService.submitFeedback(feedbackData);
+    alert(response.success ? 'Feedback submitted successfully!' : `Error: ${response.error}`);
+    // Optionally, you can redirect or perform additional actions after successful submission
+    */
     } catch (error) {
       console.error('Error submitting feedback:', error);
       alert('An error occurred while submitting feedback.');
-      
+
     }
   };
 
@@ -65,3 +65,5 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
     </div>
   );
 };
+
+export default SubmitFeedback;

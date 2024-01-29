@@ -1,0 +1,70 @@
+import { Button, FormGroup } from "@mui/material";
+import "./UserProfile.css";
+import authService from "../../service/authService";
+import userService from "../../service/userService";
+import { useState, useEffect } from "react";
+import UploadUserProfileImage from "../userProfileCommon/imageUpload/UploadUserProfileImage";
+import UpdatePersonalInformation from "./components/UpdatePersonalInformation";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { updateProfile } from "../../redux/reducers/profileReducer";
+import UpdateUserContactInformation from "./components/UpdateUserContactInformation";
+import UpdateUserDemographicInformation from "./components/UpdateDemographicsInformation";
+import UpdateEducationInformation from "./components/UpdateEducationInformation";
+
+function UpdateUserProfile() {
+  const [showEdit, setShowEdit] = useState(false);
+  const dispatch = useAppDispatch();
+  const selector = useAppSelector;
+  const userProfileState = selector(state => state.profile.userProfile);
+
+  const showEditStyle = {
+    borderBottom: showEdit ? "solid orange 1px" : ""
+  }
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      const currentUser = await authService.getSignedInUser();
+      if (currentUser) {
+        const profile = await userService.getUserProfile(currentUser.uid);
+        dispatch(updateProfile(profile));
+      }
+    };
+    loadUserProfile();
+  }, []);
+
+  const saveChanges = async () => {
+    await userService.updateUserProfile(userProfileState.UID, userProfileState);
+    setShowEdit(!showEdit);
+  }
+
+  const dataIsLoading = () => {
+    if (userProfileState === undefined) {
+      return (<>Data is loading...</>)
+    }
+    else {
+      return dataDisplay;
+    }
+  }
+
+  const dataDisplay = (
+    <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
+      <UploadUserProfileImage userProfile={(userProfileState)} />
+      {!showEdit &&
+        <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
+      }
+      {showEdit &&
+        <Button onClick={saveChanges}>Save Profile</Button>
+      }
+      <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+      <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+      <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+      <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+    </FormGroup>
+  );
+
+  return (
+    <>{dataIsLoading()}</>
+  );
+}
+
+export default UpdateUserProfile;

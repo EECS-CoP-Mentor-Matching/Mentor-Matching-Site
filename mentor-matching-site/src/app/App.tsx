@@ -6,7 +6,7 @@ import TopNav from './nav/TopNav';
 import SideNav from './nav/SideNav';
 import CreateAccount from './createAccount/CreateAccount';
 import MenteePortal from './menteePortal/MenteePortal';
-import ViewUserProfile from './userProfile/components/ViewUserProfile';
+import UpdateUserProfile from './updateUserProfile/UpdateUserProfile'
 import { ThemeProvider } from '@emotion/react';
 import theme from "./theme";
 import { useEffect, useState } from 'react';
@@ -34,18 +34,18 @@ function App() {
       <ReduxProvider>
         <div className="App">
           <div>
-            <TopNav signedIn={signedin} />
-            <SideNav signedIn={signedin} />
+            <TopNav />
+            <SideNav />
           </div>
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login setSignedIn={setSignedIn} />} />
-              <Route path="/create-account" element={<CreateAccount setSignedIn={setSignedIn} />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/create-account" element={<CreateAccount />} />
               <Route path="/mentee-portal" element={<MenteePortal />} />
               <Route path="/admin-portal" element={<AdminPortal />} />
               <Route path="/mentor-portal" element={<MentorPortal />} />
-              <Route path="/profile" element={<ViewUserProfile />} />
+              <Route path="/update-profile" element={<UpdateUserProfile />} />
             </Routes>
           </BrowserRouter>
         </div>

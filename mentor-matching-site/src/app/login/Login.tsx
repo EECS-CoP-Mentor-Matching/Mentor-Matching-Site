@@ -5,22 +5,17 @@ import authService from "../../service/authService";
 import { Button, FormControl, FormGroup, FormLabel, Link } from "@mui/material";
 import "./Login.css";
 import { User } from "firebase/auth";
+import { refreshNavigate } from "../common/auth/refreshNavigate";
 
-interface LoginProps {
-  setSignedIn: (signedIn: boolean) => void;
-}
-
-function Login(props: LoginProps) {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
 
   async function login() {
     try {
       const user = (await authService.signIn(email, password)) as User;
       if (user !== undefined) {
-        props.setSignedIn(true);
-        navigate("/");
+        refreshNavigate("/");
       }
     }
     catch (error) {

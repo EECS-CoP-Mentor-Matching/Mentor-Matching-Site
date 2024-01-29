@@ -1,4 +1,5 @@
-import { MatchProfile, UserProfile } from "../types";
+import { UserProfile } from "../types/userProfile";
+import { MatchProfile } from "../types/matchProfile";
 import mentorDb from "../dal/mentorDb";
 
 async function searchMentorsByProfileMatch(menteeUser: UserProfile, menteeProfile: MatchProfile) {
