@@ -6,6 +6,11 @@ interface FeedbackData {
   feedbackType: string;
   feedbackContent: string;
   isResolved: boolean;
+
+}
+
+interface FeedbackResponse {
+  data: FeedbackData[];
 }
 
 /** Submit feedback to Firebase */
@@ -20,15 +25,17 @@ async function submitFeedback(feedbackData: FeedbackData): Promise<void> {
   }
 }
 
+
+
 /** Fetch feedback entries from Firebase */
-async function fetchFeedbackEntries(): Promise<FeedbackData[]> {
+async function fetchFeedbackEntries(): Promise<FeedbackResponse> {
   try {
     const querySnapshot = await getDocs(collection(db, "feedback"));
     const feedbackEntries: FeedbackData[] = [];
     querySnapshot.forEach((doc) => {
       feedbackEntries.push(doc.data() as FeedbackData);
     });
-    return feedbackEntries;
+    return { data: feedbackEntries };
   } catch (error) {
     // Handle error
     console.error("Error fetching feedback entries:", error);
