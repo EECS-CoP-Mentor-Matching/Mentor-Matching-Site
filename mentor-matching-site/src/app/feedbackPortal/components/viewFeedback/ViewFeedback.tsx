@@ -13,8 +13,8 @@ export default function ViewFeedback() {
   useEffect(() => {
     const fetchFeedbackEntries = async () => {
       try {
-        //const response = await feedbackService.fetchFeedbackEntries();
-        //setFeedbackEntries(response.data);
+        const response = await feedbackService.fetchFeedbackEntries();
+        setFeedbackEntries(response.data);
       } catch (error) {
         console.error('Error fetching feedback entries:', error);
       }

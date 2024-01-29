@@ -24,7 +24,7 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
       /*
     const response = await feedbackService.submitFeedback(feedbackData);
     alert(response.success ? 'Feedback submitted successfully!' : `Error: ${response.error}`);
-    // Optionally, you can redirect or perform additional actions after successful submission
+    
     */
     } catch (error) {
       console.error('Error submitting feedback:', error);
