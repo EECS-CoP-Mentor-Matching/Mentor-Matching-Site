@@ -5,7 +5,7 @@ interface SubmitFeedbackProps {
   userEmail: string;
 }
 
-function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
+export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
   const [feedbackType, setFeedbackType] = useState<string>('');
   const [feedbackContent, setFeedbackContent] = useState<string>('');
 
@@ -65,5 +65,3 @@ function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
     </div>
   );
 };
-
-export default SubmitFeedback;
