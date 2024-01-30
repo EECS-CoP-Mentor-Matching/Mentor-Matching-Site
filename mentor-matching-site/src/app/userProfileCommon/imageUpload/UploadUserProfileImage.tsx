@@ -14,7 +14,7 @@ interface UploadUserProfileImageProps {
 }
 
 interface UserProfile {
-  imageUrl: string; // Add the imageUrl property
+  imageUrl?: string; // Add the imageUrl property
 }
 
 function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
@@ -54,7 +54,10 @@ function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
         }
       }}>
         <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
-        {userProfile && userProfile.imageUrl && <img src={userProfile.imageUrl} alt="User profile" />}
+        {userProfile && userProfile.imageUrl
+            ? <img src={userProfile.imageUrl} alt="User profile" />
+            : <span>Upload Image</span> // or use an icon/button for upload
+        }
       </button>
     </FormGroup>
   );
