@@ -4,6 +4,7 @@ import { UserPersonalInformation, UserProfile, UserContactInformation, UserDemog
 import { RootState } from "../store";
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
+import authService from "../../service/authService";
 
 const initialState = {
   userProfile: initUserProfile()
@@ -14,16 +15,19 @@ export interface UserProfileState {
 }
 
 export const updateProfileImageUrl = createAsyncThunk(
-  'profile/updateProfileImageUrl',
-  async (imageUrl: string, { getState }) => {
-    const state = getState() as RootState;
-    const userId = state.profile.userProfile.UID; // Replace with actual user ID path
+    'profile/updateProfileImageUrl',
+    async (imageUrl: string, { getState }) => {
+      const state = getState() as RootState;
+      const user = await authService.getSignedInUser();
+      if (user) {
+        const userId = user.uid; // Replace with actual user ID path
 
-    const userRef = doc(db, 'users', userId); // Replace 'users' with actual collection name
-    await setDoc(userRef, { imageUrl }, { merge: true });
+        const userRef = doc(db, 'userProfile', userId); // Replace 'users' with actual collection name
+        await setDoc(userRef, {imageUrl}, {merge: true});
 
-    return imageUrl;
-  }
+        return imageUrl;
+      }
+    }
 );
 
 export const profileSlice = createSlice({
@@ -66,7 +70,7 @@ export const profileSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(updateProfileImageUrl.fulfilled, (state, action) => {
-      state.userProfile.imageURL = action.payload;
+      state.userProfile.imageUrl = action.payload;
     });
   },
 });

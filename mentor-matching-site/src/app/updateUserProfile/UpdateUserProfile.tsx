@@ -60,7 +60,7 @@ function UpdateUserProfile() {
 
   const dataDisplay = (
     <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
-      <UploadUserProfileImage userProfile={{...userProfileState, imageUrl: 'http://example.com/image.jpg'}} />
+      <UploadUserProfileImage userProfile={{...userProfileState, imageUrl: userProfileState.imageUrl}} />
       {!showEdit &&
         <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
       }
