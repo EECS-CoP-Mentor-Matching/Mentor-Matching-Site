@@ -7,6 +7,7 @@ import { useAppDispatch } from '../../../redux/hooks'
 import { updateProfile, updateProfileImageUrl } from '../../../redux/reducers/profileReducer';
 import { Button, FormGroup, FormLabel } from '@mui/material';
 import "./UploadUserProfileImage.css"
+import { emptyProfileImage } from '../../../icons/icons';
 // import { emptyProfile/ Remove the unused import statementImage } from '../../../icons/icons';
 
 interface UploadUserProfileImageProps {
@@ -55,8 +56,11 @@ function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
       }}>
         <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
         {userProfile && userProfile.imageUrl
-            ? <img src={userProfile.imageUrl} alt="User profile" />
-            : <span>Upload Image</span> // or use an icon/button for upload
+          ? <img src={userProfile.imageUrl} alt="User profile" style={{ width: '10%', borderRadius: '50px' }} />
+          :
+          <>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>{emptyProfileImage} Upload Image</div>
+          </>
         }
       </button>
     </FormGroup>

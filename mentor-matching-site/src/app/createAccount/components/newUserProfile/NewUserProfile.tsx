@@ -40,9 +40,6 @@ function NewUserProfile() {
       if (user) {
         await userService.createNewUser(user, userProfile);
         const userCreated = await userService.getUserProfile(user.uid);
-        if (userCreated !== undefined) {
-          refreshNavigate("/");
-        }
       }
     } catch (error) {
       // delete the user from firebase?
