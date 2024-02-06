@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import feedbackService from './../../../../service/feedbackService'
+
+import './../submitFeedback/SubmitFeedback.css';
+import './ViewFeedback.css';
+
 interface FeedbackEntry {
   userEmail: string;
   feedbackType: string;
@@ -27,18 +31,22 @@ setFeedbackEntries(response.data);
   }, []);
 
   return (
-    <div>
+    <div className='feedback-profile'>
       <h2>View Feedback</h2>
-      <ul>
+      <div>
         {feedbackEntries.map((entry, index) => (
-          <li key={index}>
+          
+          <div className="feedback-interest view-feedback">
+          <div key={index}>
+            <strong>{index+1}</strong><br />
             <strong>User Email:</strong> {entry.userEmail}<br />
             <strong>Feedback Type:</strong> {entry.feedbackType}<br />
             <strong>Feedback Content:</strong> {entry.feedbackContent}<br />
             <strong>Resolved:</strong> {entry.isResolved ? 'Yes' : 'No'}<br />
-          </li>
+          </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

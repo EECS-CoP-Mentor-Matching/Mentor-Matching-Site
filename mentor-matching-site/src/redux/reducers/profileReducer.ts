@@ -1,7 +1,10 @@
 // This reducer will handle the user profile state:
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UserPersonalInformation, UserProfile, UserContactInformation, UserDemographicInformation, initUserProfile, UserEducationInformation, UserAccountSettings, DateOfBirth } from "../../types/userProfile";
 import { RootState } from "../store";
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
+import authService from "../../service/authService";
 
 const initialState = {
   userProfile: initUserProfile()
@@ -10,6 +13,22 @@ const initialState = {
 export interface UserProfileState {
   userProfile: UserProfile
 }
+
+export const updateProfileImageUrl = createAsyncThunk(
+    'profile/updateProfileImageUrl',
+    async (imageUrl: string, { getState }) => {
+      const state = getState() as RootState;
+      const user = await authService.getSignedInUser();
+      if (user) {
+        const userId = user.uid; // Replace with actual user ID path
+
+        const userRef = doc(db, 'userProfile', userId); // Replace 'users' with actual collection name
+        await setDoc(userRef, {imageUrl}, {merge: true});
+
+        return imageUrl;
+      }
+    }
+);
 
 export const profileSlice = createSlice({
   name: 'profile',
@@ -48,9 +67,12 @@ export const profileSlice = createSlice({
     updateMenteePortalEnabled: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.menteePortalEnabled = action.payload; },
     updateMentorPortalEnabled: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.mentorPortalEnabled = action.payload; },
     updateUseDemographicsForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.useDemographicsForMatching = action.payload; },
-    // profile image
-    updateProfileImageUrl: (state, action: PayloadAction<string>) => { state.userProfile.profilePictureUrl = action.payload; }
-  }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateProfileImageUrl.fulfilled, (state, action) => {
+      state.userProfile.imageUrl = action.payload;
+    });
+  },
 });
 
 export const {
@@ -67,7 +89,6 @@ export const {
   // account settings
   updateAccountSettings, updateUserStatus, updateMenteePortalEnabled, updateMentorPortalEnabled, updateUseDemographicsForMatching,
   // profile image
-  updateProfileImageUrl
 } = profileSlice.actions
 
 export const selectProfile = (state: RootState) => state.profile

@@ -14,6 +14,7 @@ import authService from '../service/authService';
 import Home from './Home';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
+import FeedbackPortal from './feedbackPortal/FeedbackPortal';
 import ReduxProvider from '../redux/store';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
               <Route path="/admin-portal" element={<AdminPortal />} />
               <Route path="/mentor-portal" element={<MentorPortal />} />
               <Route path="/update-profile" element={<UpdateUserProfile />} />
+              <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"}/>} />
             </Routes>
           </BrowserRouter>
         </div>

@@ -30,9 +30,27 @@ async function createMentorProfileAsync(mentorMatchProfile: MatchProfile) {
   }
 }
 
+async function searchMentorProfilesByUserAsync(UID: string) {
+  try {
+    const matchQuery = query(collection(db, "mentorProfile"), where("UID", "==", UID));
+
+    const matches = await getDocs(matchQuery);
+
+    const mentorProfiles = matches.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data() as MatchProfile
+    }));
+
+    return { success: true, mentorProfiles };
+  } catch (error) {
+    return { success: false, error: error };
+  }
+}
+
 const mentorDb = {
   searchMentorsByProfileMatchAsync,
-  createMentorProfileAsync
+  createMentorProfileAsync,
+  searchMentorProfilesByUserAsync
 };
 
 export default mentorDb;

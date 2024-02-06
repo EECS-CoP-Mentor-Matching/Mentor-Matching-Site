@@ -10,7 +10,12 @@ async function createMentorProfile(mentorProfile: MatchProfile) {
   return await mentorDb.createMentorProfileAsync(mentorProfile);
 }
 
+async function searchMentorProfilesByUser(UID: string) {
+  return await mentorDb.searchMentorProfilesByUserAsync(UID);
+}
+
 export const mentorService = {
   searchMentorsByProfileMatch,
-  createMentorProfile
+  createMentorProfile,
+  searchMentorProfilesByUser
 }

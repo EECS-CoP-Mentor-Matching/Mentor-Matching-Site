@@ -5,6 +5,7 @@ import FormGroupCols from "../../common/forms/layout/FormGroupCols";
 import FormGroupRows from "../../common/forms/layout/FormGroupRows";
 import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
 import TextDisplay from "../../common/forms/textInputs/TextDisplay";
+import SelectTimeZone from "../../userProfileCommon/dropdowns/SelectTimeZone";
 
 interface UpdateUserContactInformationProps {
   showEdit: boolean,
@@ -20,14 +21,16 @@ function UpdateUserContactInformation({ showEdit, showEditStyle }: UpdateUserCon
       <FormGroupCols>
         <FormLabel>Contact Information</FormLabel>
         <FormGroupRows>
-          <TextDisplay value={contactInformation.email} label="Email" widthMulti={.15} />
+          <TextDisplay label="Email" widthMulti={.15}>
+            {contactInformation.email}
+          </TextDisplay>
         </FormGroupRows>
         <FormGroupRows>
           <TextInputControlRedux value={contactInformation.displayName} label="Display Name" readonly={!showEdit} onInputDispatch={updateDisplayName} style={showEditStyle} widthMulti={.15} />
         </FormGroupRows>
         <FormGroupRows>
           <TextInputControlRedux value={contactInformation.pronouns} label="Pronouns" readonly={!showEdit} onInputDispatch={updatePronouns} style={showEditStyle} />
-          <TextInputControlRedux value={contactInformation.timeZone} label="Time Zone" readonly={!showEdit} onInputDispatch={updateTimeZone} style={showEditStyle} />
+          <SelectTimeZone currentValue={contactInformation.timeZone} onSelectDispatch={updateTimeZone} />
         </FormGroupRows>
       </FormGroupCols>
     }</>

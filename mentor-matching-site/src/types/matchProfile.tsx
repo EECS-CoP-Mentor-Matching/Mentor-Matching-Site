@@ -31,11 +31,11 @@ export interface EducationLevel {
   hierarchy: number
 }
 
-export interface TechincalInterest {
+export interface TechnicalInterest {
   broadInterest: string
   specificInterests: string[]
 }
 
 export interface ProfessionalInterest {
-  professionaInterest: string
+  professionalInterest: string
 }

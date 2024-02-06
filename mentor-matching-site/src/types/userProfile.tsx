@@ -1,3 +1,8 @@
+import React from 'react';
+
+export interface UserProfileProps {
+  userProfile: UserProfile;
+}
 
 export interface UserProfile {
   UID: string
@@ -9,6 +14,7 @@ export interface UserProfile {
   matchHistory: MatchHistoryItem[]
   profilePictureUrl: string | undefined;
   preferences: UserPreferences;
+  imageUrl?: string; // Make imageUrl optional
 }
 
 export const initUserProfile = () => {
