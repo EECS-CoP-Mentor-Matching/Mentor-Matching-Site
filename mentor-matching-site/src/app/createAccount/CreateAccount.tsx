@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateEmail } from "../../redux/reducers/profileReducer";
 import authService from "../../service/authService";
-import ErrorMessage, { Error } from "../common/forms/ErrorMessage";
+import ErrorMessage, { ErrorState } from "../common/forms/ErrorMessage";
 
 enum Step {
     CheckEmail,
@@ -20,7 +20,7 @@ enum Step {
 
 function CreateAccount() {
     const [currentStep, setCurrentStep] = useState(Step.CheckEmail);
-    const [error, setError] = useState<Error>({
+    const [error, setError] = useState<ErrorState>({
         isError: false,
         errorMessage: ""
     })
@@ -32,11 +32,11 @@ function CreateAccount() {
 
     const checkUserExists = async () => {
         if (!validateValue(email)) {
-            setError({ isError: true, errorMessage: "Email is invalid" } as Error)
+            setError({ isError: true, errorMessage: "Email is invalid" } as ErrorState)
             return;
         }
         else {
-            setError({ isError: false, errorMessage: "" } as Error)
+            setError({ isError: false, errorMessage: "" } as ErrorState)
         }
 
         const userExists = await userService.userExists(email);

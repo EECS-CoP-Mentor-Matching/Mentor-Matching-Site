@@ -1,20 +1,21 @@
-import { FormControl, TextField } from "@mui/material";
+import { FormControl } from "@mui/material";
+import { ReactElement } from "react";
 
 interface TextDisplayProps {
-  label: string
-  value?: string
-  widthMulti: number
+  children?: ReactElement[] | ReactElement | any
+  label?: string
+  widthMulti?: number
 }
 
-function TextDisplay({ label, value, widthMulti }: TextDisplayProps) {
+function TextDisplay({ children, label, widthMulti }: TextDisplayProps) {
   const controlStyle = {
-    width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`,
+    width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`
   }
 
   return (
-    <FormControl>
-      <div>{label}</div>
-      <div>{value}</div>
+    <FormControl style={{ whiteSpace: 'pre-line', textAlign: 'start', ...controlStyle }}>
+      {label}
+      {children}
     </FormControl>
   );
 }

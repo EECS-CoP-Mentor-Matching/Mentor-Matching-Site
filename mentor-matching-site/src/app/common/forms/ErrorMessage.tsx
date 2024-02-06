@@ -1,10 +1,10 @@
 import { FormControl } from "@mui/material"
 
 interface ErrorMessageProps {
-  errorState: Error
+  errorState: ErrorState
 }
 
-export interface Error {
+export interface ErrorState {
   isError: boolean
   errorMessage: string
 }

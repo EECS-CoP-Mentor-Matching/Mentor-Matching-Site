@@ -11,6 +11,8 @@ import NewUserNavigation from "./components/NewUserNavigation";
 import userService from "../../../../service/userService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { refreshNavigate } from "../../../common/auth/refreshNavigate";
+import UserAgreementForm from "./components/UserAgreementForm";
+import ErrorMessage, { ErrorState } from "../../../common/forms/ErrorMessage";
 
 enum FormStep {
   Contact = 1,
@@ -18,12 +20,15 @@ enum FormStep {
   Educational = 3,
   Personal = 4,
   Preferences = 5,
-  Submit = 6,
-  AccountCreated = 7
+  UserAgreement = 6,
+  Submit = 7,
+  AccountCreated = 8
 }
 
 function NewUserProfile() {
   const [currentStep, setCurrentStep] = useState(FormStep.Contact);
+  const [userHasAgreed, updateUserHasAgreed] = useState(false);
+  const [errorState, setErrorState] = useState({ errorMessage: '', isError: false } as ErrorState);
   const selector = useAppSelector;
   const userProfile = selector(state => state.profile.userProfile);
   const email = selector(state => state.profile.userProfile.contact.email);
@@ -45,16 +50,33 @@ function NewUserProfile() {
     }
   }
 
-  function nextStep() {
+  const resetError = () => {
+    setErrorState({ errorMessage: '', isError: false } as ErrorState);
+  }
+
+  const nextStep = () => {
+    resetError();
+
+    if (currentStep === FormStep.UserAgreement && !userHasAgreed) {
+      setErrorState({ errorMessage: 'You must agree to the terms of service before continuing', isError: true });
+      return;
+    }
+
     if (currentStep >= FormStep.Contact && currentStep < FormStep.Submit) {
       setCurrentStep(currentStep + 1);
     }
   }
 
-  function previousStep() {
+  const previousStep = () => {
+    resetError();
+
     if (currentStep > FormStep.Contact) {
       setCurrentStep(currentStep - 1);
     }
+  }
+
+  const userHasAcceptedTerms = (agreed: boolean) => {
+    updateUserHasAgreed(agreed);
   }
 
   const loadCurrentFormStep = () => {
@@ -69,6 +91,8 @@ function NewUserProfile() {
         return <NewUserPersonalInformation />
       case FormStep.Preferences:
         return <NewUserPreferences />
+      case FormStep.UserAgreement:
+        return <UserAgreementForm updateAgreementAcceptance={userHasAcceptedTerms} userHasAgreed={userHasAgreed} />
       case FormStep.Submit:
         return <NewUserSubmit createNewUser={createNewUser} />
       default:
@@ -82,6 +106,7 @@ function NewUserProfile() {
     <div className='login'>
       <FormGroupCols>
         {loadCurrentFormStep()}
+        <ErrorMessage errorState={errorState} />
         <NewUserNavigation nextStep={nextStep}
           hideNext={currentStep === FormStep.Submit}
           previousStep={previousStep}

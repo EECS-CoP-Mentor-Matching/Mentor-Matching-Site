@@ -21,7 +21,9 @@ function UpdateUserContactInformation({ showEdit, showEditStyle }: UpdateUserCon
       <FormGroupCols>
         <FormLabel>Contact Information</FormLabel>
         <FormGroupRows>
-          <TextDisplay value={contactInformation.email} label="Email" widthMulti={.15} />
+          <TextDisplay label="Email" widthMulti={.15}>
+            {contactInformation.email}
+          </TextDisplay>
         </FormGroupRows>
         <FormGroupRows>
           <TextInputControlRedux value={contactInformation.displayName} label="Display Name" readonly={!showEdit} onInputDispatch={updateDisplayName} style={showEditStyle} widthMulti={.15} />
