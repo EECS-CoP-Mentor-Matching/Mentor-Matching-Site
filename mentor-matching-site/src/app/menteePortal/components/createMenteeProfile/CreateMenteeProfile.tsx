@@ -3,39 +3,31 @@ import "./CreateMenteeProfile.css";
 import SelectProfessionalInterest from "../../../matchProfileCommon/SelectProfessionalInterest";
 import SelectTechnicalInterest from "../../../matchProfileCommon/SelectTechnicalInterest";
 import { FormLabel, Button } from "@mui/material";
-import { MatchProfile } from '../../../../types/matchProfile';
-import { useState } from 'react';
+import { updateNewMenteeProfileProfessionalInterest, updateNewMenteeProfileTechnicalInterest } from "../../../../redux/reducers/matchProfileReducer";
 
-interface CreateMenteeProfileProps {
-  addProfile: (newProfile: MatchProfile) => void
-}
+function CreateMenteeProfile() {
 
-function CreateMenteeProfile(props: CreateMenteeProfileProps) {
-  const [technicalInterest, setTechnicalInterest] = useState('');
-  const [technicalExperience, setTechnicalExperience] = useState(-1);
-  const [professionalInterest, setProfessionalInterest] = useState('');
-  const [professionalExperience, setProfessionalExperience] = useState(-1);
 
   return (
     <div className="mentee-profile">
       <FormLabel>Technical</FormLabel>
       <div className="mentee-interest">
-        <SelectTechnicalInterest />
+        <SelectTechnicalInterest onSelectDispatch={updateNewMenteeProfileTechnicalInterest} />
         <ExperienceLevel label="Experience Level" />
       </div>
       <FormLabel>Professional</FormLabel>
       <div className="mentee-interest">
-        <SelectProfessionalInterest />
+        <SelectProfessionalInterest onSelectDispatch={updateNewMenteeProfileProfessionalInterest} />
         <ExperienceLevel label="Experience Level" />
       </div>
       <Button onClick={() => {
-        props.addProfile({
-          UID: "Placeholder",
-          technicalInterest: technicalInterest,
-          technicalExperience: technicalExperience,
-          professionalInterest: professionalInterest,
-          professionalExperience: professionalExperience
-        });
+        // props.addProfile({
+        //   UID: "Placeholder",
+        //   technicalInterest: technicalInterest,
+        //   technicalExperience: technicalExperience,
+        //   professionalInterest: professionalInterest,
+        //   professionalExperience: professionalExperience
+        // });
       }}>Add Profile</Button>
     </div>
   )

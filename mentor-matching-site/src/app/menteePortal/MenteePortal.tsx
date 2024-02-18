@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
-import menteeService from '../../service/menteeService';
 import CreateMenteeProfile from './components/createMenteeProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
 import { FormLabel } from "@mui/material"
-import { type MatchProfile } from '../../types/matchProfile';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../service/authService';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 // in the match history, consolidate when multiple matches are made with the same mentor
-
 
 export enum Pages {
   activeProfiles = "Active Profiles",
@@ -17,13 +14,7 @@ export enum Pages {
   viewMatches = "View Matches"
 }
 
-interface MenteePortalProps {
-
-}
-
-function MenteePortal(props: MenteePortalProps) {
-  const [createProfile, setCreateProfile] = useState(false);
-  const [profiles, setProfiles] = useState<MatchProfile[]>([]);
+function MenteePortal() {
   const [selectedPage, setSelectedPage] = useState(Pages.activeProfiles.toString());
   const navigate = useNavigate();
 
@@ -37,25 +28,6 @@ function MenteePortal(props: MenteePortalProps) {
     checkAuthState();
   });
 
-  function showCreateProfile() {
-    console.log("show");
-    setCreateProfile(true);
-  }
-
-  function addProfile(newProfile: MatchProfile) {
-    let newProfiles = profiles;
-    newProfiles.push(newProfile);
-    setProfiles(newProfiles);
-  }
-
-  function FetchInterests() {
-    const read = async () => {
-      const response = await menteeService.readInterests();
-      console.log(response);
-    }
-    read();
-  }
-
   // if no profiles for the user
   return (
     <>
@@ -63,7 +35,7 @@ function MenteePortal(props: MenteePortalProps) {
       {selectedPage === Pages.createProfile &&
         <div className="mentee-portal">
           <FormLabel>Profile 1</FormLabel>
-          <CreateMenteeProfile addProfile={addProfile} />
+          <CreateMenteeProfile />
         </div>
       }
       {selectedPage === Pages.activeProfiles &&

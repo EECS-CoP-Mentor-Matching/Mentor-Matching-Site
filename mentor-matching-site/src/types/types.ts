@@ -9,3 +9,14 @@ export interface UserProfile {
   email: string;
   imageUrl?: string; // Optional property for the profile image URL
 }
+
+export interface ErrorLog {
+  component: string
+  errorMessage: string
+}
+
+export interface DbResult {
+  message: string
+  success: boolean
+  docId?: string
+}

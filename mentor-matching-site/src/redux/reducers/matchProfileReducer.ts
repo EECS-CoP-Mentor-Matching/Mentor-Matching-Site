@@ -19,14 +19,24 @@ export const matchProfilesSlice = createSlice({
   name: 'matchProfiles',
   initialState,
   reducers: {
+    // current match profiles
     updateMatchProfiles: (state = initialState, action: PayloadAction<MatchProfiles>) => { state.matchProfiles = action.payload; },
+    // new mentee profile
     updateNewMenteeProfile: (state = initialState, action: PayloadAction<MatchProfile>) => { state.newMenteeProfile = action.payload; },
+    updateNewMenteeProfileProfessionalInterest: (state = initialState, action: PayloadAction<string>) => { state.newMenteeProfile.professionalInterest = action.payload; },
+    updateNewMenteeProfileTechnicalInterest: (state = initialState, action: PayloadAction<string>) => { state.newMenteeProfile.technicalInterest = action.payload; },
+    // new mentor profile
     updateNewMentorProfile: (state = initialState, action: PayloadAction<MatchProfile>) => { state.newMentorProfile = action.payload; },
   }
 });
 
 export const {
-  updateMatchProfiles
+  // current match profiles
+  updateMatchProfiles,
+  // new mentee profile
+  updateNewMenteeProfile, updateNewMenteeProfileProfessionalInterest, updateNewMenteeProfileTechnicalInterest,
+  // new mentor profile
+  updateNewMentorProfile
 } = matchProfilesSlice.actions
 
 export const selectMatchPofiles = (state: RootState) => state.matchProfiles

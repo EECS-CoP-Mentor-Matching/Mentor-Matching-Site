@@ -23,7 +23,6 @@ async function searchMentorsByProfileMatchAsync(menteeUserProfile: UserProfile, 
 async function createMentorProfileAsync(mentorMatchProfile: MatchProfile) {
   try {
     const doc = await addDoc(collection(db, "mentorProfile"), mentorMatchProfile);
-
     return { success: true, id: doc.id };
   } catch (error) {
     return { success: false, error: error };
