@@ -2,6 +2,13 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { ErrorLog } from "../types/types";
 
+async function logError(component: string, error: any): Promise<string> {
+  let errorMessage = 'Unknown error';
+  if (error instanceof Error) errorMessage = error.message;
+  writeErrorLog(component, errorMessage);
+  return errorMessage;
+}
+
 async function writeErrorLog(component: string, errorMessage: string) {
   try {
     const log = {
@@ -17,5 +24,5 @@ async function writeErrorLog(component: string, errorMessage: string) {
 }
 
 export const errorLogDb = {
-  writeErrorLog
+  logError
 }

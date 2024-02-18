@@ -2,10 +2,6 @@ import menteeDb from "../dal/menteeDb";
 import { UserProfile } from "../types/userProfile";
 import { MatchProfile } from "../types/matchProfile";
 
-async function readInterests() {
-  return await menteeDb.readInterestsAsync();
-}
-
 /* query for matching mentee to mentor
     if technical interests match
       mentee experience < mentor experience
@@ -27,9 +23,18 @@ async function performMatching(user: UserProfile, menteeProfile: MatchProfile) {
 
 }
 
+async function createMenteeProfile(menteeProfile: MatchProfile) {
+  await menteeDb.createMenteeProfileAsync(menteeProfile);
+}
+
+async function searchMenteeProfilesByUser(UID: string) {
+  return await menteeDb.searchMenteeProfilesByUserAsync(UID);
+}
+
 const menteeService = {
-  readInterests,
-  performMatching
+  performMatching,
+  createMenteeProfile,
+  searchMenteeProfilesByUser
 }
 
 export default menteeService;

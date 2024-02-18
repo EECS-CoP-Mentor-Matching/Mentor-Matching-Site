@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import CreateMenteeProfile from './components/createMenteeProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
 import { FormLabel } from "@mui/material"
-import { useNavigate } from 'react-router-dom';
-import authService from '../../service/authService';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
+import ActiveMenteeProfiles from './components/activeMenteeProfiles/ActiveMenteeProfiles';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 export enum Pages {
@@ -16,31 +15,24 @@ export enum Pages {
 
 function MenteePortal() {
   const [selectedPage, setSelectedPage] = useState(Pages.activeProfiles.toString());
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkAuthState = async () => {
-      const user = await authService.getSignedInUser();
-      if (user === undefined) {
-        navigate("/login");
-      }
-    }
-    checkAuthState();
-  });
+  const backToActive = () => {
+    setSelectedPage(Pages.activeProfiles);
+  }
 
   // if no profiles for the user
   return (
     <>
       <PortalNavigationBar onNavChange={setSelectedPage} selected={selectedPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
+      {selectedPage === Pages.activeProfiles &&
+        <div className="mentee-portal">
+          <ActiveMenteeProfiles />
+        </div>
+      }
       {selectedPage === Pages.createProfile &&
         <div className="mentee-portal">
           <FormLabel>Profile 1</FormLabel>
-          <CreateMenteeProfile />
-        </div>
-      }
-      {selectedPage === Pages.activeProfiles &&
-        <div className="mentee-portal">
-          profiles...
+          <CreateMenteeProfile backToPage={backToActive} />
         </div>
       }
       {selectedPage === Pages.viewMatches &&
@@ -49,8 +41,6 @@ function MenteePortal() {
         </div>
       }
     </>
-
-
   );
 }
 

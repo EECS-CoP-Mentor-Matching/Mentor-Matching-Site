@@ -1,6 +1,6 @@
 import interestsDb from "../../dal/interestsDb";
 import { TechnicalInterest } from "../../types/matchProfile";
-import { DropDownOption } from "../../types/types";
+import { DocItem, DropDownOption } from "../../types/types";
 import DropDownControlLoaderRedux from "../common/forms/dropDowns/DropDownControlLoaderRedux";
 
 interface SelectTechnicalInterestProps {
@@ -12,9 +12,9 @@ interface SelectTechnicalInterestProps {
 }
 
 function SelectTechnicalInterest({ onSelectDispatch, currentValue }: SelectTechnicalInterestProps) {
-  const mapOptions = ((interests: TechnicalInterest[]): DropDownOption[] => {
+  const mapOptions = ((interests: DocItem<TechnicalInterest>[]): DropDownOption[] => {
     const combinedInterests = interests.flatMap(interest =>
-      [interest.broadInterest, ...interest.specificInterests]
+      [interest.data.broadInterest, ...interest.data.specificInterests]
     );
 
     const options = new Array<DropDownOption>;

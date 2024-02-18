@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import ContentContainer from "../../common/ContentContainer";
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { mentorService } from "../../../service/mentorService";
-import {ExperienceLevel, MatchProfile} from "../../../types/matchProfile";
+import { ExperienceLevel, MatchProfile } from "../../../types/matchProfile";
 import authService from "../../../service/authService";
-import {interestsService} from "../../../service/interestsService";
+import { interestsService } from "../../../service/interestsService";
 
 function CreateMentorProfile() {
     const [technicalInterestOptions, setTechnicalInterestOptions] = useState<string[]>([]);
@@ -24,7 +24,7 @@ function CreateMentorProfile() {
             try {
                 const interests = await interestsService.getTechnicalInterests();
                 const combinedInterests = interests.flatMap(interest =>
-                    [interest.broadInterest, ...interest.specificInterests]
+                    [interest.data.broadInterest, ...interest.data.specificInterests]
                 );
                 setTechnicalInterestOptions(combinedInterests);
             } catch (error) {
@@ -36,7 +36,7 @@ function CreateMentorProfile() {
             try {
                 const interests = await interestsService.getProfessionalInterests();
                 const combinedInterests = interests.flatMap(interest =>
-                    [interest.professionalInterest]
+                    [interest.data.professionalInterest]
                 )
                 setProfessionalInterestOptions(combinedInterests);
             } catch (error) {
@@ -48,9 +48,9 @@ function CreateMentorProfile() {
             try {
                 let experienceLevels = await interestsService.getExperienceLevels();
 
-                experienceLevels = experienceLevels.sort((a, b) => a.hierarchy - b.hierarchy);
+                experienceLevels = experienceLevels.sort((a, b) => a.data.hierarchy - b.data.hierarchy);
 
-                setExperienceLevelOptions(experienceLevels);
+                setExperienceLevelOptions(experienceLevels.map(x => x.data));
             } catch (error) {
                 console.error("Error fetching experience levels:", error);
             }

@@ -9,6 +9,22 @@ export interface ErrorState {
   errorMessage: string
 }
 
+export const parseError = (error: any): ErrorState => {
+  let errorMessage = 'Unknown error';
+  if (error instanceof Error) errorMessage = error.message;
+  return {
+    isError: true,
+    errorMessage: errorMessage
+  } as ErrorState;
+}
+
+export const resetError = () => {
+  return {
+    isError: false,
+    errorMessage: ''
+  } as ErrorState;
+}
+
 function ErrorMessage({ errorState }: ErrorMessageProps) {
 
   return (

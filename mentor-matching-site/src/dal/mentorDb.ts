@@ -2,8 +2,12 @@ import { MatchProfile } from "../types/matchProfile";
 import { UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, addDoc, query, where } from "firebase/firestore";
+import { queryMany, writeSingle } from "./commonDb";
+import { DocItem } from "../types/types";
 
-async function searchMentorsByProfileMatchAsync(menteeUserProfile: UserProfile, menteeMatchProfile: MatchProfile) {
+const collectionName = 'mentorProfile';
+
+async function searchMentorsByProfileMatchAsync(menteeUserProfile: UserProfile, menteeMatchProfile: MatchProfile): Promise<DocItem<MatchProfile>[]> {
   const conditions = []
   conditions.push(where("technicalInterests", "==", menteeMatchProfile.technicalInterest));
   conditions.push(where("technicalExperience", ">", menteeMatchProfile.technicalExperience));
@@ -14,36 +18,22 @@ async function searchMentorsByProfileMatchAsync(menteeUserProfile: UserProfile, 
     conditions.push(where("racialIdentity", "==", menteeUserProfile.demographics.racialIdentity));
   }
 
-  const matchQuery = query(collection(db, "mentorProfile"), ...conditions);
-  const matches = await getDocs(matchQuery)
-  const matchProfiles = matches.docs.map((doc) => doc.data());
-  return matchProfiles;
+  return (await queryMany<MatchProfile>(collectionName, ...conditions)).results;
 }
 
 async function createMentorProfileAsync(mentorMatchProfile: MatchProfile) {
+  // Consider using abstracted method
+  // const doc = await writeSingle(collectionName, mentorMatchProfile);
   try {
-    const doc = await addDoc(collection(db, "mentorProfile"), mentorMatchProfile);
+    const doc = await addDoc(collection(db, collectionName), mentorMatchProfile);
     return { success: true, id: doc.id };
   } catch (error) {
     return { success: false, error: error };
   }
 }
 
-async function searchMentorProfilesByUserAsync(UID: string) {
-  try {
-    const matchQuery = query(collection(db, "mentorProfile"), where("UID", "==", UID));
-
-    const matches = await getDocs(matchQuery);
-
-    const mentorProfiles = matches.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data() as MatchProfile
-    }));
-
-    return { success: true, mentorProfiles };
-  } catch (error) {
-    return { success: false, error: error };
-  }
+async function searchMentorProfilesByUserAsync(UID: string): Promise<DocItem<MatchProfile>[]> {
+  return (await queryMany<MatchProfile>(collectionName, where('UID', '==', UID))).results;
 }
 
 const mentorDb = {

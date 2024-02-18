@@ -18,7 +18,7 @@ export interface ErrorLog {
 export interface DbWriteResult {
   message: string
   success: boolean
-  docId?: string
+  docId: string
 }
 
 export interface DbUpdateResult {
@@ -30,5 +30,17 @@ export interface DbUpdateResult {
 export interface DbReadResult<T> {
   message: string
   success: boolean
-  data?: T
+  data: T
+  docId: string
+}
+
+export interface DocItem<T> {
+  docId: string
+  data: T
+}
+
+export interface DbReadResults<T> {
+  message: string
+  success: boolean
+  results: DocItem<T>[]
 }

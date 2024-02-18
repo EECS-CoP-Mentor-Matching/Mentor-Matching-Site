@@ -1,6 +1,6 @@
 import interestsDb from "../../dal/interestsDb";
 import { ProfessionalInterest } from "../../types/matchProfile";
-import { DropDownOption } from "../../types/types";
+import { DocItem, DropDownOption } from "../../types/types";
 import DropDownControlLoaderRedux from "../common/forms/dropDowns/DropDownControlLoaderRedux";
 
 interface SelectProfessionalInterestProps {
@@ -12,14 +12,12 @@ interface SelectProfessionalInterestProps {
 }
 
 function SelectProfessionalInterest({ onSelectDispatch, currentValue }: SelectProfessionalInterestProps) {
-  const mapOptions = ((interests: ProfessionalInterest[]): DropDownOption[] => {
+  const mapOptions = ((interests: DocItem<ProfessionalInterest>[]): DropDownOption[] => {
     const options = new Array<DropDownOption>;
-    let i = 0;
     interests.forEach(currInterest => {
-      const interest = currInterest.professionalInterest
       options.push({
-        label: interest,
-        id: `${interest}${i++}`
+        label: currInterest.data.professionalInterest,
+        id: currInterest.docId
       } as DropDownOption);
     });
     return options;

@@ -1,31 +1,17 @@
-import { collection, getDocs, query } from "firebase/firestore";
-import { db } from "../firebaseConfig";
 import { ExperienceLevel, ProfessionalInterest, TechnicalInterest } from "../types/matchProfile";
+import { DocItem } from "../types/types";
+import { readMany } from "./commonDb";
 
-async function searchTechnicalInterests(): Promise<TechnicalInterest[]> {
-  try {
-    let matchQuery = query(collection(db, "technicalInterests"));
-    const matches = await getDocs(matchQuery);
-    return matches.docs.map((doc) => ({ id: doc.id, ...doc.data() as TechnicalInterest }));
-  }
-  catch (error) {
-    return new Array<TechnicalInterest>;
-  }
+async function searchTechnicalInterests(): Promise<DocItem<TechnicalInterest>[]> {
+  return (await readMany<TechnicalInterest>('technicalInterests')).results;
 }
 
-async function searchProfessionalInterests(): Promise<ProfessionalInterest[]> {
-  let matchQuery = query(collection(db, "professionalInterests"));
-
-  const matches = await getDocs(matchQuery);
-  return matches.docs.map((doc) => ({ id: doc.id, ...doc.data() as ProfessionalInterest }));
+async function searchProfessionalInterests(): Promise<DocItem<ProfessionalInterest>[]> {
+  return (await readMany<ProfessionalInterest>('professionalInterests')).results;
 }
 
-
-async function searchExperienceLevels(): Promise<ExperienceLevel[]> {
-  let matchQuery = query(collection(db, "experienceLevels"));
-
-  const matches = await getDocs(matchQuery);
-  return matches.docs.map((doc) => ({ id: doc.id, ...doc.data() as ExperienceLevel }));
+async function searchExperienceLevels(): Promise<DocItem<ExperienceLevel>[]> {
+  return (await readMany<ExperienceLevel>('experienceLevels')).results;
 }
 
 const interestsDb = {
