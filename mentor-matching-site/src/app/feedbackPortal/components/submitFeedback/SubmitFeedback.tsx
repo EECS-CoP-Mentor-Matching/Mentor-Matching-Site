@@ -26,15 +26,14 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
 
     try {
 
-    
-    const response = await feedbackService.submitFeedback(feedbackData);
-    alert(response.success ? 'Feedback submitted successfully!' : `Error: ${response.error}`);
-    
+
+      const response = await feedbackService.submitFeedback(feedbackData);
+
     } catch (error) {
       console.error('Error submitting feedback:', error);
       alert('An error occurred while submitting feedback.');
 
-    } 
+    }
   };
 
   const feedbackSelection = [
@@ -47,20 +46,20 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
     <div className="feedback-profile">
       <FormLabel>Submit Feedback</FormLabel>
       <div className='feedack-interest'>
-      <form onSubmit={handleSubmit}>
-        <DropDownControl label="Feedback Type" options={feedbackSelection} onSelect={(value) => setFeedbackType(value)} />
-        <TextField
-          label="Feedback Content"
-          value={feedbackContent}
-          onChange={(e) => setFeedbackContent(e.target.value)}
-          required
-        />
-        <div className='feedback-interest'>
-        <Button type="submit">Submit Feedback</Button>
-        </div>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <DropDownControl label="Feedback Type" options={feedbackSelection} onSelect={(value) => setFeedbackType(value)} />
+          <TextField
+            label="Feedback Content"
+            value={feedbackContent}
+            onChange={(e) => setFeedbackContent(e.target.value)}
+            required
+          />
+          <div className='feedback-interest'>
+            <Button type="submit">Submit Feedback</Button>
+          </div>
+        </form>
       </div>
-      </div>
-     
+    </div>
+
   );
 };

@@ -1,3 +1,4 @@
+import LoadingMessage from "./common/forms/modals/LoadingMessage";
 
 function Home() {
   return (

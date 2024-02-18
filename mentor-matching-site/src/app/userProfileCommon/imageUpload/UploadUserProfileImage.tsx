@@ -7,6 +7,7 @@ import { useAppDispatch } from '../../../redux/hooks'
 import { updateProfile, updateProfileImageUrl } from '../../../redux/reducers/profileReducer';
 import { Button, FormGroup, FormLabel } from '@mui/material';
 import "./UploadUserProfileImage.css"
+import PopupMessage from '../../common/forms/modals/PopupMessage';
 import { emptyProfileImage } from '../../../icons/icons';
 // import { emptyProfile/ Remove the unused import statementImage } from '../../../icons/icons';
 
@@ -19,6 +20,7 @@ interface UserProfile {
 }
 
 function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const dispatch = useAppDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -26,6 +28,9 @@ function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
     if (event.target.files) {
       const file = event.target.files[0];
       await uploadFile(file);
+      // let the user know it was successful
+      console.log(showSuccessMessage)
+      setShowSuccessMessage(true);
     }
     if (userProfile && userProfile.imageUrl) {
       // Use userProfile.imageUrl
@@ -48,6 +53,9 @@ function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
 
   return (
     <FormGroup>
+      <PopupMessage message="Profile image successfully uploaded!"
+        open={showSuccessMessage}
+        setIsOpen={setShowSuccessMessage} />
       <FormLabel>Choose a user Profile Image</FormLabel>
       <button className="profile-image" onClick={() => {
         if (fileInputRef.current !== null && fileInputRef.current !== undefined) {
