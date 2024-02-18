@@ -1,15 +1,40 @@
-import DropDownControl from "../common/forms/dropDowns/DropDownControl";
+import interestsDb from "../../dal/interestsDb";
+import { TechnicalInterest } from "../../types/matchProfile";
+import { DocItem, DropDownOption } from "../../types/types";
+import DropDownControlLoaderRedux from "../common/forms/dropDowns/DropDownControlLoaderRedux";
 
-function SelectTechnicalInterest() {
-  const technicalInterest = [
-    { label: '.NET', id: 1 },
-    { label: 'Software Engineering', id: 2 },
-    { label: 'Electrical Engineering', id: 3 },
-    { label: 'AutoCad', id: 4 }
-  ];
+interface SelectTechnicalInterestProps {
+  onSelectDispatch(payload: any): {
+    payload: any
+    type: string
+  }
+  currentValue?: string
+}
+
+function SelectTechnicalInterest({ onSelectDispatch, currentValue }: SelectTechnicalInterestProps) {
+  const mapOptions = ((interests: DocItem<TechnicalInterest>[]): DropDownOption[] => {
+    const combinedInterests = interests.flatMap(interest =>
+      [interest.data.broadInterest, ...interest.data.specificInterests]
+    );
+
+    const options = new Array<DropDownOption>;
+    let i = 0;
+    combinedInterests.forEach(currInterest => {
+      options.push({
+        label: currInterest,
+        id: `${currInterest}${i++}`
+      } as DropDownOption);
+    });
+    return options;
+  });
 
   return (
-    <DropDownControl label="Interests" options={technicalInterest} onSelect={() => { }} />
+    <DropDownControlLoaderRedux label="Interests"
+      onSelectDispatch={onSelectDispatch}
+      dbSearchAsync={interestsDb.searchTechnicalInterests}
+      mappingMethod={mapOptions}
+      selectedOption={currentValue}
+    />
   );
 }
 

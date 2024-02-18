@@ -2,10 +2,11 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { EducationLevel } from "../types/matchProfile";
 import { RacialIdentity, TimeZone } from "../types/userProfile";
+import { readMany } from "./commonDb";
+import { DocItem } from "../types/types";
 
-async function educationLevelsAsync(): Promise<EducationLevel[]> {
-  const educationLevels = await searchDbAsync<EducationLevel>("educationLevels");
-  return educationLevels;
+async function educationLevelsAsync(): Promise<DocItem<EducationLevel>[]> {
+  return (await readMany<EducationLevel>('educationLevels')).results;
 }
 
 async function racialIdentitiesAsync(): Promise<RacialIdentity[]> {

@@ -1,15 +1,21 @@
-import { db } from "../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore/lite";
+import { queryMany, writeSingle } from "./commonDb";
+import { MatchProfile } from "../types/matchProfile";
+import { DocItem } from "../types/types";
+import { where } from "firebase/firestore";
 
-async function readInterestsAsync() {
-  const interestsCollection = collection(db, "interests");
-  const interestsSnapshot = await getDocs(interestsCollection);
-  const interests = interestsSnapshot.docs.map((doc) => doc.data());
-  return interests;
+const collectionName = 'menteeProfile';
+
+async function createMenteeProfileAsync(menteeProfile: MatchProfile) {
+  return await writeSingle(collectionName, menteeProfile);
+}
+
+async function searchMenteeProfilesByUserAsync(UID: string): Promise<DocItem<MatchProfile>[]> {
+  return (await queryMany<MatchProfile>(collectionName, where('UID', '==', UID))).results;
 }
 
 const menteeDb = {
-  readInterestsAsync
+  createMenteeProfileAsync,
+  searchMenteeProfilesByUserAsync
 }
 
 export default menteeDb;

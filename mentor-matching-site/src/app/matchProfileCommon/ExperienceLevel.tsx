@@ -1,29 +1,36 @@
-import { TextField, Autocomplete } from "@mui/material";
-import { useState } from "react";
 import "./ExperienceLevel.css";
+import { EducationLevel } from "../../types/matchProfile";
+import { DocItem, DropDownOption } from "../../types/types";
+import selectionItemsDb from "../../dal/selectionItemsDb";
+import DropDownControlLoaderRedux from "../common/forms/dropDowns/DropDownControlLoaderRedux";
 
 interface ExperienceLevelProps {
-  label: string
+  onSelectDispatch(payload: any): {
+    payload: any
+    type: string
+  }
+  currentValue?: string
 }
 
-function ExperienceLevel(props: ExperienceLevelProps) {
-  const [level, setLevel] = useState('1')
-  const experienceLevels = [
-    { label: 'Novice (0 - 1 years)', id: 1 },
-    { label: 'Intermediate (1 - 3 years)', id: 2 },
-    { label: 'Advanced (3 - 5 years)', id: 3 },
-    { label: 'Expert (5+ years)', id: 4 }
-  ]
+function ExperienceLevel({ onSelectDispatch, currentValue }: ExperienceLevelProps) {
+  const mapOptions = ((interests: DocItem<EducationLevel>[]): DropDownOption[] => {
+    const options = new Array<DropDownOption>;
+    interests.forEach(currInterest => {
+      options.push({
+        label: currInterest.data.level,
+        id: currInterest.docId
+      } as DropDownOption);
+    });
+    return options;
+  });
 
   return (
-    <div>
-      <Autocomplete 
-        options={experienceLevels}
-        disableCloseOnSelect
-        sx={{ width: 225 }}
-        renderInput={(params) => <TextField {...params} label="Experience Level" />}
-      />
-    </div>
+    <DropDownControlLoaderRedux label="Experience Level"
+      onSelectDispatch={onSelectDispatch}
+      dbSearchAsync={selectionItemsDb.educationLevelsAsync}
+      mappingMethod={mapOptions}
+      selectedOption={currentValue}
+    />
   );
 }
 

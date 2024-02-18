@@ -3,40 +3,77 @@ import "./CreateMenteeProfile.css";
 import SelectProfessionalInterest from "../../../matchProfileCommon/SelectProfessionalInterest";
 import SelectTechnicalInterest from "../../../matchProfileCommon/SelectTechnicalInterest";
 import { FormLabel, Button } from "@mui/material";
-import { MatchProfile } from '../../../../types/matchProfile';
-import { useState } from 'react';
+import { updateNewMenteeProfileProfessionalExperience, updateNewMenteeProfileProfessionalInterest, updateNewMenteeProfileTechnicalExperience, updateNewMenteeProfileTechnicalInterest } from "../../../../redux/reducers/matchProfileReducer";
+import { useAppSelector } from "../../../../redux/hooks";
+import menteeDb from "../../../../dal/menteeDb";
+import ErrorMessage, { ErrorState, parseError, resetError } from "../../../common/forms/ErrorMessage";
+import { useState } from "react";
+import { MatchProfile } from "../../../../types/matchProfile";
+import authService from "../../../../service/authService";
+import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
+import { nullNumber, nullString } from "../../../common/forms/validation";
 
 interface CreateMenteeProfileProps {
-  addProfile: (newProfile: MatchProfile) => void
+  backToPage: () => any
 }
 
-function CreateMenteeProfile(props: CreateMenteeProfileProps) {
-  const [technicalInterest, setTechnicalInterest] = useState('');
-  const [technicalExperience, setTechnicalExperience] = useState(-1);
-  const [professionalInterest, setProfessionalInterest] = useState('');
-  const [professionalExperience, setProfessionalExperience] = useState(-1);
+function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
+  const [errorState, setErrorState] = useState<ErrorState>({ isError: false, errorMessage: '' });
+  const [loading, setLoading] = useState(false);
+
+  const selector = useAppSelector;
+  const menteeProfile = selector(state => state.matchProfiles.newMenteeProfile);
+
+  const createProfile = async () => {
+    setErrorState(resetError());
+    setLoading(true);
+    try {
+      validateInputs(menteeProfile);
+      const user = await authService.getSignedInUser();
+      const uid = user?.uid;
+      const newProfile = {
+        ...menteeProfile,
+        UID: uid
+      } as MatchProfile;
+      await menteeDb.createMenteeProfileAsync(newProfile);
+    }
+    catch (error) {
+      setErrorState(parseError(error));
+    }
+    setLoading(false);
+    backToPage()
+  }
+
+  const validateInputs = (profile: MatchProfile) => {
+    if (nullString(profile.technicalInterest)) {
+      throw new Error("Select a techincal interest");
+    }
+    if (nullNumber(profile.technicalExperience)) {
+      throw new Error("Select a techincal experience level");
+    }
+    if (nullString(profile.professionalInterest)) {
+      throw new Error("Select a professional interest");
+    }
+    if (nullNumber(profile.professionalExperience)) {
+      throw new Error("Select a professional experience level");
+    }
+  }
 
   return (
     <div className="mentee-profile">
+      <LoadingMessage message="Creating new Profile..." loading={loading} />
       <FormLabel>Technical</FormLabel>
       <div className="mentee-interest">
-        <SelectTechnicalInterest />
-        <ExperienceLevel label="Experience Level" />
+        <SelectTechnicalInterest onSelectDispatch={updateNewMenteeProfileTechnicalInterest} />
+        <ExperienceLevel onSelectDispatch={updateNewMenteeProfileTechnicalExperience} />
       </div>
       <FormLabel>Professional</FormLabel>
       <div className="mentee-interest">
-        <SelectProfessionalInterest />
-        <ExperienceLevel label="Experience Level" />
+        <SelectProfessionalInterest onSelectDispatch={updateNewMenteeProfileProfessionalInterest} />
+        <ExperienceLevel onSelectDispatch={updateNewMenteeProfileProfessionalExperience} />
       </div>
-      <Button onClick={() => {
-        props.addProfile({
-          UID: "Placeholder",
-          technicalInterest: technicalInterest,
-          technicalExperience: technicalExperience,
-          professionalInterest: professionalInterest,
-          professionalExperience: professionalExperience
-        });
-      }}>Add Profile</Button>
+      <Button onClick={createProfile}>Add Profile</Button>
+      <ErrorMessage errorState={errorState} />
     </div>
   )
 }

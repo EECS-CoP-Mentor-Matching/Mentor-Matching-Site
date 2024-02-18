@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import ContentContainer from "../../common/ContentContainer";
-import {Box, List, ListItem, ListItemText, Divider, Paper} from "@mui/material";
+import { Box, List, ListItem, ListItemText, Divider, Paper } from "@mui/material";
 import authService from "../../../service/authService";
-import {mentorService} from "../../../service/mentorService";
-import {MatchProfile} from "../../../types/matchProfile";
+import { mentorService } from "../../../service/mentorService";
+import { MatchProfile } from "../../../types/matchProfile";
+import { DocItem } from '../../../types/types';
 
 function ActiveProfiles() {
-    const [mentorProfiles, setMentorProfiles] = useState<(MatchProfile & { id: string })[]>([]);
+    const [mentorProfiles, setMentorProfiles] = useState<DocItem<MatchProfile>[]>([]);
 
     useEffect(() => {
         const fetchProfiles = async () => {
@@ -14,11 +15,7 @@ function ActiveProfiles() {
             if (user) {
                 try {
                     const result = await mentorService.searchMentorProfilesByUser(user.uid);
-                    if (result.success) {
-                        setMentorProfiles(result.mentorProfiles || []);
-                    } else {
-                        console.error("Failed to fetch mentor profiles:", result.error);
-                    }
+                    setMentorProfiles(result);
                 } catch (error) {
                     console.error("Error fetching mentor profiles:", error);
                 }
@@ -48,14 +45,14 @@ function ActiveProfiles() {
             <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 <List component="nav" aria-label="mentor profiles">
                     {mentorProfiles.map((profile, index) => (
-                        <React.Fragment key={profile.id}>
+                        <React.Fragment key={profile.docId}>
                             <Paper elevation={2} style={profileItemStyle}>
                                 <ListItem>
                                     <ListItemText
-                                        primary={`Profile ID: ${profile.id}`}
+                                        primary={`Profile ID: ${profile.docId}`}
                                         secondary={`
-                                            Technical Interest: ${profile.technicalInterest} (${profile.technicalExperience} years), 
-                                            Professional Interest: ${profile.professionalInterest} (${profile.professionalExperience} years)
+                                            Technical Interest: ${profile.data.technicalInterest} (${profile.data.technicalExperience} years), 
+                                            Professional Interest: ${profile.data.professionalInterest} (${profile.data.professionalExperience} years)
                                         `}
                                     />
                                 </ListItem>
