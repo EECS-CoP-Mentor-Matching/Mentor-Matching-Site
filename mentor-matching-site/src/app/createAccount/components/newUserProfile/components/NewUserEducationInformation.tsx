@@ -1,7 +1,7 @@
 import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import { FormLabel, Select } from "@mui/material";
 import SelectLevelOfEducation from "../../../../userProfileCommon/dropdowns/SelectLevelOfEductation";
-import { updateHighestLevelOfEducation, updateStudentStatus } from "../../../../../redux/reducers/profileReducer";
+import { updateHighestLevelOfEducation, updateStudentStatus } from "../../../../../redux/reducers/userProfileReducer";
 import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
 import { useAppSelector } from "../../../../../redux/hooks";
 

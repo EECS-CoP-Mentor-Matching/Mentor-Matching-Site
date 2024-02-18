@@ -4,7 +4,7 @@ import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
 import { FormControlLabel, FormLabel } from "@mui/material";
 import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
-import { updateDob, updateDobDay, updateDobMonth, updateDobYear, updateFirstName, updateLastName, updateMiddleName } from "../../../../../redux/reducers/profileReducer";
+import { updateDob, updateDobDay, updateDobMonth, updateDobYear, updateFirstName, updateLastName, updateMiddleName } from "../../../../../redux/reducers/userProfileReducer";
 
 function NewUserPersonalInformation() {
   const selector = useAppSelector;

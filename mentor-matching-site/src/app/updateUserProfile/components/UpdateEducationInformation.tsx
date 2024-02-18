@@ -1,6 +1,6 @@
 import { FormLabel } from "@mui/material";
 import { useAppSelector } from "../../../redux/hooks";
-import { updateDegreeProgram, updateEducationInformation, updateStudentStatus } from "../../../redux/reducers/profileReducer";
+import { updateDegreeProgram, updateEducationInformation, updateStudentStatus } from "../../../redux/reducers/userProfileReducer";
 import FormGroupCols from "../../common/forms/layout/FormGroupCols";
 import FormGroupRows from "../../common/forms/layout/FormGroupRows";
 import SelectLevelOfEducation from "../../userProfileCommon/dropdowns/SelectLevelOfEductation";

@@ -1,6 +1,6 @@
 import { FormLabel } from "@mui/material";
 import { useAppSelector } from "../../../redux/hooks";
-import { updateDisplayName, updateEmail, updatePronouns, updateTimeZone } from "../../../redux/reducers/profileReducer";
+import { updateDisplayName, updateEmail, updatePronouns, updateTimeZone } from "../../../redux/reducers/userProfileReducer";
 import FormGroupCols from "../../common/forms/layout/FormGroupCols";
 import FormGroupRows from "../../common/forms/layout/FormGroupRows";
 import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";

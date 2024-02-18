@@ -4,7 +4,7 @@ import { FormLabel } from "@mui/material";
 import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
 import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
 import SelectRacialIdentity from "../../../../userProfileCommon/dropdowns/SelectRacialIdentity";
-import { updateLgbtqPlus, updateRacialIdentity } from "../../../../../redux/reducers/profileReducer";
+import { updateLgbtqPlus, updateRacialIdentity } from "../../../../../redux/reducers/userProfileReducer";
 
 function NewUserDemographicInformation() {
   const selector = useAppSelector;

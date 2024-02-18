@@ -5,6 +5,12 @@ import { User } from "firebase/auth";
 
 const collectionName = "userProfile";
 
+async function updateUserProfileImage(uid: string, imageUrl: string) {
+  const userRef = doc(db, 'userProfile', uid); // Replace 'users' with actual collection name
+  await setDoc(userRef, { imageUrl }, { merge: true });
+  return true;
+}
+
 async function updateUserProfileAsync(uid: string, userProfile: UserProfile): Promise<void> {
   const userDocRef = doc(db, collectionName, uid);
   await updateDoc(userDocRef, userProfile as { [key: string]: any });
@@ -58,6 +64,7 @@ async function searchAsync(conditions: any[]): Promise<UserProfile[]> {
 }
 
 const userDb = {
+  updateUserProfileImage,
   createNewUserAsync,
   userExistsAsync,
   getUserProfileAsync,

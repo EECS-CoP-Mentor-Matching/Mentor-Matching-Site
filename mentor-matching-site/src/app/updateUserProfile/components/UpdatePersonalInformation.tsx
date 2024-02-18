@@ -1,6 +1,6 @@
 import { useAppSelector } from "../../../redux/hooks";
 import FormGroupRows from "../../common/forms/layout/FormGroupRows";
-import { updateFirstName, updateLastName, updateMiddleName, updateDob, updateDobMonth, updateDobDay, updateDobYear } from "../../../redux/reducers/profileReducer";
+import { updateFirstName, updateLastName, updateMiddleName, updateDob, updateDobMonth, updateDobDay, updateDobYear } from "../../../redux/reducers/userProfileReducer";
 import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
 import FormGroupCols from "../../common/forms/layout/FormGroupCols";
 import { FormLabel } from "@mui/material";

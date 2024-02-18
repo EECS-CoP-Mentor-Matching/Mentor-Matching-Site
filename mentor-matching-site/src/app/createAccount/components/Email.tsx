@@ -1,4 +1,4 @@
-import { updateEmail } from "../../../redux/reducers/profileReducer";
+import { updateEmail } from "../../../redux/reducers/userProfileReducer";
 import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
 
 interface EmailProps {

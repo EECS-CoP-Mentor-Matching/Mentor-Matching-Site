@@ -2,9 +2,9 @@ import React, { useState, useRef, LegacyRef } from 'react';
 import userService from '../../../service/userService';
 import { storage } from '../../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { UserProfile as UserProfileType } from '../../../types/userProfile';
+import { UserProfile } from '../../../types/userProfile';
 import { useAppDispatch } from '../../../redux/hooks'
-import { updateProfile, updateProfileImageUrl } from '../../../redux/reducers/profileReducer';
+import { updateUserProfileImage } from '../../../redux/reducers/userProfileReducer';
 import { Button, FormGroup, FormLabel } from '@mui/material';
 import "./UploadUserProfileImage.css"
 import PopupMessage from '../../common/forms/modals/PopupMessage';
@@ -13,10 +13,6 @@ import { emptyProfileImage } from '../../../icons/icons';
 
 interface UploadUserProfileImageProps {
   userProfile: UserProfile;
-}
-
-interface UserProfile {
-  imageUrl?: string; // Add the imageUrl property
 }
 
 function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
@@ -29,7 +25,6 @@ function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
       const file = event.target.files[0];
       await uploadFile(file);
       // let the user know it was successful
-      console.log(showSuccessMessage)
       setShowSuccessMessage(true);
     }
     if (userProfile && userProfile.imageUrl) {
@@ -48,7 +43,9 @@ function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
     const downloadURL = await getDownloadURL(snapshot.ref);
 
     // Save the download URL to the userProfile state
-    dispatch(updateProfileImageUrl(downloadURL));
+    await userService.updateProfileImageUrl(userProfile.UID, downloadURL);
+
+    dispatch(updateUserProfileImage(downloadURL));
   };
 
   return (

@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import UploadUserProfileImage from "../userProfileCommon/imageUpload/UploadUserProfileImage";
 import UpdatePersonalInformation from "./components/UpdatePersonalInformation";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { updateProfile } from "../../redux/reducers/profileReducer";
+import { updateProfile } from "../../redux/reducers/userProfileReducer";
 import UpdateUserContactInformation from "./components/UpdateUserContactInformation";
 import UpdateUserDemographicInformation from "./components/UpdateDemographicsInformation";
 import UpdateEducationInformation from "./components/UpdateEducationInformation";
@@ -60,7 +60,7 @@ function UpdateUserProfile() {
 
   const dataDisplay = (
     <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
-      <UploadUserProfileImage userProfile={{...userProfileState, imageUrl: userProfileState.imageUrl}} />
+      <UploadUserProfileImage userProfile={{ ...userProfileState, imageUrl: userProfileState.imageUrl }} />
       {!showEdit &&
         <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
       }

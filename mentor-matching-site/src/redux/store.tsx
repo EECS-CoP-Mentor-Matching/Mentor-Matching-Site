@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import profileReducer from './reducers/profileReducer';
+import profileReducer from './reducers/userProfileReducer';
 import { Provider } from 'react-redux';
 import { ReactElement } from 'react';
 

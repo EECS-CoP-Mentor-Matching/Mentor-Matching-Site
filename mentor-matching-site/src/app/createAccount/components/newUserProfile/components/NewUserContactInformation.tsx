@@ -3,7 +3,7 @@ import { FormLabel } from "@mui/material";
 import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
 import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
 import { useAppSelector } from "../../../../../redux/hooks";
-import { updateDisplayName, updatePronouns, updateTimeZone } from "../../../../../redux/reducers/profileReducer";
+import { updateDisplayName, updatePronouns, updateTimeZone } from "../../../../../redux/reducers/userProfileReducer";
 import SelectTimeZone from "../../../../userProfileCommon/dropdowns/SelectTimeZone";
 
 function NewUserContactInformation() {
