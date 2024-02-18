@@ -15,8 +15,20 @@ export interface ErrorLog {
   errorMessage: string
 }
 
-export interface DbResult {
+export interface DbWriteResult {
   message: string
   success: boolean
   docId?: string
+}
+
+export interface DbUpdateResult {
+  message: string
+  success: boolean
+  docId: string
+}
+
+export interface DbReadResult<T> {
+  message: string
+  success: boolean
+  data?: T
 }
