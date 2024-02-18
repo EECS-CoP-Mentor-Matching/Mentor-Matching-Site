@@ -8,7 +8,7 @@ import { updateLgbtqPlus, updateRacialIdentity } from "../../../../../redux/redu
 
 function NewUserDemographicInformation() {
   const selector = useAppSelector;
-  const demographicInformation = selector(state => state.profile.userProfile.demographics);
+  const demographicInformation = selector(state => state.userProfile.userProfile.demographics);
 
   return (
     <FormGroupCols>

@@ -8,7 +8,7 @@ import SelectTimeZone from "../../../../userProfileCommon/dropdowns/SelectTimeZo
 
 function NewUserContactInformation() {
   const selector = useAppSelector;
-  const contactInformation = selector(state => state.profile.userProfile.contact);
+  const contactInformation = selector(state => state.userProfile.userProfile.contact);
 
   return (
     <FormGroupCols>

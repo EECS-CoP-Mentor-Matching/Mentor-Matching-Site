@@ -1,4 +1,4 @@
-import DropDownControl from "../../../../common/forms/dropDowns/DropDownControl";
+import DropDownControl from "../common/forms/dropDowns/DropDownControl";
 
 function SelectTechnicalInterest() {
   const technicalInterest = [

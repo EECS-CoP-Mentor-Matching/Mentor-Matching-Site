@@ -1,5 +1,5 @@
 // This reducer will handle the user profile state:
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { UserPersonalInformation, UserProfile, UserContactInformation, UserDemographicInformation, initUserProfile, UserEducationInformation, UserAccountSettings, DateOfBirth } from "../../types/userProfile";
 import { RootState } from "../store";
 
@@ -12,7 +12,7 @@ export interface UserProfileState {
 }
 
 export const userProfileSlice = createSlice({
-  name: 'profile',
+  name: 'userProfile',
   initialState,
   reducers: {
     updateProfile: (state = initialState, action: PayloadAction<UserProfile>) => { state.userProfile = action.payload; },
@@ -70,7 +70,6 @@ export const {
   updateUserProfileImage
 } = userProfileSlice.actions
 
-export const selectProfile = (state: RootState) => state.profile
-export const selectPersonalInformation = (state: RootState) => state.profile.userProfile.personal
+export const selectUserProfile = (state: RootState) => state.userProfile
 
 export default userProfileSlice.reducer

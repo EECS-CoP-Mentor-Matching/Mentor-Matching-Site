@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
-import profileReducer from './reducers/userProfileReducer';
+import userProfileReducer from './reducers/userProfileReducer';
 import { Provider } from 'react-redux';
 import { ReactElement } from 'react';
+import matchProfileReducer from './reducers/matchProfileReducer';
 
 const store = configureStore({
   reducer: {
-    profile: profileReducer
+    userProfile: userProfileReducer,
+    matchProfiles: matchProfileReducer
   },
 });
 

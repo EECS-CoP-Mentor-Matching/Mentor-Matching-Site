@@ -12,7 +12,7 @@ interface UpdatePersonalInformationProps {
 
 function UpdatePersonalInformation({ showEdit, showEditStyle }: UpdatePersonalInformationProps) {
   const selector = useAppSelector;
-  const personalInformation = selector(state => state.profile.userProfile.personal);
+  const personalInformation = selector(state => state.userProfile.userProfile.personal);
 
   return (
     <>{personalInformation !== undefined &&

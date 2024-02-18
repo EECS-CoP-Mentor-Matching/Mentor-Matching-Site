@@ -13,7 +13,7 @@ interface UpdateUserDemographicInformationProps {
 
 function UpdateUserDemographicInformation({ showEdit, showEditStyle }: UpdateUserDemographicInformationProps) {
   const selector = useAppSelector;
-  const demographicInformation = selector(state => state.profile.userProfile.demographics);
+  const demographicInformation = selector(state => state.userProfile.userProfile.demographics);
 
   return (
     <>{demographicInformation !== undefined &&

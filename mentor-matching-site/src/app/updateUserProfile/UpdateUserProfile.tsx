@@ -18,7 +18,7 @@ function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);
   const dispatch = useAppDispatch();
   const selector = useAppSelector;
-  const userProfileState = selector(state => state.profile.userProfile);
+  const userProfileState = selector(state => state.userProfile.userProfile);
 
   const showEditStyle = {
     borderBottom: showEdit ? "solid orange 1px" : ""

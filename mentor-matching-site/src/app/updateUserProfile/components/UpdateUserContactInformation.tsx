@@ -14,7 +14,7 @@ interface UpdateUserContactInformationProps {
 
 function UpdateUserContactInformation({ showEdit, showEditStyle }: UpdateUserContactInformationProps) {
   const selector = useAppSelector;
-  const contactInformation = selector(state => state.profile.userProfile.contact);
+  const contactInformation = selector(state => state.userProfile.userProfile.contact);
 
   return (
     <>{contactInformation !== undefined &&

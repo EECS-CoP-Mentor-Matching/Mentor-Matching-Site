@@ -14,7 +14,7 @@ interface UpdateEducationInformationProps {
 
 function UpdateEducationInformation({ showEdit, showEditStyle }: UpdateEducationInformationProps) {
   const selector = useAppSelector;
-  const educationInformation = selector(state => state.profile.userProfile.education);
+  const educationInformation = selector(state => state.userProfile.userProfile.education);
 
   return (
     <>{educationInformation !== undefined &&

@@ -1,5 +1,5 @@
 import { TextField, Autocomplete } from "@mui/material";
-import DropDownControl from "../../../../common/forms/dropDowns/DropDownControl";
+import DropDownControl from "../common/forms/dropDowns/DropDownControl";
 
 function SelectProfessionalInterest() {
   const professionalInterests = [

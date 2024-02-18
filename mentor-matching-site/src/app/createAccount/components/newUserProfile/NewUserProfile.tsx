@@ -30,8 +30,8 @@ function NewUserProfile() {
   const [userHasAgreed, updateUserHasAgreed] = useState(false);
   const [errorState, setErrorState] = useState({ errorMessage: '', isError: false } as ErrorState);
   const selector = useAppSelector;
-  const userProfile = selector(state => state.profile.userProfile);
-  const email = selector(state => state.profile.userProfile.contact.email);
+  const userProfile = selector(state => state.userProfile.userProfile);
+  const email = selector(state => state.userProfile.userProfile.contact.email);
 
   async function createNewUser(password: string) {
     console.log(userProfile);

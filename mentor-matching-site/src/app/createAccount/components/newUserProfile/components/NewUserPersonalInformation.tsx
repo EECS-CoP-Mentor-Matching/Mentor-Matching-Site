@@ -8,7 +8,7 @@ import { updateDob, updateDobDay, updateDobMonth, updateDobYear, updateFirstName
 
 function NewUserPersonalInformation() {
   const selector = useAppSelector;
-  const personalInformation = selector(state => state.profile.userProfile.personal);
+  const personalInformation = selector(state => state.userProfile.userProfile.personal);
 
   return (
     <FormGroupCols>

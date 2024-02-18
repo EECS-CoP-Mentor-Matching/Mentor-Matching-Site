@@ -7,7 +7,7 @@ import { useAppSelector } from "../../../../../redux/hooks";
 
 function NewUserEducationInformation() {
   const selector = useAppSelector;
-  const education = selector(state => state.profile.userProfile.education);
+  const education = selector(state => state.userProfile.userProfile.education);
 
   return (
     <FormGroupCols>

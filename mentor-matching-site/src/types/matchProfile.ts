@@ -1,3 +1,22 @@
+export enum MatchProfileType {
+  Mentee,
+  Mentor
+}
+
+export interface MatchProfiles {
+  UID: string
+  menteeProfiles: MatchProfile[]
+  mentorProfiles: MatchProfile[]
+}
+
+export const initMatchProfiles = () => {
+  return {
+    UID: '',
+    menteeProfiles: Array<MatchProfile>(),
+    mentorProfiles: Array<MatchProfile>()
+  } as MatchProfiles
+}
+
 export interface MatchProfile {
   UID: string
   technicalInterest: string

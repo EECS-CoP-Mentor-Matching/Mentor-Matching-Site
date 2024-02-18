@@ -28,7 +28,7 @@ function CreateAccount() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const selector = useAppSelector;
-    const email = selector(state => state.profile.userProfile.contact.email);
+    const email = selector(state => state.userProfile.userProfile.contact.email);
 
     const checkUserExists = async () => {
         if (!validateValue(email)) {

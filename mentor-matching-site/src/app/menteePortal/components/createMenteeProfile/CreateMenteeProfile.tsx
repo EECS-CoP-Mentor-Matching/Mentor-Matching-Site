@@ -1,7 +1,7 @@
-import ExperienceLevel from "./components/ExperienceLevel";
+import ExperienceLevel from "../../../matchProfileCommon/ExperienceLevel";
 import "./CreateMenteeProfile.css";
-import SelectProfessionalInterest from "./components/SelectProfessionalInterest";
-import SelectTechnicalInterest from "./components/SelectTechnicalInterest";
+import SelectProfessionalInterest from "../../../matchProfileCommon/SelectProfessionalInterest";
+import SelectTechnicalInterest from "../../../matchProfileCommon/SelectTechnicalInterest";
 import { FormLabel, Button } from "@mui/material";
 import { MatchProfile } from '../../../../types/matchProfile';
 import { useState } from 'react';
