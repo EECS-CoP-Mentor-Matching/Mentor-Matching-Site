@@ -10,6 +10,10 @@ async function createMentorProfile(mentorProfile: MatchProfile) {
   return await mentorDb.createMentorProfileAsync(mentorProfile);
 }
 
+async function deleteMentorProfile(docID: string) {
+  return await mentorDb.deleteMentorProfileAsync(docID);
+}
+
 async function searchMentorProfilesByUser(UID: string) {
   return await mentorDb.searchMentorProfilesByUserAsync(UID);
 }
@@ -17,5 +21,6 @@ async function searchMentorProfilesByUser(UID: string) {
 export const mentorService = {
   searchMentorsByProfileMatch,
   createMentorProfile,
+  deleteMentorProfile,
   searchMentorProfilesByUser
 }
