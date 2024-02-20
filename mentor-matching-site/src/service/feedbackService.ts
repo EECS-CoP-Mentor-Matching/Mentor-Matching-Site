@@ -1,33 +1,39 @@
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "../firebaseConfig"; 
+import { db, storage } from "../firebaseConfig"; // Import storage from firebaseConfig
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import correct modules
 
 interface FeedbackData {
   userEmail: string;
   feedbackType: string;
+  feedbackTitle: string;
   feedbackContent: string;
+  attachmentUrl?: string;
   isResolved: boolean;
-
 }
 
 interface FeedbackResponse {
   data: FeedbackData[];
 }
 
-/** Submit feedback to Firebase */
-async function submitFeedback(feedbackData: FeedbackData): Promise<void> {
+async function submitFeedback(feedbackData: FeedbackData, attachment?: File): Promise<void> {
   try {
+    let attachmentUrl: string | undefined;
+
+    if (attachment) {
+      const storageRef = ref(storage, `attachments/${Date.now()}_${attachment.name}`);
+      await uploadBytes(storageRef, attachment);
+      attachmentUrl = await getDownloadURL(storageRef);
+    }
+
+    feedbackData.attachmentUrl = attachmentUrl;
+
     await addDoc(collection(db, "feedback"), feedbackData);
-    // Feedback submitted successfully
   } catch (error) {
-    // Handle error
     console.error("Error submitting feedback:", error);
     throw error;
   }
 }
 
-
-
-/** Fetch feedback entries from Firebase */
 async function fetchFeedbackEntries(): Promise<FeedbackResponse> {
   try {
     const querySnapshot = await getDocs(collection(db, "feedback"));
@@ -37,7 +43,6 @@ async function fetchFeedbackEntries(): Promise<FeedbackResponse> {
     });
     return { data: feedbackEntries };
   } catch (error) {
-    // Handle error
     console.error("Error fetching feedback entries:", error);
     throw error;
   }

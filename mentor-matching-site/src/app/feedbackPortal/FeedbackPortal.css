@@ -5,3 +5,7 @@
     align-items: center;
     margin: 10px;
   }
+
+.feedback-text {
+  margin: 20px;
+}

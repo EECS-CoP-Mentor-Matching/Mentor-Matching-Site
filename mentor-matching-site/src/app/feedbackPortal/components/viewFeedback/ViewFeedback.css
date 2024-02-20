@@ -1,7 +1,4 @@
-.view-feedback {
-    list-style-type: none;
-    margin-right: 20px;
-    margin: 0;
+.feedback-profile {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,8 +6,38 @@
     gap: 20px;
     margin-top: 20px;
     padding: 10px;
+    max-width: 1000px;
+}
+
+.feedback-map {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.view-feedback {
+    list-style-type: none;
+    margin: 0;
+    padding: 20px;
     border: darkgray 1px solid;
-    max-width: 600px;
+    border-radius: 10px;
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+    align-items: flex-start;
+    background-color: #f9f9f9;
+}
 
+.view-feedback strong {
+    color: #333;
+}
 
+.view-feedback a {
+    color: #007bff;
+    text-decoration: none;
 }

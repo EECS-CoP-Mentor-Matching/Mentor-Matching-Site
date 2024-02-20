@@ -37,14 +37,17 @@ function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
 
   return (
     <>
+    
       <PortalNavigationBar
         selected={page}
         onNavChange={setPage}
         navItems={navUtilities.navItemsFromEnum(FeedbackPages)}
       />
+      
       {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback userEmail={userEmail} /> </div>}
       {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
       {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}
+      
     </>
   );
 }
