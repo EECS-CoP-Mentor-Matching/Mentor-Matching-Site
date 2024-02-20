@@ -41,3 +41,14 @@
     color: #007bff;
     text-decoration: none;
 }
+
+.search-sort-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-sort-item {
+    padding: 5px;
+    width: 200px;
+}

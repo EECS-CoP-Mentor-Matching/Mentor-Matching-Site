@@ -1,14 +1,17 @@
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, deleteDoc, serverTimestamp } from "firebase/firestore";
+
 import { db, storage } from "../firebaseConfig"; // Import storage from firebaseConfig
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import correct modules
 
 interface FeedbackData {
+  id?: string;
   userEmail: string;
   feedbackType: string;
   feedbackTitle: string;
   feedbackContent: string;
   attachmentUrl?: string;
   isResolved: boolean;
+  timestamp?: any;
 }
 
 interface FeedbackResponse {
@@ -26,6 +29,8 @@ async function submitFeedback(feedbackData: FeedbackData, attachment?: File): Pr
     }
 
     feedbackData.attachmentUrl = attachmentUrl;
+    
+    feedbackData.timestamp = serverTimestamp();
 
     await addDoc(collection(db, "feedback"), feedbackData);
   } catch (error) {
@@ -39,7 +44,9 @@ async function fetchFeedbackEntries(): Promise<FeedbackResponse> {
     const querySnapshot = await getDocs(collection(db, "feedback"));
     const feedbackEntries: FeedbackData[] = [];
     querySnapshot.forEach((doc) => {
-      feedbackEntries.push(doc.data() as FeedbackData);
+      const data = doc.data() as FeedbackData;
+      data.id = doc.id; // Add the document ID to the data
+      feedbackEntries.push(data);
     });
     return { data: feedbackEntries };
   } catch (error) {
@@ -48,9 +55,19 @@ async function fetchFeedbackEntries(): Promise<FeedbackResponse> {
   }
 }
 
+async function deleteFeedbackEntry(id: string): Promise<void> {
+  try {
+    await deleteDoc(doc(db, "feedback", id));
+  } catch (error) {
+    console.error("Error deleting feedback entry:", error);
+    throw error;
+  }
+}
+
 const feedbackService = {
   submitFeedback,
   fetchFeedbackEntries,
+  deleteFeedbackEntry,
 };
 
 export default feedbackService;
