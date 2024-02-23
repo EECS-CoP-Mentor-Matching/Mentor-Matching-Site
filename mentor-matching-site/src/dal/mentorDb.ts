@@ -11,18 +11,19 @@ const collectionName = 'mentorProfile';
 
 async function searchMentorsByProfileMatchAsync(menteeUserProfileId: string, userProfile: UserProfile): Promise<DocItem<MatchProfile>[]> {
   const menteeMatchProfile = (await menteeService.searchMenteeProfileById(menteeUserProfileId)).data;
-  console.log(menteeMatchProfile);
+  console.log("mentee profile: ", menteeMatchProfile);
 
   const conditions = [];
   conditions.push(where("UID", "!=", userProfile.UID));
-  conditions.push(where("technicalInterests", "==", menteeMatchProfile.technicalInterest));
+  conditions.push(where("technicalInterest", "==", menteeMatchProfile.technicalInterest));
   conditions.push(where("professionalInterest", "==", menteeMatchProfile.professionalInterest));
-  if (userProfile.accountSettings.useDemographicsForMatching) {
-    conditions.push(where("lgbtqPlusCommunity", "==", userProfile.demographics.lgbtqPlusCommunity));
-    conditions.push(where("racialIdentity", "==", userProfile.demographics.racialIdentity));
-  }
+  // if (userProfile.accountSettings.useDemographicsForMatching) {
+  //   conditions.push(where("lgbtqPlusCommunity", "==", userProfile.demographics.lgbtqPlusCommunity));
+  //   conditions.push(where("racialIdentity", "==", userProfile.demographics.racialIdentity));
+  // }
 
   const results = (await queryMany<MatchProfile>(collectionName, ...conditions)).results;
+  console.log("match results: ", results)
   const matches = new Array<DocItem<MatchProfile>>;
   results.forEach(result => {
     const match = result.data;

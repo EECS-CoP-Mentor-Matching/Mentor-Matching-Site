@@ -11,9 +11,10 @@ interface DropDownControlLoaderReduxProps {
   mappingMethod: (values: any[]) => DropDownOption[]
   label?: string
   selectedOption?: any
+  valueIs?: ('id' | 'label')
 }
 
-function DropDownControlLoaderRedux({ onSelectDispatch, dbSearchAsync, mappingMethod, label, selectedOption }: DropDownControlLoaderReduxProps) {
+function DropDownControlLoaderRedux({ onSelectDispatch, dbSearchAsync, mappingMethod, label, selectedOption, valueIs = 'id' }: DropDownControlLoaderReduxProps) {
   const [dropDownOptions, setDropDownOptions] = useState<DropDownOption[] | null>(null);
 
   useEffect(() => {
@@ -42,6 +43,7 @@ function DropDownControlLoaderRedux({ onSelectDispatch, dbSearchAsync, mappingMe
       options={dropDownOptions as DropDownOption[]}
       onSelectDispatch={onSelectDispatch}
       selectedOption={selectedOption}
+      valueIs={valueIs}
     />
   );
 

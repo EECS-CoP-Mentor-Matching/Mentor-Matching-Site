@@ -18,7 +18,7 @@ function ExperienceLevel({ onSelectDispatch, currentValue }: ExperienceLevelProp
     interests.forEach(currInterest => {
       options.push({
         label: currInterest.data.level,
-        id: currInterest.docId
+        id: currInterest.data.hierarchy
       } as DropDownOption);
     });
     return options;

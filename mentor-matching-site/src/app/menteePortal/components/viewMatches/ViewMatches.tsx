@@ -13,6 +13,7 @@ import DropDownControl from "../../../common/forms/dropDowns/DropDownControl";
 import menteeService from "../../../../service/menteeService";
 import { UserProfile } from "../../../../types/userProfile";
 import TextDisplay from "../../../common/forms/textInputs/TextDisplay";
+import { errorLogDb } from "../../../../dal/errorLogDb";
 
 function ViewMatches() {
   const [mentorProfiles, setMentorProfiles] = useState<DocItem<MatchProfile>[]>([]);
@@ -48,7 +49,6 @@ function ViewMatches() {
   const menteeDropDown = (): DropDownOption[] => {
     const options = new Array<DropDownOption>;
     menteeProfiles.forEach(result => {
-
       options.push({
         label: `${result.data.technicalInterest} and ${result.data.professionalInterest}`,
         id: result.docId
@@ -59,14 +59,14 @@ function ViewMatches() {
 
   const viewMenteeProfileMatches = async (profileId: string) => {
     const currentUser = await authService.getSignedInUser();
-    console.log(profileId)
-    if (currentUser && userProfile && selectedProfile) {
+    if (currentUser && userProfile) {
       try {
         const result = await mentorService.searchMentorsByProfileMatch(profileId, userProfile);
         setMentorProfiles(result);
       }
       catch (error) {
         console.log(error);
+        errorLogDb.logError("ViewMatches", error);
       }
     }
     setSelectedProfile(profileId);
@@ -75,7 +75,7 @@ function ViewMatches() {
   return (
     <ContentContainer
       title="Active Profiles"
-      sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', rowGap: '50px' }}
+      sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', rowGap: '25px' }}
     >
       <DropDownControl label="Mentee Profile"
         options={menteeDropDown()}

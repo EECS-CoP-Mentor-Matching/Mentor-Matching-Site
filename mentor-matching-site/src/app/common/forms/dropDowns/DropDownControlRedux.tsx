@@ -11,9 +11,10 @@ interface DropDownControlProps {
   options: DropDownOption[]
   label?: string
   selectedOption?: any
+  valueIs?: ('id' | 'label')
 }
 
-function DropDownControlRedux({ onSelectDispatch, options, label, selectedOption }: DropDownControlProps) {
+function DropDownControlRedux({ onSelectDispatch, options, label, selectedOption, valueIs = 'id' }: DropDownControlProps) {
   const dispatch = useAppDispatch();
 
   const onSelect = (value: any) => {
@@ -25,7 +26,7 @@ function DropDownControlRedux({ onSelectDispatch, options, label, selectedOption
       options={options}
       label={label}
       selectedOption={selectedOption}
-      valueIs="label" />
+      valueIs={valueIs} />
   );
 }
 

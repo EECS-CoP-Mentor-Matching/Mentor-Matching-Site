@@ -5,12 +5,12 @@ interface DropDownControlProps {
   options: DropDownOption[]
   label?: string
   onSelect: (value: any) => void
-  valueIs: ('id' | 'label')
+  valueIs?: ('id' | 'label')
   selectedOption?: any
   widthMulti?: number
 }
 
-function DropDownControl({ options, label, onSelect, valueIs: returnValue, selectedOption, widthMulti }: DropDownControlProps) {
+function DropDownControl({ options, label, onSelect, valueIs = 'id', selectedOption, widthMulti }: DropDownControlProps) {
   const controlStyle = {
     width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`
   }
@@ -23,7 +23,7 @@ function DropDownControl({ options, label, onSelect, valueIs: returnValue, selec
   }
 
   const onChange = (e: any, option: any) => {
-    if (returnValue === 'id') {
+    if (valueIs === 'id') {
       onSelect(option?.id);
     }
     else {
