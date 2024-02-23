@@ -1,4 +1,4 @@
-import { queryMany, writeSingle } from "./commonDb";
+import { queryDocId, queryMany, writeSingle } from "./commonDb";
 import { MatchProfile } from "../types/matchProfile";
 import { DocItem } from "../types/types";
 import { where } from "firebase/firestore";
@@ -13,9 +13,14 @@ async function searchMenteeProfilesByUserAsync(UID: string): Promise<DocItem<Mat
   return (await queryMany<MatchProfile>(collectionName, where('UID', '==', UID))).results;
 }
 
+async function searchMenteeProfileByIdAsync(menteeProfileId: string): Promise<DocItem<MatchProfile>> {
+  return (await queryDocId<MatchProfile>(collectionName, menteeProfileId));
+}
+
 const menteeDb = {
   createMenteeProfileAsync,
-  searchMenteeProfilesByUserAsync
+  searchMenteeProfilesByUserAsync,
+  searchMenteeProfileByIdAsync
 }
 
 export default menteeDb;

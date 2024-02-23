@@ -17,12 +17,12 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     if (!feedbackTitle.trim() || !feedbackContent.trim() || !feedbackType) {
       alert('Feedback title, content and type cannot be empty.');
       return;
     }
-  
+
     const feedbackData = {
       userEmail,
       feedbackType,
@@ -30,7 +30,7 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
       feedbackContent,
       isResolved: false,
     };
-  
+
     try {
       await feedbackService.submitFeedback(feedbackData, attachment);
       setFeedbackType('');
@@ -61,17 +61,17 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
   return (
     <div className="feedback-profile">
       <FormLabel>Submit Feedback</FormLabel>
-      
-        <form onSubmit={handleSubmit}>
-          <div className='feedback-interest'>
-        <TextField
+
+      <form onSubmit={handleSubmit}>
+        <div className='feedback-interest'>
+          <TextField
             label="Feedback Title"
             value={feedbackTitle}
             onChange={(e) => setFeedbackTitle(e.target.value)}
             required
-            
+
           />
-          <DropDownControl label="Feedback Type" options={feedbackSelection} onSelect={(value) => setFeedbackType(value)} />
+          <DropDownControl label="Feedback Type" options={feedbackSelection} onSelect={(value) => setFeedbackType(value)} valueIs='label' />
           <TextField
             label="Feedback Content"
             value={feedbackContent}
@@ -85,9 +85,9 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
           <div className='feedback-interest'>
             <Button type="submit">Submit Feedback</Button>
           </div>
-          </div>
-        </form>
-      </div>
-   
+        </div>
+      </form>
+    </div>
+
   );
 };

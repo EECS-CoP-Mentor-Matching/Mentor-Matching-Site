@@ -24,7 +24,8 @@ function DropDownControlRedux({ onSelectDispatch, options, label, selectedOption
     <DropDownControl onSelect={onSelect}
       options={options}
       label={label}
-      selectedOption={selectedOption} />
+      selectedOption={selectedOption}
+      valueIs="label" />
   );
 }
 

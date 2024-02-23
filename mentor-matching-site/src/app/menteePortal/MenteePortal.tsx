@@ -5,6 +5,7 @@ import { FormLabel } from "@mui/material"
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 import ActiveMenteeProfiles from './components/activeMenteeProfiles/ActiveMenteeProfiles';
+import ViewMatches from './components/viewMatches/ViewMatches';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 export enum Pages {
@@ -36,9 +37,7 @@ function MenteePortal() {
         </div>
       }
       {selectedPage === Pages.viewMatches &&
-        <div className="mentee-portal">
-          matches...
-        </div>
+        <ViewMatches />
       }
     </>
   );

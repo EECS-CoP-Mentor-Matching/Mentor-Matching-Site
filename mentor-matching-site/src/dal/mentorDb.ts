@@ -1,25 +1,40 @@
 import { MatchProfile } from "../types/matchProfile";
 import { UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import {collection, getDocs, addDoc, query, where, doc, deleteDoc} from "firebase/firestore";
+import { collection, getDocs, addDoc, query, where, doc, deleteDoc } from "firebase/firestore";
 import { queryMany, writeSingle } from "./commonDb";
 import { DocItem } from "../types/types";
 import firebase from "firebase/compat";
+import menteeService from "../service/menteeService";
 
 const collectionName = 'mentorProfile';
 
-async function searchMentorsByProfileMatchAsync(menteeUserProfile: UserProfile, menteeMatchProfile: MatchProfile): Promise<DocItem<MatchProfile>[]> {
-  const conditions = []
+async function searchMentorsByProfileMatchAsync(menteeUserProfileId: string, userProfile: UserProfile): Promise<DocItem<MatchProfile>[]> {
+  const menteeMatchProfile = (await menteeService.searchMenteeProfileById(menteeUserProfileId)).data;
+  console.log(menteeMatchProfile);
+
+  const conditions = [];
+  conditions.push(where("UID", "!=", userProfile.UID));
   conditions.push(where("technicalInterests", "==", menteeMatchProfile.technicalInterest));
-  conditions.push(where("technicalExperience", ">", menteeMatchProfile.technicalExperience));
   conditions.push(where("professionalInterest", "==", menteeMatchProfile.professionalInterest));
-  conditions.push(where("professionalExperience", ">=", menteeMatchProfile.professionalExperience));
-  if (menteeUserProfile.accountSettings.useDemographicsForMatching) {
-    conditions.push(where("lgbtqPlusCommunity", "==", menteeUserProfile.demographics.lgbtqPlusCommunity));
-    conditions.push(where("racialIdentity", "==", menteeUserProfile.demographics.racialIdentity));
+  if (userProfile.accountSettings.useDemographicsForMatching) {
+    conditions.push(where("lgbtqPlusCommunity", "==", userProfile.demographics.lgbtqPlusCommunity));
+    conditions.push(where("racialIdentity", "==", userProfile.demographics.racialIdentity));
   }
 
-  return (await queryMany<MatchProfile>(collectionName, ...conditions)).results;
+  const results = (await queryMany<MatchProfile>(collectionName, ...conditions)).results;
+  const matches = new Array<DocItem<MatchProfile>>;
+  results.forEach(result => {
+    const match = result.data;
+    if (match.technicalExperience > menteeMatchProfile.technicalExperience &&
+      match.professionalExperience > menteeMatchProfile.professionalExperience) {
+      matches.push({
+        docId: result.docId,
+        data: match
+      } as DocItem<MatchProfile>);
+    }
+  });
+  return matches;
 }
 
 async function createMentorProfileAsync(mentorMatchProfile: MatchProfile) {

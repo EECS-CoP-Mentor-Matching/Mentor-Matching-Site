@@ -1,9 +1,10 @@
 import { UserProfile } from "../types/userProfile";
 import { MatchProfile } from "../types/matchProfile";
 import mentorDb from "../dal/mentorDb";
+import { DocItem } from "../types/types";
 
-async function searchMentorsByProfileMatch(menteeUser: UserProfile, menteeProfile: MatchProfile) {
-  return await mentorDb.searchMentorsByProfileMatchAsync(menteeUser, menteeProfile);
+async function searchMentorsByProfileMatch(menteeUserProfileId: string, userProfile: UserProfile): Promise<DocItem<MatchProfile>[]> {
+  return await mentorDb.searchMentorsByProfileMatchAsync(menteeUserProfileId, userProfile);
 }
 
 async function createMentorProfile(mentorProfile: MatchProfile) {

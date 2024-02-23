@@ -1,4 +1,4 @@
-import { Box, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, Button, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
 import ContentContainer from "../../../common/ContentContainer";
 import React, { useEffect, useState } from "react";
 import authService from "../../../../service/authService";
@@ -55,6 +55,7 @@ function ActiveMenteeProfiles() {
                   />
                 </ListItem>
                 {index < mentorProfiles.length - 1 && <Divider />}
+                <Button>View Matches</Button>
               </Paper>
             </React.Fragment>
           ))}

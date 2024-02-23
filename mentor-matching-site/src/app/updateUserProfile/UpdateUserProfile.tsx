@@ -30,15 +30,6 @@ function UpdateUserProfile() {
       if (currentUser) {
         const profile = await userService.getUserProfile(currentUser.uid);
         dispatch(updateProfile(profile));
-
-        // Load the image URL from the database
-        const userRef = doc(db, 'users', currentUser.uid); // Replace 'users' with actual collection name
-        const userSnap = await getDoc(userRef);
-
-        if (userSnap.exists()) {
-          const userProfile = userSnap.data() as UserProfile;
-          dispatch(updateProfile(userProfile)); // Update the redux store
-        }
       }
     };
     loadUserProfile();

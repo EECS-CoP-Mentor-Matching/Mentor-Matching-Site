@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, writeBatch, query, QueryConstraint, getDocs, QuerySnapshot, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, writeBatch, query, QueryConstraint, getDocs, QuerySnapshot, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { DocItem, DbReadResult, DbReadResults, DbUpdateResult, DbWriteResult } from "../types/types";
 
@@ -52,6 +52,18 @@ async function readCommon(collectionName: string): Promise<QuerySnapshot> {
   const readQuery = query(collection(db, collectionName));
   const records = await getDocs(readQuery);
   return records;
+}
+
+export async function queryDocId<T>(collectionName: string, docId: string): Promise<DbReadResult<T>> {
+  const docRef = doc(db, collectionName, docId);
+  const docSnap = await getDoc(docRef);
+
+  return {
+    success: true,
+    message: 'record found',
+    data: docSnap.data(),
+    docId: docSnap.id
+  } as DbReadResult<T>;
 }
 
 // Query

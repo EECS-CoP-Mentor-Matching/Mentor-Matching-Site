@@ -5,16 +5,15 @@ type ContentContainerProps = {
     title?: string;
     subtitle?: string;
     children: ReactNode;
+    sx?: any
 };
 
-const ContentContainer = ({ title, subtitle, children }: ContentContainerProps) => {
+const ContentContainer = ({ title, subtitle, children, sx }: ContentContainerProps) => {
     return (
-        <Box sx={{ marginTop: '35px' }}>
+        <Box sx={{ marginTop: '35px', ...sx }}>
             {title && <Typography variant="h4">{title}</Typography>}
             {subtitle && <Typography variant="h6">{subtitle}</Typography>}
-            <div>
-                {children}
-            </div>
+            {children}
         </Box>);
 }
 

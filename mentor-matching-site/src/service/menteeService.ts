@@ -31,10 +31,15 @@ async function searchMenteeProfilesByUser(UID: string) {
   return await menteeDb.searchMenteeProfilesByUserAsync(UID);
 }
 
+async function searchMenteeProfileById(menteeProfileId: string) {
+  return await menteeDb.searchMenteeProfileByIdAsync(menteeProfileId);
+}
+
 const menteeService = {
   performMatching,
   createMenteeProfile,
-  searchMenteeProfilesByUser
+  searchMenteeProfilesByUser,
+  searchMenteeProfileById
 }
 
 export default menteeService;
