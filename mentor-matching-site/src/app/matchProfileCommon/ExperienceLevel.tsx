@@ -15,7 +15,7 @@ interface ExperienceLevelProps {
 function ExperienceLevel({ onSelectDispatch, currentValue }: ExperienceLevelProps) {
   const mapOptions = ((interests: DocItem<EducationLevel>[]): DropDownOption[] => {
     const options = new Array<DropDownOption>;
-    interests.forEach(currInterest => {
+    interests.sort((a, b) => a.data.hierarchy - b.data.hierarchy).forEach(currInterest => {
       options.push({
         label: currInterest.data.level,
         id: currInterest.data.hierarchy
