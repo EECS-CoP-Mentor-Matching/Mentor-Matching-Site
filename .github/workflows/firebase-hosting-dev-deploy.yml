@@ -2,7 +2,7 @@ name: Deploy to Firebase Hosting Dev Environment
 on:
   push:
     branches:
-      - none
+      - dev-deploy
 
 jobs:
   build_and_deploy:
