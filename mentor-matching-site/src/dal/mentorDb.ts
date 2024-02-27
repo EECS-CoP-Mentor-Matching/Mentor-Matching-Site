@@ -1,7 +1,7 @@
 import { MatchProfile } from "../types/matchProfile";
 import { UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, addDoc, query, where, doc, deleteDoc } from "firebase/firestore";
+import {collection, getDocs, addDoc, query, where, doc, deleteDoc, updateDoc} from "firebase/firestore";
 import { queryMany, writeSingle } from "./commonDb";
 import { DocItem } from "../types/types";
 import firebase from "firebase/compat";
@@ -49,6 +49,19 @@ async function createMentorProfileAsync(mentorMatchProfile: MatchProfile) {
   }
 }
 
+async function editMentorProfileAsync(docId: string, mentorMatchProfile: MatchProfile) {
+  try {
+    const docRef = doc(db, collectionName, docId);
+
+    await updateDoc(docRef, mentorMatchProfile as { [field: string]: any });
+
+    return { success: true, id: docId };
+  } catch (error) {
+    return { success: false, error: error };
+  }
+}
+
+
 async function deleteMentorProfileAsync(docId: string) {
   try {
     const docRef = doc(db, collectionName, docId);
@@ -68,6 +81,7 @@ async function searchMentorProfilesByUserAsync(UID: string): Promise<DocItem<Mat
 const mentorDb = {
   searchMentorsByProfileMatchAsync,
   createMentorProfileAsync,
+  editMentorProfileAsync,
   deleteMentorProfileAsync,
   searchMentorProfilesByUserAsync
 };
