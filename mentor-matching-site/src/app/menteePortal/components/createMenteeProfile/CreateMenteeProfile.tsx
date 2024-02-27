@@ -41,7 +41,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
       setErrorState(parseError(error));
     }
     setLoading(false);
-    if (!errorState) backToPage();
+    if (!errorState.isError) backToPage();
   }
 
   const validateInputs = (profile: MatchProfile) => {
