@@ -33,7 +33,7 @@ function SelectTechnicalInterest({ onSelectDispatch, currentValue }: SelectTechn
       onSelectDispatch={onSelectDispatch}
       dbSearchAsync={interestsDb.searchTechnicalInterests}
       mappingMethod={mapOptions}
-      selectedOption={currentValue}
+      selectedValue={currentValue}
       valueIs="label"
     />
   );

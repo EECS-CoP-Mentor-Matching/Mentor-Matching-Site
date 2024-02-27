@@ -1,6 +1,6 @@
 import selectionItemsDb from "../../../dal/selectionItemsDb";
 import { EducationLevel } from "../../../types/matchProfile";
-import { DropDownOption } from "../../../types/types";
+import { DocItem, DropDownOption } from "../../../types/types";
 import DropDownControlLoaderRedux from "../../common/forms/dropDowns/DropDownControlLoaderRedux";
 
 interface SelectLevelOfEducationProps {
@@ -13,23 +13,26 @@ interface SelectLevelOfEducationProps {
 
 function SelectLevelOfEducation({ onSelectDispatch, currentValue }: SelectLevelOfEducationProps) {
 
-  const mapOptions = ((levels: EducationLevel[]): DropDownOption[] => {
-    const options = new Array<DropDownOption>;
-    levels.forEach(currLevel => {
-      options.push({
-        label: currLevel.level,
-        id: currLevel.hierarchy
-      } as DropDownOption);
+  const mapOptions = ((edLevels: DocItem<EducationLevel>[]): DropDownOption[] => {
+    const loadOptions = new Array<DropDownOption>;
+    console.log(edLevels)
+    edLevels.forEach(edLevel => {
+      loadOptions.push({
+        label: edLevel.data.level,
+        id: edLevel.docId
+      });
     });
-    return options;
+    return loadOptions;
   });
 
   return (
-    <DropDownControlLoaderRedux label="Level of Education"
+    <DropDownControlLoaderRedux
+      label="Level of Education"
       onSelectDispatch={onSelectDispatch}
       dbSearchAsync={selectionItemsDb.educationLevelsAsync}
       mappingMethod={mapOptions}
-      selectedOption={currentValue}
+      selectedValue={currentValue}
+      valueIs="label"
     />
   );
 }

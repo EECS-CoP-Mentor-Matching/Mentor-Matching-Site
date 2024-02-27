@@ -1,10 +1,11 @@
 import "./ExperienceLevel.css";
-import { EducationLevel } from "../../types/matchProfile";
+import { EducationLevel, ExperienceLevel } from "../../types/matchProfile";
 import { DocItem, DropDownOption } from "../../types/types";
 import selectionItemsDb from "../../dal/selectionItemsDb";
 import DropDownControlLoaderRedux from "../common/forms/dropDowns/DropDownControlLoaderRedux";
+import interestsDb from "../../dal/interestsDb";
 
-interface ExperienceLevelProps {
+interface SelectExperienceLevelProps {
   onSelectDispatch(payload: any): {
     payload: any
     type: string
@@ -12,8 +13,8 @@ interface ExperienceLevelProps {
   currentValue?: string
 }
 
-function ExperienceLevel({ onSelectDispatch, currentValue }: ExperienceLevelProps) {
-  const mapOptions = ((interests: DocItem<EducationLevel>[]): DropDownOption[] => {
+function SelectExperienceLevel({ onSelectDispatch, currentValue }: SelectExperienceLevelProps) {
+  const mapOptions = ((interests: DocItem<ExperienceLevel>[]): DropDownOption[] => {
     const options = new Array<DropDownOption>;
     interests.sort((a, b) => a.data.hierarchy - b.data.hierarchy).forEach(currInterest => {
       options.push({
@@ -27,11 +28,11 @@ function ExperienceLevel({ onSelectDispatch, currentValue }: ExperienceLevelProp
   return (
     <DropDownControlLoaderRedux label="Experience Level"
       onSelectDispatch={onSelectDispatch}
-      dbSearchAsync={selectionItemsDb.educationLevelsAsync}
+      dbSearchAsync={interestsDb.searchExperienceLevels}
       mappingMethod={mapOptions}
-      selectedOption={currentValue}
+      selectedValue={currentValue}
     />
   );
 }
 
-export default ExperienceLevel;
+export default SelectExperienceLevel;

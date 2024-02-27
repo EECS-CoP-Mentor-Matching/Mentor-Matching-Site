@@ -15,8 +15,12 @@ function ActiveMenteeProfiles() {
       if (user) {
         try {
           const result = await menteeService.searchMenteeProfilesByUser(user.uid);
-          setMentorProfiles(result);
-          console.log(result);
+          if (result !== undefined) {
+            setMentorProfiles(result);
+          }
+          else {
+            setMentorProfiles(new Array<DocItem<MatchProfile>>);
+          }
         } catch (error) {
           console.error("Error fetching mentee profiles:", error);
         }

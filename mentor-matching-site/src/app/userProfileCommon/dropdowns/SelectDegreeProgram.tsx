@@ -1,7 +1,7 @@
 import { DegreeProgram } from "../../../types/userProfile";
 import DropDownControlLoaderRedux from "../../common/forms/dropDowns/DropDownControlLoaderRedux";
 import DropDownControlRedux from "../../common/forms/dropDowns/DropDownControlRedux";
-import { DropDownOption } from "../../../types/types";
+import { DocItem, DropDownOption } from "../../../types/types";
 import selectionItemsDb from "../../../dal/selectionItemsDb";
 
 interface SelectDegreeProgramProps {
@@ -14,12 +14,12 @@ interface SelectDegreeProgramProps {
 
 function SelectDegreeProgram({ onSelectDispatch, currentValue }: SelectDegreeProgramProps) {
 
-  const mapOptions = ((levels: DegreeProgram[]): DropDownOption[] => {
+  const mapOptions = ((levels: DocItem<DegreeProgram>[]): DropDownOption[] => {
     const options = new Array<DropDownOption>;
     levels.forEach(currLevel => {
       options.push({
-        label: currLevel.degreeProgramName,
-        id: currLevel.id
+        label: currLevel.data.degreeProgramName,
+        id: currLevel.docId
       } as DropDownOption);
     });
     return options;
@@ -29,9 +29,10 @@ function SelectDegreeProgram({ onSelectDispatch, currentValue }: SelectDegreePro
     <DropDownControlLoaderRedux
       label="Degree Program"
       onSelectDispatch={onSelectDispatch}
-      selectedOption={currentValue}
+      selectedValue={currentValue}
       mappingMethod={mapOptions}
       dbSearchAsync={selectionItemsDb.degreeProgramsAsync}
+      valueIs="label"
     />
   );
 }

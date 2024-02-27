@@ -4,30 +4,24 @@ import { DropDownOption } from "../../../../types/types";
 interface DropDownControlProps {
   options: DropDownOption[]
   label?: string
-  onSelect: (value: any) => void
+  onSelect: (id: any, label: any) => void
   valueIs?: ('id' | 'label')
-  selectedOption?: any
+  selectedValue?: any
   widthMulti?: number
 }
 
-function DropDownControl({ options, label, onSelect, valueIs = 'id', selectedOption, widthMulti }: DropDownControlProps) {
+function DropDownControl({ options, label, onSelect, valueIs = 'id', selectedValue, widthMulti }: DropDownControlProps) {
+
   const controlStyle = {
     width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`
   }
 
-  const checkOptionExists = () => {
-    options.forEach(option => {
-      if (selectedOption == option.label) return true;
-    });
-    return false;
-  }
-
   const onChange = (e: any, option: any) => {
     if (valueIs === 'id') {
-      onSelect(option?.id);
+      onSelect(option?.id, option?.id);
     }
     else {
-      onSelect(option?.label);
+      onSelect(option?.id, option?.label);
     }
   }
 
@@ -35,8 +29,7 @@ function DropDownControl({ options, label, onSelect, valueIs = 'id', selectedOpt
     <FormControl>
       <Autocomplete
         options={options}
-        isOptionEqualToValue={(option, value) => option.id === value.id}
-        value={selectedOption}
+        value={selectedValue}
         sx={controlStyle}
         onChange={onChange}
         renderInput={(params) =>
