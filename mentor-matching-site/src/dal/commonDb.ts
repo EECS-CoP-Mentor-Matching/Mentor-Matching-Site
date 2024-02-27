@@ -84,8 +84,8 @@ async function queryCommon(collectionName: string, ...conditions: QueryConstrain
 }
 
 function processSingleReadResults<T>(records: QuerySnapshot) {
-  if (records.empty || records.size === 0) { throw new Error('no records found'); }
-  if (records.size > 1) { throw new Error('too many records found'); }
+  // if (records.empty || records.size === 0) { throw new Error('no records found'); }
+  // if (records.size > 1) { throw new Error('too many records found'); }
 
   const results = records.docs.map((doc) => {
     return {
@@ -100,7 +100,7 @@ function processSingleReadResults<T>(records: QuerySnapshot) {
 }
 
 function processManyReadResults<T>(records: QuerySnapshot) {
-  if (records.empty || records.size === 0) { throw new Error('no records found'); }
+  // if (records.empty || records.size === 0) { throw new Error('no records found'); }
 
   const results = records.docs.map((doc) => {
     return {

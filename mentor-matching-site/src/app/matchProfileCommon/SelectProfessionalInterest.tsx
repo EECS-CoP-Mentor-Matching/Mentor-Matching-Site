@@ -28,7 +28,7 @@ function SelectProfessionalInterest({ onSelectDispatch, currentValue }: SelectPr
       onSelectDispatch={onSelectDispatch}
       dbSearchAsync={interestsDb.searchProfessionalInterests}
       mappingMethod={mapOptions}
-      selectedOption={currentValue}
+      selectedValue={currentValue}
       valueIs="label"
     />
   );

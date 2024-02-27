@@ -1,4 +1,4 @@
-import ExperienceLevel from "../../../matchProfileCommon/ExperienceLevel";
+import SelectExperienceLevel from "../../../matchProfileCommon/SelectExperienceLevel";
 import "./CreateMenteeProfile.css";
 import SelectProfessionalInterest from "../../../matchProfileCommon/SelectProfessionalInterest";
 import SelectTechnicalInterest from "../../../matchProfileCommon/SelectTechnicalInterest";
@@ -41,7 +41,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
       setErrorState(parseError(error));
     }
     setLoading(false);
-    backToPage()
+    if (!errorState.isError) backToPage();
   }
 
   const validateInputs = (profile: MatchProfile) => {
@@ -65,12 +65,12 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
       <FormLabel>Technical</FormLabel>
       <div className="mentee-interest">
         <SelectTechnicalInterest onSelectDispatch={updateNewMenteeProfileTechnicalInterest} />
-        <ExperienceLevel onSelectDispatch={updateNewMenteeProfileTechnicalExperience} />
+        <SelectExperienceLevel onSelectDispatch={updateNewMenteeProfileTechnicalExperience} />
       </div>
       <FormLabel>Professional</FormLabel>
       <div className="mentee-interest">
         <SelectProfessionalInterest onSelectDispatch={updateNewMenteeProfileProfessionalInterest} />
-        <ExperienceLevel onSelectDispatch={updateNewMenteeProfileProfessionalExperience} />
+        <SelectExperienceLevel onSelectDispatch={updateNewMenteeProfileProfessionalExperience} />
       </div>
       <Button onClick={createProfile}>Add Profile</Button>
       <ErrorMessage errorState={errorState} />

@@ -1,6 +1,6 @@
 import DropDownControlLoaderRedux from "../../common/forms/dropDowns/DropDownControlLoaderRedux";
 import { useState, useEffect } from "react";
-import { DropDownOption } from "../../../types/types";
+import { DocItem, DropDownOption } from "../../../types/types";
 import { RacialIdentity } from "../../../types/userProfile";
 import selectionItemsDb from "../../../dal/selectionItemsDb";
 
@@ -14,12 +14,12 @@ interface SelectRacialIdentityProps {
 
 function SelectRacialIdentity({ onSelectDispatch, currentValue }: SelectRacialIdentityProps) {
 
-  const mapOptions = ((identities: RacialIdentity[]): DropDownOption[] => {
+  const mapOptions = ((identities: DocItem<RacialIdentity>[]): DropDownOption[] => {
     const loadOptions = new Array<DropDownOption>;
     identities.forEach(currIdentity => {
       loadOptions.push({
-        label: currIdentity.identityName,
-        id: currIdentity.id
+        label: currIdentity.data.identityName,
+        id: currIdentity.docId
       });
     });
     return loadOptions;
@@ -29,8 +29,9 @@ function SelectRacialIdentity({ onSelectDispatch, currentValue }: SelectRacialId
     <DropDownControlLoaderRedux label="Racial Identity"
       mappingMethod={mapOptions}
       onSelectDispatch={onSelectDispatch}
-      selectedOption={currentValue}
+      selectedValue={currentValue}
       dbSearchAsync={selectionItemsDb.racialIdentitiesAsync}
+      valueIs="label"
     />
   );
 }
