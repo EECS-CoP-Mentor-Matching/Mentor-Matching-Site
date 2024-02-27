@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import ContentContainer from "../../common/ContentContainer";
-import {Box, List, ListItem, ListItemText, Divider, Paper, IconButton, Grid, ButtonBase} from "@mui/material";
+import {
+    Box,
+    List,
+    ListItem,
+    ListItemText,
+    Divider,
+    Paper,
+    IconButton,
+    Grid,
+    ButtonBase,
+    Typography
+} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import authService from "../../../service/authService";
@@ -8,19 +19,29 @@ import { mentorService } from "../../../service/mentorService";
 import { MatchProfile } from "../../../types/matchProfile";
 import { DocItem } from '../../../types/types';
 import PopupMessage from "../../common/forms/modals/PopupMessage";
+import ModalWrapper from "../../common/forms/modals/ModalWrapper";
+import ProfileForm, {ProfileFormData} from "../../common/forms/modals/ProfileForm";
 
 function ActiveProfiles() {
     const [mentorProfiles, setMentorProfiles] = useState<DocItem<MatchProfile>[]>([]);
-    const [showDeletionModal, setShowDeletionModal] = useState(false);
+    const [popupText, setPopupText] = useState<string>("");
+    const [showPopupModal, setShowPopupModal] = useState(false);
+    const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+    const [selectedProfile, setSelectedProfile] = useState<DocItem<MatchProfile>>();
 
     const fetchProfiles = async () => {
         const user = await authService.getSignedInUser();
         if (user) {
             try {
                 const result = await mentorService.searchMentorProfilesByUser(user.uid);
-                setMentorProfiles(result);
+                if (result.length === 0) {
+                    setMentorProfiles([]);
+                } else {
+                    setMentorProfiles(result);
+                }
             } catch (error) {
                 console.error("Error fetching mentor profiles:", error);
+                setMentorProfiles([]);
             }
         }
     };
@@ -29,23 +50,63 @@ function ActiveProfiles() {
         console.log('Viewing profile', id);
     };
 
-    const editProfile = (id : String) => {
-        console.log('Editing profile', id);
+    const editProfile = (profile: DocItem<MatchProfile>, event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        setSelectedProfile(profile);
+        setShowEditProfileModal(true);
     };
 
-    const deleteProfile = async (docId: string, event: React.MouseEvent<HTMLButtonElement>) => {
+    const deleteProfile = async (profile: DocItem<MatchProfile>, event: React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         const user = await authService.getSignedInUser();
 
+        if (!user) {
+            console.error("User not signed in");
+            return;
+        }
+
         try {
-            const response = await mentorService.deleteMentorProfile(docId);
+            const response = await mentorService.deleteMentorProfile(profile.docId);
             if (response.success) {
-                setShowDeletionModal(true);
+                setPopupText("Profile successfully deleted!")
+                setShowPopupModal(true);
                 await fetchProfiles();
+            } else {
+                console.error("Failed to delete profile");
             }
         } catch (error) {
-
+            console.error("Error deleting profile:", error);
         }
+    };
+
+    const handleEditProfile = async (profileFormData: ProfileFormData) => {
+        const user = await authService.getSignedInUser();
+        if (selectedProfile) {
+            if (user) {
+                const matchFormData: MatchProfile = {
+                    UID: user.uid,
+                    technicalInterest: profileFormData.technicalInterest,
+                    technicalExperience: profileFormData.technicalExperience,
+                    professionalInterest: profileFormData.professionalInterest,
+                    professionalExperience: profileFormData.professionalExperience
+                };
+
+                try {
+                    const response = await mentorService.editMentorProfile(selectedProfile.docId, matchFormData);
+                    setPopupText(response.success ? "Successfully edited profile" : response.error as string);
+                    setShowEditProfileModal(false);
+
+                    await fetchProfiles();
+                } catch (error) {
+                    setPopupText("An error occurred while creating the profile: " + error);
+                }
+            } else {
+                setPopupText("Error authenticating user");
+            }
+        } else {
+            setPopupText("Error selecting profile");
+        }
+        setShowPopupModal(true);
     };
 
     const profileItemStyle = {
@@ -60,7 +121,7 @@ function ActiveProfiles() {
     };
 
     useEffect(() => {
-        fetchProfiles();
+        void fetchProfiles();
     }, []);
 
     return (
@@ -68,9 +129,26 @@ function ActiveProfiles() {
             title="Active Profiles"
             subtitle="A collection of the profiles that you've created"
         >
-            <PopupMessage message="Profile successfully deleted!"
-                          open={showDeletionModal}
-                          setIsOpen={setShowDeletionModal} />
+            <ModalWrapper children={
+                <Box>
+                    <Typography variant="h6">Editing Mentor Profile ID: {selectedProfile?.docId}</Typography>
+                    <ProfileForm
+                        onSubmit={handleEditProfile}
+                        initialProfileFormData={{
+                            technicalInterest: selectedProfile?.data.technicalInterest || '',
+                            technicalExperience: Number(selectedProfile?.data.technicalExperience),
+                            professionalInterest: selectedProfile?.data.professionalInterest || '',
+                            professionalExperience: Number(selectedProfile?.data.professionalExperience),
+                        }}
+                    />
+                </Box>
+            }
+                  open={showEditProfileModal}
+                  setIsOpen={setShowEditProfileModal}
+            />
+            <PopupMessage message={popupText}
+                          open={showPopupModal}
+                          setIsOpen={setShowPopupModal} />
             <p>Here are your active profiles:</p>
             <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 <List component="nav" aria-label="mentor profiles">
@@ -94,8 +172,10 @@ function ActiveProfiles() {
                                             />
                                         </Grid>
                                         <Grid item>
-                                            <IconButton onClick={() => console.log('Editing profile', profile.docId)}><EditIcon /></IconButton>
-                                            <IconButton onClick={(event) => deleteProfile(profile.docId, event)}>
+                                            <IconButton onClick={(event) => editProfile(profile, event)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton onClick={(event) => deleteProfile(profile, event)}>
                                                 <DeleteIcon />
                                             </IconButton>
                                         </Grid>
