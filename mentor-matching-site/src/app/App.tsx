@@ -12,6 +12,7 @@ import theme from "./theme";
 import { useEffect, useState } from 'react';
 import authService from '../service/authService';
 import Home from './Home';
+import Footer from '../Footer.js';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
@@ -50,6 +51,7 @@ function App() {
               <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"}/>} />
             </Routes>
           </BrowserRouter>
+          <Footer />
         </div>
       </ReduxProvider>
     </ThemeProvider>
