@@ -8,6 +8,7 @@ interface DropDownControlProps {
   valueIs?: ('id' | 'label')
   selectedValue?: any
   widthMulti?: number
+  required?: boolean;
 }
 
 function DropDownControl({ options, label, onSelect, valueIs = 'id', selectedValue, widthMulti }: DropDownControlProps) {

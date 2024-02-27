@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import feedbackService from './../../../../service/feedbackService'
 import './SubmitFeedback.css';
 import { FormLabel, Button } from "@mui/material";
 import { TextField } from "@mui/material";
 import DropDownControl from "../../../common/forms/dropDowns/DropDownControl";
+import { FeedbackSettingsContext } from './../FeedbackSettings/FeedbackSettingsContext';
+
 
 interface SubmitFeedbackProps {
   userEmail: string;
 }
+
 
 export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
   const [feedbackType, setFeedbackType] = useState<string>('');
   const [feedbackTitle, setFeedbackTitle] = useState<string>(''); // Add this line
   const [feedbackContent, setFeedbackContent] = useState<string>('');
   const [attachment, setAttachment] = useState<File | undefined>(undefined);
+  const {
+    isTitleRequired,
+    isContentRequired,
+    isTypeRequired,
+    isAttachmentAllowed
+  } = useContext(FeedbackSettingsContext);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -59,29 +68,27 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
   ]
 
   return (
-    <div className="feedback-profile">
-      <FormLabel>Submit Feedback</FormLabel>
-
-      <form onSubmit={handleSubmit}>
-        <div className='feedback-interest'>
-          <TextField
-            label="Feedback Title"
-            value={feedbackTitle}
-            onChange={(e) => setFeedbackTitle(e.target.value)}
-            required
-
-          />
-          <DropDownControl label="Feedback Type" options={feedbackSelection} onSelect={(value) => setFeedbackType(value)} valueIs='label' />
+      <div className="feedback-profile">
+        <FormLabel>Submit Feedback</FormLabel>
+        <form onSubmit={handleSubmit}>
+          <div className='feedback-interest'>
+            <TextField
+              label="Feedback Title"
+              value={feedbackTitle}
+              onChange={(e) => setFeedbackTitle(e.target.value)}
+              required={isTitleRequired}
+            />
+          <DropDownControl label="Feedback Type" options={feedbackSelection} onSelect={(value) => setFeedbackType(value)} required={isTypeRequired} valueIs='label' />
           <TextField
             label="Feedback Content"
             value={feedbackContent}
             onChange={(e) => setFeedbackContent(e.target.value)}
-            required
+            required={isContentRequired}
             multiline
             rows={4}
 
           />
-          <input type="file" onChange={handleAttachmentChange} />
+          {isAttachmentAllowed && <input type="file" onChange={handleAttachmentChange} />}
           <div className='feedback-interest'>
             <Button type="submit">Submit Feedback</Button>
           </div>

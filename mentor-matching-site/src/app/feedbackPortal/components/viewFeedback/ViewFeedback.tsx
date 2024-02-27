@@ -53,10 +53,10 @@ export default function ViewFeedback() {
   };
 
   const sortedFeedbackEntries = [...feedbackEntries].filter(entry => 
-    (entry.feedbackTitle ? entry.feedbackTitle.includes(searchTerm) : false) ||
-    (entry.userEmail ? entry.userEmail.includes(searchTerm) : false) ||
-    (entry.feedbackType ? entry.feedbackType.includes(searchTerm) : false) ||
-    (entry.feedbackContent ? entry.feedbackContent.includes(searchTerm) : false)
+    (entry.feedbackTitle && typeof entry.feedbackTitle === 'string' ? entry.feedbackTitle.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+    (entry.userEmail && typeof entry.userEmail === 'string' ? entry.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+    (entry.feedbackType && typeof entry.feedbackType === 'string' ? entry.feedbackType.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+    (entry.feedbackContent && typeof entry.feedbackContent === 'string' ? entry.feedbackContent.toLowerCase().includes(searchTerm.toLowerCase()) : false)
   ).sort((a, b) => {
     const aValue = a[sortField as keyof FeedbackEntry];
     const bValue = b[sortField as keyof FeedbackEntry];
