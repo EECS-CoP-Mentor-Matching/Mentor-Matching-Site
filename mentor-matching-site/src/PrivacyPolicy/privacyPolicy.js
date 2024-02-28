@@ -1,6 +1,5 @@
 import React from 'react';
 import './PrivacyPolicy.css'; 
-import { Link } from 'react-router-dom';
 
 const PrivacyPolicy = () => {
   return (
