@@ -19,7 +19,6 @@ function DropDownControlRedux({ onSelectDispatch, options, label, selectedValue,
   const dispatch = useAppDispatch();
 
   const onSelect = (id: any, label: any) => {
-    console.log(id, label)
     if (valueIs === 'id') {
       dispatch(onSelectDispatch(id));
     }

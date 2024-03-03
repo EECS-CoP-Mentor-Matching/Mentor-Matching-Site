@@ -13,6 +13,9 @@ import { useAppSelector } from "../../../../redux/hooks";
 import { refreshNavigate } from "../../../common/auth/refreshNavigate";
 import UserAgreementForm from "./components/UserAgreementForm";
 import ErrorMessage, { ErrorState } from "../../../common/forms/ErrorMessage";
+import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
+import PopupMessage from "../../../common/forms/modals/PopupMessage";
+import ModalWrapper from "../../../common/forms/modals/ModalWrapper";
 
 enum FormStep {
   Contact = 1,
@@ -29,22 +32,31 @@ function NewUserProfile() {
   const [currentStep, setCurrentStep] = useState(FormStep.Contact);
   const [userHasAgreed, updateUserHasAgreed] = useState(false);
   const [errorState, setErrorState] = useState({ errorMessage: '', isError: false } as ErrorState);
+  const [createAccountLoading, setCreateAccountLoading] = useState(false);
+
   const selector = useAppSelector;
   const userProfile = selector(state => state.userProfile.userProfile);
   const email = selector(state => state.userProfile.userProfile.contact.email);
 
   async function createNewUser(password: string) {
+    setCreateAccountLoading(true);
+
     console.log(userProfile);
     try {
       const user = await authService.createUser(email, password);
       if (user) {
         await userService.createNewUser(user, userProfile);
         const userCreated = await userService.getUserProfile(user.uid);
+        if (userCreated) {
+          return
+        }
       }
     } catch (error) {
       // delete the user from firebase?
       console.error('Failed to create a new user:', error);
     }
+
+    setCreateAccountLoading(false);
   }
 
   const resetError = () => {
@@ -110,6 +122,7 @@ function NewUserProfile() {
           hidePrevious={currentStep === FormStep.Contact}
         />
       </FormGroupCols>
+      <LoadingMessage message="Creating your account.... Don't refresh!" loading={createAccountLoading} />
     </div>
   );
 }

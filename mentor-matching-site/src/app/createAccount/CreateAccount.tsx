@@ -7,7 +7,6 @@ import SubmitButton from "../common/forms/SubmitButton";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateEmail } from "../../redux/reducers/userProfileReducer";
-import authService from "../../service/authService";
 import ErrorMessage, { ErrorState } from "../common/forms/ErrorMessage";
 
 enum Step {

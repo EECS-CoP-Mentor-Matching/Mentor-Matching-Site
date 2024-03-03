@@ -15,7 +15,6 @@ function SelectLevelOfEducation({ onSelectDispatch, currentValue }: SelectLevelO
 
   const mapOptions = ((edLevels: DocItem<EducationLevel>[]): DropDownOption[] => {
     const loadOptions = new Array<DropDownOption>;
-    console.log(edLevels)
     edLevels.forEach(edLevel => {
       loadOptions.push({
         label: edLevel.data.level,
