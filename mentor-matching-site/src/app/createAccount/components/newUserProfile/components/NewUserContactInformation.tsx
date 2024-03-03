@@ -5,6 +5,7 @@ import TextInputControl from "../../../../common/forms/textInputs/TextInputContr
 import { useAppSelector } from "../../../../../redux/hooks";
 import { updateDisplayName, updatePronouns, updateTimeZone } from "../../../../../redux/reducers/userProfileReducer";
 import SelectTimeZone from "../../../../userProfileCommon/dropdowns/SelectTimeZone";
+import FormHeader from "../../../../common/forms/layout/FormHeader";
 
 function NewUserContactInformation() {
   const selector = useAppSelector;
@@ -12,7 +13,7 @@ function NewUserContactInformation() {
 
   return (
     <FormGroupCols>
-      <FormLabel>Contact Information</FormLabel>
+      <FormHeader>Contact Information</FormHeader>
       <TextInputControl value={contactInformation.email} readonly={true} label="Email" widthMulti={.15} />
       <TextInputControlRedux value={contactInformation.displayName} label="Display Name" onInputDispatch={updateDisplayName} widthMulti={.15} />
       <TextInputControlRedux value={contactInformation.pronouns} label="Pronouns" onInputDispatch={updatePronouns} />

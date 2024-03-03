@@ -9,8 +9,6 @@ import MenteePortal from './menteePortal/MenteePortal';
 import UpdateUserProfile from './updateUserProfile/UpdateUserProfile'
 import { ThemeProvider } from '@emotion/react';
 import theme from "./theme";
-import { useEffect, useState } from 'react';
-import authService from '../service/authService';
 import Home from './Home';
 import Footer from './footer/Footer';
 import PrivacyPolicy from './footer/privacyPolicy/PrivacyPolicy';
@@ -21,18 +19,6 @@ import ReduxProvider from '../redux/store';
 
 
 function App() {
-  const [signedin, setSignedIn] = useState(false);
-
-  useEffect(() => {
-    const checkSignedIn = async () => {
-      const user = await authService.getSignedInUser();
-      if (user !== null) {
-        setSignedIn(true);
-      }
-    }
-    checkSignedIn();
-  });
-
   return (
     <ThemeProvider theme={theme} >
       <ReduxProvider>

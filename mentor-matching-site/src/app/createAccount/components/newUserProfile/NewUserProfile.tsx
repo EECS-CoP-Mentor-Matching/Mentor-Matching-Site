@@ -14,7 +14,7 @@ import UserAgreementForm from "./components/UserAgreementForm";
 import ErrorMessage, { ErrorState } from "../../../common/forms/ErrorMessage";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 import PopupMessage from "../../../common/forms/modals/PopupMessage";
-import ModalWrapper from "../../../common/forms/modals/ModalWrapper";
+import { useNavigate } from "react-router-dom";
 
 enum FormStep {
   Contact = 1,
@@ -31,6 +31,7 @@ function NewUserProfile() {
   const [userHasAgreed, updateUserHasAgreed] = useState(false);
   const [errorState, setErrorState] = useState({ errorMessage: '', isError: false } as ErrorState);
   const [createAccountLoading, setCreateAccountLoading] = useState(false);
+  const [accountCreated, setAccountCreated] = useState(false);
 
   const selector = useAppSelector;
   const userProfile = selector(state => state.userProfile.userProfile);
@@ -46,7 +47,7 @@ function NewUserProfile() {
         await userService.createNewUser(user, userProfile);
         const userCreated = await userService.getUserProfile(user.uid);
         if (userCreated) {
-          return
+          setAccountCreated(true);
         }
       }
     } catch (error) {
@@ -107,6 +108,10 @@ function NewUserProfile() {
     }
   }
 
+  const navigateToProfile = () => {
+    refreshNavigate('/update-profile');
+  }
+
   return (
     <div className='login'>
       <FormGroupCols>
@@ -119,6 +124,10 @@ function NewUserProfile() {
         />
       </FormGroupCols>
       <LoadingMessage message="Creating your account.... Don't refresh!" loading={createAccountLoading} />
+      <PopupMessage message="Your account was created!" hideX={true}
+        open={accountCreated} setIsOpen={setAccountCreated}
+        actionButton={navigateToProfile} actionMessage="View Profile"
+      />
     </div>
   );
 }

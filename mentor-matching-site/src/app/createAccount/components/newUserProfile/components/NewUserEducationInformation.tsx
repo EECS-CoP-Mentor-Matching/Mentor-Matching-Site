@@ -4,6 +4,7 @@ import SelectLevelOfEducation from "../../../../userProfileCommon/dropdowns/Sele
 import { updateHighestLevelOfEducation, updateStudentStatus } from "../../../../../redux/reducers/userProfileReducer";
 import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
 import { useAppSelector } from "../../../../../redux/hooks";
+import FormHeader from "../../../../common/forms/layout/FormHeader";
 
 function NewUserEducationInformation() {
   const selector = useAppSelector;
@@ -11,7 +12,7 @@ function NewUserEducationInformation() {
 
   return (
     <FormGroupCols>
-      <FormLabel>User Eductation</FormLabel>
+      <FormHeader>User Eductation</FormHeader>
       <CheckBoxControlRedux label="Are you currently a student?" onChangeDispatch={updateStudentStatus} checked={education.studentStatus} />
       <SelectLevelOfEducation onSelectDispatch={updateHighestLevelOfEducation} currentValue={education.highestLevelOfEducation} />
     </FormGroupCols>

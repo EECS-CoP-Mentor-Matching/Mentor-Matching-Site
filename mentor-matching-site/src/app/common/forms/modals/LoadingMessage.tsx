@@ -4,9 +4,10 @@ import './LoadingMessage.css'
 interface LoadingMessageProps {
   message: string
   loading: boolean
+  timeoutSeconds?: number
 }
 
-function LoadingMessage({ message, loading }: LoadingMessageProps) {
+function LoadingMessage({ message, loading, timeoutSeconds }: LoadingMessageProps) {
   return (
     <>
       <Modal
