@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import authService from '../service/authService';
 import Home from './Home';
 import Footer from '../Footer.js';
-import PrivacyPolicy from '../PrivacyPolicy/privacyPolicy'; 
+import PrivacyPolicy from './privacyPolicy/privacyPolicy';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
@@ -48,7 +48,7 @@ function App() {
               <Route path="/admin-portal" element={<AdminPortal />} />
               <Route path="/mentor-portal" element={<MentorPortal />} />
               <Route path="/update-profile" element={<UpdateUserProfile />} />
-              <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"}/>} />
+              <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"} />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Routes>
             <Footer />
