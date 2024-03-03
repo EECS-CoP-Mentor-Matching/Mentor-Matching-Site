@@ -1,4 +1,3 @@
-import TextDisplay from "./TextDisplay";
 import { ReactElement } from "react";
 
 interface TextDisplaySectionProps {

@@ -15,7 +15,7 @@ interface SelectRacialIdentityProps {
 function SelectRacialIdentity({ onSelectDispatch, currentValue }: SelectRacialIdentityProps) {
 
   const mapOptions = ((identities: DocItem<RacialIdentity>[]): DropDownOption[] => {
-    const loadOptions = new Array<DropDownOption>;
+    const loadOptions = new Array<DropDownOption>();
     identities.forEach(currIdentity => {
       loadOptions.push({
         label: currIdentity.data.identityName,

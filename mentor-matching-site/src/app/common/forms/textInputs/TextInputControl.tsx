@@ -1,4 +1,4 @@
-import { Input, FormControl, InputLabel, StepLabel } from "@mui/material";
+import { Input, FormControl, InputLabel } from "@mui/material";
 import React, { useState } from "react";
 
 interface TextInputControlProps {
@@ -17,7 +17,7 @@ interface TextInputControlProps {
 
 function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive, editColor, style }: TextInputControlProps) {
   const controlStyle = {
-    width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`,
+    width: `${widthMulti === undefined ? 10 : widthMulti * 100}rem`,
     color: sensitive ? "transparent" : "",
     borderBottomColor: editColor !== undefined ? editColor : ""
   }

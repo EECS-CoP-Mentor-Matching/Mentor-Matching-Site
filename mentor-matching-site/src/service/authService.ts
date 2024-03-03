@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAuth, User, UserCredential } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAuth, User } from "firebase/auth";
 import { app } from "../firebaseConfig";
 
 const firebaseAuth = getAuth(app)
@@ -9,30 +9,20 @@ async function createUser(email: string, password: string): Promise<User | void>
     .then((userCredential) => {
       // Signed up 
       return userCredential.user;
-    })
-    .catch((error) => {
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-      // ..
     });
 }
 
-/** use this method if the device is shared i.e. computer labs */ 
+/** use this method if the device is shared i.e. computer labs */
 function signInSession(email: string, password: string) {
   setPersistence(firebaseAuth, browserSessionPersistence)
-  .then(() => {
-    // Existing and future Auth states are now persisted in the current
-    // session only. Closing the window would clear any existing state even
-    // if a user forgets to sign out.
-    // ...
-    // New sign-in will be persisted with session persistence.
-    return signInWithEmailAndPassword(firebaseAuth, email, password);
-  })
-  .catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-  });
+    .then(() => {
+      // Existing and future Auth states are now persisted in the current
+      // session only. Closing the window would clear any existing state even
+      // if a user forgets to sign out.
+      // ...
+      // New sign-in will be persisted with session persistence.
+      return signInWithEmailAndPassword(firebaseAuth, email, password);
+    })
 }
 
 /** use this method if the device is not shared */
@@ -42,10 +32,6 @@ async function signIn(email: string, password: string): Promise<User | void> {
       // Signed in 
       return userCredential.user;
     })
-    .catch((error) => {
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-    });
 }
 
 function signOut() {

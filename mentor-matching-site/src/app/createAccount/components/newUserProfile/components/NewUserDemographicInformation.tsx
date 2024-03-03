@@ -1,10 +1,8 @@
 import { useAppSelector } from "../../../../../redux/hooks";
 import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
-import { FormLabel } from "@mui/material";
 import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
 import SelectRacialIdentity from "../../../../userProfileCommon/dropdowns/SelectRacialIdentity";
 import { updateLgbtqPlus, updateRacialIdentity, updateUseLgbtqPlusCommunityForMatching, updateUseRacialIdentityForMatching } from "../../../../../redux/reducers/userProfileReducer";
-import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import FormHeader from "../../../../common/forms/layout/FormHeader";
 import FormSectionHeader from "../../../../common/forms/layout/FormSectionHeader";
 

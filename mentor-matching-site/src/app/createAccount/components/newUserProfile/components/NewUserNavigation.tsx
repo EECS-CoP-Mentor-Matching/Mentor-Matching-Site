@@ -1,6 +1,5 @@
 import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import { Button } from "@mui/material";
-import { refreshNavigate } from "../../../../common/auth/refreshNavigate";
 
 interface NewUserNavigationProps {
   nextStep: () => void

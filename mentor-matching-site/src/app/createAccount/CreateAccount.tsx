@@ -50,7 +50,7 @@ function CreateAccount() {
     }
 
     const validateValue = (currEmailValue: string): boolean => {
-        const regex = new RegExp("^[\.a-zA-Z0-9\-\_]+@[a-zA-Z0-9\-\_]+\.[a-zA-Z]+$");
+        const regex = new RegExp("^[.a-zA-Z0-9-_]+@[a-zA-Z0-9-_]+.[a-zA-Z]+$");
         return regex.test(currEmailValue);
     }
 

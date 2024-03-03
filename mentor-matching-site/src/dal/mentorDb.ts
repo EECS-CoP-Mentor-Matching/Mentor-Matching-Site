@@ -25,7 +25,7 @@ async function searchMentorsByProfileMatchAsync(menteeUserProfileId: string, use
 
   const results = (await queryMany<MatchProfile>(collectionName, ...conditions)).results;
   console.log("match results: ", results)
-  const matches = new Array<DocItem<MatchProfile>>;
+  const matches = new Array<DocItem<MatchProfile>>();
   results.forEach(result => {
     const match = result.data;
     if (match.technicalExperience > menteeMatchProfile.technicalExperience &&
