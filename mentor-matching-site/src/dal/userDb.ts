@@ -27,7 +27,6 @@ async function createNewUserAsync(user: User, userProfile: UserProfile): Promise
       userStatus: "active",
       menteePortalEnabled: userProfile.accountSettings.menteePortalEnabled,
       mentorPortalEnabled: userProfile.accountSettings.mentorPortalEnabled,
-      useDemographicsForMatching: userProfile.accountSettings.useDemographicsForMatching
     } as UserAccountSettings,
     matchHistory: Array<MatchHistoryItem>(),
     profilePictureUrl: userProfile.profilePictureUrl,

@@ -1,10 +1,9 @@
 import { MatchProfile } from "../types/matchProfile";
 import { UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import {collection, getDocs, addDoc, query, where, doc, deleteDoc, updateDoc} from "firebase/firestore";
+import { collection, getDocs, addDoc, query, where, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { queryMany, writeSingle } from "./commonDb";
 import { DocItem } from "../types/types";
-import firebase from "firebase/compat";
 import menteeService from "../service/menteeService";
 
 const collectionName = 'mentorProfile';
@@ -17,10 +16,12 @@ async function searchMentorsByProfileMatchAsync(menteeUserProfileId: string, use
   conditions.push(where("UID", "!=", userProfile.UID));
   conditions.push(where("technicalInterest", "==", menteeMatchProfile.technicalInterest));
   conditions.push(where("professionalInterest", "==", menteeMatchProfile.professionalInterest));
-  // if (userProfile.accountSettings.useDemographicsForMatching) {
-  //   conditions.push(where("lgbtqPlusCommunity", "==", userProfile.demographics.lgbtqPlusCommunity));
-  //   conditions.push(where("racialIdentity", "==", userProfile.demographics.racialIdentity));
-  // }
+  if (userProfile.preferences.useLgbtqPlusCommunityForMatching) {
+    conditions.push(where("lgbtqPlusCommunity", "==", userProfile.demographics.lgbtqPlusCommunity));
+  }
+  if (userProfile.preferences.useRacialIdentityForMatching) {
+    conditions.push(where("racialIdentity", "==", userProfile.demographics.racialIdentity));
+  }
 
   const results = (await queryMany<MatchProfile>(collectionName, ...conditions)).results;
   console.log("match results: ", results)

@@ -5,7 +5,6 @@ import NewUserContactInformation from "./components/NewUserContactInformation";
 import NewUserPersonalInformation from "./components/NewUserPersonalInformation";
 import NewUserDemographicInformation from "./components/NewUserDemographicInformation";
 import NewUserEducationInformation from "./components/NewUserEducationInformation";
-import NewUserPreferences from "./components/NewUserPreferences";
 import NewUserSubmit from "./components/NewUserSubmit";
 import NewUserNavigation from "./components/NewUserNavigation";
 import userService from "../../../../service/userService";
@@ -22,10 +21,9 @@ enum FormStep {
   Demographic = 2,
   Educational = 3,
   Personal = 4,
-  Preferences = 5,
-  UserAgreement = 6,
-  Submit = 7,
-  AccountCreated = 8
+  UserAgreement = 5,
+  Submit = 6,
+  AccountCreated = 7
 }
 
 function NewUserProfile() {
@@ -98,8 +96,6 @@ function NewUserProfile() {
         return <NewUserEducationInformation />
       case FormStep.Personal:
         return <NewUserPersonalInformation />
-      case FormStep.Preferences:
-        return <NewUserPreferences />
       case FormStep.UserAgreement:
         return <UserAgreementForm updateAgreementAcceptance={userHasAcceptedTerms} userHasAgreed={userHasAgreed} />
       case FormStep.Submit:
