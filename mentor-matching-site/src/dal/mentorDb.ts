@@ -1,8 +1,8 @@
 import { MatchProfile } from "../types/matchProfile";
 import { UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, addDoc, query, where, doc, deleteDoc, updateDoc } from "firebase/firestore";
-import { queryMany, writeSingle } from "./commonDb";
+import { collection, addDoc, where, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { queryMany } from "./commonDb";
 import { DocItem } from "../types/types";
 import menteeService from "../service/menteeService";
 

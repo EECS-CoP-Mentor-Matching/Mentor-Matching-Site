@@ -1,7 +1,5 @@
 import { Box, Button, Modal, Typography } from "@mui/material";
-import { useState } from "react";
 import FormGroupCols from "../layout/FormGroupCols";
-import FormGroupRows from "../layout/FormGroupRows";
 
 interface PopupMessageProps {
   message: string

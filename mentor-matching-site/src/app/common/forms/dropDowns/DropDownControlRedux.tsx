@@ -1,8 +1,6 @@
-import { TextField, Autocomplete, FormControl } from "@mui/material";
 import { DropDownOption } from "../../../../types/types";
 import DropDownControl from "./DropDownControl";
 import { useAppDispatch } from "../../../../redux/hooks";
-import { useState } from "react";
 
 interface DropDownControlProps {
   onSelectDispatch(payload: any): {

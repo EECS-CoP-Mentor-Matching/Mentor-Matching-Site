@@ -1,6 +1,6 @@
 import { MatchHistoryItem, UserAccountSettings, UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, doc, query, where, setDoc, updateDoc, addDoc } from "firebase/firestore";
+import { collection, getDocs, doc, query, where, setDoc, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 const collectionName = "userProfile";

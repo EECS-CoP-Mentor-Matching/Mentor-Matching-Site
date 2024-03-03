@@ -14,7 +14,6 @@ import UserAgreementForm from "./components/UserAgreementForm";
 import ErrorMessage, { ErrorState } from "../../../common/forms/ErrorMessage";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 import PopupMessage from "../../../common/forms/modals/PopupMessage";
-import { useNavigate } from "react-router-dom";
 
 enum FormStep {
   Contact = 1,
