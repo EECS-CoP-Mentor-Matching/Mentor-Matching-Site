@@ -62,6 +62,10 @@ async function searchAsync(conditions: any[]): Promise<UserProfile[]> {
   return users as UserProfile[];
 }
 
+async function deleteUserProfile(uid: string): Promise<any> {
+
+}
+
 const userDb = {
   updateUserProfileImage,
   createNewUserAsync,
