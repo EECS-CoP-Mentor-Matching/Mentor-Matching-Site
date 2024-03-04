@@ -1,6 +1,6 @@
-import { addDoc, collection, doc, writeBatch, query, QueryConstraint, getDocs, QuerySnapshot, updateDoc, getDoc } from "firebase/firestore";
+import { addDoc, collection, doc, writeBatch, query, QueryConstraint, getDocs, QuerySnapshot, updateDoc, getDoc, deleteDoc, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { DocItem, DbReadResult, DbReadResults, DbUpdateResult, DbWriteResult } from "../types/types";
+import { DocItem, DbReadResult, DbReadResults, DbUpdateResult, DbWriteResult, DbDeleteResult } from "../types/types";
 
 // Write Logic
 export async function writeSingle(collectionName: string, data: any): Promise<DbWriteResult> {
@@ -114,4 +114,15 @@ function processManyReadResults<T>(records: QuerySnapshot) {
     message: 'record found',
     results: results
   } as DbReadResults<T>;
+}
+
+export async function deleteDocId(collectionName: string, docId: string): Promise<DbDeleteResult> {
+  const docRef = doc(db, collectionName, docId);
+  await deleteDoc(docRef);
+
+  return {
+    success: true,
+    message: 'record deleted',
+    docId: docId
+  } as DbDeleteResult;
 }
