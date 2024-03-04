@@ -2,41 +2,65 @@ import { MatchProfile } from "../types/matchProfile";
 import { UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
 import { collection, addDoc, where, doc, deleteDoc, updateDoc } from "firebase/firestore";
-import { queryMany } from "./commonDb";
+import { queryMany, querySingle } from "./commonDb";
 import { DocItem } from "../types/types";
 import menteeService from "../service/menteeService";
+import userService from "../service/userService";
 
 const collectionName = 'mentorProfile';
 
 async function searchMentorsByProfileMatchAsync(menteeUserProfileId: string, userProfile: UserProfile): Promise<DocItem<MatchProfile>[]> {
   const menteeMatchProfile = (await menteeService.searchMenteeProfileById(menteeUserProfileId)).data;
-  console.log("mentee profile: ", menteeMatchProfile);
 
-  const conditions = [];
-  conditions.push(where("UID", "!=", userProfile.UID));
-  conditions.push(where("technicalInterest", "==", menteeMatchProfile.technicalInterest));
-  conditions.push(where("professionalInterest", "==", menteeMatchProfile.professionalInterest));
-  if (userProfile.preferences.useLgbtqPlusCommunityForMatching) {
-    conditions.push(where("lgbtqPlusCommunity", "==", userProfile.demographics.lgbtqPlusCommunity));
-  }
-  if (userProfile.preferences.useRacialIdentityForMatching) {
-    conditions.push(where("racialIdentity", "==", userProfile.demographics.racialIdentity));
-  }
+  // search based on interests
+  const interestsConditions = [];
+  interestsConditions.push(where("UID", "!=", userProfile.UID));
+  interestsConditions.push(where("technicalInterest", "==", menteeMatchProfile.technicalInterest));
+  interestsConditions.push(where("professionalInterest", "==", menteeMatchProfile.professionalInterest));
 
-  const results = (await queryMany<MatchProfile>(collectionName, ...conditions)).results;
-  console.log("match results: ", results)
-  const matches = new Array<DocItem<MatchProfile>>();
-  results.forEach(result => {
+  const interestsResults = (await queryMany<MatchProfile>(collectionName, ...interestsConditions)).results;
+
+  // filter by experience level
+  const interestsMatches = new Array<DocItem<MatchProfile>>();
+  interestsResults.forEach(result => {
     const match = result.data;
     if (match.technicalExperience > menteeMatchProfile.technicalExperience &&
       match.professionalExperience > menteeMatchProfile.professionalExperience) {
-      matches.push({
+      interestsMatches.push({
         docId: result.docId,
         data: match
       } as DocItem<MatchProfile>);
     }
   });
-  return matches;
+
+  if (userProfile.preferences.useLgbtqPlusCommunityForMatching || userProfile.preferences.useRacialIdentityForMatching) {
+    // filter based on demographics
+    const demographicsMatches = new Array<DocItem<MatchProfile>>();
+    for (const result of interestsMatches) {
+      const match = result.data;
+      const profileResult = await userService.getUserProfile(match.UID);
+
+      const lgbtqMatch = (userProfile.preferences.useLgbtqPlusCommunityForMatching
+        && userProfile.demographics.lgbtqPlusCommunity === profileResult.demographics.lgbtqPlusCommunity)
+        || !userProfile.preferences.useLgbtqPlusCommunityForMatching;
+
+      const racialIdentityMatch = (userProfile.preferences.useRacialIdentityForMatching
+        && userProfile.demographics.racialIdentity === profileResult.demographics.racialIdentity)
+        || !userProfile.preferences.useRacialIdentityForMatching;
+
+      if (lgbtqMatch && racialIdentityMatch) {
+        demographicsMatches.push({
+          docId: result.docId,
+          data: match
+        } as DocItem<MatchProfile>);
+      }
+    }
+
+    return demographicsMatches;
+  }
+  else {
+    return interestsMatches;
+  }
 }
 
 async function createMentorProfileAsync(mentorMatchProfile: MatchProfile) {
