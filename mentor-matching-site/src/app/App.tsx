@@ -11,6 +11,7 @@ import theme from "./theme";
 import Home from './Home';
 import Footer from './footer/Footer';
 import PrivacyPolicy from './footer/privacyPolicy/PrivacyPolicy';
+import TermsAndConditions from './footer/termsAndConditions/TermsAndConditions';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
@@ -36,6 +37,7 @@ function App() {
               <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"} />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/user-service-agreement" element={<UserServiceAgreement />} /> 
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
             </Routes>
             <Footer />
           </div>

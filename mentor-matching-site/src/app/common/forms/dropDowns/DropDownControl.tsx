@@ -1,6 +1,5 @@
 import { TextField, Autocomplete, FormControl } from "@mui/material";
 import { DropDownOption } from "../../../../types/types";
-import { useState } from "react";
 
 interface DropDownControlProps {
   options: DropDownOption[]
@@ -9,13 +8,12 @@ interface DropDownControlProps {
   valueIs?: ('id' | 'label')
   selectedValue?: any
   widthMulti?: number
+  required?: boolean;
 }
 
 function DropDownControl({ options, label, onSelect, valueIs = 'id', selectedValue, widthMulti }: DropDownControlProps) {
-  const [currValue, setCurrValue] = useState(selectedValue !== undefined ? selectedValue : "");
-
   const controlStyle = {
-    width: `${widthMulti == undefined ? 10 : widthMulti * 100}rem`
+    width: `${widthMulti === undefined ? 10 : widthMulti * 100}rem`
   }
 
   const onChange = (e: any, option: any) => {
@@ -25,7 +23,6 @@ function DropDownControl({ options, label, onSelect, valueIs = 'id', selectedVal
     else {
       onSelect(option?.id, option?.label);
     }
-    setCurrValue(option?.label)
   }
 
   return (

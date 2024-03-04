@@ -21,6 +21,12 @@ export interface DbWriteResult {
   docId: string
 }
 
+export interface DbDeleteResult {
+  message: string
+  success: boolean
+  docId: string
+}
+
 export interface DbUpdateResult {
   message: string
   success: boolean
