@@ -7,7 +7,7 @@ function Footer() {
     <footer className="footer">
       <div className="container">
         <div className="footer-links">
-          <a href="/User Service Agreement">User Service Agreement</a>
+          <Link to="/user-service-agreement">User Service Agreement</Link>
           <Link to="/terms-and-conditions">Terms and Conditions</Link>
           <Link to="/privacy-policy">Privacy Policy</Link>
         </div>

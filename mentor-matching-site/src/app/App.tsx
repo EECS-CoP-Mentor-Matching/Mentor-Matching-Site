@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './login/Login';
-// import MenteePortal from './menteePortal/MenteePortal';
 import TopNav from './nav/TopNav';
 import SideNav from './nav/SideNav';
 import CreateAccount from './createAccount/CreateAccount';
@@ -17,7 +16,7 @@ import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
 import ReduxProvider from '../redux/store';
-
+import UserServiceAgreement from './footer/userServiceAgreement/userServiceAgreement'; // Import the component for the user service agreement page
 
 function App() {
   return (
@@ -37,6 +36,7 @@ function App() {
               <Route path="/update-profile" element={<UpdateUserProfile />} />
               <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"} />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/user-service-agreement" element={<UserServiceAgreement />} /> 
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
             </Routes>
             <Footer />
