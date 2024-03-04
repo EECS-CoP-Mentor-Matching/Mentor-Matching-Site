@@ -11,12 +11,14 @@ import menteeService from "../../../../service/menteeService";
 import { UserProfile } from "../../../../types/userProfile";
 import TextDisplay from "../../../common/forms/textInputs/TextDisplay";
 import { errorLogDb } from "../../../../dal/errorLogDb";
+import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 
 function ViewMatches() {
   const [mentorProfiles, setMentorProfiles] = useState<DocItem<MatchProfile>[]>([]);
   const [selectedProfile, setSelectedProfile] = useState<string>('');
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile>();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMenteeProfiles = async () => {
@@ -29,7 +31,9 @@ function ViewMatches() {
         setMenteeProfiles(menteeProfileResults);
       }
     }
+    setLoading(true);
     fetchMenteeProfiles();
+    setLoading(false);
   }, []);
 
   const profileItemStyle = {
@@ -55,6 +59,7 @@ function ViewMatches() {
   }
 
   const viewMenteeProfileMatches = async (profileId: string) => {
+    setLoading(true);
     const currentUser = await authService.getSignedInUser();
     if (currentUser && userProfile) {
       try {
@@ -67,6 +72,7 @@ function ViewMatches() {
       }
     }
     setSelectedProfile(profileId);
+    setLoading(false);
   }
 
   return (
@@ -106,6 +112,7 @@ function ViewMatches() {
           <TextDisplay>No matches found</TextDisplay>
         }
       </>}
+      <LoadingMessage message="Loading matches..." loading={loading} />
     </ContentContainer>
   );
 }

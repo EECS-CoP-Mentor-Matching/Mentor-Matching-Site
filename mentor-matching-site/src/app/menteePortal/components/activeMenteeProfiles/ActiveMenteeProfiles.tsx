@@ -7,9 +7,11 @@ import { DocItem } from "../../../../types/types";
 import { MatchProfile } from "../../../../types/matchProfile";
 import WarningButton from "../../../common/forms/WarningButton";
 import SubmitButton from "../../../common/forms/SubmitButton";
+import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 
 function ActiveMenteeProfiles() {
-  const [mentorProfiles, setMentorProfiles] = useState<DocItem<MatchProfile>[]>([]);
+  const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -18,18 +20,31 @@ function ActiveMenteeProfiles() {
         try {
           const result = await menteeService.searchMenteeProfilesByUser(user.uid);
           if (result !== undefined) {
-            setMentorProfiles(result);
+            setMenteeProfiles(result);
           }
           else {
-            setMentorProfiles(new Array<DocItem<MatchProfile>>());
+            setMenteeProfiles(new Array<DocItem<MatchProfile>>());
           }
         } catch (error) {
           console.error("Error fetching mentee profiles:", error);
         }
       }
     };
+    setLoading(true);
     fetchProfiles();
+    setLoading(false);
   }, []);
+
+  const deleteProfile = async (profileId: string) => {
+    setLoading(true);
+    await menteeService.deleteMenteeProfileById(profileId);
+    const profiles = new Array<DocItem<MatchProfile>>();
+    menteeProfiles.forEach(profile => {
+      if (profileId !== profile.docId) profiles.push(profile);
+    });
+    setMenteeProfiles(profiles);
+    setLoading(false);
+  }
 
   const profileItemStyle = {
     border: '1px solid #e0e0e0',
@@ -43,34 +58,36 @@ function ActiveMenteeProfiles() {
   };
 
   return (
-    <ContentContainer
-      title="Active Profiles"
-    >
-      <Box>
-        <List>
-          {mentorProfiles.map((profile, index) => (
-            <React.Fragment key={profile.docId}>
-              <Paper elevation={2} style={{ ...profileItemStyle }}>
-                <ListItem>
-                  <ListItemText
-                    primary={`Profile ID: ${profile.docId}`}
-                    secondary={`
+    <>
+      <LoadingMessage message="Loading Profiles..." loading={loading} />
+      <ContentContainer
+        title="Active Profiles"
+      >
+        <Box>
+          <List>
+            {menteeProfiles.map((profile, index) => (
+              <React.Fragment key={profile.docId}>
+                <Paper elevation={2} style={{ ...profileItemStyle }}>
+                  <ListItem>
+                    <ListItemText
+                      primary={`Profile ID: ${profile.docId}`}
+                      secondary={`
                       Technical Interest: ${profile.data.technicalInterest} (${profile.data.technicalExperience} years), 
                       Professional Interest: ${profile.data.professionalInterest} (${profile.data.professionalExperience} years)
                     `}
-                  />
-                </ListItem>
-                {index < mentorProfiles.length - 1 && <Divider />}
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                  <SubmitButton text="View Matches" />
-                  <WarningButton text="Delete Profile" />
-                </Box>
-              </Paper>
-            </React.Fragment>
-          ))}
-        </List>
-      </Box>
-    </ContentContainer>
+                    />
+                  </ListItem>
+                  {index < menteeProfiles.length - 1 && <Divider />}
+                  <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                    <WarningButton text="Delete Profile" onClick={() => { deleteProfile(profile.docId); }} />
+                  </Box>
+                </Paper>
+              </React.Fragment>
+            ))}
+          </List>
+        </Box>
+      </ContentContainer>
+    </>
   );
 }
 

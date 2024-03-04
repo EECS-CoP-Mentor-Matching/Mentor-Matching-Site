@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import CreateMenteeProfile from './components/createMenteeProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
-import { FormLabel } from "@mui/material"
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 import ActiveMenteeProfiles from './components/activeMenteeProfiles/ActiveMenteeProfiles';
@@ -9,8 +8,8 @@ import ViewMatches from './components/viewMatches/ViewMatches';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 export enum Pages {
-  activeProfiles = "Active Profiles",
   createProfile = "Create Profile",
+  activeProfiles = "Active Profiles",
   viewMatches = "View Matches"
 }
 
@@ -32,7 +31,6 @@ function MenteePortal() {
       }
       {selectedPage === Pages.createProfile &&
         <div className="mentee-portal">
-          <FormLabel>Profile 1</FormLabel>
           <CreateMenteeProfile backToPage={backToActive} />
         </div>
       }
