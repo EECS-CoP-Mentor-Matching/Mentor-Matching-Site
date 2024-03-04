@@ -6,16 +6,19 @@ import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 
 import SubmitFeedback from './components/submitFeedback/SubmitFeedback';
-import ViewFeedback from './components/viewFeedback/ViewFeedback';
-import FeedbackSettings from './components/FeedbackSettings/FeedbackSettings';
-import { FeedbackSettingsContext } from './components/FeedbackSettings/FeedbackSettingsContext';
+import ViewFeedback from './components/FeedbackAdminPortal/viewFeedback/ViewFeedback';
+import FeedbackSettings from './components/FeedbackAdminPortal/FeedbackSettings/FeedbackSettings';
+import FeedbackAdminPortal from './components/FeedbackAdminPortal/FeedbackAdminPortal';
+
+import { FeedbackSettingsContext } from './components/FeedbackAdminPortal/FeedbackSettings/FeedbackSettingsContext';
 
 import React from 'react';
 
 export enum FeedbackPages {
   submitFeedback = 'Submit Feedback',
-  viewFeedback = 'View Feedback',
-  settings = 'Settings'
+ // viewFeedback = 'View Feedback',
+ // settings = 'Settings',
+  feedbackAdminPortal = 'Admin Portal'
 }
 
 interface FeedbackPortalProps {
@@ -55,8 +58,11 @@ function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
       />
       
       {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback userEmail={userEmail} /> </div>}
+      {/*
       {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
       {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}
+  */}
+      {page === FeedbackPages.feedbackAdminPortal && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
     </FeedbackSettingsContext.Provider>
   );
 }

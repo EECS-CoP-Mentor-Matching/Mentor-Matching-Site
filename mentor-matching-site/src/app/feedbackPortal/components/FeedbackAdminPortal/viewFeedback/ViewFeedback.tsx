@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import feedbackService from './../../../../service/feedbackService'
+import feedbackService from '../../../../../service/feedbackService'
 
-import './../submitFeedback/SubmitFeedback.css';
+import './../../submitFeedback/SubmitFeedback.css';
 import './ViewFeedback.css';
 
 interface FeedbackEntry {
@@ -78,6 +78,7 @@ export default function ViewFeedback() {
   return (
     <div className='feedback-profile'>
       <h2>View Feedback</h2>
+      <p>Total Feedback Entries: {feedbackEntries.length}</p>
       
 <div className="search-sort-container">
   <input

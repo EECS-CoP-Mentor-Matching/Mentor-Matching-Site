@@ -4,7 +4,7 @@ import './SubmitFeedback.css';
 import { FormLabel, Button } from "@mui/material";
 import { TextField } from "@mui/material";
 import DropDownControl from "../../../common/forms/dropDowns/DropDownControl";
-import { FeedbackSettingsContext } from './../FeedbackSettings/FeedbackSettingsContext';
+import { FeedbackSettingsContext } from '../FeedbackAdminPortal/FeedbackSettings/FeedbackSettingsContext';
 
 
 interface SubmitFeedbackProps {
