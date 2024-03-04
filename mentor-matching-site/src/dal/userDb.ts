@@ -1,6 +1,6 @@
 import { MatchHistoryItem, UserAccountSettings, UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, doc, query, where, setDoc, updateDoc, addDoc } from "firebase/firestore";
+import { collection, getDocs, doc, query, where, setDoc, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 const collectionName = "userProfile";
@@ -27,7 +27,6 @@ async function createNewUserAsync(user: User, userProfile: UserProfile): Promise
       userStatus: "active",
       menteePortalEnabled: userProfile.accountSettings.menteePortalEnabled,
       mentorPortalEnabled: userProfile.accountSettings.mentorPortalEnabled,
-      useDemographicsForMatching: userProfile.accountSettings.useDemographicsForMatching
     } as UserAccountSettings,
     matchHistory: Array<MatchHistoryItem>(),
     profilePictureUrl: userProfile.profilePictureUrl,

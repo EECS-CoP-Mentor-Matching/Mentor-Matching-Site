@@ -1,10 +1,12 @@
-import { Box, Button, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
 import ContentContainer from "../../../common/ContentContainer";
 import React, { useEffect, useState } from "react";
 import authService from "../../../../service/authService";
 import menteeService from "../../../../service/menteeService";
 import { DocItem } from "../../../../types/types";
 import { MatchProfile } from "../../../../types/matchProfile";
+import WarningButton from "../../../common/forms/WarningButton";
+import SubmitButton from "../../../common/forms/SubmitButton";
 
 function ActiveMenteeProfiles() {
   const [mentorProfiles, setMentorProfiles] = useState<DocItem<MatchProfile>[]>([]);
@@ -19,7 +21,7 @@ function ActiveMenteeProfiles() {
             setMentorProfiles(result);
           }
           else {
-            setMentorProfiles(new Array<DocItem<MatchProfile>>);
+            setMentorProfiles(new Array<DocItem<MatchProfile>>());
           }
         } catch (error) {
           console.error("Error fetching mentee profiles:", error);
@@ -37,7 +39,7 @@ function ActiveMenteeProfiles() {
     width: '80%',
     maxWidth: '700px',
     marginLeft: 'auto',
-    marginRight: 'auto',
+    marginRight: 'auto'
   };
 
   return (
@@ -48,7 +50,7 @@ function ActiveMenteeProfiles() {
         <List>
           {mentorProfiles.map((profile, index) => (
             <React.Fragment key={profile.docId}>
-              <Paper elevation={2} style={profileItemStyle}>
+              <Paper elevation={2} style={{ ...profileItemStyle }}>
                 <ListItem>
                   <ListItemText
                     primary={`Profile ID: ${profile.docId}`}
@@ -59,7 +61,10 @@ function ActiveMenteeProfiles() {
                   />
                 </ListItem>
                 {index < mentorProfiles.length - 1 && <Divider />}
-                <Button>View Matches</Button>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                  <SubmitButton text="View Matches" />
+                  <WarningButton text="Delete Profile" />
+                </Box>
               </Paper>
             </React.Fragment>
           ))}

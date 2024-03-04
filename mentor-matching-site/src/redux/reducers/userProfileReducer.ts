@@ -1,6 +1,6 @@
 // This reducer will handle the user profile state:
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { UserPersonalInformation, UserProfile, UserContactInformation, UserDemographicInformation, initUserProfile, UserEducationInformation, UserAccountSettings, DateOfBirth } from "../../types/userProfile";
+import { UserPreferences, UserPersonalInformation, UserProfile, UserContactInformation, UserDemographicInformation, initUserProfile, UserEducationInformation, UserAccountSettings, DateOfBirth } from "../../types/userProfile";
 import { RootState } from "../store";
 
 const initialState = {
@@ -47,7 +47,10 @@ export const userProfileSlice = createSlice({
     updateUserStatus: (state, action: PayloadAction<string>) => { state.userProfile.accountSettings.userStatus = action.payload; },
     updateMenteePortalEnabled: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.menteePortalEnabled = action.payload; },
     updateMentorPortalEnabled: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.mentorPortalEnabled = action.payload; },
-    updateUseDemographicsForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.useDemographicsForMatching = action.payload; },
+    // user preferences 
+    updateUserPreferences: (state, action: PayloadAction<UserPreferences>) => { state.userProfile.preferences = action.payload; },
+    updateUseRacialIdentityForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.preferences.useRacialIdentityForMatching = action.payload; },
+    updateUseLgbtqPlusCommunityForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.preferences.useLgbtqPlusCommunityForMatching = action.payload; },
     // profile image
     updateUserProfileImage: (state, action: PayloadAction<string>) => { state.userProfile.imageUrl = action.payload; }
   }
@@ -65,7 +68,9 @@ export const {
   // education information
   updateEducationInformation, updateHighestLevelOfEducation, updateDegreeProgram, updateStudentStatus,
   // account settings
-  updateAccountSettings, updateUserStatus, updateMenteePortalEnabled, updateMentorPortalEnabled, updateUseDemographicsForMatching,
+  updateAccountSettings, updateUserStatus, updateMenteePortalEnabled, updateMentorPortalEnabled,
+  // user preferences
+  updateUserPreferences, updateUseRacialIdentityForMatching, updateUseLgbtqPlusCommunityForMatching,
   // profile image
   updateUserProfileImage
 } = userProfileSlice.actions

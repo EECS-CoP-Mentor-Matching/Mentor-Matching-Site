@@ -17,7 +17,7 @@ function SelectTechnicalInterest({ onSelectDispatch, currentValue }: SelectTechn
       [interest.data.broadInterest, ...interest.data.specificInterests]
     );
 
-    const options = new Array<DropDownOption>;
+    const options = new Array<DropDownOption>();
     let i = 0;
     combinedInterests.forEach(currInterest => {
       options.push({

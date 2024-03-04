@@ -14,8 +14,7 @@ interface SelectLevelOfEducationProps {
 function SelectLevelOfEducation({ onSelectDispatch, currentValue }: SelectLevelOfEducationProps) {
 
   const mapOptions = ((edLevels: DocItem<EducationLevel>[]): DropDownOption[] => {
-    const loadOptions = new Array<DropDownOption>;
-    console.log(edLevels)
+    const loadOptions = new Array<DropDownOption>();
     edLevels.forEach(edLevel => {
       loadOptions.push({
         label: edLevel.data.level,

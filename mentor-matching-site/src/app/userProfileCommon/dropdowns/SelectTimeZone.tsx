@@ -13,7 +13,7 @@ interface SelectTimeZoneProps {
 
 function SelectTimeZone({ onSelectDispatch, currentValue }: SelectTimeZoneProps) {
   const mapOptions = ((levels: DocItem<TimeZone>[]): DropDownOption[] => {
-    const options = new Array<DropDownOption>;
+    const options = new Array<DropDownOption>();
     levels.forEach(currLevel => {
       options.push({
         label: currLevel.data.timeZoneName,

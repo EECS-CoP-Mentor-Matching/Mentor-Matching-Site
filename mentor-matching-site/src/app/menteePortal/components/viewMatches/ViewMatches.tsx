@@ -1,11 +1,8 @@
 import { Box, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
 import ContentContainer from "../../../common/ContentContainer";
 import React, { useEffect, useState } from "react";
-import mentorDb from "../../../../dal/mentorDb";
 import authService from "../../../../service/authService";
 import { mentorService } from "../../../../service/mentorService";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { updateProfile } from "../../../../redux/reducers/userProfileReducer";
 import userService from "../../../../service/userService";
 import { DocItem, DropDownOption } from "../../../../types/types";
 import { MatchProfile } from "../../../../types/matchProfile";
@@ -47,7 +44,7 @@ function ViewMatches() {
   };
 
   const menteeDropDown = (): DropDownOption[] => {
-    const options = new Array<DropDownOption>;
+    const options = new Array<DropDownOption>();
     menteeProfiles.forEach(result => {
       options.push({
         label: `${result.data.technicalInterest} and ${result.data.professionalInterest}`,
@@ -105,7 +102,7 @@ function ViewMatches() {
             </List>
           </Box>
         }
-        {mentorProfiles.length === undefined || mentorProfiles.length === 0 &&
+        {(mentorProfiles.length === undefined || mentorProfiles.length === 0) &&
           <TextDisplay>No matches found</TextDisplay>
         }
       </>}

@@ -15,7 +15,7 @@ interface SelectDegreeProgramProps {
 function SelectDegreeProgram({ onSelectDispatch, currentValue }: SelectDegreeProgramProps) {
 
   const mapOptions = ((levels: DocItem<DegreeProgram>[]): DropDownOption[] => {
-    const options = new Array<DropDownOption>;
+    const options = new Array<DropDownOption>();
     levels.forEach(currLevel => {
       options.push({
         label: currLevel.data.degreeProgramName,

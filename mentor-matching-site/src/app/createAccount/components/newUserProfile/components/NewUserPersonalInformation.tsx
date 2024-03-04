@@ -1,10 +1,10 @@
 import { useAppSelector } from "../../../../../redux/hooks";
 import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
-import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
-import { FormControlLabel, FormLabel } from "@mui/material";
+import { FormLabel } from "@mui/material";
 import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
-import { updateDob, updateDobDay, updateDobMonth, updateDobYear, updateFirstName, updateLastName, updateMiddleName } from "../../../../../redux/reducers/userProfileReducer";
+import { updateDobDay, updateDobMonth, updateDobYear, updateFirstName, updateLastName, updateMiddleName } from "../../../../../redux/reducers/userProfileReducer";
+import FormHeader from "../../../../common/forms/layout/FormHeader";
 
 function NewUserPersonalInformation() {
   const selector = useAppSelector;
@@ -12,7 +12,7 @@ function NewUserPersonalInformation() {
 
   return (
     <FormGroupCols>
-      <FormLabel>Personal Information</FormLabel>
+      <FormHeader>Personal Information</FormHeader>
       <FormGroupRows>
         <TextInputControlRedux value={personalInformation.firstName} label="First Name" onInputDispatch={updateFirstName} />
         <TextInputControlRedux value={personalInformation.middleName} label="Middle Name" onInputDispatch={updateMiddleName} />

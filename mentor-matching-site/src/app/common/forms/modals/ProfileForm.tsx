@@ -9,8 +9,8 @@ import {
 	MenuItem,
 	CircularProgress
 } from '@mui/material';
-import {ExperienceLevel} from "../../../../types/matchProfile";
-import {interestsService} from "../../../../service/interestsService";
+import { ExperienceLevel } from "../../../../types/matchProfile";
+import { interestsService } from "../../../../service/interestsService";
 
 export interface ProfileFormData {
 	technicalInterest: string;
@@ -20,12 +20,12 @@ export interface ProfileFormData {
 }
 interface ProfileFormProps {
 	onSubmit: (profileFormData: ProfileFormData) => void;
-	initialProfileFormData? : ProfileFormData;
+	initialProfileFormData?: ProfileFormData;
 }
-const ProfileForm : React.FC<ProfileFormProps> = ({
-						 onSubmit,
-						 initialProfileFormData
-					 }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({
+	onSubmit,
+	initialProfileFormData
+}) => {
 	const [valuesLoading, setValuesLoading] = useState<boolean>(true);
 	const [technicalInterestOptions, setTechnicalInterestOptions] = useState<string[]>([]);
 	const [technicalInterest, setTechnicalInterest] = useState('');
@@ -128,76 +128,76 @@ const ProfileForm : React.FC<ProfileFormProps> = ({
 			{valuesLoading ? (
 				<CircularProgress />
 			) : (
-			<Grid container spacing={2}>
-				<Grid item xs={12} md={6}>
-					<FormControl fullWidth margin="normal">
-						<InputLabel>Technical Interests</InputLabel>
-						<Select
-							value={technicalInterest}
-							label="Technical Interests"
-							onChange={(e) => setTechnicalInterest(e.target.value)}
-						>
-							{technicalInterestOptions.map((option, index) => (
-								<MenuItem key={index} value={option}>{option}</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-				</Grid>
-				<Grid item xs={12} md={6}>
-					<FormControl fullWidth margin="normal">
-						<InputLabel>Technical Experience Level</InputLabel>
-						<Select
-							value={technicalExperience >= 0 ? technicalExperience : ''}
-							label="Technical Experience Level"
-							onChange={(e) => setTechnicalExperience(Number(e.target.value))}
-						>
-							{
-								experienceLevelOptions.map((option, index) => (
-									<MenuItem key={index} value={option.hierarchy}>{option.level}</MenuItem>
-								))
-							}
-						</Select>
-					</FormControl>
-				</Grid>
+				<Grid container spacing={2}>
+					<Grid item xs={12} md={6}>
+						<FormControl fullWidth margin="normal">
+							<InputLabel>Technical Interests</InputLabel>
+							<Select
+								value={technicalInterest}
+								label="Technical Interests"
+								onChange={(e) => setTechnicalInterest(e.target.value)}
+							>
+								{technicalInterestOptions.map((option, index) => (
+									<MenuItem key={index} value={option}>{option}</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<FormControl fullWidth margin="normal">
+							<InputLabel>Technical Experience Level</InputLabel>
+							<Select
+								value={technicalExperience >= 0 ? technicalExperience : -1}
+								label="Technical Experience Level"
+								onChange={(e) => setTechnicalExperience(Number(e.target.value))}
+							>
+								{
+									experienceLevelOptions.map((option, index) => (
+										<MenuItem key={index} value={option.hierarchy}>{option.level}</MenuItem>
+									))
+								}
+							</Select>
+						</FormControl>
+					</Grid>
 
-				<Grid item xs={12} md={6}>
-					<FormControl fullWidth margin="normal">
-						<InputLabel>Professional Interests</InputLabel>
-						<Select
-							value={professionalInterest}
-							label="Professional Interests"
-							onChange={(e) => setProfessionalInterest(e.target.value)}
-						>
-							{professionalInterestOptions.map((option, index) => (
-								<MenuItem key={index} value={option}>{option}</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-				</Grid>
-				<Grid item xs={12} md={6}>
-					<FormControl fullWidth margin="normal">
-						<InputLabel>Professional Experience Level</InputLabel>
-						<Select
-							value={professionalExperience >= 0 ? professionalExperience : ''}
-							label="Professional Experience Level"
-							onChange={(e) => setProfessionalExperience(Number(e.target.value))}
-						>
-							{
-								experienceLevelOptions.map((option, index) => (
-									<MenuItem key={index} value={option.hierarchy}>{option.level}</MenuItem>
-								))
-							}
-						</Select>
-					</FormControl>
-				</Grid>
+					<Grid item xs={12} md={6}>
+						<FormControl fullWidth margin="normal">
+							<InputLabel>Professional Interests</InputLabel>
+							<Select
+								value={professionalInterest}
+								label="Professional Interests"
+								onChange={(e) => setProfessionalInterest(e.target.value)}
+							>
+								{professionalInterestOptions.map((option, index) => (
+									<MenuItem key={index} value={option}>{option}</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<FormControl fullWidth margin="normal">
+							<InputLabel>Professional Experience Level</InputLabel>
+							<Select
+								value={professionalExperience >= 0 ? professionalExperience : -1}
+								label="Professional Experience Level"
+								onChange={(e) => setProfessionalExperience(Number(e.target.value))}
+							>
+								{
+									experienceLevelOptions.map((option, index) => (
+										<MenuItem key={index} value={option.hierarchy}>{option.level}</MenuItem>
+									))
+								}
+							</Select>
+						</FormControl>
+					</Grid>
 
-				<Grid item xs={12}>
-					<Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, maxWidth: 300 }}>
-						Submit
-					</Button>
-				</Grid>
+					<Grid item xs={12}>
+						<Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, maxWidth: 300 }}>
+							Submit
+						</Button>
+					</Grid>
 
-			</Grid>
+				</Grid>
 			)}
 		</Box>
 	);

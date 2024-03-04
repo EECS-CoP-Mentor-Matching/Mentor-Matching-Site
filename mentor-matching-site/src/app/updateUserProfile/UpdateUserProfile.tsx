@@ -10,9 +10,6 @@ import { updateProfile } from "../../redux/reducers/userProfileReducer";
 import UpdateUserContactInformation from "./components/UpdateUserContactInformation";
 import UpdateUserDemographicInformation from "./components/UpdateDemographicsInformation";
 import UpdateEducationInformation from "./components/UpdateEducationInformation";
-import { doc, getDoc } from "@firebase/firestore";
-import { db } from "../../firebaseConfig";
-import { UserProfile } from '../../types/userProfile';
 
 function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);

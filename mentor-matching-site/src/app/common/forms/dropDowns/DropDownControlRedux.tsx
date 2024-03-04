@@ -1,8 +1,6 @@
-import { TextField, Autocomplete, FormControl } from "@mui/material";
 import { DropDownOption } from "../../../../types/types";
 import DropDownControl from "./DropDownControl";
 import { useAppDispatch } from "../../../../redux/hooks";
-import { useState } from "react";
 
 interface DropDownControlProps {
   onSelectDispatch(payload: any): {
@@ -19,7 +17,6 @@ function DropDownControlRedux({ onSelectDispatch, options, label, selectedValue,
   const dispatch = useAppDispatch();
 
   const onSelect = (id: any, label: any) => {
-    console.log(id, label)
     if (valueIs === 'id') {
       dispatch(onSelectDispatch(id));
     }

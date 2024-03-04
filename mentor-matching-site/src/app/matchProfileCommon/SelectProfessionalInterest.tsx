@@ -13,7 +13,7 @@ interface SelectProfessionalInterestProps {
 
 function SelectProfessionalInterest({ onSelectDispatch, currentValue }: SelectProfessionalInterestProps) {
   const mapOptions = ((interests: DocItem<ProfessionalInterest>[]): DropDownOption[] => {
-    const options = new Array<DropDownOption>;
+    const options = new Array<DropDownOption>();
     interests.forEach(currInterest => {
       options.push({
         label: currInterest.data.professionalInterest,

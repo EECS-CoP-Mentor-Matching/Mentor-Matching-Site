@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppBar, Tabs, Tab, Box } from '@mui/material';
+import { AppBar, Box } from '@mui/material';
 import PortalNavigationTabs from './PortalNavigationTabs';
 
 const widthOffset = {

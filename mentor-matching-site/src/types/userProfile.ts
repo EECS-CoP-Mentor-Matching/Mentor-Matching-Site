@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface UserProfileProps {
   userProfile: UserProfile;
 }
@@ -32,11 +30,15 @@ export const initUserProfile = () => {
 }
 
 export interface UserPreferences {
-
+  useRacialIdentityForMatching: boolean
+  useLgbtqPlusCommunityForMatching: boolean
 }
 
 export const initUserPreferences = () => {
-  return {} as UserPreferences
+  return {
+    useRacialIdentityForMatching: false,
+    useLgbtqPlusCommunityForMatching: false
+  } as UserPreferences
 }
 
 export interface UserContactInformation {
@@ -103,7 +105,6 @@ export interface UserAccountSettings {
   userStatus: string
   menteePortalEnabled: boolean
   mentorPortalEnabled: boolean
-  useDemographicsForMatching: boolean
 }
 
 export const initUserAccountSettings = () => {

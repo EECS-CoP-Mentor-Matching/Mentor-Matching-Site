@@ -9,36 +9,23 @@ import MenteePortal from './menteePortal/MenteePortal';
 import UpdateUserProfile from './updateUserProfile/UpdateUserProfile'
 import { ThemeProvider } from '@emotion/react';
 import theme from "./theme";
-import { useEffect, useState } from 'react';
-import authService from '../service/authService';
 import Home from './Home';
+import Footer from './footer/Footer';
+import PrivacyPolicy from './footer/privacyPolicy/PrivacyPolicy';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
 import ReduxProvider from '../redux/store';
 
+
 function App() {
-  const [signedin, setSignedIn] = useState(false);
-
-  useEffect(() => {
-    const checkSignedIn = async () => {
-      const user = await authService.getSignedInUser();
-      if (user !== null) {
-        setSignedIn(true);
-      }
-    }
-    checkSignedIn();
-  });
-
   return (
     <ThemeProvider theme={theme} >
       <ReduxProvider>
-        <div className="App">
-          <div>
+        <BrowserRouter>
+          <div className="App">
             <TopNav />
             <SideNav />
-          </div>
-          <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
@@ -47,10 +34,12 @@ function App() {
               <Route path="/admin-portal" element={<AdminPortal />} />
               <Route path="/mentor-portal" element={<MentorPortal />} />
               <Route path="/update-profile" element={<UpdateUserProfile />} />
-              <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"}/>} />
+              <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"} />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Routes>
-          </BrowserRouter>
-        </div>
+            <Footer />
+          </div>
+        </BrowserRouter>
       </ReduxProvider>
     </ThemeProvider>
   );
