@@ -5,6 +5,8 @@ import { MatchProfile } from "../../../types/matchProfile";
 import authService from "../../../service/authService";
 import ProfileForm , {ProfileFormData} from "../../common/forms/modals/ProfileForm";
 import PopupMessage from "../../common/forms/modals/PopupMessage";
+import ModalWrapper from "../../common/forms/modals/ModalWrapper";
+import {Box, Typography} from "@mui/material";
 
 function CreateMentorProfile() {
     const [popupText, setPopupText] = useState<string>("");
@@ -37,9 +39,15 @@ function CreateMentorProfile() {
             title="Mentor Profile"
             subtitle="Add your preferences to match with mentees"
         >
-            <PopupMessage message={popupText}
-                          open={showPopupModal}
-                          setIsOpen={setShowPopupModal} />
+            <ModalWrapper
+                open={showPopupModal}
+                setIsOpen={setShowPopupModal}
+                children={
+                    <Box>
+                        <Typography variant="h6">{popupText}</Typography>
+                    </Box>
+                }
+            />
             <ProfileForm onSubmit={handleSubmit} />
         </ContentContainer>
     );
