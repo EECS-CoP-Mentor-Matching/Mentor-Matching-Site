@@ -147,7 +147,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 						<FormControl fullWidth margin="normal">
 							<InputLabel>Technical Experience Level</InputLabel>
 							<Select
-								value={technicalExperience >= 0 ? technicalExperience : -1}
+								value={technicalExperience >= 0 ? technicalExperience : ""}
 								label="Technical Experience Level"
 								onChange={(e) => setTechnicalExperience(Number(e.target.value))}
 							>
@@ -178,7 +178,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 						<FormControl fullWidth margin="normal">
 							<InputLabel>Professional Experience Level</InputLabel>
 							<Select
-								value={professionalExperience >= 0 ? professionalExperience : -1}
+								value={professionalExperience >= 0 ? professionalExperience : ""}
 								label="Professional Experience Level"
 								onChange={(e) => setProfessionalExperience(Number(e.target.value))}
 							>
