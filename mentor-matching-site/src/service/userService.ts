@@ -10,6 +10,16 @@ async function createNewUser(user: User, userProfile: UserProfile) {
   userDb.createNewUserAsync(user, userProfile);
 }
 
+async function deleteUserProfile(uid: string) {
+  // Assuming userDb has a deleteUserProfileAsync method to delete Firestore data
+  return await userDb.deleteUserProfileAsync(uid).then(() => {
+    console.log('User profile deleted successfully.');
+  }).catch((error) => {
+    console.error('Error deleting user profile:', error);
+    throw error;
+  });
+}
+
 async function getUserProfile(uid: string): Promise<UserProfile> {
   return await userDb.getUserProfileAsync(uid);
 }
@@ -27,7 +37,8 @@ const userService = {
   createNewUser,
   getUserProfile,
   updateUserProfile,
-  userExists
+  userExists,
+  deleteUserProfile // Added method
 }
 
 export default userService;

@@ -1,5 +1,7 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAuth, User } from "firebase/auth";
 import { app } from "../firebaseConfig";
+import { deleteUser } from "firebase/auth";
+
 
 const firebaseAuth = getAuth(app)
 
@@ -34,6 +36,23 @@ async function signIn(email: string, password: string): Promise<User | void> {
     })
 }
 
+async function deleteUserAccount() {
+  const user = firebaseAuth.currentUser;
+  if (user) {
+    return deleteUser(user).then(() => {
+      // User deleted.
+      console.log('User account deleted successfully.');
+    }).catch((error) => {
+      // An error occurred
+      console.error('Error deleting user account:', error);
+      throw error; // Throw error to handle it on UI level, like reauthentication requirement
+    });
+  } else {
+    console.log('No signed-in user to delete.');
+    throw new Error('No signed-in user to delete.');
+  }
+}
+
 function signOut() {
   firebaseAuth.signOut();
 }
@@ -53,7 +72,9 @@ const authService = {
   signInSession,
   getSignedInUser,
   signOut,
-  waitForAuthState
+  waitForAuthState,
+  deleteUserAccount // Added method
+
 }
 
 export default authService;
