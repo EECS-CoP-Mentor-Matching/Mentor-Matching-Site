@@ -37,11 +37,13 @@ function ModalWrapper({ children, open, setIsOpen }: ModalWrapperProps) {
                 <Button
                     onClick={() => setIsOpen(false)}
                     sx={{
+                        height: '25px',
+                        width: '10px',
                         position: 'absolute',
                         top: 8,
                         right: 8,
                         color: 'grey.600',
-                        fontSize: '1.5rem',
+                        fontSize: '1.0rem',
                         '&:hover': {
                             color: 'grey.800',
                             backgroundColor: 'transparent',

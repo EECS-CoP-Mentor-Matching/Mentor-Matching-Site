@@ -12,6 +12,13 @@ import { UserProfile } from "../../../../types/userProfile";
 import TextDisplay from "../../../common/forms/textInputs/TextDisplay";
 import { errorLogDb } from "../../../../dal/errorLogDb";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
+import SubmitButton from "../../../common/forms/SubmitButton";
+import ModalWrapper from "../../../common/forms/modals/ModalWrapper";
+
+interface MessageMentorState {
+  showModal: boolean,
+  selectedMentorId: string
+}
 
 function ViewMatches() {
   const [mentorProfiles, setMentorProfiles] = useState<DocItem<MatchProfile>[]>([]);
@@ -19,6 +26,7 @@ function ViewMatches() {
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [loading, setLoading] = useState(false);
+  const [messageMentorPopup, setMessageMentorPopup] = useState<MessageMentorState>({ showModal: false, selectedMentorId: '' });
 
   useEffect(() => {
     const fetchMenteeProfiles = async () => {
@@ -94,15 +102,28 @@ function ViewMatches() {
                   <Paper elevation={2} style={profileItemStyle}>
                     <ListItem>
                       <ListItemText
-                        primary={`Profile ID: ${profile.docId}`}
-                        secondary={`
-                                Technical Interest: ${profile.data.technicalInterest} (${profile.data.technicalExperience} years), 
-                                Professional Interest: ${profile.data.professionalInterest} (${profile.data.professionalExperience} years)
-                              `}
-                      />
+                        primary={`Match #${index + 1}`}
+                        secondary={
+                          <p style={{ display: "flex", flexDirection: "column", minWidth: '400px' }}>
+                            <span>Technical Interest: {profile.data.technicalInterest} ({profile.data.technicalExperience} years)</span>
+                            <span>Professional Interest: {profile.data.professionalInterest} ({profile.data.professionalExperience} years)</span>
+                          </p>
+                        } />
+                      <SubmitButton text="Message" onClick={() => { setMessageMentorPopup({ showModal: true, selectedMentorId: profile.docId }); }} />
                     </ListItem>
                     {index < mentorProfiles.length - 1 && <Divider />}
                   </Paper>
+                  <ModalWrapper open={messageMentorPopup.showModal} setIsOpen={(isOpen) => {
+                    setMessageMentorPopup({ showModal: isOpen, selectedMentorId: profile.docId });
+                  }}>
+                    <p>Type a message to send to your mentor match!</p>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                      <textarea style={{ height: '250px', width: '250px' }}>
+
+                      </textarea>
+                      <SubmitButton text="Send Message" />
+                    </Box>
+                  </ModalWrapper>
                 </React.Fragment>
               ))}
             </List>
