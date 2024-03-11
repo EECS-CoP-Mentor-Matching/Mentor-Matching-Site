@@ -118,9 +118,7 @@ function ViewMatches() {
                   }}>
                     <p>Type a message to send to your mentor match!</p>
                     <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                      <textarea style={{ height: '250px', width: '250px' }}>
-
-                      </textarea>
+                      <textarea style={{ height: '250px', width: '250px' }} />
                       <SubmitButton text="Send Message" />
                     </Box>
                   </ModalWrapper>
