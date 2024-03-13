@@ -19,13 +19,17 @@ function MenteePortal() {
     setSelectedPage(Pages.activeProfiles);
   }
 
+  const backToCreate = () => {
+    setSelectedPage(Pages.createProfile);
+  }
+
   // if no profiles for the user
   return (
     <>
       <PortalNavigationBar onNavChange={setSelectedPage} selected={selectedPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
       {selectedPage === Pages.activeProfiles &&
         <div className="mentee-portal">
-          <ActiveMenteeProfiles />
+          <ActiveMenteeProfiles backToPage={backToCreate} />
         </div>
       }
       {selectedPage === Pages.createProfile &&

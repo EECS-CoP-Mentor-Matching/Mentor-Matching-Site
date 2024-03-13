@@ -1,4 +1,4 @@
-import { Box, Chip, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, Button, Chip, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
 import ContentContainer from "../../../common/ContentContainer";
 import React, { useEffect, useState } from "react";
 import authService from "../../../../service/authService";
@@ -13,8 +13,14 @@ import ViewMatches from "./viewMatches/ViewMatches";
 import userService from "../../../../service/userService";
 import { mentorService } from "../../../../service/mentorService";
 import EditProfile from "./editProfile/EditProfile";
+import { Pages } from "../../MenteePortal";
+import TextDisplay from "../../../common/forms/textInputs/TextDisplay";
 
-function ActiveMenteeProfiles() {
+interface ActiveMenteeProfilesProps {
+  backToPage: () => any
+}
+
+function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
   const [loadingProfiles, setLoadingProfiles] = useState(false);
   const [matches, setMatches] = useState<DocItem<MatchProfile>[] | undefined>()
@@ -28,11 +34,8 @@ function ActiveMenteeProfiles() {
       if (user) {
         try {
           const result = await menteeService.searchMenteeProfilesByUser(user.uid);
-          if (result !== undefined) {
+          if (result !== undefined && result?.length !== 0) {
             setMenteeProfiles(result);
-          }
-          else {
-            setMenteeProfiles(new Array<DocItem<MatchProfile>>());
           }
         } catch (error) {
           console.error("Error fetching mentee profiles:", error);
@@ -120,6 +123,10 @@ function ActiveMenteeProfiles() {
           {editingProfile !== undefined &&
             <EditProfile matchProfile={editingProfile} />
           }
+          {menteeProfiles.length === 0 && <Box display="flex" flexDirection="column">
+            <p>No profiles found. Please create a new profile!</p>
+            <Button onClick={backToPage}>Create Profile</Button>
+          </Box>}
         </Box>
       </ContentContainer>
     </>
