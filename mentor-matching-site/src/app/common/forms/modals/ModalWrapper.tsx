@@ -4,14 +4,14 @@ import { ReactElement } from "react";
 interface ModalWrapperProps {
     children: ReactElement[] | ReactElement;
     open: boolean;
-    setIsOpen: (open: boolean) => void;
+    setIsOpen?: (open: boolean) => void;
 }
 
 function ModalWrapper({ children, open, setIsOpen }: ModalWrapperProps) {
     return (
         <Modal
             open={open}
-            onClose={() => setIsOpen(false)}
+            onClose={() => { if (setIsOpen !== undefined) setIsOpen(false) }}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
             sx={{
@@ -35,7 +35,7 @@ function ModalWrapper({ children, open, setIsOpen }: ModalWrapperProps) {
             >
                 {children}
                 <Button
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => { if (setIsOpen !== undefined) setIsOpen(false) }}
                     sx={{
                         height: '25px',
                         width: '10px',

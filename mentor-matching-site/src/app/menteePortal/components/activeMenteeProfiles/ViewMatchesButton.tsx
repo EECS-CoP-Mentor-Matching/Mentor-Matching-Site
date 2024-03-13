@@ -1,4 +1,4 @@
-import MenuOpen from '@mui/icons-material/MenuOpen';
+import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 import './ViewMatches.css';
 
 interface ViewMatchesButtonProps {
@@ -8,7 +8,7 @@ interface ViewMatchesButtonProps {
 function ViewMatchesButton({ onClick }: ViewMatchesButtonProps) {
   return (
     <button className='view-matches-button' onClick={onClick}>
-      View Matches <MenuOpen />
+      View Matches <ArrowForwardIos />
     </button>
   );
 }

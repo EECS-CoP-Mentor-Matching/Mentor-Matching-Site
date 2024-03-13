@@ -2,7 +2,7 @@ import SelectExperienceLevel from "../../../matchProfileCommon/SelectExperienceL
 import "./CreateMenteeProfile.css";
 import SelectProfessionalInterest from "../../../matchProfileCommon/SelectProfessionalInterest";
 import SelectTechnicalInterest from "../../../matchProfileCommon/SelectTechnicalInterest";
-import { FormLabel, Button, Box, Card } from "@mui/material";
+import { FormLabel, Button, Card } from "@mui/material";
 import { updateNewMenteeProfileProfessionalExperience, updateNewMenteeProfileProfessionalInterest, updateNewMenteeProfileTechnicalExperience, updateNewMenteeProfileTechnicalInterest } from "../../../../redux/reducers/matchProfileReducer";
 import { useAppSelector } from "../../../../redux/hooks";
 import menteeDb from "../../../../dal/menteeDb";
@@ -12,7 +12,6 @@ import { MatchProfile } from "../../../../types/matchProfile";
 import authService from "../../../../service/authService";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 import { nullNumber, nullString } from "../../../common/forms/validation";
-import FormHeader from "../../../common/forms/layout/FormHeader";
 import ContentContainer from "../../../common/ContentContainer";
 
 interface CreateMenteeProfileProps {

@@ -4,7 +4,7 @@ import "./MenteePortal.css"
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 import ActiveMenteeProfiles from './components/activeMenteeProfiles/ActiveMenteeProfiles';
-import ViewMatches from './components/viewMatches/ViewMatches';
+import ViewMatches from './components/activeMenteeProfiles/viewMatches/ViewMatches';
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 export enum Pages {
