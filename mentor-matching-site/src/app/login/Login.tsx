@@ -13,6 +13,7 @@ function Login() {
   const [errorState, setErrorState] = useState<ErrorState>(resetError())
 
   async function login() {
+    setErrorState(resetError())
     try {
       const user = (await authService.signIn(email, password)) as User;
       if (user !== undefined) {
@@ -20,22 +21,24 @@ function Login() {
       }
     }
     catch (error) {
-      console.log(error);
+      setErrorState({ errorMessage: "Username or password was inavlid", isError: true })
     }
   }
 
   return (
-    <div className="login">
-      <FormGroup className="form-group">
-        <FormLabel>Hello, please login</FormLabel>
-        <EmailPassword setEmail={setEmail} setPassword={setPassword} onSubmit={login} />
-        <FormControl className="form-control">
-          <Button onClick={login}>Login</Button>
-          <Button href="/create-account">Create an Account</Button>
-        </FormControl>
-      </FormGroup>
-      <ErrorMessage errorState={errorState} />
-    </div>
+    <>
+      <div className="login">
+        <FormGroup className="form-group">
+          <FormLabel>Hello, please login</FormLabel>
+          <EmailPassword setEmail={setEmail} setPassword={setPassword} onSubmit={login} />
+          <FormControl className="form-control">
+            <Button onClick={login}>Login</Button>
+            <Button href="/create-account">Create an Account</Button>
+          </FormControl>
+          <ErrorMessage errorState={errorState} />
+        </FormGroup>
+      </div>
+    </>
   );
 }
 
