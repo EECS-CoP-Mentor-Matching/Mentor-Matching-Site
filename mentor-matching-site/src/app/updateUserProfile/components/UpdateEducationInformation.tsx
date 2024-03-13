@@ -23,7 +23,7 @@ function UpdateEducationInformation({ showEdit, showEditStyle }: UpdateEducation
         <FormGroupRows>
           <SelectLevelOfEducation onSelectDispatch={updateEducationInformation} currentValue={educationInformation.highestLevelOfEducation} />
           <SelectDegreeProgram onSelectDispatch={updateDegreeProgram} currentValue={educationInformation.degreeProgram} />
-          <CheckboxControlRedux checked={educationInformation.studentStatus} label="Currently a Student" onChangeDispatch={updateStudentStatus} />
+          <CheckboxControlRedux onChangeDispatch={updateStudentStatus} checked={educationInformation.studentStatus} label="Currently a Student" />
         </FormGroupRows>
       </FormGroupCols>
     }</>

@@ -50,3 +50,5 @@ export interface DbReadResults<T> {
   success: boolean
   results: DocItem<T>[]
 }
+
+export class ConflictError extends Error { }

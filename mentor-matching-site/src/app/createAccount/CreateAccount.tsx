@@ -3,7 +3,7 @@ import { useState } from "react";
 import userService from "../../service/userService";
 import { FormControl, FormLabel, FormGroup } from "@mui/material";
 import NewUserProfile from "./components/newUserProfile/NewUserProfile";
-import SubmitButton from "../common/forms/SubmitButton";
+import SubmitButton from "../common/forms/buttons/SubmitButton";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateEmail } from "../../redux/reducers/userProfileReducer";

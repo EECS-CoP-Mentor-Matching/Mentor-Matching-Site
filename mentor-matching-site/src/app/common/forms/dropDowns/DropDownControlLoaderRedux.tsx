@@ -1,3 +1,4 @@
+import { TextField } from "@mui/material"
 import { DropDownOption } from "../../../../types/types"
 import DropDownControlRedux from "./DropDownControlRedux"
 import { useState, useEffect } from "react"
@@ -30,7 +31,7 @@ function DropDownControlLoaderRedux({ onSelectDispatch, dbSearchAsync, mappingMe
 
   const dataIsLoading = () => {
     if (dropDownOptions === null) {
-      return (<>Data is loading...</>)
+      return (<></>)
     }
     else {
       return display;

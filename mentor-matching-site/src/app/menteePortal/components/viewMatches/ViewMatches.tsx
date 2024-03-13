@@ -12,7 +12,7 @@ import { UserProfile } from "../../../../types/userProfile";
 import TextDisplay from "../../../common/forms/textInputs/TextDisplay";
 import { errorLogDb } from "../../../../dal/errorLogDb";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
-import SubmitButton from "../../../common/forms/SubmitButton";
+import SubmitButton from "../../../common/forms/buttons/SubmitButton";
 import ModalWrapper from "../../../common/forms/modals/ModalWrapper";
 
 interface MessageMentorState {

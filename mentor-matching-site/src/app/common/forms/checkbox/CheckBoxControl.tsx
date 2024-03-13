@@ -4,14 +4,17 @@ interface CheckBoxControlProps {
   onChange: (isChecked: boolean) => void
   label: string
   checked?: boolean
+  readOnly?: boolean
 }
 
-function CheckBoxControl(props: CheckBoxControlProps) {
+function CheckBoxControl({ onChange, label, checked, readOnly = false }: CheckBoxControlProps) {
   return (
     <FormControl>
-      <FormLabel>{props.label}</FormLabel>
-      <Checkbox onChange={(e, checked) => props.onChange(checked)}
-        checked={props.checked} />
+      <FormLabel>{label}</FormLabel>
+      <Checkbox 
+        onChange={(e, checked) => onChange(checked)}
+        checked={checked}
+        readOnly={readOnly} />
     </FormControl>
   );
 }

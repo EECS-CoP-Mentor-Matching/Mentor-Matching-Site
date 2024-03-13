@@ -9,8 +9,7 @@ import ViewMatches from './components/viewMatches/ViewMatches';
 
 export enum Pages {
   createProfile = "Create Profile",
-  activeProfiles = "Active Profiles",
-  viewMatches = "View Matches"
+  activeProfiles = "Active Profiles"
 }
 
 function MenteePortal() {
@@ -33,9 +32,6 @@ function MenteePortal() {
         <div className="mentee-portal">
           <CreateMenteeProfile backToPage={backToActive} />
         </div>
-      }
-      {selectedPage === Pages.viewMatches &&
-        <ViewMatches />
       }
     </>
   );

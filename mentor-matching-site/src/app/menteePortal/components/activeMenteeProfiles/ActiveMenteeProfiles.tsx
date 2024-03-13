@@ -1,13 +1,15 @@
-import { Box, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, Button, Chip, Divider, FormGroup, FormLabel, Grid, List, ListItem, ListItemText, Paper, TextField } from "@mui/material";
 import ContentContainer from "../../../common/ContentContainer";
 import React, { useEffect, useState } from "react";
 import authService from "../../../../service/authService";
 import menteeService from "../../../../service/menteeService";
 import { DocItem } from "../../../../types/types";
 import { MatchProfile } from "../../../../types/matchProfile";
-import WarningButton from "../../../common/forms/WarningButton";
-import SubmitButton from "../../../common/forms/SubmitButton";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
+import DeleteButton from "../../../common/forms/buttons/DeleteButton";
+import EditButton from "../../../common/forms/buttons/EditButton";
+import { MenuOpen } from "@mui/icons-material";
+import ViewMatchesButton from "./ViewMatchesButton";
 
 function ActiveMenteeProfiles() {
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
@@ -51,8 +53,6 @@ function ActiveMenteeProfiles() {
     margin: '10px 0',
     padding: '10px',
     borderRadius: '4px',
-    width: '80%',
-    maxWidth: '700px',
     marginLeft: 'auto',
     marginRight: 'auto'
   };
@@ -68,19 +68,25 @@ function ActiveMenteeProfiles() {
             {menteeProfiles.map((profile, index) => (
               <React.Fragment key={profile.docId}>
                 <Paper elevation={2} style={{ ...profileItemStyle }}>
-                  <ListItem>
-                    <ListItemText
-                      primary={`Profile ID: ${profile.docId}`}
-                      secondary={`
-                      Technical Interest: ${profile.data.technicalInterest} (${profile.data.technicalExperience} years), 
-                      Professional Interest: ${profile.data.professionalInterest} (${profile.data.professionalExperience} years)
-                    `}
-                    />
+                  <ListItem sx={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'flex-start' }}>
+                    <Box gap={2} display="flex" alignItems="center" justifyContent='space-between' width='100%'>
+                      <ListItemText primary={`Profile #${index + 1}`} />
+                      <EditButton />
+                      <DeleteButton onClick={() => { deleteProfile(profile.docId); }} />
+                    </Box>
+                    <ListItemText secondary={"Technical Interest"} />
+                    <Box gap={2} display="flex" alignItems="center" paddingLeft='15px' >
+                      <Chip label={profile.data.technicalInterest} color="primary" />
+                      <Chip label={`${profile.data.technicalExperience} years`} variant="outlined" />
+                    </Box>
+                    <ListItemText secondary={"Professional Interest"} />
+                    <Box gap={2} display="flex" alignItems="center" paddingLeft='15px' paddingBottom='10px'>
+                      <Chip label={profile.data.professionalInterest} color="primary" />
+                      <Chip label={`${profile.data.professionalExperience} years`} variant="outlined" />
+                    </Box>
+                    <ViewMatchesButton />
                   </ListItem>
                   {index < menteeProfiles.length - 1 && <Divider />}
-                  <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <WarningButton text="Delete Profile" onClick={() => { deleteProfile(profile.docId); }} />
-                  </Box>
                 </Paper>
               </React.Fragment>
             ))}

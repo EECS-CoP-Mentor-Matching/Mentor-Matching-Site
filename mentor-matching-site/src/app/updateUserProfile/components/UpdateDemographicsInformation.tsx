@@ -5,6 +5,7 @@ import FormGroupCols from "../../common/forms/layout/FormGroupCols";
 import FormGroupRows from "../../common/forms/layout/FormGroupRows";
 import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
 import SelectRacialIdentity from "../../userProfileCommon/dropdowns/SelectRacialIdentity";
+import CheckBoxControlRedux from "../../common/forms/checkbox/CheckBoxControlRedux";
 
 interface UpdateUserDemographicInformationProps {
   showEdit: boolean
@@ -20,7 +21,7 @@ function UpdateUserDemographicInformation({ showEdit, showEditStyle }: UpdateUse
       <FormGroupCols>
         <FormLabel>Demographic Information</FormLabel>
         <FormGroupRows>
-          <TextInputControlRedux value={demographicInformation.lgbtqPlusCommunity ? 'Yes' : 'No'} label="Identify as LGBTQ+" readonly={!showEdit} onInputDispatch={updateLgbtqPlus} style={showEditStyle} />
+          <CheckBoxControlRedux checked={demographicInformation.lgbtqPlusCommunity} label="Identify as LGBTQ+" readOnly={!showEdit} onChangeDispatch={updateLgbtqPlus} />
           <SelectRacialIdentity currentValue={demographicInformation.racialIdentity} onSelectDispatch={updateRacialIdentity} />
         </FormGroupRows>
       </FormGroupCols>

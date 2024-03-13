@@ -2,7 +2,7 @@ import SelectExperienceLevel from "../../../matchProfileCommon/SelectExperienceL
 import "./CreateMenteeProfile.css";
 import SelectProfessionalInterest from "../../../matchProfileCommon/SelectProfessionalInterest";
 import SelectTechnicalInterest from "../../../matchProfileCommon/SelectTechnicalInterest";
-import { FormLabel, Button } from "@mui/material";
+import { FormLabel, Button, Box, Card } from "@mui/material";
 import { updateNewMenteeProfileProfessionalExperience, updateNewMenteeProfileProfessionalInterest, updateNewMenteeProfileTechnicalExperience, updateNewMenteeProfileTechnicalInterest } from "../../../../redux/reducers/matchProfileReducer";
 import { useAppSelector } from "../../../../redux/hooks";
 import menteeDb from "../../../../dal/menteeDb";
@@ -12,6 +12,8 @@ import { MatchProfile } from "../../../../types/matchProfile";
 import authService from "../../../../service/authService";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 import { nullNumber, nullString } from "../../../common/forms/validation";
+import FormHeader from "../../../common/forms/layout/FormHeader";
+import ContentContainer from "../../../common/ContentContainer";
 
 interface CreateMenteeProfileProps {
   backToPage: () => any
@@ -36,12 +38,13 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
         UID: uid
       } as MatchProfile;
       await menteeDb.createMenteeProfileAsync(newProfile);
+      console.log(errorState)
+      if (!errorState.isError) backToPage();
     }
     catch (error) {
       setErrorState(parseError(error));
     }
     setLoading(false);
-    if (!errorState.isError) backToPage();
   }
 
   const validateInputs = (profile: MatchProfile) => {
@@ -60,21 +63,33 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
   }
 
   return (
-    <div className="mentee-profile">
-      <LoadingMessage message="Creating new Profile..." loading={loading} />
-      <FormLabel>Technical</FormLabel>
-      <div className="mentee-interest">
-        <SelectTechnicalInterest onSelectDispatch={updateNewMenteeProfileTechnicalInterest} />
-        <SelectExperienceLevel onSelectDispatch={updateNewMenteeProfileTechnicalExperience} />
-      </div>
-      <FormLabel>Professional</FormLabel>
-      <div className="mentee-interest">
-        <SelectProfessionalInterest onSelectDispatch={updateNewMenteeProfileProfessionalInterest} />
-        <SelectExperienceLevel onSelectDispatch={updateNewMenteeProfileProfessionalExperience} />
-      </div>
-      <Button onClick={createProfile}>Add Profile</Button>
-      <ErrorMessage errorState={errorState} />
-    </div>
+    <ContentContainer
+      title="Create Profile"
+    >
+      <Card sx={{
+        display: "flex",
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        gap: '10px',
+        paddingBottom: '10px',
+        marginTop: '25px'
+      }}>
+        <FormLabel>Technical</FormLabel>
+        <div className="mentee-interest">
+          <SelectTechnicalInterest onSelectDispatch={updateNewMenteeProfileTechnicalInterest} />
+          <SelectExperienceLevel onSelectDispatch={updateNewMenteeProfileTechnicalExperience} />
+        </div>
+        <FormLabel>Professional</FormLabel>
+        <div className="mentee-interest">
+          <SelectProfessionalInterest onSelectDispatch={updateNewMenteeProfileProfessionalInterest} />
+          <SelectExperienceLevel onSelectDispatch={updateNewMenteeProfileProfessionalExperience} />
+        </div>
+        <Button onClick={createProfile}>Add Profile</Button>
+        <ErrorMessage errorState={errorState} />
+        <LoadingMessage message="Creating new Profile..." loading={loading} />
+      </Card>
+    </ContentContainer>
   )
 }
 

@@ -7,7 +7,7 @@
   /* Add some padding */
   text-align: center;
   /* Center the text */
-  position: fixed;
+  position: static;
   bottom: 0;
   width: 100%;
 }

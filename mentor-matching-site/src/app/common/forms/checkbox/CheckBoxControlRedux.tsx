@@ -8,9 +8,10 @@ interface CheckBoxControlReduxProps {
   }
   label: string
   checked?: boolean
+  readOnly?: boolean
 }
 
-function CheckBoxControlRedux({ onChangeDispatch: onSelectDispatch, label, checked }: CheckBoxControlReduxProps) {
+function CheckBoxControlRedux({ onChangeDispatch: onSelectDispatch, label, checked, readOnly = false }: CheckBoxControlReduxProps) {
   const dispatch = useAppDispatch();
 
   const onChange = (value: boolean) => {
@@ -22,6 +23,7 @@ function CheckBoxControlRedux({ onChangeDispatch: onSelectDispatch, label, check
       onChange={onChange}
       label={label}
       checked={checked}
+      readOnly={readOnly}
     />
   );
 }

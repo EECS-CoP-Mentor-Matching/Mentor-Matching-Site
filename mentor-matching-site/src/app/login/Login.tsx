@@ -5,10 +5,12 @@ import { Button, FormControl, FormGroup, FormLabel, Link } from "@mui/material";
 import "./Login.css";
 import { User } from "firebase/auth";
 import { refreshNavigate } from "../common/auth/refreshNavigate";
+import ErrorMessage, { ErrorState, resetError } from "../common/forms/ErrorMessage";
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorState, setErrorState] = useState<ErrorState>(resetError())
 
   async function login() {
     try {
@@ -32,6 +34,7 @@ function Login() {
           <Button href="/create-account">Create an Account</Button>
         </FormControl>
       </FormGroup>
+      <ErrorMessage errorState={errorState} />
     </div>
   );
 }
