@@ -3,13 +3,14 @@
   /* Match the App-header background */
   color: white;
   /* Match the App-header text color */
-  padding: 20px 0;
+  padding: 10px 0;
   /* Add some padding */
   text-align: center;
   /* Center the text */
-  position: static;
-  bottom: 0;
   width: 100%;
+  position: fixed;
+  bottom: 0;
+  height: 20px;
 }
 
 .footer-links a {
