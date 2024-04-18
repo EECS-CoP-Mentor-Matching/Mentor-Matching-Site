@@ -1,0 +1,20 @@
+{
+  "experienceLevels": [
+    {
+      "level": "Novice (0-1 Year)",
+      "hierarchy": 1
+    },
+    {
+      "level": "Intermediate (1-3 Years)",
+      "hierarchy": 2
+    },
+    {
+      "level": "Advanced (3-5 Years)",
+      "hierarchy": 3
+    },
+    {
+      "level": "Expert (5+ Years)",
+      "hierarchy": 4
+    }
+  ]
+}

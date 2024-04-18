@@ -2,10 +2,25 @@ import { createTheme } from "@mui/material";
 
 const theme = createTheme({
   components: {
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          '.MuiTab-root:hover': {
+            backgroundColor: 'transparent',
+          },
+          '.Mui-selected': {
+            color: '#f7ebeb',
+          },
+          '.MuiTabs-indicator': {
+            backgroundColor: '#f7ebeb',
+          },
+        }
+      }
+    },
     MuiButton: {
-      variants: [{
-        props: { variant: 'text' },
-        style: {
+      styleOverrides: {
+        root: {
           color: "white",
           backgroundColor: "black",
           padding: "5px",
@@ -18,7 +33,6 @@ const theme = createTheme({
           },
           borderBottom: "solid black 2px",
           borderRight: "solid black 2px",
-
           "&:hover": {
             color: "#DC4405",
             backgroundColor: "white",
@@ -32,7 +46,24 @@ const theme = createTheme({
             borderRight: "solid #DC4405 2px",
           }
         }
-      }]
+      }
+    },
+    MuiFormGroup: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '15px'
+        }
+      }
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          maxWidth: '200px'
+        }
+      }
     }
   }
 });

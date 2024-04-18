@@ -1,0 +1,37 @@
+{
+  "techincalInterests": [
+    {
+      "broadInterest": "Programming Languages",
+      "specificInterests": [
+        ".NET",
+        "Java",
+        "Python",
+        "C#",
+        "C++",
+        "Operating Systems"
+      ]
+    },
+    {
+      "broadInterest": "Electrical Engineering",
+      "specificInterests": [
+        "Circuit Design"
+      ]
+    },
+    {
+      "broadInterest": "Cyber Security",
+      "specificInterests": [
+        "Pen-Testing",
+        "Bluecat"
+      ]
+    },
+    {
+      "broadInterest": "Network Engineering",
+      "specificInterests": [
+        "Wireshark",
+        "Fiddler",
+        "Switch",
+        "DNS"
+      ]
+    }
+  ]
+}

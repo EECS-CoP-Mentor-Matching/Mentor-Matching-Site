@@ -1,13 +1,13 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import ContentContainer from "../ContentContainer";
+import ContentContainer from "../../../common/ContentContainer";
 
 describe("MentorPortal Content Container", () => {
 
     it("renders the title when provided", () => {
         render(
             <ContentContainer title="Test Title">
-                {}
+                { }
             </ContentContainer>,
         );
         expect(screen.getByText("Test Title")).toBeInTheDocument();
@@ -16,7 +16,7 @@ describe("MentorPortal Content Container", () => {
     it("renders the subtitle when provided", () => {
         render(
             <ContentContainer subtitle="Test subtitle">
-                {}
+                { }
             </ContentContainer>,
         );
         expect(screen.getByText("Test subtitle")).toBeInTheDocument();

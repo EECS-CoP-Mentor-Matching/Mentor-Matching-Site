@@ -1,0 +1,36 @@
+{
+  "educationLevels": [
+    {
+      "level": "High School",
+      "hierarchy": 1
+    },
+    {
+      "level": "College Freshman",
+      "hierarchy": 2
+    },
+    {
+      "level": "College Sophomore",
+      "hierarchy": 3
+    },
+    {
+      "level": "College Junior",
+      "hierarchy": 4
+    },
+    {
+      "level": "College Senior",
+      "hierarchy": 5
+    },
+    {
+      "level": "Graduate First Year",
+      "hierarchy": 6
+    },
+    {
+      "level": "Graduate Second Year",
+      "hierarchy": 7
+    },
+    {
+      "level": "Graduate 3+ Year",
+      "hierarchy": 8
+    }
+  ]
+}

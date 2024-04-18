@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react';
-import adminService from '../../service/adminService';
 import "./AdminPortal.css";
-import { Button } from "@mui/material";
-import AdminPortalNav from './AdminPortalNav';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../service/authService';
-import ManageUsers from './manageUsers/ManageUsers';
-import ViewReports from './viewReports/ViewReports';
-import Settings from './settings/Settings';
+import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
+import navUtilities from '../common/navigation/navUtilities';
 
 export enum Pages {
-  manageUsers,
-  viewReports,
-  settings
+  manageUsers = "Manage Users",
+  viewReports = "View Reports",
+  settings = "Settings"
 }
 
 interface AdminPortalProps {
 }
 
 function AdminPortal(props: AdminPortalProps) {
-  const [page, setPage] = useState(Pages.manageUsers);
+  const [page, setPage] = useState(Pages.manageUsers.toString());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,10 +30,11 @@ function AdminPortal(props: AdminPortalProps) {
 
   return (
     <>
-      <AdminPortalNav setPage={setPage} />
-      {page === Pages.manageUsers && <ManageUsers />}
+      <PortalNavigationBar selected={page} onNavChange={setPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
+      {/* <AdminPortalNav setPage={setPage} /> */}
+      {/* {page === Pages.manageUsers && <ManageUsers />}
       {page === Pages.viewReports && <ViewReports />}
-      {page === Pages.settings && <Settings />}
+      {page === Pages.settings && <Settings />} */}
     </>
   );
 }

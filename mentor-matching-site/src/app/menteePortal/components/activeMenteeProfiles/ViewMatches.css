@@ -1,0 +1,16 @@
+.view-matches-button {
+  background: none;
+  background-color: none;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1.15rem;
+}
+
+.view-matches-button:hover {
+  color: black;
+  background: none;
+  background-color: none;
+  border: none;
+}

@@ -1,0 +1,28 @@
+.footer {
+  background-color: #282c34;
+  /* Match the App-header background */
+  color: white;
+  /* Match the App-header text color */
+  padding: 10px 0;
+  /* Add some padding */
+  text-align: center;
+  /* Center the text */
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  height: 20px;
+}
+
+.footer-links a {
+  color: #f3f3f3;
+  /* Use the App-link color for consistency */
+  margin: 0 15px;
+  /* Space out the links */
+  text-decoration: none;
+  /* Optionally remove underline from links */
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+  /* Add underline on hover for better UX */
+}

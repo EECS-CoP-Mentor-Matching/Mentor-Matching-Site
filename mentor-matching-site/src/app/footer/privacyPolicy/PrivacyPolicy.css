@@ -1,0 +1,32 @@
+.privacy-policy-container {
+  margin: 20px auto; /* centers the container with automatic horizontal margins */
+  padding: 20px;
+  border: 1px solid #ccc;
+  max-width: 800px; /* max width for better readability */
+  background-color: #fff; /* assuming a light theme, white background */
+  color: #333; /* dark gray text for readability */
+}
+
+.privacy-policy-container h1, 
+.privacy-policy-container h2 {
+  text-align: left;
+  color: #444; /* slightly lighter color for headings */
+}
+
+.privacy-policy-container p {
+  text-align: left;
+  line-height: 1.6; /* increased line height for readability */
+  font-size: 16px; /* adjust as needed */
+}
+
+/* Additional styling for better visual hierarchy */
+.privacy-policy-container h1 {
+  margin-bottom: 0.5em;
+  font-size: 2em; /* larger font size for main heading */
+}
+
+.privacy-policy-container h2 {
+  margin-top: 1em;
+  margin-bottom: 0.3em;
+  font-size: 1.5em; /* larger font size for section headings */
+}

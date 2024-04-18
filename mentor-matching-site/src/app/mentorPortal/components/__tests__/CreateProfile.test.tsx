@@ -1,15 +1,15 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import {CreateProfile} from "../CreateProfile";
+import CreateMentorProfile from "../CreateMentorProfile";
 
 describe('Create Profile', () => {
     test('renders Mentor Portal title', () => {
-        render(<CreateProfile />);
+        render(<CreateMentorProfile />);
         expect(screen.getByText('Mentor Profile')).toBeInTheDocument();
     });
 
     test('renders subtitle', () => {
-        render(<CreateProfile />);
+        render(<CreateMentorProfile />);
         expect(screen.getByText('Add your preferences to match with mentees')).toBeInTheDocument();
     });
 });

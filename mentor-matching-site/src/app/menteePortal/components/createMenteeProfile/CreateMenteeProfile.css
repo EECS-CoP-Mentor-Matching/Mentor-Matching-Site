@@ -1,0 +1,18 @@
+.mentee-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  border: darkgray 1px solid;
+  max-width: 600px;
+}
+
+.mentee-interest {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}

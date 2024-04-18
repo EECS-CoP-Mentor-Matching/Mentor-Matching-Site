@@ -1,3 +1,4 @@
+import LoadingMessage from "./common/forms/modals/LoadingMessage";
 
 function Home() {
   return (
@@ -7,4 +8,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Home;  
