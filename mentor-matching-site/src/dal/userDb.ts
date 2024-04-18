@@ -1,6 +1,6 @@
 import { MatchHistoryItem, UserAccountSettings, UserProfile } from "../types/userProfile";
-import { db } from "../firebaseConfig";
-import { collection, getDocs, doc, query, where, setDoc, updateDoc } from "firebase/firestore";
+import { app, db } from "../firebaseConfig";
+import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 const collectionName = "userProfile";
@@ -34,6 +34,18 @@ async function createNewUserAsync(user: User, userProfile: UserProfile): Promise
   } as UserProfile;
   await setDoc(doc(db, collectionName, user.uid), initialUserProfile);
   return true;
+}
+
+async function deleteUserProfileAsync(uid: string) {
+  const db = getFirestore(app); // Ensure you have initialized Firestore
+  const userDocRef = doc(db, "users", uid); // Assuming user profiles are stored in a "users" collection
+
+  return deleteDoc(userDocRef).then(() => {
+    console.log(`UserProfile with UID ${uid} deleted successfully.`);
+  }).catch((error) => {
+    console.error('Error deleting user profile:', error);
+    throw error;
+  });
 }
 
 async function userExistsAsync(email: string): Promise<boolean> {
@@ -71,7 +83,8 @@ const userDb = {
   createNewUserAsync,
   userExistsAsync,
   getUserProfileAsync,
-  updateUserProfileAsync
+  updateUserProfileAsync,
+  deleteUserProfileAsync
 }
 
 export default userDb;
