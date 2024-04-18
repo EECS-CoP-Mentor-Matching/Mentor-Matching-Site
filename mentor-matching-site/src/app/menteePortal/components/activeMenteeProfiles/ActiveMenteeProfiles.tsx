@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import authService from "../../../../service/authService";
 import menteeService from "../../../../service/menteeService";
 import { DocItem } from "../../../../types/types";
-import { MatchProfile, initMatchProfile } from "../../../../types/matchProfile";
+import { MatchProfile, MatchProfileView, MessageState, initMatchProfile } from "../../../../types/matchProfile";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 import DeleteButton from "../../../common/forms/buttons/DeleteButton";
 import EditButton from "../../../common/forms/buttons/EditButton";
@@ -13,8 +13,7 @@ import ViewMatches from "./viewMatches/ViewMatches";
 import userService from "../../../../service/userService";
 import { mentorService } from "../../../../service/mentorService";
 import EditProfile from "./editProfile/EditProfile";
-import { Pages } from "../../MenteePortal";
-import TextDisplay from "../../../common/forms/textInputs/TextDisplay";
+import { messagingService } from "../../../../service/messagingService";
 
 interface ActiveMenteeProfilesProps {
   backToPage: () => any
@@ -23,10 +22,11 @@ interface ActiveMenteeProfilesProps {
 function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
   const [loadingProfiles, setLoadingProfiles] = useState(false);
-  const [matches, setMatches] = useState<DocItem<MatchProfile>[] | undefined>()
+  const [matches, setMatches] = useState<MatchProfileView[] | undefined>()
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [editingProfile, setEditingProfile] = useState<DocItem<MatchProfile>>();
-
+  const [userID, setUserID] = useState("");
+  const [menteeProfileId, setMenteeProfileId] = useState("");
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -34,6 +34,7 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
       if (user) {
         try {
           const result = await menteeService.searchMenteeProfilesByUser(user.uid);
+          setUserID(user.uid);
           if (result !== undefined && result?.length !== 0) {
             setMenteeProfiles(result);
           }
@@ -47,13 +48,36 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
     setLoadingProfiles(false);
   }, []);
 
+  const checkMessages = async (matchProfiles: DocItem<MatchProfile>[], menteeProfileId: string) => {
+    let matchProfileViews = [] as MatchProfileView[];
+    for (const profile of matchProfiles) {
+      const messages = await messagingService.getMessagesSentForMenteeProfile(profile.docId, menteeProfileId);
+      console.log(menteeProfileId)
+      let messageState = MessageState.replyReceived;
+      if (messages.length !== 0) {
+        messageState = MessageState.awaitingReply;
+      }
+      else {
+        messageState = MessageState.noMessagesSent;  
+      }
+      matchProfileViews.push({
+        mentorProfile: profile,
+        messageState: messageState
+      } as MatchProfileView); 
+    }
+    
+    return matchProfileViews;
+  }
+
   const showMatches = async (matchProfile: DocItem<MatchProfile>) => {
     setLoadingMatches(true);
     const currentUser = await authService.getSignedInUser();
     if (currentUser) {
       const profile = await userService.getUserProfile(currentUser.uid);
       const result = await mentorService.searchMentorsByProfileMatch(matchProfile.docId, profile);
-      setMatches(result);
+      const matches = await checkMessages(result, matchProfile.docId);
+      setMatches(matches);
+      setMenteeProfileId(matchProfile.docId);
     }
     setLoadingMatches(false);
   }
@@ -118,7 +142,7 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
             ))}
           </List>
           {matches !== undefined &&
-            <ViewMatches mentorProfiles={matches} />
+            <ViewMatches matchProfiles={matches} menteeUID={userID} menteeProfileId={menteeProfileId} />
           }
           {editingProfile !== undefined &&
             <EditProfile matchProfile={editingProfile} />

@@ -1,2 +1,21 @@
+import { where } from "firebase/firestore";
+import { Message } from "../types/matchProfile";
+import { queryMany, readMany, writeSingle } from "./commonDb";
+import { DocItem } from "../types/types";
 
-export { }
+const collectionName = 'messages';
+
+async function sendMessageAsync(message: Message) {
+  return await writeSingle(collectionName, message);
+}
+
+async function getMessagesSentForMenteeProfileAsync(mentorProfileId: string, menteeProfileId: string) : Promise<DocItem<Message>[]> {
+  return (await queryMany<Message>(collectionName, 
+    where("mentorProfileId", "==", mentorProfileId), 
+    where("menteeProfileId", "==", menteeProfileId))).results;
+}
+
+export const messagingDb = {
+  sendMessageAsync,
+  getMessagesSentForMenteeProfileAsync
+}

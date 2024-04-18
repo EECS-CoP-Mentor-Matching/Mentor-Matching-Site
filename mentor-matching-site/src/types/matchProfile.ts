@@ -1,6 +1,29 @@
+import { DocItem } from "./types"
+
 export enum MatchProfileType {
   Mentee,
   Mentor
+}
+
+export interface Message {
+  menteeUID: string
+  menteeProfileId: string
+  mentorUID: string
+  mentorProfileId: string
+  message: string
+  sentByUID: string
+  sentOn: any
+}
+
+export enum MessageState {
+  noMessagesSent,
+  awaitingReply,
+  replyReceived
+}
+
+export interface MatchProfileView {
+  mentorProfile: DocItem<MatchProfile>
+  messageState: MessageState
 }
 
 export interface MatchProfiles {

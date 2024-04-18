@@ -1,4 +1,3 @@
-import { Button, FormLabel } from "@mui/material";
 import { MatchProfile } from "../../../../../types/matchProfile";
 import { DocItem } from "../../../../../types/types";
 import ModalWrapper from "../../../../common/forms/modals/ModalWrapper";
@@ -10,9 +9,8 @@ interface EditProfileProps {
 }
 
 function EditProfile({ matchProfile }: EditProfileProps) {
-  const [open, isOpen] = useState(true)
-  const updateProfile = async (updatedProfile: ProfileFormData) => {
-  }
+  const [open, isOpen] = useState(true);
+  const updateProfile = async (updatedProfile: ProfileFormData) => { }
 
   return (
     <ModalWrapper open={open} setIsOpen={isOpen}>

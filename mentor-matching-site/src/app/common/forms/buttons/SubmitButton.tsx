@@ -5,9 +5,10 @@ interface SubmitButtonProps {
   onClick?: () => void
   text: string
   widthMulti?: number
+  disabled?: boolean
 }
 
-function SubmitButton({ onClick, text, widthMulti }: SubmitButtonProps) {
+function SubmitButton({ onClick, text, disabled = false, widthMulti }: SubmitButtonProps) {
   const style = {
     paddingLeft: '1.00rem',
     paddingRight: '1.00rem',
@@ -15,8 +16,9 @@ function SubmitButton({ onClick, text, widthMulti }: SubmitButtonProps) {
   }
 
   return (
-    <Button onClick={() => {
-      if (onClick !== undefined) {
+    <Button
+      onClick={() => {
+      if (onClick !== undefined && !disabled) {
         onClick();
       }
     }} sx={style}>{text}</Button>

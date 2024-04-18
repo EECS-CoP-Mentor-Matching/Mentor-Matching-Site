@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface DropDownOption {
   label: string,
   id: number | string
