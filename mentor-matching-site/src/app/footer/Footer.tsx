@@ -10,6 +10,7 @@ function Footer() {
           <Link to="/user-service-agreement">User Service Agreement</Link>
           <Link to="/terms-and-conditions">Terms and Conditions</Link>
           <Link to="/privacy-policy">Privacy Policy</Link>
+          <Link to="/feedback-portal">Give us some Feedback!</Link>
         </div>
       </div>
     </footer>
