@@ -5,12 +5,12 @@ import authService from '../../service/authService';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 
-import SubmitFeedback from './components/submitFeedback/SubmitFeedback';
-import ViewFeedback from './components/FeedbackAdminPortal/viewFeedback/ViewFeedback';
-import FeedbackSettings from './components/FeedbackAdminPortal/FeedbackSettings/FeedbackSettings';
-import FeedbackAdminPortal from './components/FeedbackAdminPortal/FeedbackAdminPortal';
+import SubmitFeedback from '../adminPortal/components/FeedbackAdminPortal/submitFeedback/SubmitFeedback';
+import ViewFeedback from '../adminPortal/components/FeedbackAdminPortal/viewFeedback/ViewFeedback';
+import FeedbackSettings from '../adminPortal/components/FeedbackSettings/FeedbackSettings';
+import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/FeedbackAdminPortal';
 
-import { FeedbackSettingsContext } from './components/FeedbackAdminPortal/FeedbackSettings/FeedbackSettingsContext';
+import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 
 import React from 'react';
 
@@ -18,7 +18,7 @@ export enum FeedbackPages {
   submitFeedback = 'Submit Feedback',
  // viewFeedback = 'View Feedback',
  // settings = 'Settings',
-  feedbackAdminPortal = 'Admin Portal'
+ // feedbackAdminPortal = 'Admin Portal'
 }
 
 interface FeedbackPortalProps {
@@ -62,7 +62,7 @@ function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
       {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
       {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}
   */}
-      {page === FeedbackPages.feedbackAdminPortal && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
+      {/*page === FeedbackPages.feedbackAdminPortal && <div className="feedback-portal"><FeedbackAdminPortal /></div>*/}
     </FeedbackSettingsContext.Provider>
   );
 }
