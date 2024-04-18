@@ -9,7 +9,12 @@ async function getMessagesSentForMenteeProfile(mentorProfileId: string, menteePr
   return await messagingDb.getMessagesSentForMenteeProfileAsync(mentorProfileId, menteeProfileId);
 }
 
+async function getMessagesSentForMentor(mentorUID: string) {
+  return await messagingDb.getMessagesSentForMentorAsync(mentorUID);
+}
+
 export const messagingService = {
   sendMessage,
-  getMessagesSentForMenteeProfile
+  getMessagesSentForMenteeProfile,
+  getMessagesSentForMentor
 }

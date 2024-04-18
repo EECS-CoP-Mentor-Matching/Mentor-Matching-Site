@@ -3,9 +3,10 @@ import CreateMentorProfile from "./components/CreateMentorProfile";
 import PortalNavigationBar from "../common/navigation/PortalNavigationBar";
 import { Box } from "@mui/material";
 import ActiveProfiles from "./components/ActiveProfiles";
+import MentorMatches from "./components/MentorMatches";
 
 function MentorPortal() {
-    const navItems = ['Create Profile', 'Active Profiles'];
+    const navItems = ['Create Profile', 'Active Profiles', 'Matches'];
     const [selectedTab, setSelectedTab] = useState('Create Profile');
     const handleNavChange = (newValue: string) => {
         setSelectedTab(newValue);
@@ -13,10 +14,12 @@ function MentorPortal() {
 
     const renderTabContent = () => {
         switch (selectedTab) {
+            case 'Create Profile':
+                return <CreateMentorProfile />;
             case 'Active Profiles':
                 return <ActiveProfiles />;
             default:
-                return <CreateMentorProfile />;
+                return <MentorMatches />;
         }
     };
 

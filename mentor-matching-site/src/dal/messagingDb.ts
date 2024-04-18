@@ -15,7 +15,13 @@ async function getMessagesSentForMenteeProfileAsync(mentorProfileId: string, men
     where("menteeProfileId", "==", menteeProfileId))).results;
 }
 
+async function getMessagesSentForMentorAsync(mentorUID: string) : Promise<DocItem<Message>[]> {
+  return (await queryMany<Message>(collectionName,
+      where("mentorUID", "==", mentorUID))).results;
+}
+
 export const messagingDb = {
   sendMessageAsync,
-  getMessagesSentForMenteeProfileAsync
+  getMessagesSentForMenteeProfileAsync,
+  getMessagesSentForMentorAsync
 }
