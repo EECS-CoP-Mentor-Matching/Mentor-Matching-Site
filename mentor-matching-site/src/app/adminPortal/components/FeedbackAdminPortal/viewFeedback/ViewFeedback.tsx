@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import feedbackService from '../../../../../service/feedbackService'
 
-import './../../submitFeedback/SubmitFeedback.css';
+import './../submitFeedback/SubmitFeedback.css';
 import './ViewFeedback.css';
 
 interface FeedbackEntry {
