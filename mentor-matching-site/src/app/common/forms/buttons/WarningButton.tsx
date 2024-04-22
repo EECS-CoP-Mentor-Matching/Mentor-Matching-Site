@@ -1,19 +1,19 @@
 
 import { Button } from "@mui/material";
+import { ReactElement } from "react";
 
 interface WarningButtonProps {
   onClick?: () => void
-  text: string
+  text?: string
   widthMulti?: number
+  children?: ReactElement[] | ReactElement | any
 }
 
-function WarningButton({ onClick, text, widthMulti }: WarningButtonProps) {
+function WarningButton({ onClick, text, widthMulti, children }: WarningButtonProps) {
   const style = {
-    paddingLeft: '1.00rem',
-    paddingRight: '1.00rem',
     width: `${widthMulti === undefined ? 10 : widthMulti * 100}rem`,
-    backgroundColor: 'darkred'
-
+    backgroundColor: 'darkred',
+    fontSize: '10px',
   }
 
   return (
@@ -21,7 +21,7 @@ function WarningButton({ onClick, text, widthMulti }: WarningButtonProps) {
       if (onClick !== undefined) {
         onClick();
       }
-    }} sx={{ ...style }}>{text}</Button>
+    }} sx={{ ...style }}>{text}{children}</Button>
   );
 }
 

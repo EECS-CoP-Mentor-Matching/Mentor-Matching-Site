@@ -10,6 +10,8 @@ import UpdateUserDemographicInformation from "./components/UpdateDemographicsInf
 import UpdateEducationInformation from "./components/UpdateEducationInformation";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/userProfileReducer";
+import AuthenticatedView from '../common/auth/AuthenticatedView';
+import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
 function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);
@@ -105,12 +107,15 @@ function UpdateUserProfile() {
 
   return (
     <>
-      {dataIsLoading()}
-      {deleteAccountDialog}
-      {/* Position the Delete Account button according to layout preference */}
-      <Button variant="outlined" color="error" onClick={handleOpenDeleteDialog} style={{ marginTop: '20px' }}>
-        Delete Account
-      </Button>
+      <AuthenticatedView>
+        {dataIsLoading()}
+        {deleteAccountDialog}
+        {/* Position the Delete Account button according to layout preference */}
+        <Button variant="outlined" color="error" onClick={handleOpenDeleteDialog} style={{ marginTop: '20px' }}>
+          Delete Account
+        </Button>
+      </AuthenticatedView>
+      <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
     </>
   );
 }

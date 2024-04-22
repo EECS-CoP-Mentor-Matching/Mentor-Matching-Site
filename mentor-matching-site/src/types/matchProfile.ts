@@ -21,6 +21,20 @@ export enum MessageState {
   replyReceived
 }
 
+export enum MentorReply {
+  awaiting,
+  accepted,
+  denied
+}
+
+export enum ReportUserReasons {
+  notSelected = "NA",
+  suspiciousActivity = "Suspicious Activity",
+  abusiveContent = "Abusive Content",
+  iFeelUncomforatble = "I Feel Uncomfortable",
+  iFeelUnsafe = "I Feel Unsafe"
+}
+
 export interface MatchProfileView {
   mentorProfile: DocItem<MatchProfile>
   messageState: MessageState

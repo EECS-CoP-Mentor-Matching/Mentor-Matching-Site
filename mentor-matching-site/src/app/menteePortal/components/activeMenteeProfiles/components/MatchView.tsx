@@ -8,6 +8,8 @@ import SubmitButton from "../../../../common/forms/buttons/SubmitButton";
 import ModalWrapper from "../../../../common/forms/modals/ModalWrapper";
 import { messagingService } from "../../../../../service/messagingService";
 import { Timestamp } from "firebase/firestore";
+import ReportUserModal from "../../../../reportUser/ReportUserModal";
+import ReportUser from "../../../../reportUser/ReportUser";
 
 interface MessageMentorState {
   showModal: boolean,
@@ -23,11 +25,11 @@ interface MatchViewProps {
   profileCount: number
 }
 
-function MatchView({profile, menteeUID, menteeProfileId, index, profileCount} : MatchViewProps) {
-  const [messageMentorPopup, setMessageMentorPopup] = useState<MessageMentorState>({showModal: false, selectedMentorId: '', messageState: MessageState.noMessagesSent});
+function MatchView({ profile, menteeUID, menteeProfileId, index, profileCount }: MatchViewProps) {
+  const [messageMentorPopup, setMessageMentorPopup] = useState<MessageMentorState>({ showModal: false, selectedMentorId: '', messageState: MessageState.noMessagesSent });
   const [message, setMessage] = useState("");
 
-  const getMessageButtonText = (state: MessageState) : string => {
+  const getMessageButtonText = (state: MessageState): string => {
     console.log(state)
     if (state === MessageState.awaitingReply) {
       return "Message Sent"
@@ -46,8 +48,7 @@ function MatchView({profile, menteeUID, menteeProfileId, index, profileCount} : 
     margin: '10px 0',
     padding: '10px',
     borderRadius: '4px',
-    width: '80%',
-    maxWidth: '700px',
+    width: '100%',
     marginLeft: 'auto',
     marginRight: 'auto',
   };
@@ -63,7 +64,7 @@ function MatchView({profile, menteeUID, menteeProfileId, index, profileCount} : 
       sentOn: Timestamp.now(),
     } as Message;
     await messagingService.sendMessage(newMessage);
-    setMessageMentorPopup({showModal: false, selectedMentorId: mentorProfileId, messageState: MessageState.awaitingReply})
+    setMessageMentorPopup({ showModal: false, selectedMentorId: mentorProfileId, messageState: MessageState.awaitingReply })
   }
 
   return (
@@ -71,7 +72,10 @@ function MatchView({profile, menteeUID, menteeProfileId, index, profileCount} : 
       <Paper elevation={2} style={profileItemStyle}>
         <ListItem>
           <Box paddingRight={4}>
-            <ListItemText primary={`Match #${index + 1}`} />
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+              <ListItemText primary={`Match #${index + 1}`} />
+              <ReportUser reportedForUID={profile.mentorProfile.data.UID} />
+            </Box>
             <ListItemText secondary={"Technical Interest"} />
             <Box gap={2} display="flex" alignItems="center" paddingLeft='15px' >
               <Chip label={profile.mentorProfile.data.technicalInterest} color="secondary" />
@@ -83,31 +87,33 @@ function MatchView({profile, menteeUID, menteeProfileId, index, profileCount} : 
               <Chip label={`${profile.mentorProfile.data.professionalExperience} years`} variant="outlined" />
             </Box>
           </Box>
-          <SubmitButton text={getMessageButtonText(profile.messageState)}
-            onClick={() => { 
-              setMessageMentorPopup({showModal: true, selectedMentorId: profile.mentorProfile.docId, messageState: profile.messageState})
-            }} />
+          <Box display='flex' flexDirection='column' gap='10px' alignItems={'flex-end'} justifyContent={'flex-start'}>
+            <SubmitButton text={getMessageButtonText(profile.messageState)}
+              onClick={() => {
+                setMessageMentorPopup({ showModal: true, selectedMentorId: profile.mentorProfile.docId, messageState: profile.messageState })
+              }} />
+          </Box>
         </ListItem>
         {index < profileCount - 1 && <Divider />}
       </Paper>
       <ModalWrapper open={messageMentorPopup.showModal} setIsOpen={(isOpen) => {
-        setMessageMentorPopup({showModal: isOpen, selectedMentorId: profile.mentorProfile.docId, messageState: profile.messageState})
+        setMessageMentorPopup({ showModal: isOpen, selectedMentorId: profile.mentorProfile.docId, messageState: profile.messageState })
       }}>
-      <>
-        {profile.messageState === MessageState.noMessagesSent && <>
-          <p>Type a message to send to your mentor match!</p>
-          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-            <textarea style={{ height: '250px', width: '250px' }} onChange={(e) => {setMessage(e.target.value)}} />
-            <SubmitButton text="Send Message" onClick={() => sendMessage(profile.mentorProfile.data.UID, profile.mentorProfile.docId)}/>
-          </Box>
-        </>}
-        {profile.messageState === MessageState.awaitingReply && <>
-          <p>Awaiting reply from mentor....</p>
-        </>}
-        {profile.messageState === MessageState.replyReceived && <>
-          <p>Awaiting reply from mentor....</p>
-        </>}
-      </>
+        <>
+          {profile.messageState === MessageState.noMessagesSent && <>
+            <p>Type a message to send to your mentor match!</p>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+              <textarea style={{ height: '250px', width: '250px' }} onChange={(e) => { setMessage(e.target.value) }} />
+              <SubmitButton text="Send Message" onClick={() => sendMessage(profile.mentorProfile.data.UID, profile.mentorProfile.docId)} />
+            </Box>
+          </>}
+          {profile.messageState === MessageState.awaitingReply && <>
+            <p>Awaiting reply from mentor....</p>
+          </>}
+          {profile.messageState === MessageState.replyReceived && <>
+            <p>Awaiting reply from mentor....</p>
+          </>}
+        </>
       </ModalWrapper>
     </React.Fragment>
   );

@@ -22,7 +22,7 @@ function TopNav() {
     <div className="top-nav">
       <Button onClick={openSideNav}>{hamburger}</Button>
       <AuthenticatedView>
-        <Button href="/logout" onClick={logout}>Logout</Button>
+        <Button href="/login" onClick={logout}>Logout</Button>
       </AuthenticatedView>
       <UnauthenticatedView>
         <div>
@@ -30,7 +30,7 @@ function TopNav() {
           <Button href="/create-account">Create Account</Button>
         </div>
       </UnauthenticatedView>
-      
+
     </div>
   )
 }

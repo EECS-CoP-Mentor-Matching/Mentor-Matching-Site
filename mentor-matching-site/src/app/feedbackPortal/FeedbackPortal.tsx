@@ -13,12 +13,14 @@ import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/F
 import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 
 import React from 'react';
+import AuthenticatedView from '../common/auth/AuthenticatedView';
+import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
 export enum FeedbackPages {
   submitFeedback = 'Submit Feedback',
- // viewFeedback = 'View Feedback',
- // settings = 'Settings',
- // feedbackAdminPortal = 'Admin Portal'
+  // viewFeedback = 'View Feedback',
+  // settings = 'Settings',
+  // feedbackAdminPortal = 'Admin Portal'
 }
 
 interface FeedbackPortalProps {
@@ -45,25 +47,30 @@ function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
   }, [navigate]);
 
   return (
-    <FeedbackSettingsContext.Provider value={{
-      isTitleRequired, setIsTitleRequired,
-      isContentRequired, setIsContentRequired,
-      isTypeRequired, setIsTypeRequired,
-      isAttachmentAllowed, setIsAttachmentAllowed
-    }}>
-      <PortalNavigationBar
-        selected={page}
-        onNavChange={setPage}
-        navItems={navUtilities.navItemsFromEnum(FeedbackPages)}
-      />
-      
-      {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback userEmail={userEmail} /> </div>}
-      {/*
-      {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
-      {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}
-  */}
-      {/*page === FeedbackPages.feedbackAdminPortal && <div className="feedback-portal"><FeedbackAdminPortal /></div>*/}
-    </FeedbackSettingsContext.Provider>
+    <>
+      <AuthenticatedView>
+        <FeedbackSettingsContext.Provider value={{
+          isTitleRequired, setIsTitleRequired,
+          isContentRequired, setIsContentRequired,
+          isTypeRequired, setIsTypeRequired,
+          isAttachmentAllowed, setIsAttachmentAllowed
+        }}>
+          <PortalNavigationBar
+            selected={page}
+            onNavChange={setPage}
+            navItems={navUtilities.navItemsFromEnum(FeedbackPages)}
+          />
+
+          {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback userEmail={userEmail} /> </div>}
+          {/*
+        {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
+        {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}
+    */}
+          {/*page === FeedbackPages.feedbackAdminPortal && <div className="feedback-portal"><FeedbackAdminPortal /></div>*/}
+        </FeedbackSettingsContext.Provider>
+      </AuthenticatedView>
+      <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
+    </>
   );
 }
 

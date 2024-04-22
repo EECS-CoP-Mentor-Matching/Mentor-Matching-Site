@@ -15,34 +15,51 @@ import TermsAndConditions from './footer/termsAndConditions/TermsAndConditions';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
-import ReduxProvider from '../redux/store';
 import UserServiceAgreement from './footer/userServiceAgreement/userServiceAgreement'; // Import the component for the user service agreement page
+import { useEffect } from 'react';
+import { updateProfile } from '../redux/reducers/userProfileReducer';
+import { useAppDispatch } from '../redux/hooks';
+import authService from '../service/authService';
+import userService from '../service/userService';
 
 function App() {
+
+  // set the user profile redux store on refresh
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    // get the current signed in user
+    const loadUserProfile = async () => {
+      const currentUser = await authService.getSignedInUser();
+      if (currentUser) {
+        const profile = await userService.getUserProfile(currentUser.uid);
+        dispatch(updateProfile(profile));
+      }
+    };
+    loadUserProfile();
+  }, [dispatch]);
+
   return (
     <ThemeProvider theme={theme} >
-      <ReduxProvider>
-        <BrowserRouter>
-          <div className="App">
-            <TopNav />
-            <SideNav />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/create-account" element={<CreateAccount />} />
-              <Route path="/mentee-portal" element={<MenteePortal />} />
-              <Route path="/admin-portal" element={<AdminPortal />} />
-              <Route path="/mentor-portal" element={<MentorPortal />} />
-              <Route path="/update-profile" element={<UpdateUserProfile />} />
-              <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"} />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/user-service-agreement" element={<UserServiceAgreement />} /> 
-              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-            </Routes>
-            <Footer />
-          </div>
-        </BrowserRouter>
-      </ReduxProvider>
+      <BrowserRouter>
+        <div className="App">
+          <TopNav />
+          <SideNav />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/create-account" element={<CreateAccount />} />
+            <Route path="/mentee-portal" element={<MenteePortal />} />
+            <Route path="/admin-portal" element={<AdminPortal />} />
+            <Route path="/mentor-portal" element={<MentorPortal />} />
+            <Route path="/update-profile" element={<UpdateUserProfile />} />
+            <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"} />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/user-service-agreement" element={<UserServiceAgreement />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          </Routes>
+          <Footer />
+        </div>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

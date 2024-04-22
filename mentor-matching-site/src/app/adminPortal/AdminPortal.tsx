@@ -10,6 +10,8 @@ import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/F
 import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 
 import { getSettings, updateSettings } from '../../service/settingsService';
+import AuthenticatedView from '../common/auth/AuthenticatedView';
+import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
 
 
@@ -27,7 +29,7 @@ function AdminPortal(props: AdminPortalProps) {
   const [page, setPage] = useState(Pages.manageUsers.toString());
   const navigate = useNavigate();
 
-  
+
   const [isTitleRequired, setIsTitleRequired] = useState(true);
   const [isContentRequired, setIsContentRequired] = useState(true);
   const [isTypeRequired, setIsTypeRequired] = useState(true);
@@ -53,7 +55,7 @@ function AdminPortal(props: AdminPortalProps) {
     };
     fetchSettings();
   }, []);
-  
+
   useEffect(() => {
     const saveSettings = async () => {
       await updateSettings({
@@ -67,21 +69,26 @@ function AdminPortal(props: AdminPortalProps) {
   }, [isTitleRequired, isContentRequired, isTypeRequired, isAttachmentAllowed]);
 
   return (
-    <FeedbackSettingsContext.Provider value={{
-      isTitleRequired, setIsTitleRequired,
-      isContentRequired, setIsContentRequired,
-      isTypeRequired, setIsTypeRequired,
-      isAttachmentAllowed, setIsAttachmentAllowed
-    }}>
-    
-      <PortalNavigationBar selected={page} onNavChange={setPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
-      {/* <AdminPortalNav setPage={setPage} /> */}
-      {/* {page === Pages.manageUsers && <ManageUsers />}
+    <>
+      <AuthenticatedView>
+        <FeedbackSettingsContext.Provider value={{
+          isTitleRequired, setIsTitleRequired,
+          isContentRequired, setIsContentRequired,
+          isTypeRequired, setIsTypeRequired,
+          isAttachmentAllowed, setIsAttachmentAllowed
+        }}>
+
+          <PortalNavigationBar selected={page} onNavChange={setPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
+          {/* <AdminPortalNav setPage={setPage} /> */}
+          {/* {page === Pages.manageUsers && <ManageUsers />}
       {page === Pages.viewReports && <ViewReports />}
       {page === Pages.settings && <Settings />} */}
-      {page === Pages.userFeedback && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
-      
-      </FeedbackSettingsContext.Provider>
+          {page === Pages.userFeedback && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
+
+        </FeedbackSettingsContext.Provider>
+      </AuthenticatedView>
+      <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
+    </>
   );
 }
 
