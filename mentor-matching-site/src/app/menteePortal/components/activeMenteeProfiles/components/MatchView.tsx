@@ -1,4 +1,4 @@
-import { MatchProfileView, Message, MessageState } from "../../../../../types/matchProfile";
+import { MatchProfileView, MentorReply, Message, MessageState } from "../../../../../types/matchProfile";
 import { Box, Chip, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
 import React, { useState } from "react";
 import { DocItem } from "../../../../../types/types";
@@ -61,6 +61,7 @@ function MatchView({ profile, menteeUID, menteeProfileId, index, profileCount }:
       mentorUID: mentorUID,
       mentorProfileId: mentorProfileId,
       message: message,
+      mentorReply: MentorReply.awaiting,
       sentOn: Timestamp.now(),
     } as Message;
     await messagingService.sendMessage(newMessage);
