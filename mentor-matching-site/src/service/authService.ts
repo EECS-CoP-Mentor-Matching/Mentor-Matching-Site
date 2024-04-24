@@ -74,7 +74,6 @@ const authService = {
   signOut,
   waitForAuthState,
   deleteUserAccount // Added method
-
 }
 
 export default authService;

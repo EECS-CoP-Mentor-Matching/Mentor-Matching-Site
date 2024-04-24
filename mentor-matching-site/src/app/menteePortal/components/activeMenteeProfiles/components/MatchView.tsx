@@ -1,14 +1,10 @@
 import { MatchProfileView, MentorReply, Message, MessageState } from "../../../../../types/matchProfile";
 import { Box, Chip, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
 import React, { useState } from "react";
-import { DocItem } from "../../../../../types/types";
-import { MatchProfile } from "../../../../../types/matchProfile";
-import TextDisplay from "../../../../common/forms/textInputs/TextDisplay";
 import SubmitButton from "../../../../common/forms/buttons/SubmitButton";
 import ModalWrapper from "../../../../common/forms/modals/ModalWrapper";
 import { messagingService } from "../../../../../service/messagingService";
 import { Timestamp } from "firebase/firestore";
-import ReportUserModal from "../../../../reportUser/ReportUserModal";
 import ReportUser from "../../../../reportUser/ReportUser";
 
 interface MessageMentorState {
@@ -61,7 +57,7 @@ function MatchView({ profile, menteeUID, menteeProfileId, index, profileCount }:
       mentorUID: mentorUID,
       mentorProfileId: mentorProfileId,
       message: message,
-      mentorReply: MentorReply.awaiting,
+      mentorReply: MentorReply.awaiting.toString(),
       sentOn: Timestamp.now(),
     } as Message;
     await messagingService.sendMessage(newMessage);
