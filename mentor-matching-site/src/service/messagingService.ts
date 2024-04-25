@@ -13,12 +13,12 @@ async function getMessagesSentForMenteeProfile(mentorProfileId: string, menteePr
   return await messagingDb.getMessagesSentForMenteeProfileAsync(mentorProfileId, menteeProfileId);
 }
 
-async function getMessagesSentForMentor(mentorUID: string) {
-  return await messagingDb.getMessagesSentForMentorAsync(mentorUID);
-}
-
 async function getAwaitingMessagesSentForMentor(mentorUID: string) {
   return await messagingDb.getAwaitingMessagesSentForMentorAsync(mentorUID);
+}
+
+async function getProcessedMessagesSentForMentor(mentorUID: string) {
+  return await messagingDb.getProcessedMessagesSentForMentorAsync(mentorUID);
 }
 
 async function getMessagesSentByMentee(mentorUID: string) {
@@ -29,7 +29,7 @@ export const messagingService = {
   sendMessage,
   mentorReply,
   getMessagesSentForMenteeProfile,
-  getMessagesSentForMentor,
   getAwaitingMessagesSentForMentor,
+  getProcessedMessagesSentForMentor,
   getMessagesSentByMentee,
 }

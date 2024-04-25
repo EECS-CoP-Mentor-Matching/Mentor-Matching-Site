@@ -29,15 +29,16 @@ async function getMessagesSentForMenteeProfileAsync(mentorProfileId: string, men
     where("menteeProfileId", "==", menteeProfileId))).results;
 }
 
-async function getMessagesSentForMentorAsync(mentorUID: string) : Promise<DocItem<Message>[]> {
-  return (await queryMany<Message>(collectionName,
-      where("mentorUID", "==", mentorUID))).results;
-}
-
 async function getAwaitingMessagesSentForMentorAsync(mentorUID: string) : Promise<DocItem<Message>[]> {
   return (await queryMany<Message>(collectionName,
       where("mentorUID", "==", mentorUID),
       where("mentorReply", "==", MentorReply.awaiting.toString()))).results;
+}
+
+async function getProcessedMessagesSentForMentorAsync(mentorUID: string) : Promise<DocItem<Message>[]> {
+  return (await queryMany<Message>(collectionName,
+      where("mentorUID", "==", mentorUID),
+      where("mentorReply", "in", [MentorReply.accepted.toString(), MentorReply.denied.toString()]))).results;
 }
 
 async function getMessagesSentByMenteeAsync(menteeUID: string): Promise<DocItem<Message>[]> {
@@ -49,7 +50,7 @@ export const messagingDb = {
   sendMessageAsync,
   mentorReplyAsync,
   getMessagesSentForMenteeProfileAsync,
-  getMessagesSentForMentorAsync,
   getAwaitingMessagesSentForMentorAsync,
+  getProcessedMessagesSentForMentorAsync,
   getMessagesSentByMenteeAsync
 }
