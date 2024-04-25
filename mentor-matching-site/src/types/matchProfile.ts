@@ -11,6 +11,9 @@ export interface Message {
   mentorUID: string
   mentorProfileId: string
   message: string
+  mentorReply: string
+  technicalInterest: string
+  professionalInterest: string
   sentByUID: string
   sentOn: any
 }
