@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Button, Chip, Paper, Typography} from '@mui/material';
+import {Box, Button, Chip, ListItemText, Paper, Typography} from '@mui/material';
 import { DocItem } from "../../../types/types";
 import {Message} from "../../../types/matchProfile";
 
@@ -36,16 +36,19 @@ const MessageCard = ({
                 <Typography variant="subtitle1" gutterBottom>
                     Message from {message.data.sentByUID === message.data.menteeUID ? "Mentee" : "Mentor"}:
                 </Typography>
-                <Typography variant="body1" gutterBottom marginBottom={4}>
+                <Typography variant="body1" gutterBottom mb={2}>
                     {message.data.message}
                 </Typography>
-                <Box display="flex" gap={2} alignItems="center" marginBottom={2}>
-                    <Chip label={`Technical Interest: N/A`} color="primary" />
-                    <Chip label={`Professional Interest: N/A`} color="secondary" />
+
+                <Box display="flex" alignItems="center" mb={2} gap={1}>
+                    <Chip label={message.data.technicalInterest || "N/A"} color="secondary" />
+                    <Chip label={message.data.professionalInterest || "N/A"} color="secondary" />
                 </Box>
-                <Typography variant="body2" display="block" gutterBottom>
+
+                <Typography variant="caption" display="block" mb={2}>
                     Sent on: {sentOnDate.toLocaleDateString()} at {sentOnDate.toLocaleTimeString()}
                 </Typography>
+
                 <Box display="flex" gap={2} alignItems="center" mt={2}>
                     <Button variant="contained" color="primary" onClick={onAccept}>
                         Accept

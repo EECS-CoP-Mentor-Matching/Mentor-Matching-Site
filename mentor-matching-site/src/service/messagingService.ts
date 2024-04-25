@@ -1,8 +1,12 @@
 import { messagingDb } from "../dal/messagingDb"
-import { Message } from "../types/matchProfile";
+import {MentorReply, Message, MessageState} from "../types/matchProfile";
 
 async function sendMessage(message: Message) {
   return await messagingDb.sendMessageAsync(message);
+}
+
+async function mentorReply(docId: string, message: Message, reply: MentorReply) {
+  return await messagingDb.mentorReplyAsync(docId, message, reply);
 }
 
 async function getMessagesSentForMenteeProfile(mentorProfileId: string, menteeProfileId: string) {
@@ -13,13 +17,19 @@ async function getMessagesSentForMentor(mentorUID: string) {
   return await messagingDb.getMessagesSentForMentorAsync(mentorUID);
 }
 
+async function getAwaitingMessagesSentForMentor(mentorUID: string) {
+  return await messagingDb.getAwaitingMessagesSentForMentorAsync(mentorUID);
+}
+
 async function getMessagesSentByMentee(mentorUID: string) {
   return await messagingDb.getMessagesSentByMenteeAsync(mentorUID);
 }
 
 export const messagingService = {
   sendMessage,
+  mentorReply,
   getMessagesSentForMenteeProfile,
   getMessagesSentForMentor,
-  getMessagesSentByMentee
+  getAwaitingMessagesSentForMentor,
+  getMessagesSentByMentee,
 }
