@@ -13,6 +13,8 @@ import { getSettings, updateSettings } from '../../service/settingsService';
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
+import ViewReports from '../adminPortal/components/viewReports/ViewReports';
+
 
 
 export enum Pages {
@@ -80,9 +82,9 @@ function AdminPortal(props: AdminPortalProps) {
 
           <PortalNavigationBar selected={page} onNavChange={setPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
           {/* <AdminPortalNav setPage={setPage} /> */}
-          {/* {page === Pages.manageUsers && <ManageUsers />}
+          {/* {page === Pages.manageUsers && <ManageUsers />*/}
       {page === Pages.viewReports && <ViewReports />}
-      {page === Pages.settings && <Settings />} */}
+      {/*page === Pages.settings && <Settings />} */}
           {page === Pages.userFeedback && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
 
         </FeedbackSettingsContext.Provider>
