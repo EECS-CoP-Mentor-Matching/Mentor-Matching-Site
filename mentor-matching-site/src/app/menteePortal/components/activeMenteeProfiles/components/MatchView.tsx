@@ -58,6 +58,8 @@ function MatchView({ profile, menteeUID, menteeProfileId, index, profileCount }:
       mentorProfileId: mentorProfileId,
       message: message,
       mentorReply: MentorReply.awaiting.toString(),
+      technicalInterest: profile.mentorProfile.data.technicalInterest,
+      professionalInterest: profile.mentorProfile.data.professionalInterest,
       sentOn: Timestamp.now(),
     } as Message;
     await messagingService.sendMessage(newMessage);

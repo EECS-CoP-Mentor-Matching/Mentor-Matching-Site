@@ -6,9 +6,10 @@ import ActiveProfiles from "./components/ActiveProfiles";
 import MentorMatches from "./components/MentorMatches";
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
+import MentorMatchHistory from "./components/MentorMatchHistory";
 
 function MentorPortal() {
-  const navItems = ['Create Profile', 'Active Profiles', 'Matches'];
+  const navItems = ['Create Profile', 'Active Profiles', 'Matches', 'Match History'];
   const [selectedTab, setSelectedTab] = useState('Create Profile');
   const handleNavChange = (newValue: string) => {
     setSelectedTab(newValue);
@@ -20,8 +21,10 @@ function MentorPortal() {
         return <CreateMentorProfile />;
       case 'Active Profiles':
         return <ActiveProfiles />;
-      default:
+      case 'Matches':
         return <MentorMatches />;
+      default:
+        return <MentorMatchHistory />;
     }
   };
 

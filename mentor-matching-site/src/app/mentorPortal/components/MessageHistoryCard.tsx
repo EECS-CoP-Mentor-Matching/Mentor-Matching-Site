@@ -1,18 +1,14 @@
 import React from 'react';
 import {Box, Button, Chip, ListItemText, Paper, Typography} from '@mui/material';
 import { DocItem } from "../../../types/types";
-import {Message} from "../../../types/matchProfile";
+import {MentorReply, Message} from "../../../types/matchProfile";
 
 interface MessageCardProps {
-    message: DocItem<Message>,
-    onAccept: (event : React.MouseEvent<HTMLElement>) => void,
-    onDecline: (event : React.MouseEvent<HTMLElement>) => void
+    message: DocItem<Message>
 }
 
-const MessageCard = ({
+const MessageHistoryCard = ({
                          message,
-                         onAccept,
-                         onDecline
                      }: MessageCardProps) => {
 
     const cardStyle = {
@@ -50,16 +46,11 @@ const MessageCard = ({
                 </Typography>
 
                 <Box display="flex" gap={2} alignItems="center" mt={2}>
-                    <Button variant="contained" color="primary" onClick={onAccept}>
-                        Accept
-                    </Button>
-                    <Button variant="contained" color="secondary" onClick={onDecline}>
-                        Decline
-                    </Button>
+                    Status: {MentorReply[parseInt(message.data.mentorReply, 10)]}
                 </Box>
             </Box>
         </Paper>
     );
 };
 
-export default MessageCard;
+export default MessageHistoryCard;
