@@ -19,6 +19,11 @@ const ContactUs = () => {
           <p><strong>Ariel Meshorer</strong> <a href="mailto:meshorea@oregonstate.edu">meshorea@oregonstate.edu</a></p>
         </div>
       </section>
+      <h2>Meet Our Project Partner</h2>
+        <p>Our project partner oversaw and guided this project. Feel free to reach out to her if you need help navigating the site:</p>
+        <div className="partner-list">
+          <p><strong>Dr Rachael Cate</strong> <a href="mailto:rachael.cate@oregonstate.edu">rachael.cate@oregonstate.edu</a></p>
+        </div>
     </div>
   );
 }
