@@ -48,3 +48,9 @@
     text-decoration: underline; /* Adds underline on hover/focus for accessibility */
 }
 
+ /* Styling for partner list to remove bullets and improve spacing */
+ .partner-list p {
+  margin: 10px 0; /* Adds spacing between each entry */
+  padding-left: 0; /* Adjusts padding for alignment */
+  font-weight: bold; /* Makes the names bold */
+}
