@@ -9,6 +9,8 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateEmail } from "../../redux/reducers/userProfileReducer";
 import ErrorMessage, { ErrorState } from "../common/forms/ErrorMessage";
 import FormHeader from "../common/forms/layout/FormHeader";
+import DocuSignButton from './components/DocuSign/DocuSignButton';
+
 
 enum Step {
   CheckEmail,
@@ -71,6 +73,7 @@ function CreateAccount() {
         {currentStep === Step.NewUser && <>
           <FormLabel></FormLabel>
           <NewUserProfile />
+          <DocuSignButton />   {/* Added the DocuSignButton here */}
         </>}
         {currentStep === Step.UserExists && <>
           <FormHeader>User already exists with this email</FormHeader>

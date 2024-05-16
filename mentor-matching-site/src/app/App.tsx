@@ -22,6 +22,7 @@ import { updateProfile } from '../redux/reducers/userProfileReducer';
 import { useAppDispatch } from '../redux/hooks';
 import authService from '../service/authService';
 import userService from '../service/userService';
+import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton'; 
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
             <Route path="/user-service-agreement" element={<UserServiceAgreement />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
             <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/docusign" element={<DocuSignButton />} />
           </Routes>
           <Footer />
         </div>
