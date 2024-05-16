@@ -10,9 +10,10 @@ import { reportUserService } from "../../service/reportUserService";
 import { Timestamp } from "firebase/firestore";
 
 interface ReportUserModalProps {
-  reportedForUID: string,
+  reportedForUID: string
   showModal: boolean
   setIsOpen: (open: boolean) => void
+  onReport?: (reportedForUID: string) => void
 }
 
 function createOption(label: string, id: string): DropDownOption {
@@ -22,7 +23,7 @@ function createOption(label: string, id: string): DropDownOption {
   } as DropDownOption
 }
 
-function ReportUserModal({ reportedForUID, showModal, setIsOpen }: ReportUserModalProps) {
+function ReportUserModal({ reportedForUID, showModal, setIsOpen, onReport }: ReportUserModalProps) {
   const [message, setMessage] = useState("");
   const [reason, setReason] = useState<ReportUserReasons>(ReportUserReasons.notSelected);
   const selector = useAppSelector;
@@ -38,6 +39,9 @@ function ReportUserModal({ reportedForUID, showModal, setIsOpen }: ReportUserMod
         reportedOn: Timestamp.now()
       });
       setIsOpen(false);
+    }
+    if (onReport !== undefined) {
+      onReport(reportedForUID);
     }
   }
 

@@ -19,14 +19,14 @@ interface MatchViewProps {
   menteeProfileId: string
   index: number
   profileCount: number
+  onReport: (reportedForUID: string) => void
 }
 
-function MatchView({ profile, menteeUID, menteeProfileId, index, profileCount }: MatchViewProps) {
+function MatchView({ profile, menteeUID, menteeProfileId, index, profileCount, onReport }: MatchViewProps) {
   const [messageMentorPopup, setMessageMentorPopup] = useState<MessageMentorState>({ showModal: false, selectedMentorId: '', messageState: MessageState.noMessagesSent });
   const [message, setMessage] = useState("");
 
   const getMessageButtonText = (state: MessageState): string => {
-    console.log(state)
     if (state === MessageState.awaitingReply) {
       return "Message Sent"
     }
@@ -63,7 +63,8 @@ function MatchView({ profile, menteeUID, menteeProfileId, index, profileCount }:
       sentOn: Timestamp.now(),
     } as Message;
     await messagingService.sendMessage(newMessage);
-    setMessageMentorPopup({ showModal: false, selectedMentorId: mentorProfileId, messageState: MessageState.awaitingReply })
+    setMessageMentorPopup({ showModal: false, selectedMentorId: mentorProfileId, messageState: MessageState.awaitingReply });
+    profile.messageState = MessageState.awaitingReply;
   }
 
   return (
@@ -73,7 +74,7 @@ function MatchView({ profile, menteeUID, menteeProfileId, index, profileCount }:
           <Box paddingRight={4}>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
               <ListItemText primary={`Match #${index + 1}`} />
-              <ReportUser reportedForUID={profile.mentorProfile.data.UID} />
+              <ReportUser onReport={onReport} reportedForUID={profile.mentorProfile.data.UID} />
             </Box>
             <ListItemText secondary={"Technical Interest"} />
             <Box gap={2} display="flex" alignItems="center" paddingLeft='15px' >

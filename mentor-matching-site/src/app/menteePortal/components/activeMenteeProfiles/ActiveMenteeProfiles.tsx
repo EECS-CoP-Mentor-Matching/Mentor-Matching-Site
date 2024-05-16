@@ -53,7 +53,6 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
     let matchProfileViews = [] as MatchProfileView[];
     for (const profile of matchProfiles) {
       const messages = await messagingService.getMessagesSentForMenteeProfile(profile.docId, menteeProfileId);
-      console.log(menteeProfileId)
       let messageState = MessageState.replyReceived;
       if (messages.length !== 0) {
         messageState = MessageState.awaitingReply;

@@ -7,17 +7,18 @@ import { Flag } from "@mui/icons-material";
 
 interface ReportUserProps {
   reportedForUID: string
+  onReport?: (reportedForUID: string) => void
 }
 
-function ReportUser({ reportedForUID }: ReportUserProps) {
+function ReportUser({ reportedForUID, onReport }: ReportUserProps) {
   const [showModal, setShowModal] = useState(false);
-
+  
   return (
     <>
-      <WarningButton text="" onClick={() => { setShowModal(!showModal); }} widthMulti={.01}>
+      <WarningButton text="" onClick={() => {setShowModal(!showModal);}} widthMulti={.01}>
         <Flag sx={{ height: '1rem', width: '1rem' }} />
       </WarningButton>
-      <ReportUserModal reportedForUID={reportedForUID} showModal={showModal} setIsOpen={setShowModal} />
+      <ReportUserModal onReport={onReport} reportedForUID={reportedForUID} showModal={showModal} setIsOpen={setShowModal} />
     </>
 
   );

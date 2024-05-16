@@ -5,6 +5,7 @@ import { messagingService } from "../../../../service/messagingService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { DocItem } from "../../../../types/types";
 import { Message } from "../../../../types/matchProfile";
+import ViewMenteeMessage from "./components/ViewMenteeMessage";
 
 interface MenteeMessagesProps {
   backToPage: () => void
@@ -26,7 +27,7 @@ function MenteeMessages({ backToPage }: MenteeMessagesProps) {
     getMessages();
   }, [setMenteeMessages])
 
-  const displayStyle = {}
+  
 
   return (
     <ContentContainer title="Messages">
@@ -34,17 +35,7 @@ function MenteeMessages({ backToPage }: MenteeMessagesProps) {
         <Box>
           <List>
             {menteeMessages.map((message, index) => (
-              <React.Fragment key={message.docId}>
-                <Paper elevation={2} style={{ ...displayStyle }}>
-                  <ListItem sx={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'flex-start' }}>
-                    <Box display='flex' flexDirection='column' alignItems='center' width='100%' justifyContent='flex-end'>
-                      <ListItemText primary={`Message #${index + 1}`} secondary={message.data.message} />
-                      <ListItemText primary={'awaiting reply from mentor'} />
-                    </Box>
-                  </ListItem>
-                  {index < menteeMessages.length - 1 && <Divider />}
-                </Paper>
-              </React.Fragment>
+              <ViewMenteeMessage message={message} index={index} messagesLength={menteeMessages.length}/>
             ))}
           </List>
         </Box>
