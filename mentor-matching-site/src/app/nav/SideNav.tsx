@@ -15,9 +15,10 @@ function SideNav() {
       <button className="closebtn" onClick={closeNav}>&times;</button>
       <div className="side-nav-items">
         <a href="/" style={{ paddingTop: '2rem' }}>{osuIcon}</a>
-        <AuthenticatedView>
-          <a href="/mentee-portal">Mentee Portal</a>
-          <a href="/mentor-portal">Mentor Portal</a>
+        <AuthenticatedView
+          mentee={<a href="/mentee-portal">Mentee Portal</a>}
+          mentor={<a href="/mentor-portal">Mentor Portal</a>}
+      >
           <a href="/admin-portal">Admin Portal</a>
           <a href="/update-profile">Update Profile</a>
         </AuthenticatedView>

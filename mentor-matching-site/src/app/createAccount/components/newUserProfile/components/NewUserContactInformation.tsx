@@ -2,7 +2,7 @@ import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
 import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
 import { useAppSelector } from "../../../../../redux/hooks";
-import { updateDisplayName, updatePronouns, updateTimeZone } from "../../../../../redux/reducers/userProfileReducer";
+import { updateDisplayName, updateRole, updatePronouns, updateTimeZone } from "../../../../../redux/reducers/userProfileReducer";
 import SelectTimeZone from "../../../../userProfileCommon/dropdowns/SelectTimeZone";
 import FormHeader from "../../../../common/forms/layout/FormHeader";
 
