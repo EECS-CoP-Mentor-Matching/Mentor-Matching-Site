@@ -1,8 +1,9 @@
 import { DocItem } from "./types"
 
-export enum MatchProfileType {
-  Mentee,
-  Mentor
+export enum MatchRole {
+  mentee = "Mentee",
+  mentor = "Mentor",
+  both = "Both"
 }
 
 export interface Message {

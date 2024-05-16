@@ -49,6 +49,7 @@ export const userProfileSlice = createSlice({
     updateMentorPortalEnabled: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.mentorPortalEnabled = action.payload; },
     // user preferences 
     updateUserPreferences: (state, action: PayloadAction<UserPreferences>) => { state.userProfile.preferences = action.payload; },
+    updateRole: (state, action: PayloadAction<string>) => { state.userProfile.preferences.role = action.payload; },
     updateUseRacialIdentityForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.preferences.useRacialIdentityForMatching = action.payload; },
     updateUseLgbtqPlusCommunityForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.preferences.useLgbtqPlusCommunityForMatching = action.payload; },
     // profile image
@@ -64,7 +65,7 @@ export const {
   // update demographics
   updateDemographicInformation, updateLgbtqPlus, updateRacialIdentity,
   // update contact information
-  updateContactInformation, updateDisplayName, updateEmail, updateTimeZone, updatePronouns, updateUserBio,
+  updateContactInformation, updateDisplayName, updateRole, updateEmail, updateTimeZone, updatePronouns, updateUserBio,
   // education information
   updateEducationInformation, updateHighestLevelOfEducation, updateDegreeProgram, updateStudentStatus,
   // account settings

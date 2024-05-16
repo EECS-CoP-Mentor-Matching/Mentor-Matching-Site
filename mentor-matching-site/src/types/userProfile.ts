@@ -30,6 +30,7 @@ export const initUserProfile = () => {
 }
 
 export interface UserPreferences {
+  role: string
   useRacialIdentityForMatching: boolean
   useLgbtqPlusCommunityForMatching: boolean
 }
@@ -54,6 +55,7 @@ export const initUserContactInformation = () => {
     email: "",
     timeZone: "",
     displayName: "",
+    role: "",
     pronouns: "",
     userBio: ""
   } as UserContactInformation
@@ -76,6 +78,7 @@ export const initUserPersonalInformation = () => {
 }
 
 export interface UserDemographicInformation {
+  role: string
   racialIdentity: string
   lgbtqPlusCommunity: boolean
 }
