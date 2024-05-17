@@ -3,6 +3,7 @@ import { MatchProfile } from "../types/matchProfile";
 import mentorDb from "../dal/mentorDb";
 import { DocItem } from "../types/types";
 
+
 async function searchMentorsByProfileMatch(menteeUserProfileId: string, userProfile: UserProfile): Promise<DocItem<MatchProfile>[]> {
   return await mentorDb.searchMentorsByProfileMatchAsync(menteeUserProfileId, userProfile);
 }
@@ -22,10 +23,15 @@ async function searchMentorProfilesByUser(UID: string) {
   return await mentorDb.searchMentorProfilesByUserAsync(UID);
 }
 
+async function getAllMentorProfiles() {
+  return await mentorDb.getAllMentorProfilesAsync();
+}
+
 export const mentorService = {
   searchMentorsByProfileMatch,
   createMentorProfile,
   editMentorProfile,
   deleteMentorProfile,
-  searchMentorProfilesByUser
+  searchMentorProfilesByUser,
+  getAllMentorProfiles
 }

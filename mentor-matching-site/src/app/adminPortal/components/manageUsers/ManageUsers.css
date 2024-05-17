@@ -1,0 +1,49 @@
+.report-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 10px;
+    max-width: 1000px;
+}
+
+.report-map {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.view-report {
+    list-style-type: none;
+    margin: 0;
+    padding: 20px;
+    border: darkgray 1px solid;
+    border-radius: 10px;
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+    align-items: flex-start;
+    background-color: #f9f9f9;
+}
+
+.view-report strong {
+    color: #333;
+}
+
+.search-sort-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-sort-item {
+    padding: 5px;
+    width: 200px;
+}

@@ -17,11 +17,16 @@ async function deleteMenteeProfileById(menteeProfileId: string) {
   return await menteeDb.deleteMenteeProfileByIdAsync(menteeProfileId);
 }
 
+async function getAllMenteeProfiles() {
+  return await menteeDb.getAllMenteeProfilesAsync();
+}
+
 const menteeService = {
   createMenteeProfile,
   searchMenteeProfilesByUser,
   searchMenteeProfileById,
-  deleteMenteeProfileById
+  deleteMenteeProfileById,
+  getAllMenteeProfiles
 }
 
 export default menteeService;

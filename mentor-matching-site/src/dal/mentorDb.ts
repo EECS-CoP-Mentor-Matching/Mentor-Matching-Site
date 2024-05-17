@@ -9,6 +9,10 @@ import userService from "../service/userService";
 
 const collectionName = 'mentorProfile';
 
+async function getAllMentorProfilesAsync(): Promise<DocItem<MatchProfile>[]> {
+  return (await queryMany<MatchProfile>(collectionName)).results;
+}
+
 async function searchMentorsByProfileMatchAsync(menteeUserProfileId: string, userProfile: UserProfile): Promise<DocItem<MatchProfile>[]> {
   const menteeMatchProfile = (await menteeService.searchMenteeProfileById(menteeUserProfileId)).data;
 
@@ -108,7 +112,8 @@ const mentorDb = {
   createMentorProfileAsync,
   editMentorProfileAsync,
   deleteMentorProfileAsync,
-  searchMentorProfilesByUserAsync
+  searchMentorProfilesByUserAsync,
+  getAllMentorProfilesAsync
 };
 
 export default mentorDb;

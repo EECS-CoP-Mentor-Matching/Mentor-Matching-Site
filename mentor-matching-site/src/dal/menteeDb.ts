@@ -4,7 +4,12 @@ import { DocItem } from "../types/types";
 import { where } from "firebase/firestore";
 import { ConflictError } from "../types/types";
 
+
 const collectionName = 'menteeProfile';
+
+async function getAllMenteeProfilesAsync(): Promise<DocItem<MatchProfile>[]> {
+  return (await queryMany<MatchProfile>(collectionName)).results;
+}
 
 async function createMenteeProfileAsync(menteeProfile: MatchProfile) {
   const activeProfiles = (await queryMany<MatchProfile>(collectionName, where('UID', '==', menteeProfile.UID))).results;
@@ -37,7 +42,8 @@ const menteeDb = {
   createMenteeProfileAsync,
   searchMenteeProfilesByUserAsync,
   searchMenteeProfileByIdAsync,
-  deleteMenteeProfileByIdAsync
+  deleteMenteeProfileByIdAsync,
+  getAllMenteeProfilesAsync
 }
 
 export default menteeDb;
