@@ -37,16 +37,45 @@ async function createNewUserAsync(user: User, userProfile: UserProfile): Promise
 }
 
 async function deleteUserProfileAsync(uid: string) {
-  const db = getFirestore(app); // Ensure you have initialized Firestore
-  const userDocRef = doc(db, "users", uid); // Assuming user profiles are stored in a "users" collection
+  const db = getFirestore(app);
+  const userDocRef = doc(db, "users", uid);
+  const matchHistoryCollection = collection(db, `users/${uid}/matchHistory`);
+  const messagesCollection = collection(db, `users/${uid}/messages`);
+  const reportsCollection = collection(db, "reports");
 
-  return deleteDoc(userDocRef).then(() => {
-    console.log(`UserProfile with UID ${uid} deleted successfully.`);
-  }).catch((error) => {
-    console.error('Error deleting user profile:', error);
-    throw error;
+  // Delete user document
+  await deleteDoc(userDocRef);
+
+  // Delete user match history
+  const matchHistorySnapshot = await getDocs(matchHistoryCollection);
+  matchHistorySnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
   });
+
+  // Delete user messages
+  const messagesSnapshot = await getDocs(messagesCollection);
+  messagesSnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
+  });
+
+  // Preserve reports and block data
+  const reportsSnapshot = await getDocs(reportsCollection);
+  reportsSnapshot.forEach(async (reportDoc) => {
+    const reportData = reportDoc.data();
+    if (reportData.userUID === uid) {
+      // Modify the report to anonymize user data or mark it as deleted
+      await updateDoc(reportDoc.ref, { userUID: "deleted", userData: null });
+    }
+  });
+
+  // Delete user from authentication
+  const auth = getAuth();
+  const user = await auth.getUser(uid);
+  await deleteUser(user);
+
+  console.log(`UserProfile with UID ${uid} and related data deleted successfully.`);
 }
+
 
 async function userExistsAsync(email: string): Promise<boolean> {
   const conditions = [];
