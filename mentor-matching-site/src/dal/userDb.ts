@@ -69,9 +69,9 @@ async function deleteUserProfileAsync(uid: string) {
   });
 
   // Delete user from authentication
-  const auth = getAuth();
-  const user = await auth.getUser(uid);
-  await deleteUser(user);
+  // const auth = getAuth();
+  // const user = await auth.getUser(uid);
+  // await deleteUser(user);
 
   console.log(`UserProfile with UID ${uid} and related data deleted successfully.`);
 }
