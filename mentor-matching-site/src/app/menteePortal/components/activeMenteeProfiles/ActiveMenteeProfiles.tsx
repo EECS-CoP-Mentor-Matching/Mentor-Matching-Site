@@ -26,6 +26,7 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
   const [matches, setMatches] = useState<MatchProfileView[] | undefined>()
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [editingProfile, setEditingProfile] = useState<DocItem<MatchProfile>>();
+  const [editing, setEditing] = useState(false);
   const [userID, setUserID] = useState("");
   const [menteeProfileId, setMenteeProfileId] = useState("");
 
@@ -95,6 +96,7 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
 
   const editProfile = (profile: DocItem<MatchProfile>) => {
     setEditingProfile(profile);
+    setEditing(true);
   }
 
   const profileItemStyle = {
@@ -105,6 +107,19 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
     marginLeft: 'auto',
     marginRight: 'auto'
   };
+
+  const updateProfileState = (updatedProfile: DocItem<MatchProfile>) => {
+    const updatedProfiles = Array<DocItem<MatchProfile>>();
+    menteeProfiles.forEach(profile => {
+      if (profile.docId == updatedProfile.docId) {
+        updatedProfiles.push(updatedProfile);
+      }
+      else {
+        updatedProfiles.push(profile);
+      }
+    });
+    setMenteeProfiles(updatedProfiles);
+  }
 
   return (
     <>
@@ -145,7 +160,7 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
             <ViewMatches matchProfiles={matches} menteeUID={userID} menteeProfileId={menteeProfileId} />
           }
           {editingProfile !== undefined &&
-            <EditProfile matchProfile={editingProfile} />
+            <EditProfile matchProfile={editingProfile} updateProfileState={updateProfileState} editing={editing} setEditing={setEditing} />
           }
           {menteeProfiles.length === 0 && <Box display="flex" flexDirection="column">
             <p>No profiles found. Please create a new profile!</p>
