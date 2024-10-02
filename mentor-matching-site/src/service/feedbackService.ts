@@ -5,7 +5,8 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import c
 
 interface FeedbackData {
   id?: string;
-  userEmail: string;
+  UID: string;
+  userEmail: string | null;
   feedbackType: string;
   feedbackTitle: string;
   feedbackContent: string;
@@ -23,7 +24,8 @@ async function submitFeedback(feedbackData: FeedbackData, attachment?: File): Pr
     let attachmentUrl: string | undefined;
 
     if (attachment) {
-      const storageRef = ref(storage, `attachments/${Date.now()}_${attachment.name}`);
+      const storageRef = ref(storage,
+          `${feedbackData.UID}/attachments/${Date.now()}_${attachment.name}`);
       await uploadBytes(storageRef, attachment);
       attachmentUrl = await getDownloadURL(storageRef);
     }

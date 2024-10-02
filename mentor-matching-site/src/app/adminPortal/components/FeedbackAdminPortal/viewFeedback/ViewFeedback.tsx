@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import feedbackService from '../../../../../service/feedbackService'
 
-import './../../submitFeedback/SubmitFeedback.css';
+import './../submitFeedback/SubmitFeedback.css';
 import './ViewFeedback.css';
 
 interface FeedbackEntry {
   id?: string;
-  userEmail: string;
+  UID: string;
+  userEmail: string | null;
   feedbackType: string;
   feedbackTitle: string;
   feedbackContent: string;

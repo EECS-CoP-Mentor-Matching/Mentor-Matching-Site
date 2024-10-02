@@ -7,11 +7,10 @@ async function updateProfileImageUrl(uid: string, imageUrl: string) {
 }
 
 async function createNewUser(user: User, userProfile: UserProfile) {
-  userDb.createNewUserAsync(user, userProfile);
+  await userDb.createNewUserAsync(user, userProfile);
 }
 
 async function deleteUserProfile(uid: string) {
-  // Assuming userDb has a deleteUserProfileAsync method to delete Firestore data
   return await userDb.deleteUserProfileAsync(uid).then(() => {
     console.log('User profile deleted successfully.');
   }).catch((error) => {
@@ -19,6 +18,7 @@ async function deleteUserProfile(uid: string) {
     throw error;
   });
 }
+
 
 async function getUserProfile(uid: string): Promise<UserProfile> {
   return await userDb.getUserProfileAsync(uid);

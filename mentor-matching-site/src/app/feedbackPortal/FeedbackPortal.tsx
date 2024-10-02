@@ -5,27 +5,25 @@ import authService from '../../service/authService';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 
-import SubmitFeedback from './components/submitFeedback/SubmitFeedback';
-import ViewFeedback from './components/FeedbackAdminPortal/viewFeedback/ViewFeedback';
-import FeedbackSettings from './components/FeedbackAdminPortal/FeedbackSettings/FeedbackSettings';
-import FeedbackAdminPortal from './components/FeedbackAdminPortal/FeedbackAdminPortal';
+import SubmitFeedback from '../adminPortal/components/FeedbackAdminPortal/submitFeedback/SubmitFeedback';
+import ViewFeedback from '../adminPortal/components/FeedbackAdminPortal/viewFeedback/ViewFeedback';
+import FeedbackSettings from '../adminPortal/components/FeedbackSettings/FeedbackSettings';
+import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/FeedbackAdminPortal';
 
-import { FeedbackSettingsContext } from './components/FeedbackAdminPortal/FeedbackSettings/FeedbackSettingsContext';
+import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 
 import React from 'react';
+import AuthenticatedView from '../common/auth/AuthenticatedView';
+import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
 export enum FeedbackPages {
   submitFeedback = 'Submit Feedback',
- // viewFeedback = 'View Feedback',
- // settings = 'Settings',
-  feedbackAdminPortal = 'Admin Portal'
+  // viewFeedback = 'View Feedback',
+  // settings = 'Settings',
+  // feedbackAdminPortal = 'Admin Portal'
 }
 
-interface FeedbackPortalProps {
-  userEmail: string; // Assuming the user's email is available
-}
-
-function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
+function FeedbackPortal() {
   const [page, setPage] = useState(FeedbackPages.submitFeedback.toString());
   const navigate = useNavigate();
 
@@ -45,25 +43,30 @@ function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
   }, [navigate]);
 
   return (
-    <FeedbackSettingsContext.Provider value={{
-      isTitleRequired, setIsTitleRequired,
-      isContentRequired, setIsContentRequired,
-      isTypeRequired, setIsTypeRequired,
-      isAttachmentAllowed, setIsAttachmentAllowed
-    }}>
-      <PortalNavigationBar
-        selected={page}
-        onNavChange={setPage}
-        navItems={navUtilities.navItemsFromEnum(FeedbackPages)}
-      />
-      
-      {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback userEmail={userEmail} /> </div>}
-      {/*
-      {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
-      {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}
-  */}
-      {page === FeedbackPages.feedbackAdminPortal && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
-    </FeedbackSettingsContext.Provider>
+    <>
+      <AuthenticatedView>
+        <FeedbackSettingsContext.Provider value={{
+          isTitleRequired, setIsTitleRequired,
+          isContentRequired, setIsContentRequired,
+          isTypeRequired, setIsTypeRequired,
+          isAttachmentAllowed, setIsAttachmentAllowed
+        }}>
+          <PortalNavigationBar
+            selected={page}
+            onNavChange={setPage}
+            navItems={navUtilities.navItemsFromEnum(FeedbackPages)}
+          />
+
+          {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback /> </div>}
+          {/*
+        {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
+        {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}
+    */}
+          {/*page === FeedbackPages.feedbackAdminPortal && <div className="feedback-portal"><FeedbackAdminPortal /></div>*/}
+        </FeedbackSettingsContext.Provider>
+      </AuthenticatedView>
+      <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
+    </>
   );
 }
 

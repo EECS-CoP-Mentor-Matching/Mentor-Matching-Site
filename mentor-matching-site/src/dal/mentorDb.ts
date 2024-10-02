@@ -1,13 +1,15 @@
 import { MatchProfile } from "../types/matchProfile";
 import { UserProfile } from "../types/userProfile";
 import { db } from "../firebaseConfig";
-import { collection, addDoc, where, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, where, doc, deleteDoc, updateDoc, query } from "firebase/firestore";
 import { queryMany, querySingle } from "./commonDb";
-import { DocItem } from "../types/types";
+import { DocItem, UserReport } from "../types/types";
 import menteeService from "../service/menteeService";
 import userService from "../service/userService";
+import { reportUserService } from "../service/reportUserService";
 
 const collectionName = 'mentorProfile';
+const userReportsCollectionName = 'userReports'
 
 async function searchMentorsByProfileMatchAsync(menteeUserProfileId: string, userProfile: UserProfile): Promise<DocItem<MatchProfile>[]> {
   const menteeMatchProfile = (await menteeService.searchMenteeProfileById(menteeUserProfileId)).data;
@@ -20,12 +22,19 @@ async function searchMentorsByProfileMatchAsync(menteeUserProfileId: string, use
 
   const interestsResults = (await queryMany<MatchProfile>(collectionName, ...interestsConditions)).results;
 
-  // filter by experience level
+  const reportedUsersConditions = [];
+  reportedUsersConditions.push(where("reportedByUID", "==", userProfile.UID));
+  const reportedUsers = (await queryMany<UserReport>(userReportsCollectionName, ...reportedUsersConditions));
+  
+  // filter by experience level and not in reported users list
   const interestsMatches = new Array<DocItem<MatchProfile>>();
   interestsResults.forEach(result => {
     const match = result.data;
-    if (match.technicalExperience > menteeMatchProfile.technicalExperience &&
-      match.professionalExperience > menteeMatchProfile.professionalExperience) {
+    const notReported = !reportUserService.containsReportedUserID(reportedUsers.results, match.UID);
+    const matchTechnicalInterests = match.technicalExperience > menteeMatchProfile.technicalExperience;
+    const matchProfessionalExperience = match.professionalExperience > menteeMatchProfile.professionalExperience;
+    
+    if (notReported && matchTechnicalInterests && matchProfessionalExperience) {
       interestsMatches.push({
         docId: result.docId,
         data: match

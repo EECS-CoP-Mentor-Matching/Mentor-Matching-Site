@@ -8,12 +8,13 @@ import { MatchProfile, MatchProfileView, MessageState, initMatchProfile } from "
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 import DeleteButton from "../../../common/forms/buttons/DeleteButton";
 import EditButton from "../../../common/forms/buttons/EditButton";
-import ViewMatchesButton from "./ViewMatchesButton";
-import ViewMatches from "./viewMatches/ViewMatches";
+import ViewMatchesButton from "./components/ViewMatchesButton";
+import ViewMatches from "./components/ViewMatches";
 import userService from "../../../../service/userService";
 import { mentorService } from "../../../../service/mentorService";
-import EditProfile from "./editProfile/EditProfile";
+import EditProfile from "./components/EditProfile";
 import { messagingService } from "../../../../service/messagingService";
+import ReportUser from "../../../reportUser/ReportUser";
 
 interface ActiveMenteeProfilesProps {
   backToPage: () => any
@@ -25,6 +26,7 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
   const [matches, setMatches] = useState<MatchProfileView[] | undefined>()
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [editingProfile, setEditingProfile] = useState<DocItem<MatchProfile>>();
+  const [editing, setEditing] = useState(false);
   const [userID, setUserID] = useState("");
   const [menteeProfileId, setMenteeProfileId] = useState("");
 
@@ -52,20 +54,19 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
     let matchProfileViews = [] as MatchProfileView[];
     for (const profile of matchProfiles) {
       const messages = await messagingService.getMessagesSentForMenteeProfile(profile.docId, menteeProfileId);
-      console.log(menteeProfileId)
       let messageState = MessageState.replyReceived;
       if (messages.length !== 0) {
         messageState = MessageState.awaitingReply;
       }
       else {
-        messageState = MessageState.noMessagesSent;  
+        messageState = MessageState.noMessagesSent;
       }
       matchProfileViews.push({
         mentorProfile: profile,
         messageState: messageState
-      } as MatchProfileView); 
+      } as MatchProfileView);
     }
-    
+
     return matchProfileViews;
   }
 
@@ -95,6 +96,7 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
 
   const editProfile = (profile: DocItem<MatchProfile>) => {
     setEditingProfile(profile);
+    setEditing(true);
   }
 
   const profileItemStyle = {
@@ -105,6 +107,19 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
     marginLeft: 'auto',
     marginRight: 'auto'
   };
+
+  const updateProfileState = (updatedProfile: DocItem<MatchProfile>) => {
+    const updatedProfiles = Array<DocItem<MatchProfile>>();
+    menteeProfiles.forEach(profile => {
+      if (profile.docId == updatedProfile.docId) {
+        updatedProfiles.push(updatedProfile);
+      }
+      else {
+        updatedProfiles.push(profile);
+      }
+    });
+    setMenteeProfiles(updatedProfiles);
+  }
 
   return (
     <>
@@ -145,7 +160,7 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
             <ViewMatches matchProfiles={matches} menteeUID={userID} menteeProfileId={menteeProfileId} />
           }
           {editingProfile !== undefined &&
-            <EditProfile matchProfile={editingProfile} />
+            <EditProfile matchProfile={editingProfile} updateProfileState={updateProfileState} editing={editing} setEditing={setEditing} />
           }
           {menteeProfiles.length === 0 && <Box display="flex" flexDirection="column">
             <p>No profiles found. Please create a new profile!</p>

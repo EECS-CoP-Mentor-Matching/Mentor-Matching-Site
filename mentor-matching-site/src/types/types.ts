@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore";
 
 export interface DropDownOption {
   label: string,
@@ -10,6 +9,14 @@ export interface UserProfile {
   name: string;
   email: string;
   imageUrl?: string; // Optional property for the profile image URL
+}
+
+export interface UserReport {
+  reportReason: string,
+  reportMessage: string,
+  reportedByUID: string,
+  reportedForUID: string,
+  reportedOn: any
 }
 
 export interface ErrorLog {

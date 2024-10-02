@@ -1,0 +1,56 @@
+.contact-us-container {
+    margin: 20px auto; /* centers the container with automatic horizontal margins */
+    padding: 20px;
+    border: 1px solid #ccc;
+    max-width: 800px; /* max width for better readability */
+    background-color: #fff; /* a light theme, white background */
+    color: #333; /* dark gray text for readability */
+  }
+  
+  .contact-us-container h1, 
+  .contact-us-container h2 {
+    text-align: left;
+    color: #444; /* slightly lighter color for headings */
+  }
+  
+  .contact-us-container p {
+    text-align: left;
+    line-height: 1.6; /* increased line height for readability */
+    font-size: 16px; /* adjust as needed */
+  }
+  
+  /* Additional styling for better visual hierarchy */
+  .contact-us-container h1 {
+    margin-bottom: 0.5em;
+    font-size: 2em; /* larger font size for main heading */
+  }
+  
+  .contact-us-container h2 {
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+    font-size: 1.5em; /* larger font size for section headings */
+  }
+
+ /* Styling for developer list to remove bullets and improve spacing */
+.developer-list p {
+    margin: 10px 0; /* Adds spacing between each entry */
+    padding-left: 0; /* Adjusts padding for alignment */
+    font-weight: bold; /* Makes the names bold */
+}
+
+.contact-us-container a {
+    color: #0073e6; /* Sets a noticeable link color */
+    text-decoration: none; /* Removes underline from links */
+}
+
+.contact-us-container a:hover,
+.contact-us-container a:focus {
+    text-decoration: underline; /* Adds underline on hover/focus for accessibility */
+}
+
+ /* Styling for partner list to remove bullets and improve spacing */
+ .partner-list p {
+  margin: 10px 0; /* Adds spacing between each entry */
+  padding-left: 0; /* Adjusts padding for alignment */
+  font-weight: bold; /* Makes the names bold */
+}

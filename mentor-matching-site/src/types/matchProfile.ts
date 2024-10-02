@@ -1,8 +1,9 @@
 import { DocItem } from "./types"
 
-export enum MatchProfileType {
-  Mentee,
-  Mentor
+export enum MatchRole {
+  mentee = "Mentee",
+  mentor = "Mentor",
+  both = "Both"
 }
 
 export interface Message {
@@ -11,6 +12,9 @@ export interface Message {
   mentorUID: string
   mentorProfileId: string
   message: string
+  mentorReply: string
+  technicalInterest: string
+  professionalInterest: string
   sentByUID: string
   sentOn: any
 }
@@ -19,6 +23,20 @@ export enum MessageState {
   noMessagesSent,
   awaitingReply,
   replyReceived
+}
+
+export enum MentorReply {
+  awaiting,
+  accepted,
+  denied
+}
+
+export enum ReportUserReasons {
+  notSelected = "NA",
+  suspiciousActivity = "Suspicious Activity",
+  abusiveContent = "Abusive Content",
+  iFeelUncomforatble = "I Feel Uncomfortable",
+  iFeelUnsafe = "I Feel Unsafe"
 }
 
 export interface MatchProfileView {

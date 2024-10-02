@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import ContentContainer from "../../common/ContentContainer";
-import { Box, Grid, Typography } from "@mui/material";
+import {Box, Grid} from "@mui/material";
 import authService from "../../../service/authService";
-import { DocItem } from '../../../types/types';
+import {DocItem} from '../../../types/types';
 import MessageCard from "./MessageCard";
-import {MatchProfile, Message} from "../../../types/matchProfile";
+import {MentorReply, Message} from "../../../types/matchProfile";
 import {messagingService} from "../../../service/messagingService";
 
 function MentorMatches() {
@@ -14,11 +14,23 @@ function MentorMatches() {
         const user = await authService.getSignedInUser();
         if (user) {
             try {
-                const result = await messagingService.getMessagesSentForMentor(user.uid);
+                const result = await messagingService.getAwaitingMessagesSentForMentor(user.uid);
                 setMessages(result.length ? result : []);
             } catch (error) {
                 console.error("Error fetching mentor messages:", error);
                 setMessages([]);
+            }
+        }
+    };
+
+    const updateMessageStatus = async (docId: string, message: Message, reply: MentorReply) => {
+        const user = await authService.getSignedInUser();
+        if (user) {
+            try {
+                const result = await messagingService.mentorReply(docId, message, reply);
+                await fetchMessages();
+            } catch (error) {
+                console.error("Error replying to message:", error);
             }
         }
     };
@@ -30,11 +42,13 @@ function MentorMatches() {
     const acceptMessage = (message: DocItem<Message>, event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation();
 
+        updateMessageStatus(message.docId, message.data, MentorReply.accepted);
     };
 
     const declineMessage = (message: DocItem<Message>, event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation();
 
+        updateMessageStatus(message.docId, message.data, MentorReply.denied);
     };
 
     return (

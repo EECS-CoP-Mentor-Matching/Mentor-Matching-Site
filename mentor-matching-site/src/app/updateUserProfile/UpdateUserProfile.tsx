@@ -10,6 +10,8 @@ import UpdateUserDemographicInformation from "./components/UpdateDemographicsInf
 import UpdateEducationInformation from "./components/UpdateEducationInformation";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/userProfileReducer";
+import AuthenticatedView from '../common/auth/AuthenticatedView';
+import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
 function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);
@@ -53,7 +55,7 @@ function UpdateUserProfile() {
     await userService.deleteUserProfile(userProfileState.UID);
     await authService.signOut(); // Sign out the user after account deletion
     // Redirect to home or sign-in page after deletion
-    window.location.href = "/"; // Adjust the URL to your application's home or sign-in page
+    window.location.href = "/";
   };
 
   const deleteAccountDialog = (
@@ -105,12 +107,15 @@ function UpdateUserProfile() {
 
   return (
     <>
-      {dataIsLoading()}
-      {deleteAccountDialog}
-      {/* Position the Delete Account button according to layout preference */}
-      <Button variant="outlined" color="error" onClick={handleOpenDeleteDialog} style={{ marginTop: '20px' }}>
-        Delete Account
-      </Button>
+      <AuthenticatedView>
+        {dataIsLoading()}
+        {deleteAccountDialog}
+        {/* Position the Delete Account button according to layout preference */}
+        <Button variant="outlined" color="error" onClick={handleOpenDeleteDialog} style={{ marginTop: '20px' }}>
+          Delete Account
+        </Button>
+      </AuthenticatedView>
+      <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
     </>
   );
 }

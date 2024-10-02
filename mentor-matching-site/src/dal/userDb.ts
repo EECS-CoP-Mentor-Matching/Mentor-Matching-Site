@@ -17,36 +17,75 @@ async function updateUserProfileAsync(uid: string, userProfile: UserProfile): Pr
 }
 
 async function createNewUserAsync(user: User, userProfile: UserProfile): Promise<boolean> {
-  const initialUserProfile = {
-    UID: user.uid,
-    contact: userProfile.contact,
-    personal: userProfile.personal,
-    demographics: userProfile.demographics,
-    education: userProfile.education,
-    accountSettings: {
-      userStatus: "active",
-      menteePortalEnabled: userProfile.accountSettings.menteePortalEnabled,
-      mentorPortalEnabled: userProfile.accountSettings.mentorPortalEnabled,
-    } as UserAccountSettings,
-    matchHistory: Array<MatchHistoryItem>(),
-    profilePictureUrl: userProfile.profilePictureUrl,
-    preferences: userProfile.preferences
-  } as UserProfile;
-  await setDoc(doc(db, collectionName, user.uid), initialUserProfile);
-  return true;
+  try {
+    const { contact, personal, demographics,
+      education, accountSettings,
+      profilePictureUrl, preferences } = userProfile;
+
+    const initialUserProfile: UserProfile = {
+      UID: user.uid,
+      contact,
+      personal,
+      demographics,
+      education,
+      accountSettings: {
+        userStatus: "active",
+        menteePortalEnabled: accountSettings.menteePortalEnabled,
+        mentorPortalEnabled: accountSettings.mentorPortalEnabled,
+      },
+      matchHistory: [],
+      profilePictureUrl,
+      preferences
+    };
+
+    await setDoc(doc(db, collectionName, user.uid), initialUserProfile);
+    return true;
+  } catch (error) {
+    console.error("Error creating new user:", error);
+    return false;
+  }
 }
 
 async function deleteUserProfileAsync(uid: string) {
-  const db = getFirestore(app); // Ensure you have initialized Firestore
-  const userDocRef = doc(db, "users", uid); // Assuming user profiles are stored in a "users" collection
+  const db = getFirestore(app);
+  const userDocRef = doc(db, "users", uid);
+  const matchHistoryCollection = collection(db, `users/${uid}/matchHistory`);
+  const messagesCollection = collection(db, `users/${uid}/messages`);
+  const reportsCollection = collection(db, "reports");
 
-  return deleteDoc(userDocRef).then(() => {
-    console.log(`UserProfile with UID ${uid} deleted successfully.`);
-  }).catch((error) => {
-    console.error('Error deleting user profile:', error);
-    throw error;
+  // Delete user document
+  await deleteDoc(userDocRef);
+
+  // Delete user match history
+  const matchHistorySnapshot = await getDocs(matchHistoryCollection);
+  matchHistorySnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
   });
+
+  // Delete user messages
+  const messagesSnapshot = await getDocs(messagesCollection);
+  messagesSnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
+  });
+
+  // Preserve reports and block data
+  const reportsSnapshot = await getDocs(reportsCollection);
+  reportsSnapshot.forEach(async (reportDoc) => {
+    const reportData = reportDoc.data();
+    if (reportData.userUID === uid) {
+      // Modify the report to anonymize user data or mark it as deleted
+      await updateDoc(reportDoc.ref, { userUID: "deleted", userData: null });
+    }
+  });
+
+  // Delete user from authentication
+  // const auth = getAuth();
+  // const user = await auth.getUser(uid);
+  // await deleteUser(user);
+
+  console.log(`UserProfile with UID ${uid} and related data deleted successfully.`);
 }
+
 
 async function userExistsAsync(email: string): Promise<boolean> {
   const conditions = [];
@@ -62,9 +101,7 @@ async function getUserProfileAsync(uid: string): Promise<UserProfile> {
   if (users.length >= 1) {
     return users[0];
   }
-  else {
-    throw "More than one result was found for " + uid;
-  }
+  return {} as UserProfile;
 }
 
 async function searchAsync(conditions: any[]): Promise<UserProfile[]> {

@@ -9,16 +9,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16' # Specify the Node.js version you want to use
+          cache: 'npm' # Optional: cache npm dependencies to speed up the build
+
+      # Install npm dependencies
       - name: npm Install
         working-directory: mentor-matching-site
         run: npm install
+        
+      # Build the project
       - name: npm Build
         working-directory: mentor-matching-site
         run: npm run build
+        
+      # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_DEV }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_SITE }}'
           channelId: live
-          projectId: eecs-cop-mentor-matching-dev
+          projectId: eecs-cop-mentor-matching-site
           entryPoint: mentor-matching-site

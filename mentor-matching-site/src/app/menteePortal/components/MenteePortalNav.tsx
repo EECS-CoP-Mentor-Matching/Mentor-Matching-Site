@@ -11,6 +11,7 @@ function MenteePortalNav(props: MenteePortalNavProps) {
     <div className="nav">
       <Button onClick={() => props.setPage(Pages.createProfile)}>Create new Profile</Button>
       <Button onClick={() => props.setPage(Pages.activeProfiles)}>Active Profiles</Button>
+      <Button onClick={() => props.setPage(Pages.menteeMessages)}>Messages</Button>
     </div>
   );
 }

@@ -1,8 +1,9 @@
-import { deleteDocId, queryDocId, queryMany, writeSingle } from "./commonDb";
+import { deleteDocId, queryDocId, queryMany, querySingle, writeSingle } from "./commonDb";
 import { MatchProfile } from "../types/matchProfile";
 import { DocItem } from "../types/types";
-import { where } from "firebase/firestore";
+import { collection, doc, setDoc, where } from "firebase/firestore";
 import { ConflictError } from "../types/types";
+import { db } from "../firebaseConfig";
 
 const collectionName = 'menteeProfile';
 
@@ -33,11 +34,16 @@ async function deleteMenteeProfileByUIDAsync(uid: string) {
 
 }
 
+async function updateMenteeProfileAsync(menteeProfile: MatchProfile, profileID: string) {
+  await setDoc(doc(db, collectionName, profileID), menteeProfile);
+}
+
 const menteeDb = {
   createMenteeProfileAsync,
   searchMenteeProfilesByUserAsync,
   searchMenteeProfileByIdAsync,
-  deleteMenteeProfileByIdAsync
+  deleteMenteeProfileByIdAsync,
+  updateMenteeProfileAsync
 }
 
 export default menteeDb;

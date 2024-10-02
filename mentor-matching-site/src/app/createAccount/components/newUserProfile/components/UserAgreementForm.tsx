@@ -3,13 +3,17 @@ import TextDisplaySection from "../../../../common/forms/textInputs/TextDisplayS
 import TextDisplayHeader from "../../../../common/forms/textInputs/TextDisplayHeader";
 import TextDisplay from "../../../../common/forms/textInputs/TextDisplay";
 import CheckBoxControl from "../../../../common/forms/checkbox/CheckBoxControl";
+import DocuSignButton from "../../DocuSign/DocuSignButton";
+import {FormControl} from "@mui/material";
+import SubmitButton from "../../../../common/forms/buttons/SubmitButton";
 
 interface UserAgreementFormProps {
   updateAgreementAcceptance: (checked: boolean) => void
   userHasAgreed: boolean
+  submit: () => void
 }
 
-function UserAgreementForm({ updateAgreementAcceptance, userHasAgreed }: UserAgreementFormProps) {
+function UserAgreementForm({ updateAgreementAcceptance, userHasAgreed, submit }: UserAgreementFormProps) {
 
   return (
     <FormGroupCols>
@@ -42,6 +46,10 @@ function UserAgreementForm({ updateAgreementAcceptance, userHasAgreed }: UserAgr
       </TextDisplaySection>
       <TextDisplay widthMulti={.30}>In order to continue with creating your account you must agree to these services.</TextDisplay>
       <CheckBoxControl label="Click here to agree." onChange={updateAgreementAcceptance} checked={userHasAgreed} />
+      <DocuSignButton />
+      <FormControl className="form-control">
+        <SubmitButton onClick={submit} text="Submit" widthMulti={.15} />
+      </FormControl>
     </FormGroupCols>
   );
 }

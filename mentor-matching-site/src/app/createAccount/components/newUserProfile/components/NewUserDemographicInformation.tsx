@@ -2,9 +2,16 @@ import { useAppSelector } from "../../../../../redux/hooks";
 import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
 import SelectRacialIdentity from "../../../../userProfileCommon/dropdowns/SelectRacialIdentity";
-import { updateLgbtqPlus, updateRacialIdentity, updateUseLgbtqPlusCommunityForMatching, updateUseRacialIdentityForMatching } from "../../../../../redux/reducers/userProfileReducer";
+import {
+    updateLgbtqPlus,
+    updateRacialIdentity,
+    updateRole,
+    updateUseLgbtqPlusCommunityForMatching,
+    updateUseRacialIdentityForMatching
+} from "../../../../../redux/reducers/userProfileReducer";
 import FormHeader from "../../../../common/forms/layout/FormHeader";
 import FormSectionHeader from "../../../../common/forms/layout/FormSectionHeader";
+import SelectRole from "../../../../userProfileCommon/dropdowns/SelectRole";
 
 function NewUserDemographicInformation() {
   const selector = useAppSelector;
@@ -14,6 +21,10 @@ function NewUserDemographicInformation() {
   return (
     <FormGroupCols>
       <FormHeader>User Demographics</FormHeader>
+      <FormGroupCols>
+          <FormSectionHeader>Mentor or Mentee</FormSectionHeader>
+          <SelectRole onSelectDispatch={updateRole} currentValue={demographicInformation.role} />
+      </FormGroupCols>
       <FormGroupCols>
         <FormSectionHeader>Racial Identity</FormSectionHeader>
         <SelectRacialIdentity onSelectDispatch={updateRacialIdentity} currentValue={demographicInformation.racialIdentity} />
