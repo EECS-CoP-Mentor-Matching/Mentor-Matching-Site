@@ -5,14 +5,10 @@ import { FormLabel, Button } from "@mui/material";
 import { TextField } from "@mui/material";
 import DropDownControl from "../../../../common/forms/dropDowns/DropDownControl";
 import { FeedbackSettingsContext } from '../../FeedbackSettings/FeedbackSettingsContext';
+import authService from "../../../../../service/authService";
 
 
-interface SubmitFeedbackProps {
-  userEmail: string;
-}
-
-
-export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
+export default function SubmitFeedback() {
   const [feedbackType, setFeedbackType] = useState<string>('');
   const [feedbackTitle, setFeedbackTitle] = useState<string>(''); // Add this line
   const [feedbackContent, setFeedbackContent] = useState<string>('');
@@ -32,23 +28,31 @@ export default function SubmitFeedback({ userEmail }: SubmitFeedbackProps) {
       return;
     }
 
-    const feedbackData = {
-      userEmail,
-      feedbackType,
-      feedbackTitle,
-      feedbackContent,
-      isResolved: false,
-    };
+    const user = await authService.getSignedInUser()
 
-    try {
-      await feedbackService.submitFeedback(feedbackData, attachment);
-      setFeedbackType('');
-      setFeedbackTitle('');
-      setFeedbackContent('');
-      setAttachment(undefined);
-    } catch (error) {
-      console.error('Error submitting feedback:', error);
-      alert('An error occurred while submitting feedback.');
+    if (user) {
+      const UID = user.uid
+      const userEmail = user.email
+
+      const feedbackData = {
+        UID,
+        userEmail,
+        feedbackType,
+        feedbackTitle,
+        feedbackContent,
+        isResolved: false,
+      };
+
+      try {
+        await feedbackService.submitFeedback(feedbackData, attachment);
+        setFeedbackType('');
+        setFeedbackTitle('');
+        setFeedbackContent('');
+        setAttachment(undefined);
+      } catch (error) {
+        console.error('Error submitting feedback:', error);
+        alert('An error occurred while submitting feedback.');
+      }
     }
   };
 

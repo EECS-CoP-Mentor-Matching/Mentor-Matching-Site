@@ -1,17 +1,52 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAuth, User } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendSignInLinkToEmail, sendEmailVerification, signInWithEmailAndPassword,
+  isSignInWithEmailLink, signInWithEmailLink, setPersistence, browserSessionPersistence, getAuth,
+  User } from "firebase/auth";
 import { app } from "../firebaseConfig";
 import { deleteUser } from "firebase/auth";
 
 
 const firebaseAuth = getAuth(app)
 
+/** Send sign in link to user email */
+async function sendEmailSignIn(email: string ): Promise<void> {
+  const auth = getAuth();
+
+  const actionCodeSettings = {
+    url: 'https://eecs-cop-mentor-matching-site.web.app/signin-verify-email',
+    handleCodeInApp: true,
+  };
+  await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+}
+
+/** Check verify email link */
+async function signInSecure(email: string ): Promise<void> {
+  const auth = getAuth();
+
+  // Check if the current URL contains the sign-in link
+  if (isSignInWithEmailLink(auth, window.location.href)) {
+
+    // Sign in with the email link
+    signInWithEmailLink(auth, email, window.location.href)
+        .then((result) => {
+        })
+        .catch((error) => {
+          console.error('Error signing in: ', error);
+        });
+  }
+}
+
+/** Send verification email for a user */
+async function sendVerifyEmail(user: User ): Promise<void> {
+  await sendEmailVerification(user);
+}
+
 /** create a new user and store in firebase */
 async function createUser(email: string, password: string): Promise<User | void> {
-  return await createUserWithEmailAndPassword(firebaseAuth, email, password)
-    .then((userCredential) => {
-      // Signed up 
-      return userCredential.user;
-    });
+  const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+
+  await sendVerifyEmail(userCredential.user);
+
+  return userCredential.user;
 }
 
 /** use this method if the device is shared i.e. computer labs */
@@ -66,7 +101,19 @@ async function getSignedInUser() {
   return firebaseAuth.currentUser;
 }
 
+async function refreshToken() {
+  const user = firebaseAuth.currentUser;
+  if (user) {
+    await user.getIdToken(true);
+    await user.reload();
+  }
+}
+
 const authService = {
+  sendEmailSignIn,
+  signInSecure,
+  refreshToken,
+  sendVerifyEmail,
   createUser,
   signIn,
   signInSession,

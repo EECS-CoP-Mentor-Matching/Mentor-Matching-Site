@@ -34,7 +34,7 @@ function UploadUserProfileImage({ userProfile }: UploadUserProfileImageProps) {
 
   const uploadFile = async (file: File) => {
     // Create a storage reference
-    const storageRef = ref(storage, `profileImages/${file.name}`);
+    const storageRef = ref(storage, `${userProfile.UID}/profileImages/${file.name}`);
 
     // Upload the file to Firebase Storage
     const snapshot = await uploadBytes(storageRef, file);

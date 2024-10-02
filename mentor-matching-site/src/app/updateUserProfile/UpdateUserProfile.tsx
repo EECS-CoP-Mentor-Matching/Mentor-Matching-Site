@@ -55,7 +55,7 @@ function UpdateUserProfile() {
     await userService.deleteUserProfile(userProfileState.UID);
     await authService.signOut(); // Sign out the user after account deletion
     // Redirect to home or sign-in page after deletion
-    window.location.href = "/"; // Adjust the URL to your application's home or sign-in page
+    window.location.href = "/";
   };
 
   const deleteAccountDialog = (

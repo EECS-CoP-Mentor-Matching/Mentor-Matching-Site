@@ -23,11 +23,7 @@ export enum FeedbackPages {
   // feedbackAdminPortal = 'Admin Portal'
 }
 
-interface FeedbackPortalProps {
-  userEmail: string; // Assuming the user's email is available
-}
-
-function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
+function FeedbackPortal() {
   const [page, setPage] = useState(FeedbackPages.submitFeedback.toString());
   const navigate = useNavigate();
 
@@ -61,7 +57,7 @@ function FeedbackPortal({ userEmail }: FeedbackPortalProps) {
             navItems={navUtilities.navItemsFromEnum(FeedbackPages)}
           />
 
-          {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback userEmail={userEmail} /> </div>}
+          {page === FeedbackPages.submitFeedback && <div className="feedback-portal"><SubmitFeedback /> </div>}
           {/*
         {page === FeedbackPages.viewFeedback && <div className="feedback-portal"><ViewFeedback /></div>}
         {page === FeedbackPages.settings && <div className="feedback-portal"><FeedbackSettings /></div>}

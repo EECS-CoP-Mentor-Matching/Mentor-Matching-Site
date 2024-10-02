@@ -17,23 +17,33 @@ async function updateUserProfileAsync(uid: string, userProfile: UserProfile): Pr
 }
 
 async function createNewUserAsync(user: User, userProfile: UserProfile): Promise<boolean> {
-  const initialUserProfile = {
-    UID: user.uid,
-    contact: userProfile.contact,
-    personal: userProfile.personal,
-    demographics: userProfile.demographics,
-    education: userProfile.education,
-    accountSettings: {
-      userStatus: "active",
-      menteePortalEnabled: userProfile.accountSettings.menteePortalEnabled,
-      mentorPortalEnabled: userProfile.accountSettings.mentorPortalEnabled,
-    } as UserAccountSettings,
-    matchHistory: Array<MatchHistoryItem>(),
-    profilePictureUrl: userProfile.profilePictureUrl,
-    preferences: userProfile.preferences
-  } as UserProfile;
-  await setDoc(doc(db, collectionName, user.uid), initialUserProfile);
-  return true;
+  try {
+    const { contact, personal, demographics,
+      education, accountSettings,
+      profilePictureUrl, preferences } = userProfile;
+
+    const initialUserProfile: UserProfile = {
+      UID: user.uid,
+      contact,
+      personal,
+      demographics,
+      education,
+      accountSettings: {
+        userStatus: "active",
+        menteePortalEnabled: accountSettings.menteePortalEnabled,
+        mentorPortalEnabled: accountSettings.mentorPortalEnabled,
+      },
+      matchHistory: [],
+      profilePictureUrl,
+      preferences
+    };
+
+    await setDoc(doc(db, collectionName, user.uid), initialUserProfile);
+    return true;
+  } catch (error) {
+    console.error("Error creating new user:", error);
+    return false;
+  }
 }
 
 async function deleteUserProfileAsync(uid: string) {
@@ -91,9 +101,7 @@ async function getUserProfileAsync(uid: string): Promise<UserProfile> {
   if (users.length >= 1) {
     return users[0];
   }
-  else {
-    throw "More than one result was found for " + uid;
-  }
+  return {} as UserProfile;
 }
 
 async function searchAsync(conditions: any[]): Promise<UserProfile[]> {

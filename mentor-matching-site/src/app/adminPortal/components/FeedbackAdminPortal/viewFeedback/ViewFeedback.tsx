@@ -6,7 +6,8 @@ import './ViewFeedback.css';
 
 interface FeedbackEntry {
   id?: string;
-  userEmail: string;
+  UID: string;
+  userEmail: string | null;
   feedbackType: string;
   feedbackTitle: string;
   feedbackContent: string;

@@ -22,7 +22,10 @@ import { updateProfile } from '../redux/reducers/userProfileReducer';
 import { useAppDispatch } from '../redux/hooks';
 import authService from '../service/authService';
 import userService from '../service/userService';
-import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton'; 
+import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton';
+import VerifyEmail from "./createAccount/components/VerifyEmail";
+import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
+import {UserProfile} from "../types/userProfile";
 
 function App() {
 
@@ -32,9 +35,17 @@ function App() {
     // get the current signed in user
     const loadUserProfile = async () => {
       const currentUser = await authService.getSignedInUser();
-      if (currentUser) {
-        const profile = await userService.getUserProfile(currentUser.uid);
-        dispatch(updateProfile(profile));
+      if (currentUser && currentUser.emailVerified) {
+        let userProfile: UserProfile;
+        try {
+          userProfile = await userService.getUserProfile(currentUser.uid);
+          return userProfile;
+        } catch (error) {
+          // reload recently verified email token
+          await authService.refreshToken()
+          userProfile = await userService.getUserProfile(currentUser.uid);
+        }
+        dispatch(updateProfile(userProfile));
       }
     };
     loadUserProfile();
@@ -50,11 +61,13 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/create-account" element={<CreateAccount />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/new-profile" element={<NewUserProfile />} />
             <Route path="/mentee-portal" element={<MenteePortal />} />
             <Route path="/admin-portal" element={<AdminPortal />} />
             <Route path="/mentor-portal" element={<MentorPortal />} />
             <Route path="/update-profile" element={<UpdateUserProfile />} />
-            <Route path="/feedback-portal" element={<FeedbackPortal userEmail={"temp"} />} />
+            <Route path="/feedback-portal" element={<FeedbackPortal />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/user-service-agreement" element={<UserServiceAgreement />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditions />} />

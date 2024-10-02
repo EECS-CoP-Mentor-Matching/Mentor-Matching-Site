@@ -7,7 +7,7 @@ async function updateProfileImageUrl(uid: string, imageUrl: string) {
 }
 
 async function createNewUser(user: User, userProfile: UserProfile) {
-  userDb.createNewUserAsync(user, userProfile);
+  await userDb.createNewUserAsync(user, userProfile);
 }
 
 async function deleteUserProfile(uid: string) {

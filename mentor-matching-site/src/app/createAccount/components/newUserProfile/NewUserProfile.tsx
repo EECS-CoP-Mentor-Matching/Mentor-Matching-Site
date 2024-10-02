@@ -1,61 +1,100 @@
 import authService from "../../../../service/authService";
-import { useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import FormGroupCols from "../../../common/forms/layout/FormGroupCols";
 import NewUserContactInformation from "./components/NewUserContactInformation";
 import NewUserPersonalInformation from "./components/NewUserPersonalInformation";
 import NewUserDemographicInformation from "./components/NewUserDemographicInformation";
 import NewUserEducationInformation from "./components/NewUserEducationInformation";
-import NewUserSubmit from "./components/NewUserSubmit";
 import NewUserNavigation from "./components/NewUserNavigation";
-import userService from "../../../../service/userService";
-import { useAppSelector } from "../../../../redux/hooks";
+import {useAppDispatch, useAppSelector} from "../../../../redux/hooks";
 import { refreshNavigate } from "../../../common/auth/refreshNavigate";
 import UserAgreementForm from "./components/UserAgreementForm";
 import ErrorMessage, { ErrorState } from "../../../common/forms/ErrorMessage";
+import VerifyEmail from "../VerifyEmail";
+import FormHeader from "../../../common/forms/layout/FormHeader";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
-import PopupMessage from "../../../common/forms/modals/PopupMessage";
+import userService from "../../../../service/userService";
+import {initUserProfile, UserProfile} from "../../../../types/userProfile";
+import {updateProfile} from "../../../../redux/reducers/userProfileReducer";
 
 enum FormStep {
-  Contact = 1,
-  Demographic = 2,
-  Educational = 3,
-  Personal = 4,
-  UserAgreement = 5,
-  Submit = 6,
-  AccountCreated = 7
+  VerifyEmail,
+  Contact,
+  Demographic,
+  Educational,
+  Personal,
+  UserAgreement
 }
 
 function NewUserProfile() {
-  const [currentStep, setCurrentStep] = useState(FormStep.Contact);
+  const [currentStep, setCurrentStep] = useState(FormStep.VerifyEmail);
   const [userHasAgreed, updateUserHasAgreed] = useState(false);
   const [errorState, setErrorState] = useState({ errorMessage: '', isError: false } as ErrorState);
   const [createAccountLoading, setCreateAccountLoading] = useState(false);
-  const [accountCreated, setAccountCreated] = useState(false);
 
   const selector = useAppSelector;
-  const userProfile = selector(state => state.userProfile.userProfile);
-  const email = selector(state => state.userProfile.userProfile.contact.email);
+  const userProfile = selector(state => state.userProfile.userProfile)
 
-  async function createNewUser(password: string) {
-    setCreateAccountLoading(true);
+  let intervalTimer = useRef<NodeJS.Timeout | null>(null);
 
-    console.log(userProfile);
-    try {
-      const user = await authService.createUser(email, password);
-      if (user) {
-        await userService.createNewUser(user, userProfile);
-        const userCreated = await userService.getUserProfile(user.uid);
-        if (userCreated) {
-          setAccountCreated(true);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    loadProfile();
+  }, [dispatch]);
+
+  function loadProfile() {
+    const userProfile: UserProfile = initUserProfile();
+
+    dispatch(updateProfile(userProfile));
+  }
+
+
+  useEffect(() => {
+
+    const checkUserVerification = async () => {
+      try {
+        const user = await authService.getSignedInUser();
+        if (user) {
+          if (user.emailVerified) {
+            await authService.refreshToken();
+            setCurrentStep(FormStep.Contact);
+          } else {
+            if (!intervalTimer.current) {
+              intervalTimer.current = setInterval(async () => {
+                await user.reload();
+                if (user.emailVerified) {
+                  await authService.refreshToken();
+                  refreshNavigate('/')
+                  if (intervalTimer.current) {
+                    clearInterval(intervalTimer.current);
+                    intervalTimer.current = null;
+                  }
+                }
+              }, 5000);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to check user verification status:", error);
+        if (intervalTimer.current) {
+          clearInterval(intervalTimer.current);
+          intervalTimer.current = null;
         }
       }
-    } catch (error) {
-      // delete the user from firebase?
-      console.error('Failed to create a new user:', error);
+    };
+
+    if (!intervalTimer.current) {
+      checkUserVerification();
     }
 
-    setCreateAccountLoading(false);
-  }
+    return () => {
+      if (intervalTimer.current) {
+        clearInterval(intervalTimer.current);
+        intervalTimer.current = null;
+      }
+    };
+  }, []);
 
   const resetError = () => {
     setErrorState({ errorMessage: '', isError: false } as ErrorState);
@@ -64,12 +103,7 @@ function NewUserProfile() {
   const nextStep = () => {
     resetError();
 
-    if (currentStep === FormStep.UserAgreement && !userHasAgreed) {
-      setErrorState({ errorMessage: 'You must agree to the terms of service before continuing', isError: true });
-      return;
-    }
-
-    if (currentStep >= FormStep.Contact && currentStep < FormStep.Submit) {
+    if (currentStep >= FormStep.Contact && currentStep < FormStep.UserAgreement) {
       setCurrentStep(currentStep + 1);
     }
   }
@@ -86,8 +120,38 @@ function NewUserProfile() {
     updateUserHasAgreed(agreed);
   }
 
+  async function profileSubmit ()  {
+    resetError();
+
+    if (currentStep === FormStep.UserAgreement && !userHasAgreed) {
+      setErrorState({ errorMessage: 'You must agree to the terms of service before continuing', isError: true });
+      return;
+    }
+
+    setCreateAccountLoading(true)
+
+    try {
+      const user = await authService.getSignedInUser()
+      if (user) {
+        await userService.createNewUser(user, userProfile);
+        setTimeout(() => {
+          refreshNavigate('/')
+          setCreateAccountLoading(false);
+        }, 2000);
+      } else {
+        setCreateAccountLoading(false);
+      }
+    } catch (error) {
+      // delete the user from firebase?
+      console.error('Failed to create a new user:', error);
+      setCreateAccountLoading(false);
+    }
+  }
+
   const loadCurrentFormStep = () => {
     switch (currentStep) {
+      case FormStep.VerifyEmail:
+        return <VerifyEmail />
       case FormStep.Contact:
         return <NewUserContactInformation />
       case FormStep.Demographic:
@@ -97,9 +161,8 @@ function NewUserProfile() {
       case FormStep.Personal:
         return <NewUserPersonalInformation />
       case FormStep.UserAgreement:
-        return <UserAgreementForm updateAgreementAcceptance={userHasAcceptedTerms} userHasAgreed={userHasAgreed} />
-      case FormStep.Submit:
-        return <NewUserSubmit createNewUser={createNewUser} />
+        return <UserAgreementForm updateAgreementAcceptance={userHasAcceptedTerms} userHasAgreed={userHasAgreed}
+        submit={profileSubmit}/>
       default:
         return (
           <div>Invalid step</div>
@@ -107,27 +170,20 @@ function NewUserProfile() {
     }
   }
 
-  const navigateToProfile = () => {
-    refreshNavigate('/update-profile');
-  }
-
   return (
-    <div className='login'>
-      <FormGroupCols>
-        {loadCurrentFormStep()}
-        <ErrorMessage errorState={errorState} />
-        <NewUserNavigation nextStep={nextStep}
-          hideNext={currentStep === FormStep.Submit}
-          previousStep={previousStep}
-          hidePrevious={currentStep === FormStep.Contact}
-        />
-      </FormGroupCols>
-      <LoadingMessage message="Creating your account.... Don't refresh!" loading={createAccountLoading} />
-      <PopupMessage message="Your account was created!" hideX={true}
-        open={accountCreated} setIsOpen={setAccountCreated}
-        actionButton={navigateToProfile} actionMessage="View Profile"
-      />
-    </div>
+        <div className='login'>
+          <FormGroupCols>
+            <FormHeader>Finish creating your profile:</FormHeader>
+            {loadCurrentFormStep()}
+            <ErrorMessage errorState={errorState} />
+            <NewUserNavigation nextStep={nextStep}
+              hideNext={currentStep < FormStep.Contact || currentStep === FormStep.UserAgreement}
+              previousStep={previousStep}
+              hidePrevious={currentStep < FormStep.Demographic}
+            />
+          </FormGroupCols>
+          <LoadingMessage message="Creating profile..." loading={createAccountLoading} />
+        </div>
   );
 }
 
