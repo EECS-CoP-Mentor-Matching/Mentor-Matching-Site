@@ -1,41 +1,33 @@
-name: Deploy to Firebase Hosting Dev Environment
+
+name: Deploy to Firebase
+
 on:
   push:
+    branches:
+      - testing
+  pull_request:
     branches:
       - main
 
 jobs:
-  build_and_deploy:
+  deploy_live_website:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+
+      # Build
+      - name: Build
+        env: 
+          CI: false # continue build with warnings
+        run: |
+          cd ./mentor-matching-site
+          npm ci && npm run build
       
-      # Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16' # Specify the Node.js version you want to use
-          cache: 'npm' # Optional: cache npm dependencies to speed up the build
-
-      # Debug: List files in the repository
-      - name: List files
-        run: ls -R /home/runner/work/Mentor-Matching-Site/
-
-      # Install npm dependencies
-      - name: npm Install
-        working-directory: Mentor-Matching-Site/mentor-matching-site
-        run: npm install
-        
-      # Build the project
-      - name: npm Build
-        working-directory: Mentor-Matching-Site/mentor-matching-site
-        run: npm run build
-        
-      # Deploy to Firebase Hosting
+      # Deploy
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_SITE }}'
-          channelId: live
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_SITE }}"
           projectId: eecs-cop-mentor-matching-site
-          entryPoint: mentor-matching-site
+          channelId: live
+          entryPoint: ./mentor-matching-site 

@@ -21,7 +21,7 @@ function Login() {
       }
     }
     catch (error) {
-      setErrorState({ errorMessage: "Username or password was inavlid", isError: true })
+      setErrorState({ errorMessage: "Username or password was invalid", isError: true })
     }
   }
 
@@ -29,7 +29,7 @@ function Login() {
     <>
       <div className="login">
         <FormGroup className="form-group">
-          <FormLabel>Hello, please login</FormLabel>
+          <FormLabel>Log In</FormLabel>
           <EmailPassword setEmail={setEmail} setPassword={setPassword} onSubmit={login} />
           <FormControl className="form-control">
             <Button onClick={login}>Login</Button>
