@@ -17,14 +17,17 @@ jobs:
           node-version: '16' # Specify the Node.js version you want to use
           cache: 'npm' # Optional: cache npm dependencies to speed up the build
 
+- name: List files
+  run: ls -R /home/runner/work/Mentor-Matching-Site/
+
       # Install npm dependencies
       - name: npm Install
-        working-directory: mentor-matching-site
+        working-directory: Mentor-Matching-Site/mentor-matching-site
         run: npm install
         
       # Build the project
       - name: npm Build
-        working-directory: mentor-matching-site
+        working-directory: Mentor-Matching-Site/mentor-matching-site
         run: npm run build
         
       # Deploy to Firebase Hosting
