@@ -9,6 +9,8 @@ import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import { useNavigate } from 'react-router-dom';
 import MenteeMessages from './components/menteeMessages/MenteeMessages';
+import TopNav from "../nav/TopNav"; // Make sure to import
+import SideNav from "../nav/SideNav"; // Make sure to import
 // in the match history, consolidate when multiple matches are made with the same mentor
 
 export enum Pages {

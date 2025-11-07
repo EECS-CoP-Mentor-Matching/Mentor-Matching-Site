@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import "./AdminPortal.css";
 import { useNavigate } from 'react-router-dom';
-import authService from '../../service/authService';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 
@@ -10,10 +9,9 @@ import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/F
 import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 
 import { getSettings, updateSettings } from '../../service/settingsService';
-import AuthenticatedView from '../common/auth/AuthenticatedView';
-import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
-
+import TopNav from "../nav/TopNav"; // Make sure to import
+import SideNav from "../nav/SideNav"; // Make sure to import
 
 export enum Pages {
   manageUsers = "Manage Users",
@@ -27,7 +25,7 @@ interface AdminPortalProps {
 
 function AdminPortal(props: AdminPortalProps) {
   const [page, setPage] = useState(Pages.manageUsers.toString());
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
 
   const [isTitleRequired, setIsTitleRequired] = useState(true);
@@ -35,17 +33,7 @@ function AdminPortal(props: AdminPortalProps) {
   const [isTypeRequired, setIsTypeRequired] = useState(true);
   const [isAttachmentAllowed, setIsAttachmentAllowed] = useState(true);
 
-  useEffect(() => {
-    const checkAuthState = async () => {
-      const user = await authService.getSignedInUser();
-      if (user === undefined) {
-        navigate("/login");
-      }
-    };
-    checkAuthState();
-  });
-
-  useEffect(() => {
+useEffect(() => {
     const fetchSettings = async () => {
       const settings = await getSettings();
       setIsTitleRequired(settings.isTitleRequired);
@@ -70,7 +58,6 @@ function AdminPortal(props: AdminPortalProps) {
 
   return (
     <>
-      <AuthenticatedView>
         <FeedbackSettingsContext.Provider value={{
           isTitleRequired, setIsTitleRequired,
           isContentRequired, setIsContentRequired,
@@ -86,8 +73,7 @@ function AdminPortal(props: AdminPortalProps) {
           {page === Pages.userFeedback && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
 
         </FeedbackSettingsContext.Provider>
-      </AuthenticatedView>
-      <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
+     
     </>
   );
 }

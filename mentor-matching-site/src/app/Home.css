@@ -1,0 +1,215 @@
+/* Variables for easy color changes */
+:root {
+    --light-grey: #f7f7f7;
+    --orange-cta: #ff6a00; /* For the "Start Your Journey" button */
+    --text-color: #333;
+}
+
+/* Global Reset and Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* --- 1. HEADER STYLES --- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10%; /* Use percentage for horizontal padding */
+    border-bottom: 1px solid #eee; 
+}
+
+.logo img {
+    height: 35px; /* Adjust logo size */
+}
+
+.login-button {
+    text-decoration: none;
+    background-color: var(--orange-cta);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* --- Main Title --- */
+.main-title {
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: 500;
+    margin: 40px 0 20px 0;
+}
+
+---
+
+/* --- 2. INTRO SECTION STYLES --- */
+.intro-section {
+    text-align: center;
+    padding: 0 10%;
+}
+
+.intro-image {
+    max-width: 600px; 
+    height: auto;
+    border-radius: 5px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.welcome-text {
+    max-width: 650px;
+    margin: 30px auto 50px auto;
+    padding: 0 20px;
+    line-height: 1.6;
+}
+
+.welcome-text h2 {
+    font-weight: 600;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+/* --- 3. CALL TO ACTION (Light Grey Section) --- */
+.light-grey-bg {
+    background-color: var(--light-grey);
+}
+
+.call-to-action-section {
+    text-align: center;
+    padding: 40px 0;
+    margin-bottom: 50px; 
+}
+
+.start-journey-button {
+    display: inline-block;
+    text-decoration: none;
+    background-color: var(--orange-cta);
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.start-journey-button:hover {
+    background-color: #e65c00;
+}
+
+---
+
+/* --- 4. REVIEWS SECTION (The Two-Column Layout) --- */
+.reviews-section {
+    padding: 0 5% 50px 5%; /* Adjusted padding for better card spacing */
+    text-align: center;
+}
+
+.section-heading {
+    font-size: 2em;
+    font-weight: 500;
+    margin-bottom: 50px;
+}
+
+/* FLEXBOX CONTAINER for the two user cards */
+.user-cards-container {
+    display: flex;
+    justify-content: center; 
+    gap: 40px; /* Space between the two cards/columns */
+    max-width: 1100px;
+    margin: 0 auto; /* Center the container itself */
+}
+
+.user-card {
+    /* flex-basis allows the cards to grow/shrink equally */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-basis: 50%; 
+    max-width: 500px; 
+    align-items: center;
+}
+
+.profile-pic {
+    width: 150px; 
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%; /* Creates the round profile picture */
+    margin-bottom: 15px;
+    border: 1px solid #ddd; /* Subtle border around the image */
+}
+
+.user-card h3 {
+    margin: 5px 0 2px 0;
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+.user-card .title {
+    margin: 0 0 25px 0;
+    font-style: italic;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.description-block {
+    flex-grow: 1;
+    text-align: center; /* Aligns the description text like in your image */
+    padding: 0 10px;
+    width: 100%;
+}
+
+.description-block h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.description-block p {
+    text-align: center;
+}
+
+/* --- FOOTER SPACER (The final light grey bar) --- */
+.footer-spacer {
+    height: 100px; 
+}
+
+
+/* --- Basic Responsiveness for Mobile Devices --- */
+@media (max-width: 900px) {
+    /* Stack the header elements on smaller screens */
+    .header {
+        padding: 15px 5%;
+    }
+    
+    .main-title {
+        font-size: 2em;
+    }
+    
+    /* Change the user cards from side-by-side to stacked */
+    .user-cards-container {
+        flex-direction: column; 
+        align-items: center; /* Center the stacked cards */
+        gap: 60px; /* Increase gap between stacked cards */
+    }
+    
+    .user-card {
+        flex-basis: 50%;
+        max-width: 500px; /* Use most of the screen width */
+        display: flex;
+        flex-direction: column; 
+        align-items: center; /* <-- THIS CENTERS THE PROFILE PICTURE, TEXT BLOCKS, etc. */
+        justify-content: flex-start; 
+        text-align: center;
+    }
+
+    .intro-image {
+        max-width: 100%; /* Intro image takes full width */
+    }
+}

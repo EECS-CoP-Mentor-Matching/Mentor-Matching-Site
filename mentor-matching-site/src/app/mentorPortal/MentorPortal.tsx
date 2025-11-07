@@ -7,6 +7,8 @@ import MentorMatches from "./components/MentorMatches";
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import MentorMatchHistory from "./components/MentorMatchHistory";
+import TopNav from "../nav/TopNav"; // Make sure to import
+import SideNav from "../nav/SideNav"; // Make sure to import
 
 function MentorPortal() {
   const navItems = ['Create Profile', 'Active Profiles', 'Matches', 'Match History'];
