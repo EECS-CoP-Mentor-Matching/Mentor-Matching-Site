@@ -27,23 +27,6 @@ import VerifyEmail from "./createAccount/components/VerifyEmail";
 import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
 import {initUserProfile, UserProfile} from "../types/userProfile";
 
-async function getUserInfo() {
-  const currentUser = await authService.getSignedInUser();
-      if (currentUser && currentUser.emailVerified) {
-        let userProfile: UserProfile;
-        try {
-          userProfile = await userService.getUserProfile(currentUser.uid);
-          return userProfile.contact.displayName;
-        } catch (error) {
-          // reload recently verified email token
-          await authService.refreshToken()
-          userProfile = await userService.getUserProfile(currentUser.uid);
-          //return userProfile;
-        }
-      }
-    }
-
-
 function App() {
   
   // set the user profile redux store on refresh
@@ -56,26 +39,23 @@ function App() {
         let userProfile: UserProfile;
         try {
           userProfile = await userService.getUserProfile(currentUser.uid);
-          userName = userProfile.contact.displayName;
-          return userProfile;
+          //return userProfile;
         } catch (error) {
           // reload recently verified email token
           await authService.refreshToken()
           userProfile = await userService.getUserProfile(currentUser.uid);
         }
         dispatch(updateProfile(userProfile));
+        
+        console.log('Dispatched userProfile to Redux:', userProfile);
+          } else {
+            console.log('No verified user found.');
       }
     };
     loadUserProfile();
   }, [dispatch]);
 
-let userName: string | undefined; // Initialize user name, to be used to greet the user later
-let userPromise =  getUserInfo();
-userPromise.then(
-  function(value) {userName = value;},
-  function(value) {userName = "User";}
-)
-console.log("Username: " + userName)
+
 
   return (
     <ThemeProvider theme={theme} >
@@ -84,7 +64,7 @@ console.log("Username: " + userName)
           <TopNav />
           <SideNav />
           <Routes>
-            <Route path="/" element={<Home name={userName?.toString()} />} />
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/create-account" element={<CreateAccount />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
