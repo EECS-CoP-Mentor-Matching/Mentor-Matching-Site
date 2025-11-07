@@ -9,12 +9,14 @@ interface AuthenticatedViewProps {
   children?: ReactElement[] | ReactElement | any
   mentor?: ReactElement[] | ReactElement | any
   mentee?: ReactElement[] | ReactElement | any
+  admin?: ReactElement[] | ReactElement | any
 }
 
-function AuthenticatedView({ children, mentor, mentee }: AuthenticatedViewProps) {
+function AuthenticatedView({ children, mentor, mentee, admin }: AuthenticatedViewProps) {
   const [showAuth, setShowAuth] = useState(false);
   const [showMentee, setShowMentee] = useState(false);
   const [showMentor, setShowMentor] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +40,9 @@ function AuthenticatedView({ children, mentor, mentee }: AuthenticatedViewProps)
             if (role == MatchRole.mentor || role == MatchRole.both) {
               setShowMentor(true);
             }
+            if (role == MatchRole.admin || role == MatchRole.both){
+              setShowMentor(true);
+            }
             setShowAuth(true);
           } else {
             setShowAuth(false);
@@ -58,6 +63,7 @@ function AuthenticatedView({ children, mentor, mentee }: AuthenticatedViewProps)
     <>
       {showMentee && mentee}
       {showMentor && mentor}
+      {showAdmin && admin}
       {showAuth && children}
     </>
   );

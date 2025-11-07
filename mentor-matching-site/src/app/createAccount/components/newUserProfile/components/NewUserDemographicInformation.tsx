@@ -23,7 +23,7 @@ function NewUserDemographicInformation() {
       <FormHeader>User Demographics</FormHeader>
       <FormGroupCols>
           <FormSectionHeader>Mentor or Mentee</FormSectionHeader>
-          <SelectRole onSelectDispatch={updateRole} currentValue={demographicInformation.role} />
+          <SelectRole onSelectDispatch={updateRole} currentValue={userPreferences.role} />
       </FormGroupCols>
       <FormGroupCols>
         <FormSectionHeader>Racial Identity</FormSectionHeader>

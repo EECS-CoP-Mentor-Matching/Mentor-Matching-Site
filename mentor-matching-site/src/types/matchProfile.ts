@@ -3,6 +3,7 @@ import { DocItem } from "./types"
 export enum MatchRole {
   mentee = "Mentee",
   mentor = "Mentor",
+  admin = "Admin",
   both = "Both"
 }
 
