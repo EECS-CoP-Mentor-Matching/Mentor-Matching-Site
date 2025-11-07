@@ -25,10 +25,31 @@ import userService from '../service/userService';
 import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton';
 import VerifyEmail from "./createAccount/components/VerifyEmail";
 import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
-import {UserProfile} from "../types/userProfile";
+import {initUserProfile, UserProfile} from "../types/userProfile";
+
+let userName; // Initialize user name, to be used to greet the user later
+
+async function getUserInfo() {
+  const currentUser = await authService.getSignedInUser();
+      if (currentUser && currentUser.emailVerified) {
+        let userProfile: UserProfile;
+        try {
+          userProfile = await userService.getUserProfile(currentUser.uid);
+          userName = userProfile.contact.displayName;
+          console.log(userName);
+          return userProfile.contact.displayName;
+        } catch (error) {
+          // reload recently verified email token
+          await authService.refreshToken()
+          userProfile = await userService.getUserProfile(currentUser.uid);
+          return userProfile;
+        }
+      }
+    }
+
 
 function App() {
-
+  
   // set the user profile redux store on refresh
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -39,6 +60,7 @@ function App() {
         let userProfile: UserProfile;
         try {
           userProfile = await userService.getUserProfile(currentUser.uid);
+          userName = userProfile.contact.displayName;
           return userProfile;
         } catch (error) {
           // reload recently verified email token
@@ -51,6 +73,9 @@ function App() {
     loadUserProfile();
   }, [dispatch]);
 
+//userName = getUserInfo();
+//console.log("Username: " + userName)
+
   return (
     <ThemeProvider theme={theme} >
       <BrowserRouter>
@@ -58,7 +83,7 @@ function App() {
           <TopNav />
           <SideNav />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home name={"Charles Testing"} />} />
             <Route path="/login" element={<Login />} />
             <Route path="/create-account" element={<CreateAccount />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
