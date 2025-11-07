@@ -1,20 +1,4 @@
 import LoadingMessage from "./common/forms/modals/LoadingMessage";
-<<<<<<< HEAD
-import { useAppSelector } from '../redux/hooks';
-
-
-function Home() {
-  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
-  console.log('Redux state userProfile:', userProfile);
-  return (
-    <div className="Home">
-      <h3>Welcome to MentorMatch</h3>
-      <p>The guidance you need, just a click away!</p>
-      <h3>Hello {userProfile?.contact?.displayName}</h3>
-    </div>
-  );
-}
-=======
 import './Home.css';
 import happyGroup from './happyGroup.png';
 import fakeMentor from './fakeMentorImg.png';
@@ -29,7 +13,6 @@ const Home: React.FC = () => {
             
             {/* Main Title */}
             <h1 className="main-title">EECS Mentor Match</h1>
->>>>>>> main
 
             {/* 2. WELCOME TEXT SECTION (White Background) */}
             <section className="intro-section">

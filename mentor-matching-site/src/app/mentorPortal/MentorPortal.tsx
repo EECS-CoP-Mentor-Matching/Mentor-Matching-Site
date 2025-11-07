@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAppSelector } from '../../redux/hooks';
 import CreateMentorProfile from "./components/CreateMentorProfile";
 import PortalNavigationBar from "../common/navigation/PortalNavigationBar";
 import { Box } from "@mui/material";
@@ -28,11 +29,14 @@ function MentorPortal() {
       default:
         return <MentorMatchHistory />;
     }
+    
   };
+  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
   return (
     <>
       <AuthenticatedView>
+        <h3>Hello {userProfile?.contact?.displayName}</h3>
         <Box>
           <PortalNavigationBar navItems={navItems} selected={selectedTab} onNavChange={handleNavChange} />
           {renderTabContent()}

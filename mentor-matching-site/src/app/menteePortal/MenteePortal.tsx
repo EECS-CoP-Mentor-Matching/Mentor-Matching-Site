@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAppSelector } from '../../redux/hooks';
 import CreateMenteeProfile from './components/createMenteeProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
@@ -31,11 +32,13 @@ function MenteePortal() {
   const backToCreate = () => {
     setSelectedPage(Pages.createProfile);
   }
+  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
   // if no profiles for the user
   return (
     <>
       <AuthenticatedView>
+        <h3>Hello {userProfile?.contact?.displayName}</h3>
         <PortalNavigationBar onNavChange={setSelectedPage} selected={selectedPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
         {selectedPage === Pages.activeProfiles &&
           <div className="mentee-portal">

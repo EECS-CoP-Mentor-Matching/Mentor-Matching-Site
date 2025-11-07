@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAppSelector } from '../../redux/hooks';
 import "./AdminPortal.css";
 import { useNavigate } from 'react-router-dom';
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
@@ -55,9 +56,11 @@ useEffect(() => {
     };
     saveSettings();
   }, [isTitleRequired, isContentRequired, isTypeRequired, isAttachmentAllowed]);
+  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
   return (
     <>
+    <h3>Hello {userProfile?.contact?.displayName}</h3>
         <FeedbackSettingsContext.Provider value={{
           isTitleRequired, setIsTitleRequired,
           isContentRequired, setIsContentRequired,
@@ -75,6 +78,7 @@ useEffect(() => {
         </FeedbackSettingsContext.Provider>
      
     </>
+    
   );
 }
 
