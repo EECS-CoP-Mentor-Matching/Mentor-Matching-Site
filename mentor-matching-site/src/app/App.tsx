@@ -27,22 +27,18 @@ import VerifyEmail from "./createAccount/components/VerifyEmail";
 import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
 import {initUserProfile, UserProfile} from "../types/userProfile";
 
-let userName; // Initialize user name, to be used to greet the user later
-
 async function getUserInfo() {
   const currentUser = await authService.getSignedInUser();
       if (currentUser && currentUser.emailVerified) {
         let userProfile: UserProfile;
         try {
           userProfile = await userService.getUserProfile(currentUser.uid);
-          userName = userProfile.contact.displayName;
-          console.log(userName);
           return userProfile.contact.displayName;
         } catch (error) {
           // reload recently verified email token
           await authService.refreshToken()
           userProfile = await userService.getUserProfile(currentUser.uid);
-          return userProfile;
+          //return userProfile;
         }
       }
     }
@@ -73,8 +69,13 @@ function App() {
     loadUserProfile();
   }, [dispatch]);
 
-//userName = getUserInfo();
-//console.log("Username: " + userName)
+let userName: string | undefined; // Initialize user name, to be used to greet the user later
+let userPromise =  getUserInfo();
+userPromise.then(
+  function(value) {userName = value;},
+  function(value) {userName = "User";}
+)
+console.log("Username: " + userName)
 
   return (
     <ThemeProvider theme={theme} >
@@ -83,7 +84,7 @@ function App() {
           <TopNav />
           <SideNav />
           <Routes>
-            <Route path="/" element={<Home name={"Charles Testing"} />} />
+            <Route path="/" element={<Home name={userName?.toString()} />} />
             <Route path="/login" element={<Login />} />
             <Route path="/create-account" element={<CreateAccount />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
