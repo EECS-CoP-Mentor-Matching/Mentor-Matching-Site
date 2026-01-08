@@ -20,7 +20,9 @@ function MenteeMessages({ backToPage }: MenteeMessagesProps) {
     const getMessages = async () => {
       const messages = await messagingService.getMessagesSentByMentee(menteeUID);
       if (messages.length === 0) {
-        backToPage();
+        console.log("No messages yet")
+        // If there are no messages, the below line executes and returns us to the previous page.  Commenting it out lets us see the Messages screen:
+        //backToPage();
       }
       setMenteeMessages(messages);
     }
