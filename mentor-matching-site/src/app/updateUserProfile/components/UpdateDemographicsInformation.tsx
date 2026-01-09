@@ -16,13 +16,16 @@ interface UpdateUserDemographicInformationProps {
 function UpdateUserDemographicInformation({ showEdit, showEditStyle }: UpdateUserDemographicInformationProps) {
   const selector = useAppSelector;
   const demographicInformation = selector(state => state.userProfile.userProfile.demographics);
+  // *** FIX 1: ADD SELECTOR FOR USER PREFERENCES ***
+  const userPreferences = selector(state => state.userProfile.userProfile.preferences);
 
   return (
     <>{demographicInformation !== undefined &&
       <FormGroupCols>
         <FormLabel>Demographic Information</FormLabel>
         <FormGroupRows>
-          <SelectRole onSelectDispatch={updateRole} currentValue={demographicInformation.role} />
+          {/* FIX 2: Corrected line from previous steps */}
+          <SelectRole onSelectDispatch={updateRole} currentValue={userPreferences.role} />
           <CheckBoxControlRedux checked={demographicInformation.lgbtqPlusCommunity} label="Identify as LGBTQ+" readOnly={!showEdit} onChangeDispatch={updateLgbtqPlus} />
           <SelectRacialIdentity currentValue={demographicInformation.racialIdentity} onSelectDispatch={updateRacialIdentity} />
         </FormGroupRows>

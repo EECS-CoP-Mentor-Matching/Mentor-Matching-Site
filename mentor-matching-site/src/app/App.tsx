@@ -25,10 +25,10 @@ import userService from '../service/userService';
 import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton';
 import VerifyEmail from "./createAccount/components/VerifyEmail";
 import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
-import {UserProfile} from "../types/userProfile";
+import {initUserProfile, UserProfile} from "../types/userProfile";
 
 function App() {
-
+  
   // set the user profile redux store on refresh
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -39,17 +39,23 @@ function App() {
         let userProfile: UserProfile;
         try {
           userProfile = await userService.getUserProfile(currentUser.uid);
-          return userProfile;
+          //return userProfile;
         } catch (error) {
           // reload recently verified email token
           await authService.refreshToken()
           userProfile = await userService.getUserProfile(currentUser.uid);
         }
         dispatch(updateProfile(userProfile));
+        
+        console.log('Dispatched userProfile to Redux:', userProfile);
+          } else {
+            console.log('No verified user found.');
       }
     };
     loadUserProfile();
   }, [dispatch]);
+
+
 
   return (
     <ThemeProvider theme={theme} >

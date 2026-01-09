@@ -5,6 +5,7 @@ import authService from "../../service/authService";
 import UnauthenticatedView from "../common/auth/UnauthenticatedView";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import { osuIcon } from "../../icons/icons";
 
 function TopNav() {
     const [showAuth, setShowAuth] = useState(false);
@@ -37,10 +38,13 @@ function TopNav() {
         {showAuth && <>
         <Button href="/login" onClick={logout}>Logout</Button>
       </>}
+      <div className="logo">
+                    {/* Note: In JSX, self-closing tags (like <img>) must end with a slash */}
+                    <a href="https://oregonstate.edu/" style={{ paddingTop: '2rem' }}>{osuIcon}</a>
+                </div>
         {!showAuth && <UnauthenticatedView>
         <div>
           <Button style={{ marginRight: '10px' }} href="/login">Login</Button>
-          <Button href="/create-account">Create Account</Button>
         </div>
       </UnauthenticatedView>
         }

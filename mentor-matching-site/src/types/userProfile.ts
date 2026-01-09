@@ -2,6 +2,8 @@ export interface UserProfileProps {
   userProfile: UserProfile;
 }
 
+export type UserRole = "Mentee" | "Mentor" | "Both" | "Admin" | "none";
+
 export interface UserProfile {
   UID: string
   contact: UserContactInformation
@@ -30,13 +32,14 @@ export const initUserProfile = () => {
 }
 
 export interface UserPreferences {
-  role: string
+  role: UserRole
   useRacialIdentityForMatching: boolean
   useLgbtqPlusCommunityForMatching: boolean
 }
 
 export const initUserPreferences = () => {
   return {
+    role: "none",
     useRacialIdentityForMatching: false,
     useLgbtqPlusCommunityForMatching: false
   } as UserPreferences
@@ -55,7 +58,6 @@ export const initUserContactInformation = () => {
     email: "",
     timeZone: "",
     displayName: "",
-    role: "",
     pronouns: "",
     userBio: ""
   } as UserContactInformation
@@ -78,7 +80,6 @@ export const initUserPersonalInformation = () => {
 }
 
 export interface UserDemographicInformation {
-  role: string
   racialIdentity: string
   lgbtqPlusCommunity: boolean
 }

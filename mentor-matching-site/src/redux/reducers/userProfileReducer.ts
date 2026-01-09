@@ -1,6 +1,6 @@
 // This reducer will handle the user profile state:
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { UserPreferences, UserPersonalInformation, UserProfile, UserContactInformation, UserDemographicInformation, initUserProfile, UserEducationInformation, UserAccountSettings, DateOfBirth } from "../../types/userProfile";
+import { UserPreferences, UserPersonalInformation, UserProfile, UserRole, UserContactInformation, UserDemographicInformation, initUserProfile, UserEducationInformation, UserAccountSettings, DateOfBirth } from "../../types/userProfile";
 import { RootState } from "../store";
 
 const initialState = {
@@ -49,7 +49,7 @@ export const userProfileSlice = createSlice({
     updateMentorPortalEnabled: (state, action: PayloadAction<boolean>) => { state.userProfile.accountSettings.mentorPortalEnabled = action.payload; },
     // user preferences 
     updateUserPreferences: (state, action: PayloadAction<UserPreferences>) => { state.userProfile.preferences = action.payload; },
-    updateRole: (state, action: PayloadAction<string>) => { state.userProfile.preferences.role = action.payload; },
+    updateRole: (state, action: PayloadAction<UserRole>) => { state.userProfile.preferences.role = action.payload; },
     updateUseRacialIdentityForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.preferences.useRacialIdentityForMatching = action.payload; },
     updateUseLgbtqPlusCommunityForMatching: (state, action: PayloadAction<boolean>) => { state.userProfile.preferences.useLgbtqPlusCommunityForMatching = action.payload; },
     // profile image
