@@ -48,7 +48,7 @@ async function createNewUserAsync(user: User, userProfile: UserProfile): Promise
 
 async function deleteUserProfileAsync(uid: string) {
   const db = getFirestore(app);
-  const userDocRef = doc(db, "users", uid);
+  const userDocRef = doc(db, "userProfile", uid);
   const matchHistoryCollection = collection(db, `users/${uid}/matchHistory`);
   const messagesCollection = collection(db, `users/${uid}/messages`);
   const reportsCollection = collection(db, "reports");
