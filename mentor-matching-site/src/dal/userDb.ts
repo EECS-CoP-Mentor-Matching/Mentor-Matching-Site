@@ -1,7 +1,8 @@
 import { MatchHistoryItem, UserAccountSettings, UserProfile } from "../types/userProfile";
 import { app, db } from "../firebaseConfig";
 import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore } from "firebase/firestore";
-import { User } from "firebase/auth";
+import { deleteUser, getAuth, User } from "firebase/auth";
+
 
 const collectionName = "userProfile";
 
@@ -48,7 +49,7 @@ async function createNewUserAsync(user: User, userProfile: UserProfile): Promise
 
 async function deleteUserProfileAsync(uid: string) {
   const db = getFirestore(app);
-  const userDocRef = doc(db, "users", uid);
+  const userDocRef = doc(db, "userProfile", uid);
   const matchHistoryCollection = collection(db, `users/${uid}/matchHistory`);
   const messagesCollection = collection(db, `users/${uid}/messages`);
   const reportsCollection = collection(db, "reports");
@@ -79,9 +80,16 @@ async function deleteUserProfileAsync(uid: string) {
   });
 
   // Delete user from authentication
-  // const auth = getAuth();
-  // const user = await auth.getUser(uid);
-  // await deleteUser(user);
+  const auth = getAuth();
+  const user = await auth.currentUser;
+  if (user)
+  {
+    await deleteUser(user);
+  }
+  else
+  {
+    console.log("Error deleting user auth")
+  }
 
   console.log(`UserProfile with UID ${uid} and related data deleted successfully.`);
 }

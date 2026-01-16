@@ -32,25 +32,35 @@ function TopNav() {
     }, [showAuth, setShowAuth]);
 
   // if not logged in, show login button
-  return (
-    <div className="top-nav">
-      <Button onClick={openSideNav}>{hamburger}</Button>
-        {showAuth && <>
-        <Button href="/login" onClick={logout}>Logout</Button>
-      </>}
-      <div className="logo">
-                    {/* Note: In JSX, self-closing tags (like <img>) must end with a slash */}
-                    <a href="https://oregonstate.edu/" style={{ paddingTop: '2rem' }}>{osuIcon}</a>
-                </div>
-        {!showAuth && <UnauthenticatedView>
-        <div>
-          <Button style={{ marginRight: '10px' }} href="/login">Login</Button>
+return (
+  <div className="top-nav">
+    {/* 1. Hamburger Menu (Far Left) */}
+    <Button onClick={openSideNav}>{hamburger}</Button>
+
+    {/* 2. Logo (Center) */}
+    <div className="logo">
+      <a href="https://oregonstate.edu/" style={{ paddingTop: '2rem' }}>{osuIcon}</a>
+    </div>
+
+    {/* 3. Auth Actions (Far Right) */}
+    {/* Move the Logout button here so it shares the same position as Login */}
+    {showAuth ? (
+      <div className="log-button">
+        <Button style={{ marginRight: '10px' }} href="/login" onClick={logout}>
+          Logout
+        </Button>
+      </div>
+    ) : (
+      <UnauthenticatedView>
+        <div className="log-button">
+          <Button style={{ marginRight: '10px' }} href="/login">
+            Login
+          </Button>
         </div>
       </UnauthenticatedView>
-        }
-
-    </div>
-  )
+    )}
+  </div>
+);
 }
 
 export default TopNav;

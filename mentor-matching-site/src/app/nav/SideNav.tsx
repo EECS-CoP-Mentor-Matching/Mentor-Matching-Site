@@ -43,7 +43,7 @@ return (
     <div className="side-nav" id="sideNav">
       <button className="closebtn" onClick={closeNav}>&times;</button>
       <div className="side-nav-items">
-        <a href="/" style={{ paddingTop: '2rem' }}>{osuIcon}</a>
+        <a href="https://oregonstate.edu/" style={{ paddingTop: '2rem' }}>{osuIcon}</a>
         
         {/* === CONDITIONAL PORTAL LINKS === */}
         
