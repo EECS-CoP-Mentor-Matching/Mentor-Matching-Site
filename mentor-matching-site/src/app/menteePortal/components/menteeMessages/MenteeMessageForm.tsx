@@ -24,7 +24,7 @@ function MenteeMessageForm() {
                     type="text"
                     name="recipient"
                 />
-                <button type="submit" onClick={SendMessageHandler}></button>
+                <input type="submit" onClick={SendMessageHandler} />
             </form>
         </ContentContainer>
     );
