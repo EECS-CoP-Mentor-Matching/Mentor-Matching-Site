@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ContentContainer from "../../../common/ContentContainer";
-import { Box, List } from "@mui/material";
+import { Box, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
 import { messagingService } from "../../../../service/messagingService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { DocItem } from "../../../../types/types";
@@ -12,63 +12,52 @@ interface MenteeMessagesProps {
 }
 
 function MenteeMessages({ backToPage }: MenteeMessagesProps) {
+  // State variable for received mentee messages:
+  const [menteeMessagesInbound, setMenteeMessagesInbound] = useState<DocItem<Message>[]>([]);
+  // State variable for messages sent by mentee
   const [menteeMessagesSent, setMenteeMessagesSent] = useState<DocItem<Message>[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // 1. Get the profile
-  const userProfile = useAppSelector(state => state.userProfile.userProfile);
-  
-  // 2. LOG THE PROFILE TO SEE THE EXACT KEY NAME
-  console.log("MENTEE MESSAGES CHECK - Profile:", userProfile);
+  const selector = useAppSelector;
+  const menteeUID = selector(state => state.userProfile.userProfile.UID);
 
   // Get messages sent by this mentee:
   useEffect(() => {
+    const getMessagesInbound = async () => {
+      const messages = await messagingService.getMessagesSentToMentee(menteeUID);
+      if (messages.length === 0) {
+        console.log("No inbound messages yet");
+      }
+      setMenteeMessagesInbound(messages);
+    }
     const getMessagesSent = async () => {
-      // Try both uppercase and lowercase just in case
-      const menteeUID = userProfile?.UID || (userProfile as any)?.uid || (userProfile as any)?.id;
-
-      if (!menteeUID) {
-        console.log("MENTEE MESSAGES: No UID found yet...");
-        return;
+      const messages = await messagingService.getMessagesSentByMentee(menteeUID);
+      if (messages.length === 0) {
+        console.log("No messages yet")
+        // If there are no messages, the below line executes and returns us to the previous page.  Commenting it out lets us see the Messages screen:
+        //backToPage();
       }
-
-      setIsLoading(true);
-      try {
-        console.log("MENTEE MESSAGES: Querying for ID:", menteeUID);
-        const messages = await messagingService.getMessagesSentByMentee(menteeUID);
-        setMenteeMessagesSent(messages);
-      } catch (error) {
-        console.error("MENTEE MESSAGES: Query Failed", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
+      setMenteeMessagesSent(messages);
+    }
+    getMessagesInbound();
     getMessagesSent();
-  }, [userProfile]); // Watch the whole profile for changes
+  }, [setMenteeMessagesInbound, setMenteeMessagesSent])
 
   return (
     <ContentContainer title="Messages">
-      {isLoading ? (
-        <Box>Loading messages...</Box>
-      ) : menteeMessagesSent.length > 0 ? (
+      {menteeMessagesInbound.length > 0 &&
         <Box>
           <List>
-            {menteeMessagesSent.map((message, index) => (
-              <ViewMenteeMessage 
-                key={index}
-                message={message} 
-                index={index} 
-                messagesLength={menteeMessagesSent.length}
-              />
+            {menteeMessagesInbound.map((message, index) => (
+              <ViewMenteeMessage message={message} index={index} messagesLength={menteeMessagesInbound.length}/>
             ))}
           </List>
         </Box>
-      ) : (
+      }
+      {menteeMessagesInbound.length === 0 &&
         <Box>
           <div>No messages received...</div>
         </Box>
-      )}
+      }
+      <a href="/send-message">Send New Message</a>
     </ContentContainer>
   );
 }
