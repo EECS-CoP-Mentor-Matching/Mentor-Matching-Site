@@ -41,8 +41,6 @@ function MenteeMessages({ backToPage }: MenteeMessagesProps) {
     getMessagesSent();
   }, [setMenteeMessagesInbound, setMenteeMessagesSent])
 
-  
-
   return (
     <ContentContainer title="Messages">
       {menteeMessagesInbound.length > 0 &&
@@ -59,6 +57,7 @@ function MenteeMessages({ backToPage }: MenteeMessagesProps) {
           <div>No messages received...</div>
         </Box>
       }
+      <a href="/send-message">Send New Message</a>
     </ContentContainer>
   );
 }
