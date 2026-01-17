@@ -20,10 +20,10 @@ function MentorPortal() {
 
   const renderTabContent = () => {
     switch (selectedTab) {
-      case 'Create Profile':
-        return <CreateMentorProfile />;
       case 'Active Profiles':
         return <ActiveProfiles />;
+      case 'Create Profile':
+        return <CreateMentorProfile />;
       case 'Matches':
         return <MentorMatches />;
       default:

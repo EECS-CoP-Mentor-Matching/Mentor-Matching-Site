@@ -1,45 +1,25 @@
-import { useEffect, useState } from "react"; // NEW
-import authService from "../../service/authService"; // NEW (Adjust path if needed)
-import userService from "../../service/userService"; // NEW (Adjust path if needed)
-import { UserProfile } from "../../types/userProfile"; // NEW (Adjust path if needed)
-import { MatchRole } from "../../types/matchProfile"; // NEW (Assuming this has 'Admin')
-
+import { useAppSelector } from "../../redux/hooks"; // USE THIS
+import authService from "../../service/authService";
+import userService from "../../service/userService";
+import { UserProfile } from "../../types/userProfile";
+import { MatchRole } from "../../types/matchProfile";
 import { osuIcon } from "../../icons/icons";
-// REMOVE: import AuthenticatedView from "../common/auth/AuthenticatedView";
 import "./SideNav.css";
 
 function SideNav() {
-  const [userRole, setUserRole] = useState<string | null>(null); // NEW
+  // 1. REMOVED: useState and useEffect
+  // 2. ADDED: This selector listens to the Redux store you updated in Login.tsx
+  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
+  const userRole = userProfile.preferences?.role;
 
   function closeNav() {
-    // ... existing closeNav logic ...
     var sideNav = document.getElementById("sideNav");
     if (sideNav != null) {
       sideNav.style.width = "0";
     }
   }
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      const user = await authService.getSignedInUser();
-      if (user) {
-        try {
-          // Fetch the user profile and extract the nested role
-          const userProfile: UserProfile = await userService.getUserProfile(user.uid);
-          const role = userProfile.preferences?.role;
-          setUserRole(role || null);
-        } catch (error) {
-          // Handle errors (e.g., user profile not yet created)
-          setUserRole(null);
-        }
-      } else {
-        setUserRole(null);
-      }
-    };
-    fetchUserRole();
-  }, []); // Empty dependency array ensures this runs only on mount
-
-return (
+  return (
     <div className="side-nav" id="sideNav">
       <button className="closebtn" onClick={closeNav}>&times;</button>
       <div className="side-nav-items">
@@ -63,7 +43,7 @@ return (
         )}
         
         {/* Universal Authenticated Links (Shows for any logged-in user) */}
-        {userRole && (
+        {(userRole === MatchRole.mentor || userRole === MatchRole.mentee) && (
           <a href="/update-profile">Update Profile</a>
         )}
         
