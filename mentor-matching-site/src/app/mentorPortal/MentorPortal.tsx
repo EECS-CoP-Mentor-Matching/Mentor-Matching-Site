@@ -12,18 +12,18 @@ import TopNav from "../nav/TopNav"; // Make sure to import
 import SideNav from "../nav/SideNav"; // Make sure to import
 
 function MentorPortal() {
-  const navItems = ['Create Profile', 'Active Profiles', 'Matches', 'Match History'];
-  const [selectedTab, setSelectedTab] = useState('Create Profile');
+  const navItems = ['Active Profiles', 'Create Profile', 'Matches', 'Match History'];
+  const [selectedTab, setSelectedTab] = useState('Active Profiles');
   const handleNavChange = (newValue: string) => {
     setSelectedTab(newValue);
   };
 
   const renderTabContent = () => {
     switch (selectedTab) {
-      case 'Active Profiles':
-        return <ActiveProfiles />;
       case 'Create Profile':
         return <CreateMentorProfile />;
+      case 'Active Profiles':
+        return <ActiveProfiles />;
       case 'Matches':
         return <MentorMatches />;
       default:
@@ -36,14 +36,16 @@ function MentorPortal() {
   return (
     <>
       <AuthenticatedView>
-        <h3>Hello {userProfile?.contact?.displayName}</h3>
         <Box>
           <PortalNavigationBar navItems={navItems} selected={selectedTab} onNavChange={handleNavChange} />
+          <h3>Hello {userProfile?.contact?.displayName}</h3>
           {renderTabContent()}
         </Box>
+        
       </AuthenticatedView>
       <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
     </>
+
   );
 }
 

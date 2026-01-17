@@ -36,24 +36,21 @@ function MenteePortal() {
     <>
       <AuthenticatedView>
         <div className="portal-container">
-          {/* GATE: If userProfile is null, we show a loading state. 
-            This prevents the sub-components from mounting with empty data, 
-            which is why you were seeing a blank screen until refreshing.
-          */}
+          
           {!userProfile ? (
             <div className="loading-container" style={{ padding: '2rem', textAlign: 'center' }}>
               <h3>Loading your profile...</h3>
             </div>
           ) : (
             <>
-              <h3>Hello {userProfile?.contact?.displayName || "User"}</h3>
-              
-              <PortalNavigationBar 
-                onNavChange={setSelectedPage} 
-                selected={selectedPage} 
-                navItems={navUtilities.navItemsFromEnum(Pages)} 
-              />
 
+            <PortalNavigationBar 
+              onNavChange={setSelectedPage} 
+              selected={selectedPage} 
+              navItems={navUtilities.navItemsFromEnum(Pages)} 
+            />
+
+              <h3>Hello {userProfile?.contact?.displayName || "User"}</h3>
               {/* Conditional Rendering Blocks */}
               {selectedPage === Pages.activeProfiles.toString() &&
                 <div className="mentee-portal">
