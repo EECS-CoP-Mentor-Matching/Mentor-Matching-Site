@@ -26,6 +26,7 @@ import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton';
 import VerifyEmail from "./createAccount/components/VerifyEmail";
 import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
 import {initUserProfile, UserProfile} from "../types/userProfile";
+import MenteeMessageForm from './menteePortal/components/menteeMessages/MenteeMessageForm';
 
 function App() {
   
@@ -70,6 +71,7 @@ function App() {
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/new-profile" element={<NewUserProfile />} />
             <Route path="/mentee-portal" element={<MenteePortal />} />
+            <Route path="/send-message" element={<MenteeMessageForm />} />
             <Route path="/admin-portal" element={<AdminPortal />} />
             <Route path="/mentor-portal" element={<MentorPortal />} />
             <Route path="/update-profile" element={<UpdateUserProfile />} />

@@ -68,7 +68,6 @@ async function getMessagesSentByMenteeAsync(menteeUID: string): Promise<DocItem<
 async function getMessagesSentToMenteeAsync(menteeUID: string): Promise<DocItem<Message>[]> {
   const messages = (await queryMany<Message>(collectionName,
     where("menteeUID", "==", menteeUID))).results;
-  console.log("Fetching messages for UID: " + menteeUID + messages);
 
   if (messages.length === 0) return messages;
 
