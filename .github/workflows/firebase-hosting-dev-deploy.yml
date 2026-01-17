@@ -10,7 +10,34 @@ on:
       - main
 
 jobs:
+
+  # Preview deploy for PRs 
+  deploy_preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+
+      # Build
+      - name: Build
+        env: 
+          CI: false # continue build with warnings
+        run: |
+          cd ./mentor-matching-site
+          npm ci && npm run build
+      
+      # Deploy
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_SITE }}"
+          projectId: eecs-cop-mentor-matching-site
+          channelId: pr-${{ github.event.pull_request.number }}
+          entryPoint: ./mentor-matching-site
+
+  # Live deploy for main branch
   deploy_live_website:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
