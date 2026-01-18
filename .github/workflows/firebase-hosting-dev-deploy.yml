@@ -50,7 +50,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ✅ Preview deployed: https://pr-${{ github.event.pull_request.number }}--eecs-cop-mentor-matching-site.web.app
+            Preview for this PR is available at: ${{ steps.deploy_preview.outputs.details_url }}
 
   # Delete the preview channel using Firebase CLI
   cleanup_preview:
