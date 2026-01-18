@@ -12,12 +12,13 @@ function TopNav() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // 1. Get the email from Redux
+  // 1. Get the user information
   const userProfile = useAppSelector((state) => state.userProfile.userProfile);
-  const userEmail = userProfile?.contact?.email;
+ 
 
-  // 2. Determine status: If there's an email string, you are logged in.
-  const isLoggedIn = !!(userEmail && userEmail !== "");
+  // 2. Determine status: If there's an userid, you are logged in.
+  const isLoggedIn = !!(userProfile?.UID); 
+
 
   function openSideNav() {
     var sideNav = document.getElementById("sideNav");
