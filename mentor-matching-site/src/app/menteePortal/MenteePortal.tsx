@@ -5,14 +5,10 @@ import "./MenteePortal.css"
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 import ActiveMenteeProfiles from './components/activeMenteeProfiles/ActiveMenteeProfiles';
-import ViewMatches from './components/activeMenteeProfiles/components/ViewMatches';
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import { useNavigate } from 'react-router-dom';
 import MenteeMessages from './components/menteeMessages/MenteeMessages';
-import TopNav from "../nav/TopNav"; // Make sure to import
-import SideNav from "../nav/SideNav"; // Make sure to import
-// in the match history, consolidate when multiple matches are made with the same mentor
 
 export enum Pages {
   createProfile = "Create Profile",
@@ -21,40 +17,61 @@ export enum Pages {
 }
 
 function MenteePortal() {
-  const [selectedPage, setSelectedPage] = useState(Pages.activeProfiles.toString());
+  // Ensure the state type is explicitly the Enum string value
+  const [selectedPage, setSelectedPage] = useState<string>(Pages.activeProfiles.toString());
 
   const navigate = useNavigate();
 
   const backToActive = () => {
-    setSelectedPage(Pages.activeProfiles);
+    setSelectedPage(Pages.activeProfiles.toString());
   }
 
   const backToCreate = () => {
-    setSelectedPage(Pages.createProfile);
+    setSelectedPage(Pages.createProfile.toString());
   }
+  
   const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
-  // if no profiles for the user
   return (
     <>
       <AuthenticatedView>
-        <h3>Hello {userProfile?.contact?.displayName}</h3>
-        <PortalNavigationBar onNavChange={setSelectedPage} selected={selectedPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
-        {selectedPage === Pages.activeProfiles &&
-          <div className="mentee-portal">
-            <ActiveMenteeProfiles backToPage={backToCreate} />
-          </div>
-        }
-        {selectedPage === Pages.createProfile &&
-          <div className="mentee-portal">
-            <CreateMenteeProfile backToPage={backToActive} />
-          </div>
-        }
-        {selectedPage === Pages.menteeMessages &&
-          <div className="mentee-portal">
-            <MenteeMessages backToPage={backToActive} />
-          </div>
-        }
+        <div className="portal-container">
+          
+          {!userProfile ? (
+            <div className="loading-container" style={{ padding: '2rem', textAlign: 'center' }}>
+              <h3>Loading your profile...</h3>
+            </div>
+          ) : (
+            <>
+
+            <PortalNavigationBar 
+              onNavChange={setSelectedPage} 
+              selected={selectedPage} 
+              navItems={navUtilities.navItemsFromEnum(Pages)} 
+            />
+
+              <h3>Hello {userProfile?.contact?.displayName || "User"}</h3>
+              {/* Conditional Rendering Blocks */}
+              {selectedPage === Pages.activeProfiles.toString() &&
+                <div className="mentee-portal">
+                  <ActiveMenteeProfiles backToPage={backToCreate} />
+                </div>
+              }
+
+              {selectedPage === Pages.createProfile.toString() &&
+                <div className="mentee-portal">
+                  <CreateMenteeProfile backToPage={backToActive} />
+                </div>
+              }
+
+              {selectedPage === Pages.menteeMessages.toString() &&
+                <div className="mentee-portal">
+                  <MenteeMessages backToPage={backToActive} />
+                </div>
+              }
+            </>
+          )}
+        </div>
       </AuthenticatedView>
       <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
     </>
