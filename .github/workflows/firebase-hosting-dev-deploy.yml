@@ -36,7 +36,9 @@ jobs:
           npm ci && npm run build
       
       # Deploy
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy Preview
+        id: deploy_preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_SITE }}"
           projectId: eecs-cop-mentor-matching-site
@@ -91,7 +93,8 @@ jobs:
           npm ci && npm run build
       
       # Deploy
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy Live
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_SITE }}"
           projectId: eecs-cop-mentor-matching-site
