@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 
 function MenteeMessageForm() {
 
+    // A useNavigate object allows us to move the user to another page.  We'll use this later when they click the button:
+    const redirectToSite = useNavigate();
+
     // Get the current user's profile
     const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
@@ -34,6 +37,7 @@ function MenteeMessageForm() {
             sentOn: 0
         }
         messagingService.sendMessage(message);
+        redirectToSite("/mentee-portal");
     }
 
     // Update state whenever the user types in the boxes:
