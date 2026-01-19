@@ -30,13 +30,14 @@ function MenteeMessageForm() {
             mentorUID: "DEBUG",
             mentorProfileId: "DEBUG",
             message: messageDetails.message,
-            mentorReply: "1",
+            mentorReply: "0",
             technicalInterest: "DEBUG",
             professionalInterest: "DEBUG",
             sentByUID: userProfile?.UID,
             sentOn: 0
         }
         messagingService.sendMessage(message);
+        alert("Message sent!")
         redirectToSite("/mentee-portal");
     }
 
