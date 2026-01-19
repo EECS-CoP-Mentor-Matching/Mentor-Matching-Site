@@ -4,8 +4,11 @@ import { useAppSelector } from "../../../../redux/hooks";
 import { DocItem } from "../../../../types/types";
 import { Message } from "../../../../types/matchProfile";
 import ContentContainer from "../../../common/ContentContainer";
+import { Navigate } from "react-router-dom";
 
 function MenteeMessageForm() {
+
+    const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
     const [messageDetails, setMessageDetails] = useState({
         recipient: "",
@@ -17,14 +20,14 @@ function MenteeMessageForm() {
         console.log("Send message button pressed\n" + messageDetails.recipient + "\n" + messageDetails.message);
         let message = {
             menteeUID: messageDetails.recipient,
-            menteeProfileId: "vSXEbCikuXO6kzSqI22Dmm27Lbh1",
-            mentorUID: "vSXEbCikuXO6kzSqI22Dmm27Lbh1",
-            mentorProfileId: "vSXEbCikuXO6kzSqI22Dmm27Lbh1",
+            menteeProfileId: "DEBUG",
+            mentorUID: "DEBUG",
+            mentorProfileId: "DEBUG",
             message: messageDetails.message,
-            mentorReply: "vSXEbCikuXO6kzSqI22Dmm27Lbh1",
-            technicalInterest: "Debug",
-            professionalInterest: "Debug",
-            sentByUID: "vSXEbCikuXO6kzSqI22Dmm27Lbh1",
+            mentorReply: "1",
+            technicalInterest: "DEBUG",
+            professionalInterest: "DEBUG",
+            sentByUID: userProfile?.UID,
             sentOn: 0
         }
         messagingService.sendMessage(message);
@@ -53,6 +56,7 @@ function MenteeMessageForm() {
                         name="recipient"
                         value={messageDetails.recipient}
                         onChange={changeMessageHandler}
+                        required
                     />
                 </label>
                 <br />
