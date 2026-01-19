@@ -4,17 +4,20 @@ import { useAppSelector } from "../../../../redux/hooks";
 import { DocItem } from "../../../../types/types";
 import { Message } from "../../../../types/matchProfile";
 import ContentContainer from "../../../common/ContentContainer";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function MenteeMessageForm() {
 
+    // Get the current user's profile
     const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
+    // Initialize state to hold the message details
     const [messageDetails, setMessageDetails] = useState({
         recipient: "",
         message: ""
     });
 
+    // Create a Message object based on the user's input and send the message
     function sendMessageHandler(e: any) {
         e.preventDefault();
         console.log("Send message button pressed\n" + messageDetails.recipient + "\n" + messageDetails.message);
@@ -33,6 +36,7 @@ function MenteeMessageForm() {
         messagingService.sendMessage(message);
     }
 
+    // Update state whenever the user types in the boxes:
     function changeMessageHandler(e: any) {
         const inputName = e.target.name;
         const inputValue = e.target.value;
