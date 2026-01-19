@@ -27,6 +27,12 @@ function MenteeMessageForm() {
     return (
         <ContentContainer>
             <form>
+                <h2>
+                    DEBUG! Use these IDs in place of the user name for now.  This is just for testing the send/receive functions for now. <br />
+                    Charles: vSXEbCikuXO6kzSqI22Dmm27Lbh1 <br />
+                    Andrew: LsWSk3HnDJPIuKElzd7u0zw4LYj2 <br />
+                    Aimee: iqB5Og7bTwSYhdnKRMNjNRQc6RC3 <br />
+                </h2>
                 <label>
                     Recipient's Name:
                     <input
