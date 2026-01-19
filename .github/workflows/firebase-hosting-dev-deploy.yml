@@ -10,11 +10,22 @@ on:
       - main
 
 jobs:
-  deploy_live_website:
+
+  # Preview deploy for PRs 
+  deploy_preview:
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      # Cache node_modules (speed up build time)
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: mentor-matching-site/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('mentor-matching-site/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       # Build
       - name: Build
@@ -25,7 +36,65 @@ jobs:
           npm ci && npm run build
       
       # Deploy
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy Preview
+        id: deploy_preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_SITE }}"
+          projectId: eecs-cop-mentor-matching-site
+          channelId: pr-${{ github.event.pull_request.number }}
+          entryPoint: ./mentor-matching-site
+
+      # Comment Link in PR
+      - name: Comment Preview URL on PR
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Preview for this PR is available at: ${{ steps.deploy_preview.outputs.details_url }}
+
+  # Delete the preview channel using Firebase CLI
+  cleanup_preview:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Delete Firebase Preview
+        run: |
+          npm install -g firebase-tools
+          firebase hosting:channel:delete pr-${{ github.event.pull_request.number }} --project eecs-cop-mentor-matching-site --force
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+    
+  # Live deploy for main branch
+  deploy_live_website:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Cache node_modules (speed up build time)
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: mentor-matching-site/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('mentor-matching-site/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Build
+      - name: Build
+        env: 
+          CI: false # continue build with warnings
+        run: |
+          cd ./mentor-matching-site
+          npm ci && npm run build
+      
+      # Deploy
+      - name: Deploy Live
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EECS_COP_MENTOR_MATCHING_SITE }}"
           projectId: eecs-cop-mentor-matching-site
