@@ -1,3 +1,4 @@
+import { queryMany } from "./commonDb";
 import { MatchHistoryItem, UserAccountSettings, UserProfile } from "../types/userProfile";
 import { app, db } from "../firebaseConfig";
 import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore } from "firebase/firestore";
@@ -123,13 +124,19 @@ async function deleteUserProfile(uid: string): Promise<any> {
 
 }
 
+async function getAllUserProfilesAsync(): Promise<UserProfile[]> {
+  const results = await queryMany<UserProfile>(collectionName);
+  return results.results.map((doc) => doc.data as UserProfile);
+}
+
 const userDb = {
   updateUserProfileImage,
   createNewUserAsync,
   userExistsAsync,
   getUserProfileAsync,
   updateUserProfileAsync,
-  deleteUserProfileAsync
+  deleteUserProfileAsync,
+  getAllUserProfilesAsync
 }
 
 export default userDb;
