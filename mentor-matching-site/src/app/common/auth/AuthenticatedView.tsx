@@ -41,7 +41,7 @@ function AuthenticatedView({ children, mentor, mentee, admin }: AuthenticatedVie
               setShowMentor(true);
             }
             if (role == MatchRole.admin || role == MatchRole.both){
-              setShowMentor(true);
+              setShowAdmin(true);
             }
             setShowAuth(true);
           } else {
