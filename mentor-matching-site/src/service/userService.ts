@@ -32,13 +32,18 @@ async function userExists(email: string): Promise<boolean> {
   return await userDb.userExistsAsync(email);
 }
 
+async function getAllUserProfiles(): Promise<UserProfile[]> {
+  return await userDb.getAllUserProfilesAsync();
+}
+
 const userService = {
   updateProfileImageUrl,
   createNewUser,
   getUserProfile,
   updateUserProfile,
   userExists,
-  deleteUserProfile // Added method
+  deleteUserProfile,
+  getAllUserProfiles
 }
 
 export default userService;
