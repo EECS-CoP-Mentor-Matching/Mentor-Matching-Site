@@ -16,6 +16,7 @@ function MenteeMessageForm() {
     // Get the current user's profile
     const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
+    // State and function for a list of all users in the database.  TODO: Later, we may want to filter this to only users matched to this one.
     const [usersList, setUsersList] = useState<UserProfile[]>([]);
 
     const getUserList = async () => {
@@ -30,10 +31,6 @@ function MenteeMessageForm() {
     useEffect(() => {
         getUserList();
     }, []);
-
-
-    console.log("Received list of users: ");
-    console.log(usersList);
 
     // Initialize state to hold the message details
     const [messageDetails, setMessageDetails] = useState({
@@ -78,13 +75,16 @@ function MenteeMessageForm() {
                 </h2>
                 <label>
                     Recipient's Name:
-                    <input
-                        type="text"
+                    <select
                         name="recipient"
                         value={messageDetails.recipient}
                         onChange={changeMessageHandler}
                         required
-                    />
+                    >
+                    { // Create the select dropdown list from our usersList; mapping each user to a dropdown selection.
+                        usersList.map(user => <option value={user.UID}>{user.contact.displayName}</option>)
+                    }
+                    </select>
                 </label>
                 <br />
                 <label>
