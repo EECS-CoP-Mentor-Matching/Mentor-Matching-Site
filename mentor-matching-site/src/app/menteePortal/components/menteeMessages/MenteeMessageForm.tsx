@@ -5,6 +5,8 @@ import { DocItem } from "../../../../types/types";
 import { Message } from "../../../../types/matchProfile";
 import ContentContainer from "../../../common/ContentContainer";
 import { useNavigate } from "react-router-dom";
+import { UserProfile } from "../../../../types/userProfile";
+import userService from '../../../../service/userService';
 
 function MenteeMessageForm() {
 
@@ -13,6 +15,25 @@ function MenteeMessageForm() {
 
     // Get the current user's profile
     const userProfile = useAppSelector((state) => state.userProfile.userProfile);
+
+    const [usersList, setUsersList] = useState<UserProfile[]>([]);
+
+    const getUserList = async () => {
+        try {
+            setUsersList(await userService.getAllUserProfiles());
+        }
+        catch (error) {
+            console.log("Error getting recipient list: " + error)
+        }
+    };
+
+    useEffect(() => {
+        getUserList();
+    }, []);
+
+
+    console.log("Received list of users: ");
+    console.log(usersList);
 
     // Initialize state to hold the message details
     const [messageDetails, setMessageDetails] = useState({
