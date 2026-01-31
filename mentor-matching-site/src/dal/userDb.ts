@@ -55,6 +55,12 @@ async function deleteUserProfileAsync(uid: string) {
   const messagesCollection = collection(db, `users/${uid}/messages`);
   const reportsCollection = collection(db, "reports");
 
+  // Save the user's profile just in case we want to restore it later:
+  const userProfile = await getUserProfileAsync(uid);
+  if (userProfile) {
+    await setDoc(doc(db, "userProfileRestore", uid), userProfile)
+  }
+
   // Delete user document
   await deleteDoc(userDocRef);
 
@@ -81,6 +87,7 @@ async function deleteUserProfileAsync(uid: string) {
   });
 
   // Delete user from authentication
+  // TODO: This works for now; but CoPilot suggested that we may not want to delete the currently signed in user (i.e. if we are logged in as an admin account)
   const auth = getAuth();
   const user = await auth.currentUser;
   if (user)

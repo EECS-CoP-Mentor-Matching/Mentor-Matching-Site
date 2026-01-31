@@ -15,6 +15,7 @@ import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
 function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);
+  const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // State to control the visibility of the confirmation dialog
   const dispatch = useAppDispatch();
   const selector = useAppSelector;
@@ -91,12 +92,7 @@ function UpdateUserProfile() {
   const dataDisplay = (
     <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
       <UploadUserProfileImage userProfile={{ ...userProfileState, imageUrl: userProfileState.imageUrl }} />
-      {!showEdit &&
-        <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
-      }
-      {showEdit &&
-        <Button onClick={saveChanges}>Save Profile</Button>
-      }
+      
       <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} />
       <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} />
       <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} />
@@ -110,10 +106,19 @@ function UpdateUserProfile() {
       <AuthenticatedView>
         {dataIsLoading()}
         {deleteAccountDialog}
+        {!showEdit &&
+        <Button onClick={() => { setShowEdit(!showEdit) }}>Edit Profile</Button>
+        }
+        {showEdit &&
+          <Button onClick={saveChanges}>Save Profile</Button>
+        }
+        <div style={{fontSize: '20px', textDecoration: "underline", margin: '4px' }} onClick={() => setShowDeleteButton(true)}>Looking to delete your account?</div>
         {/* Position the Delete Account button according to layout preference */}
-        <Button variant="outlined" color="error" onClick={handleOpenDeleteDialog} style={{ marginTop: '20px' }}>
-          Delete Account
-        </Button>
+        {showDeleteButton &&
+          <Button variant="outlined" color="error" onClick={handleOpenDeleteDialog} style={{ marginTop: '20px' }}>
+            Delete Account
+          </Button>
+        }
       </AuthenticatedView>
       <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
     </>
