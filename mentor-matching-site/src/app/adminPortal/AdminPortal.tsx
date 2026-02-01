@@ -61,7 +61,7 @@ useEffect(() => {
 
   return (
     <>
-    <h3>Hello {userProfile?.contact?.displayName}</h3>
+
         <FeedbackSettingsContext.Provider value={{
           isTitleRequired, setIsTitleRequired,
           isContentRequired, setIsContentRequired,
@@ -70,11 +70,12 @@ useEffect(() => {
         }}>
 
           <PortalNavigationBar selected={page} onNavChange={setPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
+           <h3>Hello {userProfile?.contact?.displayName}</h3>
           {page === Pages.manageUsers && <ManageUsers />}
       {/* {page === Pages.viewReports && <ViewReports />} */}
       {/* {page === Pages.settings && <Settings />} */}
           {page === Pages.userFeedback && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
-
+       
         </FeedbackSettingsContext.Provider>
      
     </>
