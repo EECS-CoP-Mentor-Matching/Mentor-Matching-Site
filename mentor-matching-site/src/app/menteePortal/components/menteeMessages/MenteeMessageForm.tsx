@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { UserProfile } from "../../../../types/userProfile";
 import userService from '../../../../service/userService';
 
+
+
 function MenteeMessageForm() {
 
     // A useNavigate object allows us to move the user to another page.  We'll use this later when they click the button:
@@ -19,6 +21,18 @@ function MenteeMessageForm() {
         message: ""
     });
 
+    // State to hold error message text, if any.  Will be displayed to the user to alert them of errors on the form.
+    const [errorMessageText, setErrorMessageText] = useState("");
+
+    function DisplayErrorText() {
+    // Displays error text if the user incorrectly submits the form.
+    return (
+        <>
+            {errorMessageText}
+        </>
+    );
+}
+    
     // Get the current user's profile
     const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
@@ -44,21 +58,31 @@ function MenteeMessageForm() {
     function sendMessageHandler(e: any) {
         e.preventDefault();
         console.log("Send message button pressed\n" + messageDetails.recipient + "\n" + messageDetails.message);
-        let message = {
-            menteeUID: messageDetails.recipient,
-            menteeProfileId: "DEBUG",
-            mentorUID: "DEBUG",
-            mentorProfileId: "DEBUG",
-            message: messageDetails.message,
-            mentorReply: "0",
-            technicalInterest: "DEBUG",
-            professionalInterest: "DEBUG",
-            sentByUID: userProfile?.UID,
-            sentOn: 0
+        // Check for no value in recipient or message:
+        if (messageDetails.recipient == "") {
+            setErrorMessageText("Please choose a recipient");
         }
+        else if (messageDetails.message == "") {
+            setErrorMessageText("Please enter a message");
+        }
+        else {
+            let message = {
+                menteeUID: messageDetails.recipient,
+                menteeProfileId: "DEBUG",
+                mentorUID: "DEBUG",
+                mentorProfileId: "DEBUG",
+                message: messageDetails.message,
+                mentorReply: "0",
+                technicalInterest: "DEBUG",
+                professionalInterest: "DEBUG",
+                sentByUID: userProfile?.UID,
+                sentOn: 0
+            }   
+        
         messagingService.sendMessage(message);
         alert("Message sent!")
         redirectToSite("/mentee-portal");
+        }
     }
 
     // Update state whenever the user types in the boxes:
@@ -100,6 +124,7 @@ function MenteeMessageForm() {
                 </label>
                 <input type="submit" onClick={sendMessageHandler} value="Send Message"/>
             </form>
+            <DisplayErrorText></DisplayErrorText>
         </ContentContainer>
     );
 }
