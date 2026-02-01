@@ -5,14 +5,15 @@ import { DocItem } from "../../../../types/types";
 import { Message } from "../../../../types/matchProfile";
 import ContentContainer from "../../../common/ContentContainer";
 import { useNavigate } from "react-router-dom";
+import { UserProfile } from "../../../../types/userProfile";
+import userService from '../../../../service/userService';
+
+
 
 function MenteeMessageForm() {
 
     // A useNavigate object allows us to move the user to another page.  We'll use this later when they click the button:
     const redirectToSite = useNavigate();
-
-    // Get the current user's profile
-    const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
     // Initialize state to hold the message details
     const [messageDetails, setMessageDetails] = useState({
@@ -20,25 +21,68 @@ function MenteeMessageForm() {
         message: ""
     });
 
+    // State to hold error message text, if any.  Will be displayed to the user to alert them of errors on the form.
+    const [errorMessageText, setErrorMessageText] = useState("");
+
+    function DisplayErrorText() {
+    // Displays error text if the user incorrectly submits the form.
+    return (
+        <>
+            {errorMessageText}
+        </>
+    );
+}
+    
+    // Get the current user's profile
+    const userProfile = useAppSelector((state) => state.userProfile.userProfile);
+
+    // State and function for a list of all users in the database.  TODO: Later, we may want to filter this to only users matched to this one.
+    const [usersList, setUsersList] = useState<UserProfile[]>([]);
+
+    const getUserList = async () => {
+        try {
+            setUsersList(await userService.getAllUserProfiles());
+        }
+        catch (error) {
+            console.log("Error getting recipient list: " + error)
+        }
+    };
+
+    useEffect(() => {
+        getUserList();
+    }, []);
+
+    
+
     // Create a Message object based on the user's input and send the message
     function sendMessageHandler(e: any) {
         e.preventDefault();
         console.log("Send message button pressed\n" + messageDetails.recipient + "\n" + messageDetails.message);
-        let message = {
-            menteeUID: messageDetails.recipient,
-            menteeProfileId: "DEBUG",
-            mentorUID: "DEBUG",
-            mentorProfileId: "DEBUG",
-            message: messageDetails.message,
-            mentorReply: "0",
-            technicalInterest: "DEBUG",
-            professionalInterest: "DEBUG",
-            sentByUID: userProfile?.UID,
-            sentOn: 0
+        // Check for no value in recipient or message:
+        if (messageDetails.recipient == "") {
+            setErrorMessageText("Please choose a recipient");
         }
+        else if (messageDetails.message == "") {
+            setErrorMessageText("Please enter a message");
+        }
+        else {
+            let message = {
+                menteeUID: messageDetails.recipient,
+                menteeProfileId: "DEBUG",
+                mentorUID: "DEBUG",
+                mentorProfileId: "DEBUG",
+                message: messageDetails.message,
+                mentorReply: "0",
+                technicalInterest: "DEBUG",
+                professionalInterest: "DEBUG",
+                sentByUID: userProfile?.UID,
+                sentOn: 0
+            }   
+        
         messagingService.sendMessage(message);
         alert("Message sent!")
         redirectToSite("/mentee-portal");
+        }
     }
 
     // Update state whenever the user types in the boxes:
@@ -53,17 +97,21 @@ function MenteeMessageForm() {
         <ContentContainer>
             <form>
                 <h2>
-                    DEBUG! Use menteeUIDs in place of the user name for now.  This is just for testing the send/receive functions. <br />
+                    Send a message to your contacts using the form below: <br />
                 </h2>
                 <label>
                     Recipient's Name:
-                    <input
-                        type="text"
+                    <select
                         name="recipient"
                         value={messageDetails.recipient}
                         onChange={changeMessageHandler}
                         required
-                    />
+                    >
+                    <option value="" disabled hidden>Choose a Recipient</option>
+                    { // Create the select dropdown list from our usersList; mapping each user to a dropdown selection.
+                        usersList.map(user => <option value={user.UID}>{user.contact.displayName}</option>)
+                    }
+                    </select>
                 </label>
                 <br />
                 <label>
@@ -76,6 +124,7 @@ function MenteeMessageForm() {
                 </label>
                 <input type="submit" onClick={sendMessageHandler} value="Send Message"/>
             </form>
+            <DisplayErrorText></DisplayErrorText>
         </ContentContainer>
     );
 }
