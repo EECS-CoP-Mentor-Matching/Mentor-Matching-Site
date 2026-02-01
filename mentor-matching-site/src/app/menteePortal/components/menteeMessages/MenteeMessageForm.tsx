@@ -13,6 +13,12 @@ function MenteeMessageForm() {
     // A useNavigate object allows us to move the user to another page.  We'll use this later when they click the button:
     const redirectToSite = useNavigate();
 
+    // Initialize state to hold the message details
+    const [messageDetails, setMessageDetails] = useState({
+        recipient: "",
+        message: ""
+    });
+
     // Get the current user's profile
     const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
@@ -32,11 +38,7 @@ function MenteeMessageForm() {
         getUserList();
     }, []);
 
-    // Initialize state to hold the message details
-    const [messageDetails, setMessageDetails] = useState({
-        recipient: "",
-        message: ""
-    });
+    
 
     // Create a Message object based on the user's input and send the message
     function sendMessageHandler(e: any) {
@@ -71,7 +73,7 @@ function MenteeMessageForm() {
         <ContentContainer>
             <form>
                 <h2>
-                    DEBUG! Use menteeUIDs in place of the user name for now.  This is just for testing the send/receive functions. <br />
+                    Send a message to your contacts using the form below: <br />
                 </h2>
                 <label>
                     Recipient's Name:
@@ -81,6 +83,7 @@ function MenteeMessageForm() {
                         onChange={changeMessageHandler}
                         required
                     >
+                    <option value="" disabled hidden>Choose a Recipient</option>
                     { // Create the select dropdown list from our usersList; mapping each user to a dropdown selection.
                         usersList.map(user => <option value={user.UID}>{user.contact.displayName}</option>)
                     }
