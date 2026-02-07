@@ -45,9 +45,11 @@ function ManageUsers() {
               {users.map((u) => (
                 <TableRow key={u.UID}>
                   <TableCell>
-                    <Avatar
-                      src={u.profilePictureUrl || u.imageUrl} // There are two places for profile pictures?
-                    />
+                    <Link to={"/admin-portal/edit-user/" + u.UID}>
+                      <Avatar
+                        src={u.profilePictureUrl || u.imageUrl} // There are two places for profile pictures?
+                      />
+                    </Link>
                   </TableCell>
 
                   <TableCell>
