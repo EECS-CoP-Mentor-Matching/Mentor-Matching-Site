@@ -11,7 +11,6 @@ function ManageUserProfile() {
 
     return (
         <>
-            <h2>DEBUG</h2>
             <p> Received user ID: {userID}</p>
         </>
     )
