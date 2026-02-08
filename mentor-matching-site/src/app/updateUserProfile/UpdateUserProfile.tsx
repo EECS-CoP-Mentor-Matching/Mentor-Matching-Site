@@ -94,9 +94,9 @@ function UpdateUserProfile() {
       <UploadUserProfileImage userProfile={{ ...userProfileState, imageUrl: userProfileState.imageUrl }} />
       
       <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={userProfileState} />
-      <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} />
-      <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} />
-      <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+      <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={userProfileState} />
+      <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={userProfileState}/>
+      <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={userProfileState} />
       {/* Adding the Delete Account button outside the FormGroup for layout purposes */}
     </FormGroup>
   );
