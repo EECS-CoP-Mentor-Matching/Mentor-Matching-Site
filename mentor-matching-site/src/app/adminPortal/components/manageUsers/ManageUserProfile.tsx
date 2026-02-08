@@ -10,22 +10,23 @@ function ManageUserProfile() {
     // edit user form.
 
     const {userID} = useParams();
-    let userProfile: UserProfile | null | undefined = undefined;
+    const [userProfile, setUserProfile] = useState<UserProfile>()
 
     useEffect(() => {
         const getUserProfile = async () => {
             if (userID)
             {
-                userProfile = await userService.getUserProfile(userID);
+                setUserProfile(await userService.getUserProfile(userID));
             }
         };
+        getUserProfile();
     }, []);
 
     
 
     return (
         <>
-            <p> Received user ID: {userID}</p>
+            <p> Received user ID: {userID} with display name: {userProfile?.contact.displayName}</p>
         </>
     )
 
