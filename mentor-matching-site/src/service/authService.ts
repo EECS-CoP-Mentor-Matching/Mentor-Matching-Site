@@ -50,16 +50,24 @@ async function createUser(email: string, password: string): Promise<User | void>
 }
 
 /** use this method if the device is shared i.e. computer labs */
-function signInSession(email: string, password: string) {
-  setPersistence(firebaseAuth, browserSessionPersistence)
-    .then(() => {
-      // Existing and future Auth states are now persisted in the current
-      // session only. Closing the window would clear any existing state even
-      // if a user forgets to sign out.
-      // ...
-      // New sign-in will be persisted with session persistence.
-      return signInWithEmailAndPassword(firebaseAuth, email, password);
-    })
+async function signInSession(email: string, password: string): Promise<User> {
+  try {
+    // 1. Set persistence to 'session' (clears on tab/window close)
+    await setPersistence(firebaseAuth, browserSessionPersistence);
+    
+    // Existing and future Auth states are now persisted in the current
+    // session only. Closing the window would clear any existing state even
+    // if a user forgets to sign out.
+    // ...
+    // New sign-in will be persisted with session persistence.
+    
+    // 2. Perform the sign-in and return the user object
+    const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+    return userCredential.user;
+  } catch (error) {
+    // Re-throw the error so your Login.tsx 'catch' block can catch it
+    throw error;
+  }
 }
 
 /** use this method if the device is not shared */

@@ -15,9 +15,10 @@ import TermsAndConditions from './footer/termsAndConditions/TermsAndConditions';
 import ContactUs from './footer/ContactUs/ContactUs';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
+import ManageUserProfile from './adminPortal/components/manageUsers/ManageUserProfile';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
 import UserServiceAgreement from './footer/userServiceAgreement/userServiceAgreement'; // Import the component for the user service agreement page
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { updateProfile } from '../redux/reducers/userProfileReducer';
 import { useAppDispatch } from '../redux/hooks';
 import authService from '../service/authService';
@@ -27,35 +28,62 @@ import VerifyEmail from "./createAccount/components/VerifyEmail";
 import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
 import {initUserProfile, UserProfile} from "../types/userProfile";
 import MenteeMessageForm from './menteePortal/components/menteeMessages/MenteeMessageForm';
+import { Box, CircularProgress, Typography, Fade } from '@mui/material'; // Add these to your MUI imports
 
 function App() {
   
-  // set the user profile redux store on refresh
+// 1. Add a local loading state
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const dispatch = useAppDispatch();
+
   useEffect(() => {
-    // get the current signed in user
     const loadUserProfile = async () => {
-      const currentUser = await authService.getSignedInUser();
-      if (currentUser && currentUser.emailVerified) {
-        let userProfile: UserProfile;
-        try {
-          userProfile = await userService.getUserProfile(currentUser.uid);
-          //return userProfile;
-        } catch (error) {
-          // reload recently verified email token
-          await authService.refreshToken()
-          userProfile = await userService.getUserProfile(currentUser.uid);
+      try {
+        const currentUser = await authService.getSignedInUser();
+        if (currentUser && currentUser.emailVerified) {
+          let userProfile: UserProfile;
+          try {
+            userProfile = await userService.getUserProfile(currentUser.uid);
+          } catch (error) {
+            await authService.refreshToken();
+            userProfile = await userService.getUserProfile(currentUser.uid);
+          }
+          dispatch(updateProfile(userProfile));
         }
-        dispatch(updateProfile(userProfile));
-        
-        console.log('Dispatched userProfile to Redux:', userProfile);
-          } else {
-            console.log('No verified user found.');
+      } catch (error) {
+        console.error("Auth error", error);
+      } finally {
+        // 2. IMPORTANT: Set loading to false only after the attempt is done
+        setIsAuthLoading(false);
       }
     };
     loadUserProfile();
   }, [dispatch]);
 
+  // 3. BLOCK RENDERING until we know who the user is
+  if (isAuthLoading) {
+  return (
+    <ThemeProvider theme={theme}>
+      <Fade in={true} timeout={800}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          height="100vh"
+          bgcolor="background.default"
+        >
+          {/* OSU Orange Spinner */}
+          <CircularProgress size={60} thickness={4} sx={{ color: '#D73F09', mb: 3 }} />
+          
+          <Typography variant="h6" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+            Loading Portals...
+          </Typography>
+        </Box>
+      </Fade>
+    </ThemeProvider>
+  );
+}
 
 
   return (
@@ -73,6 +101,7 @@ function App() {
             <Route path="/mentee-portal" element={<MenteePortal />} />
             <Route path="/send-message" element={<MenteeMessageForm />} />
             <Route path="/admin-portal" element={<AdminPortal />} />
+            <Route path="/admin-portal/edit-user/:userID" element={<ManageUserProfile />} />
             <Route path="/mentor-portal" element={<MentorPortal />} />
             <Route path="/update-profile" element={<UpdateUserProfile />} />
             <Route path="/feedback-portal" element={<FeedbackPortal />} />

@@ -4,6 +4,7 @@ import {Avatar, Paper, Table, TableBody, TableCell, TableContainer, TableHead, T
 import userService from "../../../../service/userService"; // adjust path if needed
 import { UserProfile } from "../../../../types/userProfile";
 import ContentContainer from "../../../common/ContentContainer";
+import { Link } from "react-router-dom";
 
 function ManageUsers() {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -44,13 +45,15 @@ function ManageUsers() {
               {users.map((u) => (
                 <TableRow key={u.UID}>
                   <TableCell>
-                    <Avatar
-                      src={u.profilePictureUrl || u.imageUrl} // There are two places for profile pictures?
-                    />
+                    <Link to={"/admin-portal/edit-user/" + u.UID}>
+                      <Avatar
+                        src={u.profilePictureUrl || u.imageUrl} // There are two places for profile pictures?
+                      />
+                    </Link>
                   </TableCell>
 
                   <TableCell>
-                    {u.contact?.displayName || "No name"}
+                    <Link to={"/admin-portal/edit-user/" + u.UID}>{u.contact?.displayName || "No name"}</Link>
                   </TableCell>
 
                   <TableCell>{u.contact?.email || "N/A"}</TableCell>

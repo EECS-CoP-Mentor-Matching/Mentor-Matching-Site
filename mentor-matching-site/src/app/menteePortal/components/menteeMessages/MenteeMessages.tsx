@@ -19,7 +19,7 @@ function MenteeMessages({ backToPage }: MenteeMessagesProps) {
   const selector = useAppSelector;
   const menteeUID = selector(state => state.userProfile.userProfile.UID);
 
-  // Get messages sent by this mentee:
+  // Get messages addressed to this mentee
   useEffect(() => {
     const getMessagesInbound = async () => {
       const messages = await messagingService.getMessagesSentToMentee(menteeUID);
@@ -28,6 +28,7 @@ function MenteeMessages({ backToPage }: MenteeMessagesProps) {
       }
       setMenteeMessagesInbound(messages);
     }
+    // Get messages sent by this mentee:
     const getMessagesSent = async () => {
       const messages = await messagingService.getMessagesSentByMentee(menteeUID);
       if (messages.length === 0) {
@@ -41,6 +42,7 @@ function MenteeMessages({ backToPage }: MenteeMessagesProps) {
     getMessagesSent();
   }, [setMenteeMessagesInbound, setMenteeMessagesSent])
 
+  // This currently only shows messages addressed to this user.  TODO: Show sent messages separately.
   return (
     <ContentContainer title="Messages">
       {menteeMessagesInbound.length > 0 &&
