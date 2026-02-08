@@ -38,6 +38,7 @@ function MentorPortal() {
       <AuthenticatedView>
         <Box>
           <PortalNavigationBar navItems={navItems} selected={selectedTab} onNavChange={handleNavChange} />
+          <h3>Hello {userProfile?.contact?.displayName}</h3>
           {renderTabContent()}
         </Box>
         

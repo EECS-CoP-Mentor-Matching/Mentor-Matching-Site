@@ -1,80 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans+Narrow:wght@400;700&display=swap');
-
-/* --- TopNav Container --- */
 .top-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-    min-height: 120px;   
-    padding: 10px 20px;
-    background-color:#423e3c
-}
-
-.logo {
+  background-color: #DC4405;
   padding: 10px;
-  padding-left: 100px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   border: none;
-
 }
 
-/* --- Main Title --- */
-.main-title {
-    font-family: 'PT Sans Narrow', sans-serif;
-    color: white;
-    text-align: center;
-    font-size: 4.5em !important; 
-    font-weight: 350; 
-    margin: 0; 
-    line-height: 1; 
-    flex-grow: 1;   
-}
-
-/* --- Right Side User Section (New) --- */
-
-.user-action-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers text stack horizontally under icons */
-    min-width: 200px;    /* Prevents layout jumping */
-}
-
-.icon-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 12px; /* Space between icons and the text below */
-}
-
-.user-info-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers greeting and portal link */
-    gap: 8px;            /* The requested space between greeting and portal link */
-}
-
-.user-greeting {
-    margin: 0;
-    color: white;
-    font-size: 14px;
-    font-weight: normal;
-}
-
-.portal-link {
-    color: #e47c2a; /* Using OSU orange color */
-    text-decoration: none;
-    font-weight: 700;
-    font-size: .80rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05rem;
-    opacity: 0.85;
-    border-bottom: 1px solid rgba(238, 221, 221, 0.719);
-    transition: all 0.3s ease;
-}
-
-.portal-link:hover {
-    opacity: 1;
-    border-bottom-color: white;
-}

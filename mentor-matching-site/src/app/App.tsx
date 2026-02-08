@@ -2,11 +2,11 @@ import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './login/Login';
 import TopNav from './nav/TopNav';
+import SideNav from './nav/SideNav';
 import CreateAccount from './createAccount/CreateAccount';
 import MenteePortal from './menteePortal/MenteePortal';
 import UpdateUserProfile from './updateUserProfile/UpdateUserProfile'
-import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@emotion/react';
 import theme from "./theme";
 import Home from './Home';
 import Footer from './footer/Footer';
@@ -15,6 +15,7 @@ import TermsAndConditions from './footer/termsAndConditions/TermsAndConditions';
 import ContactUs from './footer/ContactUs/ContactUs';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
+import ManageUserProfile from './adminPortal/components/manageUsers/ManageUserProfile';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
 import UserServiceAgreement from './footer/userServiceAgreement/userServiceAgreement'; // Import the component for the user service agreement page
 import { useEffect, useState } from 'react';
@@ -59,7 +60,7 @@ function App() {
     loadUserProfile();
   }, [dispatch]);
 
-  // 3. BLOCK RENDERING until we know who the user is that way we avoid rendering wrong nav links
+  // 3. BLOCK RENDERING until we know who the user is
   if (isAuthLoading) {
   return (
     <ThemeProvider theme={theme}>
@@ -87,10 +88,10 @@ function App() {
 
   return (
     <ThemeProvider theme={theme} >
-      <CssBaseline />
       <BrowserRouter>
         <div className="App">
           <TopNav />
+          <SideNav />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -100,6 +101,7 @@ function App() {
             <Route path="/mentee-portal" element={<MenteePortal />} />
             <Route path="/send-message" element={<MenteeMessageForm />} />
             <Route path="/admin-portal" element={<AdminPortal />} />
+            <Route path="/admin-portal/edit-user/:userID" element={<ManageUserProfile />} />
             <Route path="/mentor-portal" element={<MentorPortal />} />
             <Route path="/update-profile" element={<UpdateUserProfile />} />
             <Route path="/feedback-portal" element={<FeedbackPortal />} />
