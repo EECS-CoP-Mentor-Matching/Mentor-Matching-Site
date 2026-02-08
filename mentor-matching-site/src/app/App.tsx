@@ -85,12 +85,13 @@ function App() {
 }
 
 
-  return (
+return (
     <ThemeProvider theme={theme} >
-      <CssBaseline />
-      <BrowserRouter>
+    <CssBaseline />
+    <BrowserRouter>
         <div className="App">
-          <TopNav />
+        <TopNav />
+          <div style={{ flex: 1 }}> {/* Wraps the main content */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -109,11 +110,12 @@ function App() {
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/docusign" element={<DocuSignButton />} />
           </Routes>
-          <Footer />
+          </div>
+        <Footer />
         </div>
-      </BrowserRouter>
-    </ThemeProvider>
-  );
+    </BrowserRouter>
+  </ThemeProvider>
+);
 }
 
 export default App;
