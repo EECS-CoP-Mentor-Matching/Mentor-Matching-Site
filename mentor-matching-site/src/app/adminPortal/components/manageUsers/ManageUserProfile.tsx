@@ -42,8 +42,8 @@ function ManageUserProfile() {
       return  (
         <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
             <UploadUserProfileImage userProfile={{ ...currentUserProfile, imageUrl: currentUserProfile?.imageUrl }} />
-            <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} />
-            <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} />
+            <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={currentUserProfile} />
+            <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={currentUserProfile} />
             <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} />
             <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} />
         </FormGroup>

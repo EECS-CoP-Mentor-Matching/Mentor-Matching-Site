@@ -4,15 +4,19 @@ import { updateFirstName, updateLastName, updateMiddleName, updateDob, updateDob
 import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
 import FormGroupCols from "../../common/forms/layout/FormGroupCols";
 import { FormLabel } from "@mui/material";
+import { UserProfile } from "../../../types/userProfile";
 
 interface UpdatePersonalInformationProps {
   showEdit: boolean,
-  showEditStyle: any
+  showEditStyle: any,
+  userProfile: UserProfile
 }
 
-function UpdatePersonalInformation({ showEdit, showEditStyle }: UpdatePersonalInformationProps) {
+function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile }: UpdatePersonalInformationProps) {
   const selector = useAppSelector;
-  const personalInformation = selector(state => state.userProfile.userProfile.personal);
+  //const personalInformation = selector(state => state.userProfile.userProfile.personal);
+  const personalInformation = userProfile.personal;
+  
 
   return (
     <>{personalInformation !== undefined &&
