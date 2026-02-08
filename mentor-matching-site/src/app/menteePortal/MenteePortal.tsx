@@ -50,7 +50,6 @@ function MenteePortal() {
               navItems={navUtilities.navItemsFromEnum(Pages)} 
             />
 
-              <h3>Hello {userProfile?.contact?.displayName || "User"}</h3>
               {/* Conditional Rendering Blocks */}
               {selectedPage === Pages.activeProfiles.toString() &&
                 <div className="mentee-portal">
