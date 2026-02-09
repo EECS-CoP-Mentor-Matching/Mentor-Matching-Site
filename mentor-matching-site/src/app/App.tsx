@@ -15,6 +15,7 @@ import TermsAndConditions from './footer/termsAndConditions/TermsAndConditions';
 import ContactUs from './footer/ContactUs/ContactUs';
 import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
+import ManageUserProfile from './adminPortal/components/manageUsers/ManageUserProfile';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
 import UserServiceAgreement from './footer/userServiceAgreement/userServiceAgreement'; // Import the component for the user service agreement page
 import { useEffect, useState } from 'react';
@@ -101,6 +102,7 @@ return (
             <Route path="/mentee-portal" element={<MenteePortal />} />
             <Route path="/send-message" element={<MenteeMessageForm />} />
             <Route path="/admin-portal" element={<AdminPortal />} />
+            <Route path="/admin-portal/edit-user/:userID" element={<ManageUserProfile />} />
             <Route path="/mentor-portal" element={<MentorPortal />} />
             <Route path="/update-profile" element={<UpdateUserProfile />} />
             <Route path="/feedback-portal" element={<FeedbackPortal />} />
