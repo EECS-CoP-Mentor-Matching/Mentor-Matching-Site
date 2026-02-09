@@ -6,15 +6,18 @@ import FormGroupRows from "../../common/forms/layout/FormGroupRows";
 import SelectLevelOfEducation from "../../userProfileCommon/dropdowns/SelectLevelOfEductation";
 import SelectDegreeProgram from "../../userProfileCommon/dropdowns/SelectDegreeProgram";
 import CheckboxControlRedux from "../../common/forms/checkbox/CheckBoxControlRedux";
+import { UserProfile } from "../../../types/userProfile";
 
 interface UpdateEducationInformationProps {
   showEdit: boolean,
-  showEditStyle: any
+  showEditStyle: any,
+  userProfile: UserProfile
 }
 
-function UpdateEducationInformation({ showEdit, showEditStyle }: UpdateEducationInformationProps) {
+function UpdateEducationInformation({ showEdit, showEditStyle, userProfile}: UpdateEducationInformationProps) {
   const selector = useAppSelector;
-  const educationInformation = selector(state => state.userProfile.userProfile.education);
+  //const educationInformation = selector(state => state.userProfile.userProfile.education);
+  const educationInformation = userProfile.education;
 
   return (
     <>{educationInformation !== undefined &&

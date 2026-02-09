@@ -7,17 +7,21 @@ import TextInputControlRedux from "../../common/forms/textInputs/TextInputContro
 import SelectRacialIdentity from "../../userProfileCommon/dropdowns/SelectRacialIdentity";
 import CheckBoxControlRedux from "../../common/forms/checkbox/CheckBoxControlRedux";
 import SelectRole from "../../userProfileCommon/dropdowns/SelectRole";
+import { UserProfile } from "../../../types/userProfile";
 
 interface UpdateUserDemographicInformationProps {
   showEdit: boolean
   showEditStyle: any
+  userProfile: UserProfile
 }
 
-function UpdateUserDemographicInformation({ showEdit, showEditStyle }: UpdateUserDemographicInformationProps) {
+function UpdateUserDemographicInformation({ showEdit, showEditStyle, userProfile }: UpdateUserDemographicInformationProps) {
   const selector = useAppSelector;
-  const demographicInformation = selector(state => state.userProfile.userProfile.demographics);
+  //const demographicInformation = selector(state => state.userProfile.userProfile.demographics);
   // *** FIX 1: ADD SELECTOR FOR USER PREFERENCES ***
-  const userPreferences = selector(state => state.userProfile.userProfile.preferences);
+  //const userPreferences = selector(state => state.userProfile.userProfile.preferences);
+  const demographicInformation = userProfile.demographics;
+  const userPreferences = userProfile.preferences;
 
   return (
     <>{demographicInformation !== undefined &&
