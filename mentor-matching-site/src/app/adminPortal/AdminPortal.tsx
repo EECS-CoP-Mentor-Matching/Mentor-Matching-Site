@@ -13,8 +13,6 @@ import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSetti
 
 import { getSettings, updateSettings } from '../../service/settingsService';
 
-import TopNav from "../nav/TopNav"; // Make sure to import
-import SideNav from "../nav/SideNav"; // Make sure to import
 import { MatchRole } from '../../types/matchProfile';
 
 export enum Pages {
@@ -29,18 +27,18 @@ interface AdminPortalProps {
 
 function AdminPortal(props: AdminPortalProps) {
 
-const navigate = useNavigate();
-const [page, setPage] = useState(Pages.manageUsers.toString());
+  const navigate = useNavigate();
+  const [page, setPage] = useState(Pages.manageUsers.toString());
 
-// 1. Get the profile exactly like SideNav
-const userProfile = useAppSelector((state) => state.userProfile.userProfile);
-const userRole = userProfile?.preferences?.role;
+  // 1. Get the profile exactly like SideNav
+  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
+  const userRole = userProfile?.preferences?.role;
 
-// 2. State for Admin Settings
-const [isTitleRequired, setIsTitleRequired] = useState(true);
-const [isContentRequired, setIsContentRequired] = useState(true);
-const [isTypeRequired, setIsTypeRequired] = useState(true);
-const [isAttachmentAllowed, setIsAttachmentAllowed] = useState(true);
+  // 2. State for Admin Settings
+  const [isTitleRequired, setIsTitleRequired] = useState(true);
+  const [isContentRequired, setIsContentRequired] = useState(true);
+  const [isTypeRequired, setIsTypeRequired] = useState(true);
+  const [isAttachmentAllowed, setIsAttachmentAllowed] = useState(true);
 
   // 3. SECURE REDIRECT EFFECT
   // This mimics your SideNav logic to decide where the user belongs
@@ -89,7 +87,6 @@ const [isAttachmentAllowed, setIsAttachmentAllowed] = useState(true);
         }}>
 
           <PortalNavigationBar selected={page} onNavChange={setPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
-           <h3>Hello {userProfile?.contact?.displayName}</h3>
           {page === Pages.manageUsers && <ManageUsers />}
       {/* {page === Pages.viewReports && <ViewReports />} */}
       {/* {page === Pages.settings && <Settings />} */}

@@ -1,6 +1,8 @@
 .App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure it stays at least full screen */
   text-align: center;
-  padding-bottom: 30px;
 }
 
 .App-logo {
