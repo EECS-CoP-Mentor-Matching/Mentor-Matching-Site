@@ -21,7 +21,7 @@ function ManageUserProfile() {
     // User Profile fetched using that ID, if any:
     const [currentUserProfile, setCurrentUserProfile] = useState<UserProfile>()
     // Switch for the edit feature of the form:
-    const [showEdit, setShowEdit] = useState(true);
+    const [showEdit, setShowEdit] = useState(false);
     const showEditStyle = {
         borderBottom: showEdit ? "solid orange 1px" : ""
     }
@@ -66,6 +66,9 @@ function ManageUserProfile() {
             <AuthenticatedView>
                 <p> Received user ID: {userID} with display name: {currentUserProfile?.contact.displayName}</p>
                 {dataIsLoading()}
+                {!showEdit &&
+                    <Button onClick={() => { setShowEdit(true) }}>Edit Profile</Button>
+                }
             </AuthenticatedView>
             <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
         </>
