@@ -6,9 +6,9 @@ import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, g
 
 const collectionName = 'surveySchema';
 
-async function getSurveySchemasAsync() : Promise<SurveySchema[]> {
+async function getSurveySchemasAsync() : Promise<DocItem<SurveySchema>[]> {
   const schema = (await readMany<SurveySchema>(collectionName));
-  return schema.results.map((doc) => doc.data as SurveySchema)
+  return schema.results
 }
 
 const surveyDb = {

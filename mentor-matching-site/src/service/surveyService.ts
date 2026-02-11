@@ -4,7 +4,7 @@ import surveyDb from "../dal/surveyDb";
 import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore } from "firebase/firestore";
 
 
-async function getSurveySchemas() : Promise<SurveySchema[]> {
+async function getSurveySchemas() : Promise<DocItem<SurveySchema>[]> {
     return await surveyDb.getSurveySchemasAsync();
 }
 

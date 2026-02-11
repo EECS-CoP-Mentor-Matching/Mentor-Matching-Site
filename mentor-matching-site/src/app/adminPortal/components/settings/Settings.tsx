@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import surveyService from "../../../../service/surveyService";
 import { SurveySchema } from "../../../../types/survey";
+import { DocItem } from "../../../../types/types";
 import ContentContainer from "../../../common/ContentContainer";
 import { Link } from "react-router-dom";
 import ModalWrapper from "../../../common/forms/modals/ModalWrapper";
@@ -9,7 +10,7 @@ import { Box, Chip, IconButton, Paper, Typography, Grid } from '@mui/material';
 
 
 function Settings() {
-  const [schema, setSchemas] = useState<SurveySchema[]>([]);
+  const [schema, setSchemas] = useState<DocItem<SurveySchema>[]>([]);
 
   const fetchSchemas = async() => {
     try {
@@ -33,11 +34,11 @@ function Settings() {
         >
         <Box>
           <Grid>
-            {schema.map((survey) => (
+            {schema.map((doc) => (
               <div>
-                <h3>{survey.title}</h3>
-                <p> Version: {survey.version}</p>
-                <p> Is Current Schema? {String(survey.isCurrentSchema)}</p>
+                <h3>{doc.data.title}</h3>
+                <p> Version: {doc.data.version}</p>
+                <p> Is Current Schema? {String(doc.data.isCurrentSchema)}</p>
 
               </div>
             ))}
