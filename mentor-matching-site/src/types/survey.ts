@@ -1,6 +1,7 @@
 export interface SurveySchema {
   title: string
   version: number
+  isCurrentSchema: boolean
 }
 
 export interface SurveyQuestion {
