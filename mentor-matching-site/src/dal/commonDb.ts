@@ -95,6 +95,17 @@ async function queryCommon(collectionName: string, ...conditions: QueryConstrain
   return records;
 }
 
+export async function queryManySubcollection<T>(collectionName: string, docId: string, subcollectionName: string, ...conditions: QueryConstraint[]): Promise<DbReadResults<T>> {
+  const records = await queryCommonSubcollection(collectionName, docId, subcollectionName, ...conditions);
+  return processManyReadResults(records);
+}
+
+async function queryCommonSubcollection(collectionName: string, docId: string, subcollectionName: string, ...conditions: QueryConstraint[]): Promise<QuerySnapshot> {
+  const readQuery = query(collection(db, collectionName, docId, subcollectionName), ...conditions);
+  const records = await getDocs(readQuery);
+  return records;
+}
+
 function processSingleReadResults<T>(records: QuerySnapshot) {
   // if (records.empty || records.size === 0) { throw new Error('no records found'); }
   // if (records.size > 1) { throw new Error('too many records found'); }
