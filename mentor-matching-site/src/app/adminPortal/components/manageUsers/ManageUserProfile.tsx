@@ -26,7 +26,7 @@ function ManageUserProfile() {
 
     useEffect(() => {
         const getUserProfile = async () => {
-            if (userID)
+            if (userID) // Check to ensure that a user ID was passed in as a parameter
             {
                 setCurrentUserProfile(await userService.getUserProfile(userID));
                 console.log(currentUserProfile);
@@ -34,6 +34,14 @@ function ManageUserProfile() {
         };
         getUserProfile();
     }, []);
+
+    const saveChanges = async () => {
+        if (currentUserProfile) // Check to ensure that thte profile has been pulled in before we continue
+        {
+            await userService.updateUserProfile(currentUserProfile.UID, currentUserProfile);
+            setShowEdit(false);
+        }
+    }
 
     const dataIsLoading = () => {
     if (currentUserProfile === undefined) {
