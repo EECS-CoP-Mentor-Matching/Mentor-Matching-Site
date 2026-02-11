@@ -8,6 +8,7 @@ import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/FeedbackAdminPortal';
 import ManageUsers from '../adminPortal/components/manageUsers/ManageUsers';
+import Settings from './components/settings/Settings';
 
 import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 
@@ -89,7 +90,7 @@ function AdminPortal(props: AdminPortalProps) {
           <PortalNavigationBar selected={page} onNavChange={setPage} navItems={navUtilities.navItemsFromEnum(Pages)} />
           {page === Pages.manageUsers && <ManageUsers />}
       {/* {page === Pages.viewReports && <ViewReports />} */}
-      {/* {page === Pages.settings && <Settings />} */}
+          {page === Pages.settings && <Settings />}
           {page === Pages.userFeedback && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
        
         </FeedbackSettingsContext.Provider>
