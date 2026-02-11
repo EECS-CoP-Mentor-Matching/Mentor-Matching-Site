@@ -54,6 +54,18 @@ async function readCommon(collectionName: string): Promise<QuerySnapshot> {
   return records;
 }
 
+export async function readManySubcollection<T>(collectionName: string, docId: string, subcollectionName: string): Promise<DbReadResults<T>> {
+  const records = await readCommonSubcollection(collectionName, docId, subcollectionName);
+  return processManyReadResults(records);
+}
+
+async function readCommonSubcollection(collectionName: string, docId: string, subcollectionName: string): Promise<QuerySnapshot> {
+  const readQuery = query(collection(db, collectionName, docId, subcollectionName));
+  const records = await getDocs(readQuery);
+  return records;
+  
+}
+
 export async function queryDocId<T>(collectionName: string, docId: string): Promise<DbReadResult<T>> {
   const docRef = doc(db, collectionName, docId);
   const docSnap = await getDoc(docRef);
