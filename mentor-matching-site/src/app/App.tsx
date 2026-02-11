@@ -2,11 +2,11 @@ import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './login/Login';
 import TopNav from './nav/TopNav';
-import SideNav from './nav/SideNav';
 import CreateAccount from './createAccount/CreateAccount';
 import MenteePortal from './menteePortal/MenteePortal';
 import UpdateUserProfile from './updateUserProfile/UpdateUserProfile'
-import { ThemeProvider } from '@emotion/react';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
 import theme from "./theme";
 import Home from './Home';
 import Footer from './footer/Footer';
@@ -60,7 +60,7 @@ function App() {
     loadUserProfile();
   }, [dispatch]);
 
-  // 3. BLOCK RENDERING until we know who the user is
+  // 3. BLOCK RENDERING until we know who the user is that way we avoid rendering wrong nav links
   if (isAuthLoading) {
   return (
     <ThemeProvider theme={theme}>
@@ -86,12 +86,13 @@ function App() {
 }
 
 
-  return (
+return (
     <ThemeProvider theme={theme} >
-      <BrowserRouter>
+    <CssBaseline />
+    <BrowserRouter>
         <div className="App">
-          <TopNav />
-          <SideNav />
+        <TopNav />
+          <div style={{ flex: 1 }}> {/* Wraps the main content */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -111,11 +112,12 @@ function App() {
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/docusign" element={<DocuSignButton />} />
           </Routes>
-          <Footer />
+          </div>
+        <Footer />
         </div>
-      </BrowserRouter>
-    </ThemeProvider>
-  );
+    </BrowserRouter>
+  </ThemeProvider>
+);
 }
 
 export default App;

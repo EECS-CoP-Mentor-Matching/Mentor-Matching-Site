@@ -6,15 +6,17 @@ import FormGroupRows from "../../common/forms/layout/FormGroupRows";
 import TextInputControlRedux from "../../common/forms/textInputs/TextInputControlRedux";
 import TextDisplay from "../../common/forms/textInputs/TextDisplay";
 import SelectTimeZone from "../../userProfileCommon/dropdowns/SelectTimeZone";
+import { UserProfile } from "../../../types/userProfile";
 
 interface UpdateUserContactInformationProps {
   showEdit: boolean,
-  showEditStyle: any
+  showEditStyle: any,
+  userProfile: UserProfile
 }
 
-function UpdateUserContactInformation({ showEdit, showEditStyle }: UpdateUserContactInformationProps) {
+function UpdateUserContactInformation({ showEdit, showEditStyle, userProfile }: UpdateUserContactInformationProps) {
   const selector = useAppSelector;
-  const contactInformation = selector(state => state.userProfile.userProfile.contact);
+  const contactInformation = userProfile.contact
 
   return (
     <>{contactInformation !== undefined &&

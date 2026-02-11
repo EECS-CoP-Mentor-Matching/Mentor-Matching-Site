@@ -1,16 +1,12 @@
 .footer {
   background-color: #282c34;
-  /* Match the App-header background */
   color: white;
-  /* Match the App-header text color */
-  padding: 10px 0;
-  /* Add some padding */
+  padding: 20px 0; /* Increased padding for better breathing room */
   text-align: center;
-  /* Center the text */
   width: 100%;
-  position: fixed;
-  bottom: 0;
-  height: 20px;
+  position: relative; /* Change from fixed to relative */
+  margin-top: auto;   /* This works with the flexbox in App.tsx to push it down */
+  min-height: 60px;   /* Give it enough height to actually show the links */
 }
 
 .footer-links a {
