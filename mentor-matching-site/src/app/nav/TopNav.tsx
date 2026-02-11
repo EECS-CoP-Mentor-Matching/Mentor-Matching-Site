@@ -29,6 +29,7 @@ function TopNav() {
   const isAdmin = userRole === MatchRole.admin;
   const isMentor = userRole === MatchRole.mentor;
   const isMentee = userRole === MatchRole.mentee;
+  const isBoth = userRole === MatchRole.both;
 
   async function logout() {
     try {
@@ -198,14 +199,30 @@ function TopNav() {
               Hello {userProfile?.contact?.displayName || "User"}
             </h3>
 
-            {userRole && (
-              <Link 
-                to={isAdmin ? "/admin-portal" : isMentor ? "/mentor-portal" : "/mentee-portal"} 
-                className="portal-link"
-              >
-                Your {isAdmin ? "Admin" : isMentor ? "Mentor" : "Mentee"} Portal
-              </Link>
-            )}
+          {userRole && (
+            <>
+              {/* Admin Portal */}
+              {isAdmin && (
+                <Link to="/admin-portal" className="portal-link">
+                  Your Admin Portal
+                </Link>
+              )}
+
+              {/* Mentee Portal - Shows if Mentee or Both */}
+              {(isMentee || isBoth) && (
+                <Link to="/mentee-portal" className="portal-link">
+                  Your Mentee Portal
+                </Link>
+              )}
+
+              {/* Mentor Portal - Shows if Mentor or Both */}
+              {(isMentor || isBoth) && (
+                <Link to="/mentor-portal" className="portal-link">
+                  Your Mentor Portal
+                </Link>
+              )}
+            </>
+          )}
           </div>
         )}
       </div>

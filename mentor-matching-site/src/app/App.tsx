@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './login/Login';
 import TopNav from './nav/TopNav';
 import CreateAccount from './createAccount/CreateAccount';
@@ -17,22 +17,51 @@ import MentorPortal from "./mentorPortal/MentorPortal";
 import AdminPortal from './adminPortal/AdminPortal';
 import ManageUserProfile from './adminPortal/components/manageUsers/ManageUserProfile';
 import FeedbackPortal from './feedbackPortal/FeedbackPortal';
-import UserServiceAgreement from './footer/userServiceAgreement/userServiceAgreement'; // Import the component for the user service agreement page
+import UserServiceAgreement from './footer/userServiceAgreement/userServiceAgreement';
 import { useEffect, useState } from 'react';
 import { updateProfile } from '../redux/reducers/userProfileReducer';
-import { useAppDispatch } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks'; // Added useAppSelector
 import authService from '../service/authService';
 import userService from '../service/userService';
 import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton';
 import VerifyEmail from "./createAccount/components/VerifyEmail";
 import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
-import {initUserProfile, UserProfile} from "../types/userProfile";
+import { UserProfile } from "../types/userProfile";
 import MenteeMessageForm from './menteePortal/components/menteeMessages/MenteeMessageForm';
-import { Box, CircularProgress, Typography, Fade } from '@mui/material'; // Add these to your MUI imports
+import { Box, CircularProgress, Typography, Fade } from '@mui/material';
+import { MatchRole } from '../types/matchProfile'; // Import your roles
+
+// --- PROTECTED ROUTE COMPONENT ---
+interface ProtectedRouteProps {
+  children: JSX.Element;
+  allowedRoles: MatchRole[];
+}
+
+const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
+  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
+  const userRole = userProfile?.preferences?.role;
+
+  // If no profile, user isn't logged in or loaded yet
+  if (!userProfile) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Check if current role is in the list of allowed roles for this route
+  const isAuthorized = allowedRoles.includes(userRole as MatchRole);
+
+  if (!isAuthorized) {
+    // Redirect logic if they try to access a portal they don't belong in
+    if (userRole === MatchRole.admin) return <Navigate to="/admin-portal" replace />;
+    if (userRole === MatchRole.mentor) return <Navigate to="/mentor-portal" replace />;
+    if (userRole === MatchRole.mentee) return <Navigate to="/mentee-portal" replace />;
+    if (userRole === MatchRole.both) return <Navigate to="/mentee-portal" replace />;
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
 
 function App() {
-  
-// 1. Add a local loading state
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const dispatch = useAppDispatch();
 
@@ -53,71 +82,86 @@ function App() {
       } catch (error) {
         console.error("Auth error", error);
       } finally {
-        // 2. IMPORTANT: Set loading to false only after the attempt is done
         setIsAuthLoading(false);
       }
     };
     loadUserProfile();
   }, [dispatch]);
 
-  // 3. BLOCK RENDERING until we know who the user is that way we avoid rendering wrong nav links
   if (isAuthLoading) {
+    return (
+      <ThemeProvider theme={theme}>
+        <Fade in={true} timeout={800}>
+          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh" bgcolor="background.default">
+            <CircularProgress size={60} thickness={4} sx={{ color: '#D73F09', mb: 3 }} />
+            <Typography variant="h6" sx={{ fontWeight: 500, color: 'text.secondary' }}>Loading Portals...</Typography>
+          </Box>
+        </Fade>
+      </ThemeProvider>
+    );
+  }
+
   return (
-    <ThemeProvider theme={theme}>
-      <Fade in={true} timeout={800}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          height="100vh"
-          bgcolor="background.default"
-        >
-          {/* OSU Orange Spinner */}
-          <CircularProgress size={60} thickness={4} sx={{ color: '#D73F09', mb: 3 }} />
-          
-          <Typography variant="h6" sx={{ fontWeight: 500, color: 'text.secondary' }}>
-            Loading Portals...
-          </Typography>
-        </Box>
-      </Fade>
+    <ThemeProvider theme={theme} >
+      <CssBaseline />
+      <BrowserRouter>
+        <div className="App">
+          <TopNav />
+          <div style={{ flex: 1 }}>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/create-account" element={<CreateAccount />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/new-profile" element={<NewUserProfile />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/user-service-agreement" element={<UserServiceAgreement />} />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/docusign" element={<DocuSignButton />} />
+              <Route path="/update-profile" element={<UpdateUserProfile />} />
+
+              {/* Protected Admin Routes */}
+              <Route path="/admin-portal" element={
+                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                  <AdminPortal />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin-portal/edit-user/:userID" element={
+                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                  <ManageUserProfile />
+                </ProtectedRoute>
+              } />
+
+              {/* Protected Mentee Routes (Includes 'Both') */}
+              <Route path="/mentee-portal" element={
+                <ProtectedRoute allowedRoles={[MatchRole.mentee, MatchRole.both]}>
+                  <MenteePortal />
+                </ProtectedRoute>
+              } />
+              <Route path="/send-message" element={
+                <ProtectedRoute allowedRoles={[MatchRole.mentee, MatchRole.both]}>
+                  <MenteeMessageForm />
+                </ProtectedRoute>
+              } />
+
+              {/* Protected Mentor Routes (Includes 'Both') */}
+              <Route path="/mentor-portal" element={
+                <ProtectedRoute allowedRoles={[MatchRole.mentor, MatchRole.both]}>
+                  <MentorPortal />
+                </ProtectedRoute>
+              } />
+
+              {/* General Feedback */}
+              <Route path="/feedback-portal" element={<FeedbackPortal />} />
+            </Routes>
+          </div>
+          <Footer />
+        </div>
+      </BrowserRouter>
     </ThemeProvider>
   );
-}
-
-
-return (
-    <ThemeProvider theme={theme} >
-    <CssBaseline />
-    <BrowserRouter>
-        <div className="App">
-        <TopNav />
-          <div style={{ flex: 1 }}> {/* Wraps the main content */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/create-account" element={<CreateAccount />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/new-profile" element={<NewUserProfile />} />
-            <Route path="/mentee-portal" element={<MenteePortal />} />
-            <Route path="/send-message" element={<MenteeMessageForm />} />
-            <Route path="/admin-portal" element={<AdminPortal />} />
-            <Route path="/admin-portal/edit-user/:userID" element={<ManageUserProfile />} />
-            <Route path="/mentor-portal" element={<MentorPortal />} />
-            <Route path="/update-profile" element={<UpdateUserProfile />} />
-            <Route path="/feedback-portal" element={<FeedbackPortal />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/user-service-agreement" element={<UserServiceAgreement />} />
-            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-            <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/docusign" element={<DocuSignButton />} />
-          </Routes>
-          </div>
-        <Footer />
-        </div>
-    </BrowserRouter>
-  </ThemeProvider>
-);
 }
 
 export default App;
