@@ -25,7 +25,7 @@ function Login() {
   async function login() {
     setErrorState(resetError());
     try {
-      const user = (await authService.signIn(email, password)) as User;
+      const user = (await authService.signInSession(email, password)) as User;
       
       if (user) {
         // 1. Fetch the user profile immediately after login

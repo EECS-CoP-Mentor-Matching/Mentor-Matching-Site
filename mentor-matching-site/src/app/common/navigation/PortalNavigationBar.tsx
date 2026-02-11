@@ -45,7 +45,7 @@ const PortalNavigationBar = ({ navItems, selected, onNavChange }: PortalNavigati
 
   return (
     // AppBar will now fill the rest of the available width after the sidebar
-    <AppBar position="relative" style={{ backgroundColor: '#DC4405', boxShadow: 'none'}} >
+    <AppBar position="relative" style={{ backgroundColor: '#d74009c0', boxShadow: 'none'}} >
       <Box sx={boxStyle}>
         {/* PortalNavigationTabs will be centered within this box */}
         <PortalNavigationTabs handleNavChange={handleNavChange} navItems={navItems} selected={selected} />
