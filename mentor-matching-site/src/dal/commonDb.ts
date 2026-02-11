@@ -95,6 +95,11 @@ async function queryCommon(collectionName: string, ...conditions: QueryConstrain
   return records;
 }
 
+export async function querySingleSubcollection<T>(collectionName: string, docId: string, subcollectionName: string, ...conditions: QueryConstraint[]): Promise<DbReadResult<T>> {
+  const records = await queryCommonSubcollection(collectionName, docId, subcollectionName, ...conditions);
+  return processSingleReadResults(records);
+}
+
 export async function queryManySubcollection<T>(collectionName: string, docId: string, subcollectionName: string, ...conditions: QueryConstraint[]): Promise<DbReadResults<T>> {
   const records = await queryCommonSubcollection(collectionName, docId, subcollectionName, ...conditions);
   return processManyReadResults(records);
