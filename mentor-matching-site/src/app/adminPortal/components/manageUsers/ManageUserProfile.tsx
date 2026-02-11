@@ -8,6 +8,8 @@ import UpdatePersonalInformation from '../../../updateUserProfile/components/Upd
 import UpdateUserContactInformation from '../../../updateUserProfile/components/UpdateUserContactInformation';
 import UpdateUserDemographicInformation from '../../../updateUserProfile/components/UpdateDemographicsInformation';
 import UpdateEducationInformation from '../../../updateUserProfile/components/UpdateEducationInformation';
+import AuthenticatedView from '../../../common/auth/AuthenticatedView';
+import UnauthenticatedView from '../../../common/auth/UnauthenticatedView';
 
 function ManageUserProfile() {
     // Expects a user ID provided as part of the URL.  Will extract the ID
@@ -61,8 +63,11 @@ function ManageUserProfile() {
 
     return (
         <>
-            <p> Received user ID: {userID} with display name: {currentUserProfile?.contact.displayName}</p>
-            {dataIsLoading()}
+            <AuthenticatedView>
+                <p> Received user ID: {userID} with display name: {currentUserProfile?.contact.displayName}</p>
+                {dataIsLoading()}
+            </AuthenticatedView>
+            <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
         </>
     )
 
