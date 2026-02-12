@@ -12,6 +12,7 @@ export interface SurveyQuestion {
     prompts: PromptsDict
     required: boolean
     status: boolean
+    options?: SurveyOption[]
 }
 
 type PromptsDict = {
@@ -26,7 +27,6 @@ enum DisplayUi {
 }
 
 export interface SurveyOption {
-    QID: string
     label: string
     status: boolean
 }
