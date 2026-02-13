@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { messagingService } from "../../../../service/messagingService";
 import { useAppSelector } from "../../../../redux/hooks";
-import { DocItem } from "../../../../types/types";
-import { Message } from "../../../../types/matchProfile";
 import ContentContainer from "../../../common/ContentContainer";
 import { useNavigate } from "react-router-dom";
 import { UserProfile } from "../../../../types/userProfile";
@@ -23,15 +21,6 @@ function MenteeMessageForm() {
 
     // State to hold error message text, if any.  Will be displayed to the user to alert them of errors on the form.
     const [errorMessageText, setErrorMessageText] = useState("");
-
-    function DisplayErrorText() {
-    // Displays error text if the user incorrectly submits the form.
-    return (
-        <>
-            {errorMessageText}
-        </>
-    );
-}
     
     // Get the current user's profile
     const userProfile = useAppSelector((state) => state.userProfile.userProfile);
@@ -39,54 +28,58 @@ function MenteeMessageForm() {
     // State and function for a list of all users in the database.  TODO: Later, we may want to filter this to only users matched to this one.
     const [usersList, setUsersList] = useState<UserProfile[]>([]);
 
-    const getUserList = async () => {
-        try {
-            setUsersList(await userService.getAllUserProfiles());
-        }
-        catch (error) {
-            console.log("Error getting recipient list: " + error)
-        }
-    };
 
+    // Fetch a list of all users once on page load.  TODO: Add a filter so that only matched mentors are shown as an option.
     useEffect(() => {
-        getUserList();
+            async function fetchUsers() {
+                try {
+                    setUsersList(await userService.getAllUserProfiles());
+                }
+                catch (error) {
+                    console.log("Error getting recipient list: " + error)
+                }
+            };
+            fetchUsers();
     }, []);
 
     
 
     // Create a Message object based on the user's input and send the message
-    function sendMessageHandler(e: any) {
+    function sendMessageHandler(e: React.FormEvent) {
         e.preventDefault();
         console.log("Send message button pressed\n" + messageDetails.recipient + "\n" + messageDetails.message);
         // Check for no value in recipient or message:
         if (messageDetails.recipient == "") {
             setErrorMessageText("Please choose a recipient");
+            return;
         }
         else if (messageDetails.message == "") {
             setErrorMessageText("Please enter a message");
+            return;
         }
-        else {
-            let message = {
-                menteeUID: messageDetails.recipient,
-                menteeProfileId: "DEBUG",
-                mentorUID: "DEBUG",
-                mentorProfileId: "DEBUG",
-                message: messageDetails.message,
-                mentorReply: "0",
-                technicalInterest: "DEBUG",
-                professionalInterest: "DEBUG",
-                sentByUID: userProfile?.UID,
-                sentOn: 0
-            }   
-        
+
+        let message = {
+            menteeUID: messageDetails.recipient,
+            menteeProfileId: "DEBUG",
+            mentorUID: "DEBUG",
+            mentorProfileId: "DEBUG",
+            message: messageDetails.message,
+            mentorReply: "0",
+            technicalInterest: "DEBUG",
+            professionalInterest: "DEBUG",
+            sentByUID: userProfile?.UID,
+            sentOn: 0
+        };
+
         messagingService.sendMessage(message);
         alert("Message sent!")
         redirectToSite("/mentee-portal");
-        }
+        
     }
 
     // Update state whenever the user types in the boxes:
-    function changeMessageHandler(e: any) {
+    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>
+) {
         const inputName = e.target.name;
         const inputValue = e.target.value;
 
@@ -124,7 +117,13 @@ function MenteeMessageForm() {
                 </label>
                 <input type="submit" onClick={sendMessageHandler} value="Send Message"/>
             </form>
-            <DisplayErrorText></DisplayErrorText>
+            {/*Check for an error message, and if found, display it:*/}
+            {errorMessageText && (
+                <div style={{ color: "red", marginTop: "1rem" }}>
+                    {errorMessageText}
+                </div>
+            )}
+
         </ContentContainer>
     );
 }
