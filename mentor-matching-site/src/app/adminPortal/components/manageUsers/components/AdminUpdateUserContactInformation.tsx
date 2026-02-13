@@ -41,7 +41,7 @@ function AdminUpdateUserContactInformation({ showEdit, showEditStyle, userProfil
         </FormGroupRows>
         <FormGroupRows>
           <TextInputControl value={contactInformation.pronouns} label="Pronouns" readonly={!showEdit} onInput={(value) => updateContactField("pronouns", value)} style={showEditStyle} />
-          <AdminSelectTimeZone />
+          <AdminSelectTimeZone value={contactInformation.timeZone} onChange={(value) => updateContactField("timeZone", value)} />
         </FormGroupRows>
       </FormGroupCols>
     }</>

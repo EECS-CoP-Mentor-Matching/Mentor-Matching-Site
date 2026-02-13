@@ -5,12 +5,40 @@ import { TimeZone } from "../../../../../types/userProfile";
 import { DocItem } from "../../../../../types/types";
 
 interface AdminSelectTimeZoneProps {
-    value: string,
-    onChange: (value: string) => void;
+  value: string;
+  onChange: (value: string) => void;
 }
 
-function AdminSelectTimeZone() {
-    return(<></>)
-}
+export default function AdminSelectTimeZone({ value, onChange }: AdminSelectTimeZoneProps) {
+  const [timeZones, setTimeZones] = useState<{ id: string; label: string }[]>([]);
 
-export default AdminSelectTimeZone;
+  useEffect(() => {
+    const load = async () => {
+      const items: DocItem<TimeZone>[] = await selectionItemsDb.timeZonesAsync();
+      const mapped = items.map((item) => ({
+        id: item.docId,
+        label: item.data.timeZoneName
+      }));
+      setTimeZones(mapped);
+    };
+
+    load();
+  }, []);
+
+  return (
+    <FormControl fullWidth>
+      <InputLabel>Time Zone</InputLabel>
+      <Select
+        value={value}
+        label="Time Zone"
+        onChange={(e) => onChange(e.target.value as string)}
+      >
+        {timeZones.map((zone) => (
+          <MenuItem key={zone.id} value={zone.label}>
+            {zone.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+}
