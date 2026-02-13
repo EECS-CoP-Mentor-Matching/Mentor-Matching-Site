@@ -15,6 +15,7 @@ import { updateProfile } from '../../../../redux/reducers/userProfileReducer';
 import AdminUpdatePersonalInformation from './components/AdminUpdatePersonalInformation';
 import AdminUpdateUserContactInformation from './components/AdminUpdateUserContactInformation';
 import AdminUpdateUserDemographicInformation from './components/AdminUpdateDemographicsInformation';
+import AdminUpdateEducationInformation from './components/AdminUpdateEducationInformation';
 
 
 function ManageUserProfile() {
@@ -61,7 +62,7 @@ function ManageUserProfile() {
             <AdminUpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
             <AdminUpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
             <AdminUpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} />
+            <AdminUpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
         </FormGroup>
       );
     }
