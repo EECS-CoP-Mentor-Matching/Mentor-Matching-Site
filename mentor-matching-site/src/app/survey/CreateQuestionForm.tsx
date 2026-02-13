@@ -17,7 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import surveyService from "../../service/surveyService";
 import { Question, Option, DisplayUi, AlgorithmWeight} from "../../types/survey";
-
+import { Timestamp } from "firebase/firestore";
 
 export default function CreateQuestionForm() {
   //const [questions, setQuestions] = useState<Question[]>([]);
@@ -65,7 +65,8 @@ export default function CreateQuestionForm() {
       required: true,
       displayUi: displayUi,
       options,
-      status: true
+      status: true,
+      updated: Timestamp.now()
     };
 
     await surveyService.createQuestion(newQuestion);

@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore"
+
 export interface SurveySchema {
   title: string
   version: number
@@ -11,7 +13,8 @@ export interface Question {
     prompts: PromptsDict
     required: boolean
     status: boolean
-    options?: Option[]
+    options: Option[]
+    updated?: Timestamp
 }
 
 export type PromptsDict = {
@@ -22,7 +25,8 @@ export type PromptsDict = {
 export enum DisplayUi {
     checkbox = "checkbox",
     radio = "radio",
-    dropdown = "dropdown"
+    dropdown = "dropdown",
+    text = "text"
 }
 
 export enum AlgorithmWeight {
