@@ -6,19 +6,36 @@ import SelectRacialIdentity from "../../../../userProfileCommon/dropdowns/Select
 import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
 import SelectRole from "../../../../userProfileCommon/dropdowns/SelectRole";
 import { UserProfile } from "../../../../../types/userProfile";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import AdminSelectRacialIdentity from "./AdminSelectRacialIdentity";
 
 interface UpdateUserDemographicInformationProps {
   showEdit: boolean
   showEditStyle: any
-  userProfile: UserProfile
+  userProfile: UserProfile,
+  onChange: (updatedProfile: UserProfile) => void;
 }
 
-function AdminUpdateUserDemographicInformation({ showEdit, showEditStyle, userProfile }: UpdateUserDemographicInformationProps) {
+function AdminUpdateUserDemographicInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdateUserDemographicInformationProps) {
   //const demographicInformation = selector(state => state.userProfile.userProfile.demographics);
   // *** FIX 1: ADD SELECTOR FOR USER PREFERENCES ***
   //const userPreferences = selector(state => state.userProfile.userProfile.preferences);
   const demographicInformation = userProfile.demographics;
   const userPreferences = userProfile.preferences;
+
+ const updateDemographicField = (
+  field: keyof typeof demographicInformation,
+  value: any
+) => {
+  onChange({
+    ...userProfile,
+    demographics: {
+      ...demographicInformation,
+      [field]: value
+    }
+  });
+};
+
 
   return (
     <>{demographicInformation !== undefined &&
@@ -27,8 +44,9 @@ function AdminUpdateUserDemographicInformation({ showEdit, showEditStyle, userPr
         <FormGroupRows>
           {/* FIX 2: Corrected line from previous steps */}
           <SelectRole onSelectDispatch={updateRole} currentValue={userPreferences.role} />
-          <CheckBoxControlRedux checked={demographicInformation.lgbtqPlusCommunity} label="Identify as LGBTQ+" readOnly={!showEdit} onChangeDispatch={updateLgbtqPlus} />
-          <SelectRacialIdentity currentValue={demographicInformation.racialIdentity} onSelectDispatch={updateRacialIdentity} />
+          <FormControlLabel control={<Checkbox checked={demographicInformation.lgbtqPlusCommunity} disabled={!showEdit} onChange={(e) => updateDemographicField("lgbtqPlusCommunity", e.target.checked)} />}
+            label="Identify as LGBTQ+" />
+          <AdminSelectRacialIdentity value={demographicInformation.racialIdentity} onChange={(value) => updateDemographicField("racialIdentity", value)}/>
         </FormGroupRows>
       </FormGroupCols>
     }</>

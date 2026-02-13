@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { updateProfile } from '../../../../redux/reducers/userProfileReducer';
 import AdminUpdatePersonalInformation from './components/AdminUpdatePersonalInformation';
 import AdminUpdateUserContactInformation from './components/AdminUpdateUserContactInformation';
+import AdminUpdateUserDemographicInformation from './components/AdminUpdateDemographicsInformation';
 
 
 function ManageUserProfile() {
@@ -59,7 +60,7 @@ function ManageUserProfile() {
             <UploadUserProfileImage userProfile={{ ...profileDetails, imageUrl: profileDetails?.imageUrl }} />
             <AdminUpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
             <AdminUpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} />
+            <AdminUpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
             <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} />
         </FormGroup>
       );
