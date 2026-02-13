@@ -40,7 +40,6 @@ function AdminUpdateEducationInformation({ showEdit, showEditStyle, userProfile,
         <FormGroupRows>
           <AdminSelectEducationLevel value={educationInformation.highestLevelOfEducation} onChange={(value) => updateEducationField("highestLevelOfEducation", value)}/>
           <AdminSelectDegreeProgram value={educationInformation.degreeProgram} onChange={(value) => updateEducationField("degreeProgram", value)} />
-          <SelectDegreeProgram onSelectDispatch={updateDegreeProgram} currentValue={educationInformation.degreeProgram} />
           <FormControlLabel control={<Checkbox checked={educationInformation.studentStatus} disabled={!showEdit} onChange={(e) => updateEducationField("studentStatus", e.target.checked)} />}
                       label="Currently a Student" />
         </FormGroupRows>
