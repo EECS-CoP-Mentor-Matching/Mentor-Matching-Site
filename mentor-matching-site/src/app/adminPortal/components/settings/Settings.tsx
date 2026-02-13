@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import ModalWrapper from "../../../common/forms/modals/ModalWrapper";
 import { Box, Chip, IconButton, Paper, Typography, Grid } from '@mui/material';
 import CreateQuestionForm from "../../../survey/CreateQuestionForm";
+import SurveyForm from "../../../survey/SurveyForm";
 
 
 
@@ -18,6 +19,7 @@ function Settings() {
         >
           <CreateQuestionForm />
 
+          <SurveyForm userRole="mentee" />
 
         </ContentContainer>
       );
