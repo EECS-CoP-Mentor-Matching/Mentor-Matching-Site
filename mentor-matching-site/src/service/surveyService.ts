@@ -1,15 +1,20 @@
-import { DocItem, DbReadResult, DbReadResults } from "../types/types";
-import { SurveyOption, SurveyQuestion, SurveySchema } from "../types/survey";
+import { DocItem, DbReadResult, DbReadResults, DbWriteResult } from "../types/types";
+import { Option, Question, SurveySchema } from "../types/survey";
 import surveyDb from "../dal/surveyDb";
 import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore } from "firebase/firestore";
 
 
-async function getSurveySchemas() : Promise<DocItem<SurveySchema>[]> {
-    return await surveyDb.getSurveySchemasAsync();
+async function getAllQuestions() : Promise<Question[]> {
+    return await surveyDb.getAllQuestionsAsync();
+}
+
+async function createQuestion(question: Question) : Promise<DbWriteResult> {
+    return await surveyDb.createQuestionAsync(question);
 }
 
 const surveyService = {
-    getSurveySchemas
+    getAllQuestions,
+    createQuestion
 }
 
 export default surveyService;

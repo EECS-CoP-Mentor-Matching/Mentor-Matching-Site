@@ -1,18 +1,33 @@
-import { queryMany, querySingle, readMany} from "./commonDb";
-import { DocItem, DbReadResult, DbReadResults } from "../types/types";
-import { SurveyOption, SurveyQuestion, SurveySchema } from "../types/survey";
+import { queryMany, querySingle, readMany, readSingle, writeSingle} from "./commonDb";
+import { DocItem, DbReadResult, DbReadResults, DbWriteResult } from "../types/types";
+import { Option, Question, SurveySchema } from "../types/survey";
 import { app, db } from "../firebaseConfig";
 import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore } from "firebase/firestore";
 
 const collectionName = 'surveySchema';
+const questionsRef = collection(db, collectionName,)
 
-async function getSurveySchemasAsync() : Promise<DocItem<SurveySchema>[]> {
-  const schema = (await readMany<SurveySchema>(collectionName));
-  return schema.results
+async function getSurveySchemaIdAsync() : Promise<string> {
+  const schema = (await readSingle<SurveySchema>(collectionName));
+  return schema.docId
+}
+
+async function getAllQuestionsAsync(): Promise<Question[]> {
+  const surveySchemaId = await getSurveySchemaIdAsync();
+  const questions = await readMany<Question>(collection(db, collectionName, surveySchemaId, 'questions'));
+  return questions.results.map((doc) => doc.data as Question);;
+}
+
+async function createQuestionAsync(question: Question): Promise<DbWriteResult> {
+  const surveySchemaId = await getSurveySchemaIdAsync();
+  const questionsCollectionRef = collection(db, collectionName, surveySchemaId, "questions");
+  const result = await writeSingle(questionsCollectionRef, question);
+  return result;
 }
 
 const surveyDb = {
-  getSurveySchemasAsync
+  getAllQuestionsAsync,
+  createQuestionAsync
 }
 
 export default surveyDb
