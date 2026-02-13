@@ -103,10 +103,10 @@ return (
           <TextField
             fullWidth
             type="number"
-            label="Algorithm Weight (1-5)"
+            label="Algorithm Weight (0-5)"
             value={weight}
             onChange={(e) => setWeight(Number(e.target.value) as AlgorithmWeight)}
-            inputProps={{ min: 1, max: 5 }}
+            inputProps={{ min: 0, max: 5 }}
             sx={{ mb: 2 }}
           />
           <FormControl fullWidth sx={{ mb: 2 }}>
@@ -117,8 +117,9 @@ return (
               onChange={(e) => setDisplayUi(e.target.value as DisplayUi)}
             >
               <MenuItem value={DisplayUi.radio}>Select one (Radio)</MenuItem>
+              <MenuItem value={DisplayUi.dropdown}>Select one from list (Dropdown)</MenuItem>
               <MenuItem value={DisplayUi.checkbox}>Select all that apply (Checkbox)</MenuItem>
-              <MenuItem value={DisplayUi.dropdown}>Dropdown</MenuItem>
+              <MenuItem value={DisplayUi.text}>Free Response (Text)</MenuItem>
             </Select>
           </FormControl>
           <FormControlLabel
