@@ -5,6 +5,7 @@ import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import SelectRacialIdentity from "../../../../userProfileCommon/dropdowns/SelectRacialIdentity";
 import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
 import SelectRole from "../../../../userProfileCommon/dropdowns/SelectRole";
+import AdminSelectRole from "./AdminSelectRole";
 import { UserProfile } from "../../../../../types/userProfile";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import AdminSelectRacialIdentity from "./AdminSelectRacialIdentity";
@@ -36,6 +37,19 @@ function AdminUpdateUserDemographicInformation({ showEdit, showEditStyle, userPr
   });
 };
 
+const updatePreferenceField = (
+  field: keyof typeof userPreferences,
+  value: any
+) => {
+  onChange({
+    ...userProfile,
+    preferences: {
+      ...userPreferences,
+      [field]: value
+    }
+  });
+};
+
 
   return (
     <>{demographicInformation !== undefined &&
@@ -43,7 +57,7 @@ function AdminUpdateUserDemographicInformation({ showEdit, showEditStyle, userPr
         <FormLabel>Demographic Information</FormLabel>
         <FormGroupRows>
           {/* FIX 2: Corrected line from previous steps */}
-          <SelectRole onSelectDispatch={updateRole} currentValue={userPreferences.role} />
+          <AdminSelectRole value={userPreferences.role} onChange={(value) => updatePreferenceField("role", value)} />
           <FormControlLabel control={<Checkbox checked={demographicInformation.lgbtqPlusCommunity} disabled={!showEdit} onChange={(e) => updateDemographicField("lgbtqPlusCommunity", e.target.checked)} />}
             label="Identify as LGBTQ+" />
           <AdminSelectRacialIdentity value={demographicInformation.racialIdentity} onChange={(value) => updateDemographicField("racialIdentity", value)}/>
