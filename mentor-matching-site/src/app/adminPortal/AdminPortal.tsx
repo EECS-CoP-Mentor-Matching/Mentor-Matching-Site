@@ -5,6 +5,8 @@ import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/FeedbackAdminPortal';
 import ManageUsers from '../adminPortal/components/manageUsers/ManageUsers';
+import Settings from './components/settings/Settings';
+
 import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 import { getSettings } from '../../service/settingsService';
 
@@ -64,9 +66,11 @@ function AdminPortal(props: AdminPortalProps) {
         </div>
       )}
       {/* {page === Pages.viewReports && <ViewReports />} */}
-      {/* {page === Pages.settings && <Settings />} */}
-      
+          {page === Pages.settings && <Settings />}
+          {page === Pages.userFeedback && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
+       
     </FeedbackSettingsContext.Provider>
+    
   );
 }
 
