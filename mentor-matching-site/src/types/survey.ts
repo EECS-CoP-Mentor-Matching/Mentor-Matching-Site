@@ -41,3 +41,9 @@ export enum AlgorithmWeight {
 export interface Option {
     label: string
 }
+
+export interface SurveyResponse {
+    UID: string
+    role: "mentee" | "mentor"
+    responses: Record<string, any>
+}
