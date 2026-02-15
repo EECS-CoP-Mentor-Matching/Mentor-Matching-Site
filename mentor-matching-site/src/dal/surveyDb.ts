@@ -12,10 +12,10 @@ async function getSurveySchemaIdAsync() : Promise<string> {
   return schema.docId
 }
 
-async function getAllQuestionsAsync(): Promise<Question[]> {
+async function getAllQuestionsAsync(): Promise<DocItem<Question>[]> {
   const surveySchemaId = await getSurveySchemaIdAsync();
   const questions = await queryMany<Question>(collection(db, collectionName, surveySchemaId, 'questions'), orderBy("updated", "asc"));
-  return questions.results.map((doc) => doc.data as Question);;
+  return questions.results;
 }
 
 async function createQuestionAsync(question: Question): Promise<DbWriteResult> {
