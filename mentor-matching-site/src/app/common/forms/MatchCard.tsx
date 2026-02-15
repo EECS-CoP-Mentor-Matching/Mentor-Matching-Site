@@ -210,10 +210,10 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onConnect, onViewPr
               Category Scores
             </Typography>
 
-            {/* Technical Interests */}
+            {/* Career & Technical Interests */}
             <Box sx={{ mb: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography variant="body2">Technical Interests</Typography>
+                <Typography variant="body2">Career & Technical Interests</Typography>
                 <Typography variant="body2" sx={{ fontWeight: 600, color: matchColor }}>
                   {Math.round(match.categoryScores.technicalInterests)}%
                 </Typography>

@@ -85,12 +85,23 @@ export function calculateMatchScore(
   };
   
   // Calculate individual category scores
-  const technicalScore = calculateCategoryScore(
+  // Combine career fields and technical interests into one score
+  const careerFieldScore = calculateCategoryScore(
+    menteeProfile.careerFields || [],
+    mentorProfile.careerFields || [],
+    1, // Equal weight for career fields within this category
+    1
+  );
+  
+  const technicalInterestScore = calculateCategoryScore(
     menteeProfile.technicalInterests || [],
     mentorProfile.technicalInterests || [],
-    menteeWeights.technicalInterests,
-    mentorWeights.technicalInterests
+    1, // Equal weight for technical interests within this category
+    1
   );
+  
+  // Combine career & technical into one weighted score (50/50 split)
+  const careerAndTechnicalScore = (careerFieldScore + technicalInterestScore) / 2;
   
   const lifeExpScore = calculateCategoryScore(
     menteeProfile.lifeExperiences || [],
@@ -108,17 +119,17 @@ export function calculateMatchScore(
   
   // Calculate weighted average
   // The weight contribution of each category is based on the average weight
-  const avgTechWeight = (menteeWeights.technicalInterests + mentorWeights.technicalInterests) / 2;
+  const avgCareerTechWeight = (menteeWeights.technicalInterests + mentorWeights.technicalInterests) / 2;
   const avgLifeWeight = (menteeWeights.lifeExperiences + mentorWeights.lifeExperiences) / 2;
   const avgLangWeight = (menteeWeights.languages + mentorWeights.languages) / 2;
   
-  const totalWeight = avgTechWeight + avgLifeWeight + avgLangWeight;
+  const totalWeight = avgCareerTechWeight + avgLifeWeight + avgLangWeight;
   
   // Calculate weighted percentage
   let matchPercentage = 0;
   if (totalWeight > 0) {
     matchPercentage = (
-      (technicalScore * avgTechWeight / totalWeight) +
+      (careerAndTechnicalScore * avgCareerTechWeight / totalWeight) +
       (lifeExpScore * avgLifeWeight / totalWeight) +
       (languagesScore * avgLangWeight / totalWeight)
     );
@@ -127,7 +138,7 @@ export function calculateMatchScore(
   return {
     matchPercentage: Math.round(matchPercentage * 10) / 10, // Round to 1 decimal
     categoryScores: {
-      technicalInterests: Math.round(technicalScore * 10) / 10,
+      technicalInterests: Math.round(careerAndTechnicalScore * 10) / 10, // Now includes both career fields and technical interests
       lifeExperiences: Math.round(lifeExpScore * 10) / 10,
       languages: Math.round(languagesScore * 10) / 10
     }

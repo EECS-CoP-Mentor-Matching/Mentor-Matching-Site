@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { 
-  FormLabel, 
   Button, 
   Card, 
   TextField,
@@ -17,13 +16,11 @@ import {
 } from "@mui/material";
 import WeightSelector from "../../../common/forms/WeightSelector";
 import "./CreateMenteeProfile.css";
-import { useAppSelector } from "../../../../redux/hooks";
 import menteeDb from "../../../../dal/menteeDb";
 import ErrorMessage, { ErrorState, parseError, resetError } from "../../../common/forms/ErrorMessage";
 import { MatchProfile, initUserWeights, UserWeights } from "../../../../types/matchProfile";
 import authService from "../../../../service/authService";
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
-import { nullNumber, nullString } from "../../../common/forms/validation";
 import ContentContainer from "../../../common/ContentContainer";
 import { 
   CAREER_FIELDS, 
@@ -40,9 +37,6 @@ interface CreateMenteeProfileProps {
 function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
   const [errorState, setErrorState] = useState<ErrorState>({ isError: false, errorMessage: '' });
   const [loading, setLoading] = useState(false);
-
-  const selector = useAppSelector;
-  const menteeProfile = selector(state => state.matchProfiles.newMenteeProfile);
 
   // New matching fields state
   const [careerFields, setCareerFields] = useState<string[]>([]);
@@ -62,10 +56,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
     setErrorState(resetError());
     setLoading(true);
     try {
-      // Validate legacy fields
-      validateInputs(menteeProfile);
-      
-      // Validate new fields
+      // Validate new fields only
       validateNewFields();
 
       const user = await authService.getSignedInUser();
@@ -114,25 +105,6 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
       setErrorState(parseError(error));
     }
     setLoading(false);
-  }
-
-  const validateInputs = (profile: MatchProfile) => {
-    // Legacy fields are now optional - only validate if they exist
-    // This allows compatibility with old profiles while new profiles use new fields
-    
-    // If legacy fields are present, validate them
-    if (profile.technicalInterest && nullString(profile.technicalInterest)) {
-      throw new Error("Select a technical interest");
-    }
-    if (profile.technicalExperience !== undefined && nullNumber(profile.technicalExperience)) {
-      throw new Error("Select a technical experience level");
-    }
-    if (profile.professionalInterest && nullString(profile.professionalInterest)) {
-      throw new Error("Select a professional interest");
-    }
-    if (profile.professionalExperience !== undefined && nullNumber(profile.professionalExperience)) {
-      throw new Error("Select a professional experience level");
-    }
   }
 
   const validateNewFields = () => {
@@ -233,12 +205,12 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
 
           {/* Life Experiences */}
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Tell us about yourself *</InputLabel>
+            <InputLabel>Life Experiences *</InputLabel>
             <Select
               multiple
               value={lifeExperiences}
               onChange={(e) => setLifeExperiences(e.target.value as string[])}
-              input={<OutlinedInput label="Tell us about yourself *" />}
+              input={<OutlinedInput label="Life Experiences *" />}
               renderValue={(selected) => selected.join(', ')}
             >
               {LIFE_EXPERIENCES.map((experience) => (
@@ -248,6 +220,9 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
                 </MenuItem>
               ))}
             </Select>
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, ml: 1.5 }}>
+              Select experiences you'd like to share with potential mentors (affects matching)
+            </Typography>
           </FormControl>
 
           {/* Languages */}
@@ -326,11 +301,6 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
 
         {/* Section: Matching Preferences (Weights) */}
         <Box>
-          <Typography variant="h6" gutterBottom sx={{ color: '#0066cc', fontWeight: 600 }}>
-            Matching Preferences
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
-          
           <WeightSelector weights={weights} onChange={setWeights} />
         </Box>
 

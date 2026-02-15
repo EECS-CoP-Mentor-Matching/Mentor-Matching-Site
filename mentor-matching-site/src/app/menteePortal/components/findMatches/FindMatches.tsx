@@ -33,7 +33,7 @@ function FindMatches() {
   const [matches, setMatches] = useState<CalculatedMatch[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState<string>('');
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
-  const [minMatchPercentage, setMinMatchPercentage] = useState<number>(30);
+  const [minMatchPercentage, setMinMatchPercentage] = useState<number>(10); // Lowered from 30 to show more matches
 
   const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
@@ -166,6 +166,10 @@ function FindMatches() {
           <Typography variant="body2" sx={{ mb: 1 }}>
             <strong>Finding Matches:</strong> We match you with mentors based on career fields, technical interests, 
             life experiences, and languages, weighted by your preferences.
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            <strong>Match Criteria:</strong> Matches appear when you share at least one career field or technical interest 
+            AND at least one language in common. Low percentages mean less overlap, but they can still be valuable connections!
           </Typography>
           <Typography variant="caption" color="text.secondary">
             Note: Only mentors with updated profiles (including matching preferences) will appear in results.

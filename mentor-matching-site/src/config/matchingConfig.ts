@@ -104,11 +104,11 @@ export const TECHNICAL_INTERESTS_MAP: Record<string, string[]> = {
 export const LIFE_EXPERIENCES = [
   'Parent',
   'Caretaker',
-  'International Student',
+  'International Background',
   'English as a second language',
   'LGBTQ+',
   'Military Service',
-  'Unsure about career path',
+  'Career Transition',
   'Entrepreneur',
   'Second Career',
   'None of the above'
@@ -167,22 +167,22 @@ export interface WeightPriorityOption {
 export const WEIGHT_PRIORITY_OPTIONS: WeightPriorityOption[] = [
   {
     value: 'technicalInterests',
-    label: 'I want my mentor to have similar technical interests',
+    label: 'Career & technical interests are most important',
     defaultWeights: { technicalInterests: 5, lifeExperiences: 2, languages: 2 }
   },
   {
     value: 'lifeExperiences',
-    label: 'I want my mentor to have similar life experiences',
+    label: 'Life experiences are most important',
     defaultWeights: { technicalInterests: 2, lifeExperiences: 5, languages: 2 }
   },
   {
     value: 'languages',
-    label: 'I want my mentor to speak the same language as me (besides English)',
+    label: 'Language compatibility is most important',
     defaultWeights: { technicalInterests: 2, lifeExperiences: 2, languages: 5 }
   },
   {
     value: 'equal',
-    label: 'All of these are equally important to me',
+    label: 'All of these are equally important',
     defaultWeights: { technicalInterests: 3, lifeExperiences: 3, languages: 3 }
   }
 ];

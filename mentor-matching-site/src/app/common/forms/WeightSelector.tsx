@@ -47,7 +47,7 @@ export const WeightSelector: React.FC<WeightSelectorProps> = ({ weights, onChang
     <div className="weight-selector">
       <h3>Matching Preferences</h3>
       <p className="description">
-        Tell us what's most important to you when matching with a {weights ? 'mentor' : 'mentee'}
+        Tell us what's most important to you when matching with others
       </p>
 
       {/* Quick Priority Selection */}
@@ -73,10 +73,10 @@ export const WeightSelector: React.FC<WeightSelectorProps> = ({ weights, onChang
 
       {/* Individual Weight Sliders */}
       <div className="weight-sliders">
-        {/* Technical Interests */}
+        {/* Career & Technical Interests */}
         <div className="weight-item">
           <label htmlFor="technical-weight" className="weight-label">
-            <span className="label-text">Technical Interests</span>
+            <span className="label-text">Career & Technical Interests</span>
             <span className="weight-value">{getWeightLabel(weights.technicalInterests)}</span>
           </label>
           <input
@@ -150,7 +150,7 @@ export const WeightSelector: React.FC<WeightSelectorProps> = ({ weights, onChang
       <div className="weight-summary">
         <p className="summary-text">
           Your matching will prioritize:{' '}
-          {weights.technicalInterests >= 4 && <strong>Technical Interests </strong>}
+          {weights.technicalInterests >= 4 && <strong>Career & Technical Interests </strong>}
           {weights.lifeExperiences >= 4 && <strong>Life Experiences </strong>}
           {weights.languages >= 4 && <strong>Languages</strong>}
         </p>
