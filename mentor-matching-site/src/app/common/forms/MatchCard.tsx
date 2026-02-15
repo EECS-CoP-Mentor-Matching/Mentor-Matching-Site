@@ -1,12 +1,28 @@
 /**
- * MATCH CARD COMPONENT
+ * ENHANCED MATCH CARD COMPONENT
  * 
- * Displays a potential match with percentage score and breakdown
+ * Displays a potential match with prominent percentage score and detailed breakdown
  */
 
 import React, { useState } from 'react';
+import { 
+  Card, 
+  CardContent, 
+  Box, 
+  Typography, 
+  Chip, 
+  LinearProgress,
+  Collapse,
+  Button,
+  Divider,
+  Avatar
+} from '@mui/material';
+import { 
+  ExpandMore as ExpandMoreIcon,
+  Person as PersonIcon,
+  EmojiEvents as TrophyIcon
+} from '@mui/icons-material';
 import { CalculatedMatch } from '../../../types/matchProfile';
-import './MatchCard.css';
 
 interface MatchCardProps {
   match: CalculatedMatch;
@@ -28,156 +44,283 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onConnect, onViewPr
     if (percentage >= 80) return 'Excellent Match';
     if (percentage >= 60) return 'Good Match';
     if (percentage >= 40) return 'Fair Match';
-    return 'Low Match';
+    return 'Potential Match';
   };
 
   const profile = match.profile;
   const matchColor = getMatchColor(match.matchPercentage);
+  const matchPercent = Math.round(match.matchPercentage);
 
   return (
-    <div className="match-card">
-      {/* Match Percentage Badge */}
-      <div className="match-header">
-        <div 
-          className="match-percentage" 
-          style={{ backgroundColor: matchColor }}
-        >
-          <span className="percentage-value">{Math.round(match.matchPercentage)}%</span>
-          <span className="percentage-label">{getMatchLabel(match.matchPercentage)}</span>
-        </div>
-      </div>
+    <Card 
+      sx={{ 
+        mb: 2,
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: 6
+        },
+        border: `2px solid ${matchColor}20`
+      }}
+    >
+      <CardContent>
+        {/* Header with Prominent Match Percentage */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Avatar sx={{ bgcolor: matchColor, width: 56, height: 56 }}>
+              <PersonIcon />
+            </Avatar>
+            
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                {profile.introduction?.split('\n')[0] || 'Potential Match'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {profile.careerFields?.[0] || 'Various Fields'}
+              </Typography>
+            </Box>
+          </Box>
 
-      {/* Profile Info */}
-      <div className="match-profile">
-        <h4 className="profile-name">
-          {profile.introduction?.split('\n')[0] || 'Anonymous User'}
-        </h4>
-        
+          {/* Large Percentage Display */}
+          <Box 
+            sx={{ 
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              bgcolor: `${matchColor}15`,
+              borderRadius: 2,
+              padding: 2,
+              minWidth: 100
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+              <Typography 
+                variant="h3" 
+                sx={{ 
+                  fontWeight: 700,
+                  color: matchColor,
+                  lineHeight: 1
+                }}
+              >
+                {matchPercent}
+              </Typography>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  fontWeight: 600,
+                  color: matchColor 
+                }}
+              >
+                %
+              </Typography>
+            </Box>
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                fontWeight: 600,
+                color: matchColor,
+                textTransform: 'uppercase',
+                letterSpacing: 0.5
+              }}
+            >
+              {getMatchLabel(match.matchPercentage)}
+            </Typography>
+            {matchPercent >= 80 && (
+              <TrophyIcon sx={{ color: matchColor, fontSize: 20, mt: 0.5 }} />
+            )}
+          </Box>
+        </Box>
+
         {/* Career Fields */}
         {profile.careerFields && profile.careerFields.length > 0 && (
-          <div className="profile-field">
-            <span className="field-label">Career Fields:</span>
-            <div className="field-tags">
+          <Box sx={{ mb: 2 }}>
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
               {profile.careerFields.map((field, index) => (
-                <span key={index} className="tag">{field}</span>
+                <Chip 
+                  key={index} 
+                  label={field} 
+                  size="small"
+                  sx={{ bgcolor: '#e3f2fd', color: '#0066cc' }}
+                />
               ))}
-            </div>
-          </div>
+            </Box>
+          </Box>
         )}
 
-        {/* Mentorship Goal (if public) */}
+        {/* Technical Interests Preview */}
+        {profile.technicalInterests && profile.technicalInterests.length > 0 && (
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+              <strong>Interests:</strong>
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+              {profile.technicalInterests.slice(0, 5).map((interest, index) => (
+                <Chip 
+                  key={index} 
+                  label={interest} 
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+              {profile.technicalInterests.length > 5 && (
+                <Chip 
+                  label={`+${profile.technicalInterests.length - 5} more`} 
+                  size="small"
+                  variant="outlined"
+                />
+              )}
+            </Box>
+          </Box>
+        )}
+
+        {/* Mentorship Goal */}
         {profile.mentorshipGoal && (
-          <div className="profile-field">
-            <span className="field-label">Goal:</span>
-            <span className="field-value">{profile.mentorshipGoal}</span>
-          </div>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Goal:</strong> {profile.mentorshipGoal}
+            </Typography>
+          </Box>
         )}
 
         {/* Introduction */}
-        {profile.introduction && (
-          <div className="profile-intro">
-            <p>{profile.introduction}</p>
-          </div>
+        {profile.introduction && profile.introduction.trim() && (
+          <Box sx={{ mb: 2, p: 1.5, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+            <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+              "{profile.introduction}"
+            </Typography>
+          </Box>
         )}
-      </div>
 
-      {/* Match Breakdown Toggle */}
-      <button 
-        className="breakdown-toggle"
-        onClick={() => setShowBreakdown(!showBreakdown)}
-        type="button"
-      >
-        {showBreakdown ? '▼' : '►'} See Match Breakdown
-      </button>
+        <Divider sx={{ my: 2 }} />
 
-      {/* Match Breakdown */}
-      {showBreakdown && (
-        <div className="match-breakdown">
-          <h5>Match Details</h5>
-          
-          <div className="breakdown-item">
-            <div className="breakdown-header">
-              <span className="breakdown-label">Technical Interests</span>
-              <span className="breakdown-score">{Math.round(match.categoryScores.technicalInterests)}%</span>
-            </div>
-            <div className="breakdown-bar">
-              <div 
-                className="breakdown-fill"
-                style={{ 
-                  width: `${match.categoryScores.technicalInterests}%`,
-                  backgroundColor: matchColor 
+        {/* Match Breakdown Toggle */}
+        <Button
+          fullWidth
+          onClick={() => setShowBreakdown(!showBreakdown)}
+          endIcon={<ExpandMoreIcon sx={{ transform: showBreakdown ? 'rotate(180deg)' : 'rotate(0deg)', transition: '0.3s' }} />}
+          sx={{ mb: showBreakdown ? 2 : 0 }}
+        >
+          {showBreakdown ? 'Hide' : 'Show'} Match Breakdown
+        </Button>
+
+        {/* Match Breakdown */}
+        <Collapse in={showBreakdown}>
+          <Box sx={{ bgcolor: '#fafafa', p: 2, borderRadius: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
+              Category Scores
+            </Typography>
+
+            {/* Technical Interests */}
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                <Typography variant="body2">Technical Interests</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: matchColor }}>
+                  {Math.round(match.categoryScores.technicalInterests)}%
+                </Typography>
+              </Box>
+              <LinearProgress 
+                variant="determinate" 
+                value={match.categoryScores.technicalInterests}
+                sx={{
+                  height: 8,
+                  borderRadius: 4,
+                  bgcolor: '#e0e0e0',
+                  '& .MuiLinearProgress-bar': {
+                    bgcolor: matchColor,
+                    borderRadius: 4
+                  }
                 }}
               />
-            </div>
-            {profile.technicalInterests && profile.technicalInterests.length > 0 && (
-              <div className="breakdown-details">
-                {profile.technicalInterests.slice(0, 3).join(', ')}
-                {profile.technicalInterests.length > 3 && ` +${profile.technicalInterests.length - 3} more`}
-              </div>
-            )}
-          </div>
+            </Box>
 
-          <div className="breakdown-item">
-            <div className="breakdown-header">
-              <span className="breakdown-label">Life Experiences</span>
-              <span className="breakdown-score">{Math.round(match.categoryScores.lifeExperiences)}%</span>
-            </div>
-            <div className="breakdown-bar">
-              <div 
-                className="breakdown-fill"
-                style={{ 
-                  width: `${match.categoryScores.lifeExperiences}%`,
-                  backgroundColor: matchColor 
+            {/* Life Experiences */}
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                <Typography variant="body2">Life Experiences</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: matchColor }}>
+                  {Math.round(match.categoryScores.lifeExperiences)}%
+                </Typography>
+              </Box>
+              <LinearProgress 
+                variant="determinate" 
+                value={match.categoryScores.lifeExperiences}
+                sx={{
+                  height: 8,
+                  borderRadius: 4,
+                  bgcolor: '#e0e0e0',
+                  '& .MuiLinearProgress-bar': {
+                    bgcolor: matchColor,
+                    borderRadius: 4
+                  }
                 }}
               />
-            </div>
-          </div>
+              {profile.lifeExperiences && profile.lifeExperiences.length > 0 && (
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                  {profile.lifeExperiences.join(', ')}
+                </Typography>
+              )}
+            </Box>
 
-          <div className="breakdown-item">
-            <div className="breakdown-header">
-              <span className="breakdown-label">Languages</span>
-              <span className="breakdown-score">{Math.round(match.categoryScores.languages)}%</span>
-            </div>
-            <div className="breakdown-bar">
-              <div 
-                className="breakdown-fill"
-                style={{ 
-                  width: `${match.categoryScores.languages}%`,
-                  backgroundColor: matchColor 
+            {/* Languages */}
+            <Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                <Typography variant="body2">Languages</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: matchColor }}>
+                  {Math.round(match.categoryScores.languages)}%
+                </Typography>
+              </Box>
+              <LinearProgress 
+                variant="determinate" 
+                value={match.categoryScores.languages}
+                sx={{
+                  height: 8,
+                  borderRadius: 4,
+                  bgcolor: '#e0e0e0',
+                  '& .MuiLinearProgress-bar': {
+                    bgcolor: matchColor,
+                    borderRadius: 4
+                  }
                 }}
               />
-            </div>
-            {profile.languages && profile.languages.length > 0 && (
-              <div className="breakdown-details">
-                {profile.languages.join(', ')}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+              {profile.languages && profile.languages.length > 0 && (
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                  {profile.languages.join(', ')}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        </Collapse>
 
-      {/* Actions */}
-      <div className="match-actions">
-        {onViewProfile && (
-          <button 
-            className="btn-secondary"
-            onClick={onViewProfile}
-            type="button"
-          >
-            View Full Profile
-          </button>
-        )}
-        {onConnect && (
-          <button 
-            className="btn-primary"
-            onClick={onConnect}
-            type="button"
-          >
-            Send Message
-          </button>
-        )}
-      </div>
-    </div>
+        {/* Action Buttons */}
+        <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+          {onViewProfile && (
+            <Button 
+              variant="outlined" 
+              fullWidth
+              onClick={onViewProfile}
+            >
+              View Profile
+            </Button>
+          )}
+          {onConnect && (
+            <Button 
+              variant="contained" 
+              fullWidth
+              onClick={onConnect}
+              sx={{
+                bgcolor: matchColor,
+                '&:hover': {
+                  bgcolor: matchColor,
+                  filter: 'brightness(0.9)'
+                }
+              }}
+            >
+              Connect
+            </Button>
+          )}
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 

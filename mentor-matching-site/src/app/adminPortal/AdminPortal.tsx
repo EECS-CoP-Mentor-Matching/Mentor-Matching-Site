@@ -6,6 +6,7 @@ import navUtilities from '../common/navigation/navUtilities';
 import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/FeedbackAdminPortal';
 import ManageUsers from '../adminPortal/components/manageUsers/ManageUsers';
 import Settings from './components/settings/Settings';
+import TestingPanel from './components/testing/TestingPanel'; // NEW
 
 import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 import { getSettings } from '../../service/settingsService';
@@ -14,7 +15,8 @@ export enum Pages {
   manageUsers = "Manage Users",
   viewReports = "View Reports",
   settings = "Settings",
-  userFeedback = "User Feedback"
+  userFeedback = "User Feedback",
+  testing = "Testing" // NEW
 }
 
 interface AdminPortalProps {}
@@ -66,8 +68,8 @@ function AdminPortal(props: AdminPortalProps) {
         </div>
       )}
       {/* {page === Pages.viewReports && <ViewReports />} */}
-          {page === Pages.settings && <Settings />}
-          {page === Pages.userFeedback && <div className="feedback-portal"><FeedbackAdminPortal /></div>}
+      {page === Pages.settings && <Settings />}
+      {page === Pages.testing && <TestingPanel />} {/* NEW */}
        
     </FeedbackSettingsContext.Provider>
     

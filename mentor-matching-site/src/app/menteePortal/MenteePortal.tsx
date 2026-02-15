@@ -9,12 +9,12 @@ import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import { useNavigate } from 'react-router-dom';
 import MenteeMessages from './components/menteeMessages/MenteeMessages';
-// Add to any existing component temporarily
-
+import FindMatches from './components/findMatches/FindMatches'; // NEW
 
 export enum Pages {
   createProfile = "Create Profile",
   activeProfiles = "Active Profiles",
+  findMatches = "Find Matches", // NEW
   menteeMessages = "Messages"
 }
 
@@ -62,6 +62,12 @@ function MenteePortal() {
               {selectedPage === Pages.createProfile.toString() &&
                 <div className="mentee-portal">
                   <CreateMenteeProfile backToPage={backToActive} />
+                </div>
+              }
+
+              {selectedPage === Pages.findMatches.toString() &&
+                <div className="mentee-portal">
+                  <FindMatches />
                 </div>
               }
 
