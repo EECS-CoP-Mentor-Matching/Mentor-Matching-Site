@@ -17,18 +17,18 @@ import {
 
 import surveyService from "../../service/surveyService";
 import { Question, DisplayUi } from "../../types/survey";
-import { DocItem } from "../../types/types";
-
-type UserRole = "mentee" | "mentor";
+import { DocItem , DbWriteResult } from "../../types/types";
+import { useAppSelector } from "../../redux/hooks";
 
 interface SurveyFormProps {
-  userRole: UserRole;
+  userRole: "mentee" | "mentor";
 }
 
 export default function SurveyForm({ userRole }: SurveyFormProps) {
   const [questions, setQuestions] = useState<DocItem<Question>[]>([]);
   const [responses, setResponses] = useState<Record<string, any>>({});
-
+  const uid = useAppSelector(state => state.userProfile.userProfile?.UID);
+  
   useEffect(() => {
     async function loadQuestions() {
       const data = await surveyService.getAllQuestions();
@@ -50,8 +50,15 @@ export default function SurveyForm({ userRole }: SurveyFormProps) {
     handleChange(docId, updated);
   }
 
-  function handleSubmit() {
-    console.log("Survey Responses:", responses);
+  async function handleSubmit() {
+    
+    try {
+      await surveyService.createSurveyResponse(uid, userRole, responses);
+      setResponses({});
+    } catch (error) {
+      console.error('An error occurred while submitting survey responses.');
+      alert('An error occurred while submitting survey');
+    }
   }
 
   return (
