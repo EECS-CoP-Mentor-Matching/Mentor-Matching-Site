@@ -17,17 +17,18 @@ import {
 
 import surveyService from "../../service/surveyService";
 import { Question, DisplayUi } from "../../types/survey";
-
-type UserRole = "mentee" | "mentor";
+import { DocItem , DbWriteResult } from "../../types/types";
+import { useAppSelector } from "../../redux/hooks";
 
 interface SurveyFormProps {
-  userRole: UserRole;
+  userRole: "mentee" | "mentor";
 }
 
 export default function SurveyForm({ userRole }: SurveyFormProps) {
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<DocItem<Question>[]>([]);
   const [responses, setResponses] = useState<Record<string, any>>({});
-
+  const uid = useAppSelector(state => state.userProfile.userProfile?.UID);
+  
   useEffect(() => {
     async function loadQuestions() {
       const data = await surveyService.getAllQuestions();
@@ -36,24 +37,28 @@ export default function SurveyForm({ userRole }: SurveyFormProps) {
     loadQuestions();
   }, []);
 
-  function handleChange(questionIndex: number, value: any) {
-    setResponses((prev) => ({
-      ...prev,
-      [questionIndex]: value
-    }));
+  function handleChange(docId: string, value: any) {
+    setResponses((prev) => ({...prev, [docId]: value}));
   }
 
-  function handleCheckboxChange(questionIndex: number, option: string) {
-    const current = responses[questionIndex] || [];
+  function handleCheckboxChange(docId: string, option: string) {
+    const current = responses[docId] || [];
     const updated = current.includes(option)
       ? current.filter((o: string) => o !== option)
       : [...current, option];
 
-    handleChange(questionIndex, updated);
+    handleChange(docId, updated);
   }
 
-  function handleSubmit() {
-    console.log("Survey Responses:", responses);
+  async function handleSubmit() {
+    
+    try {
+      await surveyService.createSurveyResponse(uid, userRole, responses);
+      setResponses({});
+    } catch (error) {
+      console.error('An error occurred while submitting survey responses.');
+      alert('An error occurred while submitting survey');
+    }
   }
 
   return (
@@ -63,7 +68,10 @@ export default function SurveyForm({ userRole }: SurveyFormProps) {
       </Typography>
 
       <Box display="flex" flexDirection="column" gap={4}>
-        {questions.map((question, index) => {
+        {questions.map((doc, index) => {
+          const question = doc.data
+          const docId = doc.docId
+          
           const prompt =
             userRole === "mentee"
               ? question.prompts.mentee
@@ -80,9 +88,9 @@ export default function SurveyForm({ userRole }: SurveyFormProps) {
                 {/* radio */}
                 {question.displayUi === DisplayUi.radio && (
                   <RadioGroup
-                    value={responses[index] || ""}
+                    value={responses[docId] || ""}
                     onChange={(e) =>
-                      handleChange(index, e.target.value)
+                      handleChange(docId, e.target.value)
                     }
                   >
                     {question.options.map((option, i) => (
@@ -103,12 +111,8 @@ export default function SurveyForm({ userRole }: SurveyFormProps) {
                       key={i}
                       control={
                         <Checkbox
-                          checked={
-                            responses[index]?.includes(option.label) || false
-                          }
-                          onChange={() =>
-                            handleCheckboxChange(index, option.label)
-                          }
+                          checked={responses[docId]?.includes(option.label) || false}
+                          onChange={() => handleCheckboxChange(docId, option.label)}
                         />
                       }
                       label={option.label}
@@ -118,10 +122,8 @@ export default function SurveyForm({ userRole }: SurveyFormProps) {
                 {/* dropdown */}
                 {question.displayUi === DisplayUi.dropdown && (
                   <Select
-                    value={responses[index] || ""}
-                    onChange={(e) =>
-                      handleChange(index, e.target.value)
-                    }
+                    value={responses[docId] || ""}
+                    onChange={(e) => handleChange(docId, e.target.value)}
                   >
                     {question.options.map((option, i) => (
                       <MenuItem key={i} value={option.label}>
@@ -136,10 +138,8 @@ export default function SurveyForm({ userRole }: SurveyFormProps) {
                   <TextField
                     multiline
                     minRows={3}
-                    value={responses[index] || ""}
-                    onChange={(e) =>
-                      handleChange(index, e.target.value)
-                    }
+                    value={responses[docId] || ""}
+                    onChange={(e) => handleChange(docId, e.target.value)}
                   />
                 )}
               </FormControl>
