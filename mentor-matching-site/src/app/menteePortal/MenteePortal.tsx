@@ -9,27 +9,25 @@ import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import { useNavigate } from 'react-router-dom';
 import MenteeMessages from './components/menteeMessages/MenteeMessages';
-import FindMatches from './components/findMatches/FindMatches'; // NEW
+import FindMatches from './components/findMatches/FindMatches';
 
 export enum Pages {
-  createProfile = "Create Profile",
+  // createProfile removed - now accessed via button
   activeProfiles = "Active Profiles",
-  findMatches = "Find Matches", // NEW
+  findMatches = "Find Matches",
   menteeMessages = "Messages"
 }
 
 function MenteePortal() {
   // Ensure the state type is explicitly the Enum string value
   const [selectedPage, setSelectedPage] = useState<string>(Pages.activeProfiles.toString());
+  const [showCreateProfile, setShowCreateProfile] = useState(false);
 
   const navigate = useNavigate();
 
   const backToActive = () => {
+    setShowCreateProfile(false);
     setSelectedPage(Pages.activeProfiles.toString());
-  }
-
-  const backToCreate = () => {
-    setSelectedPage(Pages.createProfile.toString());
   }
   
   const userProfile = useAppSelector((state) => state.userProfile.userProfile);
@@ -53,13 +51,16 @@ function MenteePortal() {
             />
 
               {/* Conditional Rendering Blocks */}
-              {selectedPage === Pages.activeProfiles.toString() &&
+              {selectedPage === Pages.activeProfiles.toString() && !showCreateProfile &&
                 <div className="mentee-portal">
-                  <ActiveMenteeProfiles backToPage={backToCreate} />
+                  <ActiveMenteeProfiles 
+                    backToPage={backToActive} 
+                    onCreateProfile={() => setShowCreateProfile(true)} 
+                  />
                 </div>
               }
 
-              {selectedPage === Pages.createProfile.toString() &&
+              {showCreateProfile &&
                 <div className="mentee-portal">
                   <CreateMenteeProfile backToPage={backToActive} />
                 </div>

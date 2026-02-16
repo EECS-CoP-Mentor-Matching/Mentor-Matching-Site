@@ -126,6 +126,9 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
     if (languages.includes('Other') && !otherLanguage.trim()) {
       throw new Error("Please specify the other language");
     }
+    if (!introduction.trim()) {
+      throw new Error("Please give your profile a name");
+    }
   }
 
   return (
@@ -205,12 +208,12 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
 
           {/* Life Experiences */}
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Life Experiences *</InputLabel>
+            <InputLabel>Tell us about yourself *</InputLabel>
             <Select
               multiple
               value={lifeExperiences}
               onChange={(e) => setLifeExperiences(e.target.value as string[])}
-              input={<OutlinedInput label="Life Experiences *" />}
+              input={<OutlinedInput label="Tell us about yourself *" />}
               renderValue={(selected) => selected.join(', ')}
             >
               {LIFE_EXPERIENCES.map((experience) => (
@@ -255,16 +258,22 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
             />
           )}
 
-          {/* Introduction */}
+          {/* Profile Name */}
           <TextField
             fullWidth
-            label="Introduction (Optional)"
-            placeholder="Tell potential mentors about yourself..."
-            multiline
-            rows={4}
+            required
+            label="Profile Name *"
+            placeholder="e.g., 'AI Career Focus' or 'Web Development Journey'"
             value={introduction}
-            onChange={(e) => setIntroduction(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value.length <= 50) {
+                setIntroduction(value);
+              }
+            }}
+            helperText={`${introduction.length}/50 characters - Give this profile a memorable name`}
             sx={{ mb: 2 }}
+            inputProps={{ maxLength: 50 }}
           />
         </Box>
 

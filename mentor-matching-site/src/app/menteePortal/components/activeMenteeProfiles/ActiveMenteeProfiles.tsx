@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, Button, Chip, Divider, List, ListItem, ListItemText, Paper, Typography, Card, CardContent } from "@mui/material";
 import ContentContainer from "../../../common/ContentContainer";
 import React, { useEffect, useState } from "react";
 import authService from "../../../../service/authService";
@@ -8,28 +8,19 @@ import { MatchProfile, MatchProfileView, MessageState } from "../../../../types/
 import LoadingMessage from "../../../common/forms/modals/LoadingMessage";
 import DeleteButton from "../../../common/forms/buttons/DeleteButton";
 import EditButton from "../../../common/forms/buttons/EditButton";
-import ViewMatchesButton from "./components/ViewMatchesButton";
-import ViewMatches from "./components/ViewMatches";
-import userService from "../../../../service/userService";
-import matchingService from "../../../../service/matchingService"; // Updated to use the new service
 import EditProfile from "./components/EditProfile";
-import { messagingService } from "../../../../service/messagingService";
-import { collection, getDocs, query, where } from 'firebase/firestore'; // Added for direct fetching
-import { db } from '../../../../firebaseConfig'; // Added for direct fetching
+import AddIcon from '@mui/icons-material/Add';
 
 interface ActiveMenteeProfilesProps {
-    backToPage: () => any
+    backToPage: () => any;
+    onCreateProfile: () => void;
 }
 
-function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
+function ActiveMenteeProfiles({ backToPage, onCreateProfile }: ActiveMenteeProfilesProps) {
     const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
     const [loadingProfiles, setLoadingProfiles] = useState(false);
-    const [matches, setMatches] = useState<MatchProfileView[] | undefined>()
-    const [loadingMatches, setLoadingMatches] = useState(false);
     const [editingProfile, setEditingProfile] = useState<DocItem<MatchProfile>>();
     const [editing, setEditing] = useState(false);
-    const [userID, setUserID] = useState("");
-    const [menteeProfileId, setMenteeProfileId] = useState("");
 
     useEffect(() => {
         const fetchProfiles = async () => {
@@ -38,7 +29,6 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
             if (user) {
                 try {
                     const result = await menteeService.searchMenteeProfilesByUser(user.uid);
-                    setUserID(user.uid);
                     if (result !== undefined && result?.length !== 0) {
                         setMenteeProfiles(result);
                     }
@@ -50,76 +40,6 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
         };
         fetchProfiles();
     }, []);
-
-    const checkMessages = async (matchProfiles: DocItem<MatchProfile>[], menteeProfileId: string) => {
-        let matchProfileViews = [] as MatchProfileView[];
-        for (const profile of matchProfiles) {
-            const messages = await messagingService.getMessagesSentForMenteeProfile(profile.docId, menteeProfileId);
-            let messageState = MessageState.replyReceived;
-            if (messages.length !== 0) {
-                messageState = MessageState.awaitingReply;
-            }
-            else {
-                messageState = MessageState.noMessagesSent;
-            }
-            matchProfileViews.push({
-                mentorProfile: profile,
-                messageState: messageState
-            } as MatchProfileView);
-        }
-
-        return matchProfileViews;
-    }
-
-    const showMatches = async (matchProfile: DocItem<MatchProfile>) => {
-        setLoadingMatches(true);
-        const currentUser = await authService.getSignedInUser();
-        
-        if (currentUser) {
-            try {
-                const menteeData = matchProfile.data as MatchProfile;
-
-                // 1. Fetch all active mentor profiles (Matches logic in FindMatches)
-                const mentorProfilesQuery = query(
-                    collection(db, 'mentorProfile'),
-                    where('isActive', '==', true)
-                );
-                
-                const mentorSnapshot = await getDocs(mentorProfilesQuery);
-                const allMentors: MatchProfile[] = [];
-                
-                mentorSnapshot.forEach(doc => {
-                    const data = doc.data() as MatchProfile;
-                    // Skip 'self' matches and ensure the mentor has the new fields
-                    if (data.careerFields && data.weights && data.UID !== currentUser.uid) {
-                        allMentors.push(data);
-                    }
-                });
-
-                // 2. Use the revamped matching algorithm
-                // Threshold set to 10% to show all viable connections
-                const calculatedMatches = await matchingService.findMentorMatches(
-                    menteeData,
-                    allMentors,
-                    10
-                );
-
-                // 3. Format for ViewMatches and check message history
-                const formattedForCheck = calculatedMatches.map(m => ({
-                    docId: m.userId, 
-                    data: m.profile as MatchProfile
-                }));
-
-                const finalMatchViews = await checkMessages(formattedForCheck, matchProfile.docId);
-                
-                setMatches(finalMatchViews);
-                setMenteeProfileId(matchProfile.docId);
-            } catch (error) {
-                console.error("Error calculating matches in Active Portal:", error);
-            }
-        }
-        setLoadingMatches(false);
-    }
 
     const deleteProfile = async (profileId: string) => {
         setLoadingProfiles(true);
@@ -137,15 +57,6 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
         setEditing(true);
     }
 
-    const profileItemStyle = {
-        border: '1px solid #e0e0e0',
-        margin: '10px 0',
-        padding: '10px',
-        borderRadius: '4px',
-        marginLeft: 'auto',
-        marginRight: 'auto'
-    };
-
     const updateProfileState = (updatedProfile: DocItem<MatchProfile>) => {
         const updatedProfiles = Array<DocItem<MatchProfile>>();
         menteeProfiles.forEach(profile => {
@@ -159,59 +70,229 @@ function ActiveMenteeProfiles({ backToPage }: ActiveMenteeProfilesProps) {
         setMenteeProfiles(updatedProfiles);
     }
 
+    const getWeightLabel = (weight: number): string => {
+        switch(weight) {
+            case 1: return 'Not Important';
+            case 2: return 'Slightly Important';
+            case 3: return 'Moderately Important';
+            case 4: return 'Very Important';
+            case 5: return 'Extremely Important';
+            default: return 'Not Set';
+        }
+    };
+
+    const getWeightColor = (weight: number): string => {
+        switch(weight) {
+            case 5: return '#22c55e'; // Green - Extremely Important
+            case 4: return '#eab308'; // Yellow - Very Important (brighter!)
+            case 3: return '#14b8a6'; // Teal - Moderately Important (middle)
+            case 2: return '#9333ea'; // Purple - Slightly Important
+            case 1: return '#6b7280'; // Gray - Not Important
+            default: return '#6b7280';
+        }
+    };
+
     return (
         <>
             <LoadingMessage message="Loading Profiles..." loading={loadingProfiles} />
-            <LoadingMessage message="Loading Matches..." loading={loadingMatches} />
-            <ContentContainer title="Active Profiles" >
+            <ContentContainer title="Active Profiles">
+                {/* Create New Profile Button */}
+                <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button 
+                        variant="contained" 
+                        startIcon={<AddIcon />}
+                        onClick={onCreateProfile}
+                        sx={{ 
+                            backgroundColor: '#0066cc',
+                            '&:hover': { backgroundColor: '#0052a3' }
+                        }}
+                    >
+                        Create New Profile
+                    </Button>
+                </Box>
+
                 <Box display='flex' gap={5}>
-                    <List>
+                    <Box sx={{ flex: 1 }}>
                         {menteeProfiles.map((profile, index) => (
-                            <React.Fragment key={profile.docId}>
-                                <Paper elevation={2} style={{ ...profileItemStyle }}>
-                                    <ListItem sx={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'flex-start' }}>
-                                        <Box display='flex' alignItems='center' width='100%' justifyContent='flex-end'>
-                                            <ListItemText primary={`Profile #${index + 1}`} />
-                                            <ViewMatchesButton onClick={() => { showMatches(profile); }} />
+                            <Card key={profile.docId} sx={{ mb: 3, border: '1px solid #e0e0e0' }}>
+                                <CardContent>
+                                    {/* Header with Created Date and Actions */}
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                        <Box>
+                                            {profile.data.introduction && profile.data.introduction.trim() && (
+                                                <Typography variant="h6" sx={{ fontWeight: 600, color: '#0066cc' }}>
+                                                    {profile.data.introduction}
+                                                </Typography>
+                                            )}
+                                            {profile.data.createdAt && (
+                                                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                                                    Created on {(() => {
+                                                        const date = profile.data.createdAt;
+                                                        // Handle Firestore Timestamp
+                                                        const jsDate = date?.toDate ? date.toDate() : new Date(date);
+                                                        return jsDate.toLocaleDateString('en-US', { 
+                                                            month: 'long', 
+                                                            day: 'numeric', 
+                                                            year: 'numeric',
+                                                            hour: 'numeric',
+                                                            minute: '2-digit'
+                                                        });
+                                                    })()}
+                                                </Typography>
+                                            )}
                                         </Box>
-                                        <Box gap={2} display="flex" alignItems="center" justifyContent='flex-start' width='100%'>
-                                            <EditButton onClick={() => { editProfile(profile); }} />
-                                            <DeleteButton onClick={() => { deleteProfile(profile.docId); }} />
+                                        <Box sx={{ display: 'flex', gap: 1 }}>
+                                            <EditButton onClick={() => editProfile(profile)} />
+                                            <DeleteButton onClick={() => deleteProfile(profile.docId)} />
                                         </Box>
+                                    </Box>
 
-                                        {/* Technical Interests Chips (Handles both array and legacy fallback) */}
-                                        <ListItemText secondary={"Technical Interests"} />
-                                        <Box gap={1} display="flex" flexWrap="wrap" paddingLeft='15px' >
-                                            {profile.data.technicalInterests?.map((interest) => (
-                                                <Chip key={interest} label={interest} color="primary" size="small" />
-                                            )) || <Chip label={profile.data.technicalInterest} color="primary" size="small" />}
-                                            <Chip label={`${profile.data.technicalExperience} years`} variant="outlined" size="small" />
-                                        </Box>
+                                    <Divider sx={{ mb: 2 }} />
 
-                                        {/* Career Fields Chips (Handles both array and legacy fallback) */}
-                                        <ListItemText secondary={"Career Fields"} />
-                                        <Box gap={1} display="flex" flexWrap="wrap" paddingLeft='15px' paddingBottom='10px'>
+                                    {/* Career Fields */}
+                                    <Box sx={{ mb: 2 }}>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#555' }}>
+                                            Career Fields
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                                             {profile.data.careerFields?.map((field) => (
-                                                <Chip key={field} label={field} color="secondary" size="small" />
-                                            )) || <Chip label={profile.data.professionalInterest} color="secondary" size="small" />}
-                                            <Chip label={`${profile.data.professionalExperience} years`} variant="outlined" size="small" />
+                                                <Chip key={field} label={field} color="primary" size="small" />
+                                            )) || <Chip label={profile.data.professionalInterest} color="primary" size="small" />}
                                         </Box>
-                                    </ListItem>
-                                    {index < menteeProfiles.length - 1 && <Divider />}
-                                </Paper>
-                            </React.Fragment>
+                                    </Box>
+
+                                    {/* Technical Interests */}
+                                    <Box sx={{ mb: 2 }}>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#555' }}>
+                                            Technical Interests
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                                            {profile.data.technicalInterests?.map((interest) => (
+                                                <Chip key={interest} label={interest} size="small" sx={{ bgcolor: '#e3f2fd' }} />
+                                            )) || <Chip label={profile.data.technicalInterest} size="small" sx={{ bgcolor: '#e3f2fd' }} />}
+                                        </Box>
+                                    </Box>
+
+                                    {/* Life Experiences */}
+                                    {profile.data.lifeExperiences && profile.data.lifeExperiences.length > 0 && (
+                                        <Box sx={{ mb: 2 }}>
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#555' }}>
+                                                Life Experiences
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                                                {profile.data.lifeExperiences.map((exp) => (
+                                                    <Chip key={exp} label={exp} size="small" variant="outlined" />
+                                                ))}
+                                            </Box>
+                                        </Box>
+                                    )}
+
+                                    {/* Languages */}
+                                    {profile.data.languages && profile.data.languages.length > 0 && (
+                                        <Box sx={{ mb: 2 }}>
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#555' }}>
+                                                Languages
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                                                {profile.data.languages.map((lang) => (
+                                                    <Chip key={lang} label={lang} size="small" variant="outlined" color="secondary" />
+                                                ))}
+                                            </Box>
+                                        </Box>
+                                    )}
+
+                                    {/* Mentorship Goal */}
+                                    {profile.data.mentorshipGoal && (
+                                        <Box sx={{ mb: 2 }}>
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#555' }}>
+                                                Mentorship Goal
+                                            </Typography>
+                                            <Typography variant="body2">{profile.data.mentorshipGoal}</Typography>
+                                        </Box>
+                                    )}
+
+                                    {/* Matching Preferences (Weights) */}
+                                    {profile.data.weights && (
+                                        <Box sx={{ mt: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1.5, color: '#555' }}>
+                                                Matching Preferences
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                    <Typography variant="body2">Career & Technical:</Typography>
+                                                    <Typography variant="body2" sx={{ 
+                                                        fontWeight: 600,
+                                                        color: getWeightColor(profile.data.weights.technicalInterests)
+                                                    }}>
+                                                        {getWeightLabel(profile.data.weights.technicalInterests)}
+                                                    </Typography>
+                                                </Box>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                    <Typography variant="body2">Life Experiences:</Typography>
+                                                    <Typography variant="body2" sx={{ 
+                                                        fontWeight: 600,
+                                                        color: getWeightColor(profile.data.weights.lifeExperiences)
+                                                    }}>
+                                                        {getWeightLabel(profile.data.weights.lifeExperiences)}
+                                                    </Typography>
+                                                </Box>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                    <Typography variant="body2">Languages:</Typography>
+                                                    <Typography variant="body2" sx={{ 
+                                                        fontWeight: 600,
+                                                        color: getWeightColor(profile.data.weights.languages)
+                                                    }}>
+                                                        {getWeightLabel(profile.data.weights.languages)}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    )}
+                                </CardContent>
+                            </Card>
                         ))}
-                    </List>
-                    {matches !== undefined &&
-                        <ViewMatches matchProfiles={matches} menteeUID={userID} menteeProfileId={menteeProfileId} />
-                    }
+
+                        {/* No Profiles State */}
+                        {menteeProfiles.length === 0 && (
+                            <Box sx={{ 
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                alignItems: 'center', 
+                                gap: 2,
+                                p: 4,
+                                bgcolor: '#f5f5f5',
+                                borderRadius: 2
+                            }}>
+                                <Typography variant="h6" color="text.secondary">
+                                    No profiles found
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Create your first profile to start finding mentors!
+                                </Typography>
+                                <Button 
+                                    variant="contained" 
+                                    startIcon={<AddIcon />}
+                                    onClick={onCreateProfile}
+                                    sx={{ 
+                                        backgroundColor: '#0066cc',
+                                        '&:hover': { backgroundColor: '#0052a3' }
+                                    }}
+                                >
+                                    Create Profile
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+
+                    {/* Edit Profile Panel */}
                     {editingProfile !== undefined &&
-                        <EditProfile matchProfile={editingProfile} updateProfileState={updateProfileState} editing={editing} setEditing={setEditing} />
+                        <EditProfile 
+                            matchProfile={editingProfile} 
+                            updateProfileState={updateProfileState} 
+                            editing={editing} 
+                            setEditing={setEditing} 
+                        />
                     }
-                    {menteeProfiles.length === 0 && <Box display="flex" flexDirection="column">
-                        <p>No profiles found. Please create a new profile!</p>
-                        <Button onClick={backToPage}>Create Profile</Button>
-                    </Box>}
                 </Box>
             </ContentContainer>
         </>
