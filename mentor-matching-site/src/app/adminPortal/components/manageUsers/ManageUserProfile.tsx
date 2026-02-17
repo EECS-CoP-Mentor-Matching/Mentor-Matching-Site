@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, FormGroup } from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, FormGroup, Menu } from "@mui/material";
 import userService from '../../../../service/userService';
 import { UserProfile } from '../../../../types/userProfile';
 import UploadUserProfileImage from '../../../userProfileCommon/imageUpload/UploadUserProfileImage';
@@ -29,6 +29,10 @@ function ManageUserProfile() {
     const [showEdit, setShowEdit] = useState(false);
     // State to store the profile details that we are planning to edit:
     const [profileDetails, setProfileDetails] = useState<UserProfile | null>(null);
+    // State to manage showing the messages popout
+    const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
+    const handleMessagesClick = (event: React.MouseEvent<HTMLButtonElement>) => {setAnchorElement(event.currentTarget)};
+    const handleMessagesClose = () => {setAnchorElement(null)};
     const showEditStyle = {
         borderBottom: showEdit ? "solid orange 1px" : ""
     }
@@ -72,6 +76,16 @@ function ManageUserProfile() {
         <>
             <AuthenticatedView>
                 <p> User ID: {userID} with display name: {profileDetails?.contact.displayName}</p>
+                <Button onClick={handleMessagesClick}>View Messages</Button>
+                <Menu
+                  open={(Boolean(anchorElement))}
+                  anchorEl={anchorElement}
+                  onClose={handleMessagesClose}
+                  >
+                    <h2>DEBUG</h2>
+
+                    
+                </Menu>
                 {dataIsLoading()}
                 {!showEdit &&
                     <Button onClick={() => { setShowEdit(true) }}>Edit Profile</Button>
