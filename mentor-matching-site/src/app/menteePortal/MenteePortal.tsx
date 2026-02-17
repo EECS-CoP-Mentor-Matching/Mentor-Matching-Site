@@ -25,6 +25,12 @@ function MenteePortal() {
 
   const navigate = useNavigate();
 
+  // Close create profile form when switching tabs
+  const handleNavChange = (page: string) => {
+    setShowCreateProfile(false);
+    setSelectedPage(page);
+  };
+
   const backToActive = () => {
     setShowCreateProfile(false);
     setSelectedPage(Pages.activeProfiles.toString());
@@ -45,7 +51,7 @@ function MenteePortal() {
             <>
 
             <PortalNavigationBar 
-              onNavChange={setSelectedPage} 
+              onNavChange={handleNavChange} 
               selected={selectedPage} 
               navItems={navUtilities.navItemsFromEnum(Pages)} 
             />
@@ -60,19 +66,19 @@ function MenteePortal() {
                 </div>
               }
 
-              {showCreateProfile &&
+              {selectedPage === Pages.activeProfiles.toString() && showCreateProfile &&
                 <div className="mentee-portal">
                   <CreateMenteeProfile backToPage={backToActive} />
                 </div>
               }
 
-              {selectedPage === Pages.findMatches.toString() &&
+              {selectedPage === Pages.findMatches.toString() && !showCreateProfile &&
                 <div className="mentee-portal">
                   <FindMatches />
                 </div>
               }
 
-              {selectedPage === Pages.menteeMessages.toString() &&
+              {selectedPage === Pages.menteeMessages.toString() && !showCreateProfile &&
                 <div className="mentee-portal">
                   <MenteeMessages backToPage={backToActive} />
                 </div>

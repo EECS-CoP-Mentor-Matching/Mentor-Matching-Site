@@ -15,8 +15,12 @@ import {
   Select,
   MenuItem,
   Slider,
-  Paper
+  Paper,
+  Button,
+  IconButton,
+  Tooltip
 } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../../firebaseConfig';
 import { useAppSelector } from '../../../../redux/hooks';
@@ -34,16 +38,21 @@ function FindMatches() {
   const [selectedProfileId, setSelectedProfileId] = useState<string>('');
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
   const [minMatchPercentage, setMinMatchPercentage] = useState<number>(10); // Lowered from 30 to show more matches
+  const [refreshKey, setRefreshKey] = useState(0); // Add refresh trigger
 
   const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
-  // Load mentee's profiles
+  // Load mentee's profiles (refreshes when refreshKey changes)
   useEffect(() => {
     const loadProfiles = async () => {
       if (!userProfile?.UID) return;
       
+      console.log('🔄 LOADING PROFILES FROM FIRESTORE (refreshKey:', refreshKey, ')');
+      setLoading(true);
       try {
         const profiles = await menteeService.searchMenteeProfilesByUser(userProfile.UID);
+        console.log('✅ Loaded profiles:', profiles.length, 'profiles');
+        console.log('Profile weights:', profiles[0]?.data.weights);
         setMenteeProfiles(profiles);
         
         if (profiles.length > 0) {
@@ -52,11 +61,13 @@ function FindMatches() {
       } catch (err) {
         console.error('Error loading profiles:', err);
         setError('Failed to load your profiles');
+      } finally {
+        setLoading(false);
       }
     };
 
     loadProfiles();
-  }, [userProfile]);
+  }, [userProfile, refreshKey]); // Add refreshKey as dependency
 
   // Load matches when profile is selected
   useEffect(() => {
@@ -125,13 +136,20 @@ function FindMatches() {
           minMatchPercentage
         );
 
+        console.log('📊 Calculated matches:', calculatedMatches.map(m => `${m.matchPercentage}%`));
+
         // Add profile IDs (we'll need to fetch these properly)
         const matchesWithIds = calculatedMatches.map(match => ({
           ...match,
           profileId: match.userId // Using userId as profileId for now
         }));
 
-        setMatches(matchesWithIds);
+        // Force React to re-render by clearing first
+        setMatches([]);
+        setTimeout(() => {
+          setMatches(matchesWithIds);
+          console.log('✅ Matches state updated with', matchesWithIds.length, 'matches');
+        }, 0);
       } catch (err: any) {
         console.error('Error finding matches:', err);
         setError('Failed to find matches: ' + err.message);
@@ -179,9 +197,21 @@ function FindMatches() {
         
         {/* Profile Selector & Filters */}
         <Paper sx={{ padding: 3, marginBottom: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Search Settings
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6">
+              Search Settings
+            </Typography>
+            <Tooltip title="Refresh profiles and recalculate matches">
+              <Button 
+                variant="outlined" 
+                startIcon={<RefreshIcon />}
+                onClick={() => setRefreshKey(prev => prev + 1)}
+                size="small"
+              >
+                Refresh
+              </Button>
+            </Tooltip>
+          </Box>
 
           <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', alignItems: 'center' }}>
             {/* Profile Selector */}
@@ -260,7 +290,7 @@ function FindMatches() {
 
             {matches.map((match, index) => (
               <MatchCard
-                key={match.userId + index}
+                key={`${match.userId}-${match.matchPercentage}-${index}`}
                 match={match}
                 onConnect={() => handleConnect(match)}
                 onViewProfile={() => handleViewProfile(match)}
