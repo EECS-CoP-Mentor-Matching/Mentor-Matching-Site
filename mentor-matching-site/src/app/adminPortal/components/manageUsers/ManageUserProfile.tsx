@@ -71,7 +71,7 @@ function ManageUserProfile() {
     return (
         <>
             <AuthenticatedView>
-                <p> Received user ID: {userID} with display name: {profileDetails?.contact.displayName}</p>
+                <p> User ID: {userID} with display name: {profileDetails?.contact.displayName}</p>
                 {dataIsLoading()}
                 {!showEdit &&
                     <Button onClick={() => { setShowEdit(true) }}>Edit Profile</Button>
