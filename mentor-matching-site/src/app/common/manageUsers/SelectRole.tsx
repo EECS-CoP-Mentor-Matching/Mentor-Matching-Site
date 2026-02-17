@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import {MatchRole} from "../../../../../types/matchProfile";
+import {MatchRole} from "../../../types/matchProfile";
 
 interface AdminSelectRoleProps {
   value: string;

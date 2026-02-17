@@ -1,10 +1,10 @@
 import { FormLabel, Select } from "@mui/material";
-import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
-import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
-import TextDisplay from "../../../../common/forms/textInputs/TextDisplay";
-import AdminSelectTimeZone from "./AdminSelectTimezone";
-import { UserProfile } from "../../../../../types/userProfile";
-import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
+import FormGroupCols from "../forms/layout/FormGroupCols";
+import FormGroupRows from "../forms/layout/FormGroupRows";
+import TextDisplay from "../forms/textInputs/TextDisplay";
+import AdminSelectTimeZone from "./SelectTimezone";
+import { UserProfile } from "../../../types/userProfile";
+import TextInputControl from "../forms/textInputs/TextInputControl";
 
 interface UpdateUserContactInformationProps {
   showEdit: boolean,

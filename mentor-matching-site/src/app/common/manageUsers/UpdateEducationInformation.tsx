@@ -1,13 +1,13 @@
 import { Checkbox, FormControlLabel, FormLabel } from "@mui/material";
-import { updateDegreeProgram, updateEducationInformation, updateStudentStatus } from "../../../../../redux/reducers/userProfileReducer";
-import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
-import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
-import SelectLevelOfEducation from "../../../../userProfileCommon/dropdowns/SelectLevelOfEductation";
-import SelectDegreeProgram from "../../../../userProfileCommon/dropdowns/SelectDegreeProgram";
-import CheckboxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
-import { UserProfile } from "../../../../../types/userProfile";
-import AdminSelectEducationLevel from "./AdminSelectLevelOfEducation";
-import AdminSelectDegreeProgram from "./AdminSelectDegreeProgram";
+import { updateDegreeProgram, updateEducationInformation, updateStudentStatus } from "../../../redux/reducers/userProfileReducer";
+import FormGroupCols from "../forms/layout/FormGroupCols";
+import FormGroupRows from "../forms/layout/FormGroupRows";
+import SelectLevelOfEducation from "../../userProfileCommon/dropdowns/SelectLevelOfEductation";
+import SelectDegreeProgram from "../../userProfileCommon/dropdowns/SelectDegreeProgram";
+import CheckboxControlRedux from "../forms/checkbox/CheckBoxControlRedux";
+import { UserProfile } from "../../../types/userProfile";
+import AdminSelectEducationLevel from "./SelectLevelOfEducation";
+import AdminSelectDegreeProgram from "./SelectDegreeProgram";
 
 interface UpdateEducationInformationProps {
   showEdit: boolean,

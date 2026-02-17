@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import selectionItemsDb from "../../../../../dal/selectionItemsDb";
-import { DocItem } from "../../../../../types/types";
-import { DegreeProgram } from "../../../../../types/userProfile";
+import selectionItemsDb from "../../../dal/selectionItemsDb";
+import { DocItem } from "../../../types/types";
+import { DegreeProgram } from "../../../types/userProfile";
 
 interface AdminSelectDegreeProgramProps {
   value: string;

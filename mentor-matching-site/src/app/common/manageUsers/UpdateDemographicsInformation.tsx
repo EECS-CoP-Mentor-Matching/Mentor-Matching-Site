@@ -1,14 +1,14 @@
 import { FormLabel } from "@mui/material";
-import {updateLgbtqPlus, updateRacialIdentity, updateRole} from "../../../../../redux/reducers/userProfileReducer";
-import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
-import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
-import SelectRacialIdentity from "../../../../userProfileCommon/dropdowns/SelectRacialIdentity";
-import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
-import SelectRole from "../../../../userProfileCommon/dropdowns/SelectRole";
-import AdminSelectRole from "./AdminSelectRole";
-import { UserProfile } from "../../../../../types/userProfile";
+import {updateLgbtqPlus, updateRacialIdentity, updateRole} from "../../../redux/reducers/userProfileReducer";
+import FormGroupCols from "../forms/layout/FormGroupCols";
+import FormGroupRows from "../forms/layout/FormGroupRows";
+import SelectRacialIdentity from "../../userProfileCommon/dropdowns/SelectRacialIdentity";
+import CheckBoxControlRedux from "../forms/checkbox/CheckBoxControlRedux";
+import SelectRole from "../../userProfileCommon/dropdowns/SelectRole";
+import AdminSelectRole from "./SelectRole";
+import { UserProfile } from "../../../types/userProfile";
 import { Checkbox, FormControlLabel } from "@mui/material";
-import AdminSelectRacialIdentity from "./AdminSelectRacialIdentity";
+import AdminSelectRacialIdentity from "./SelectRacialIdentity";
 
 interface UpdateUserDemographicInformationProps {
   showEdit: boolean

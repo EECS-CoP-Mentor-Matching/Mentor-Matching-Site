@@ -12,10 +12,10 @@ import AuthenticatedView from '../../../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../../../common/auth/UnauthenticatedView';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { updateProfile } from '../../../../redux/reducers/userProfileReducer';
-import AdminUpdatePersonalInformation from './components/AdminUpdatePersonalInformation';
-import AdminUpdateUserContactInformation from './components/AdminUpdateUserContactInformation';
-import AdminUpdateUserDemographicInformation from './components/AdminUpdateDemographicsInformation';
-import AdminUpdateEducationInformation from './components/AdminUpdateEducationInformation';
+import AdminUpdatePersonalInformation from '../../../common/manageUsers/UpdatePersonalInformation';
+import AdminUpdateUserContactInformation from '../../../common/manageUsers/UpdateUserContactInformation';
+import AdminUpdateUserDemographicInformation from '../../../common/manageUsers/UpdateDemographicsInformation';
+import AdminUpdateEducationInformation from '../../../common/manageUsers/UpdateEducationInformation';
 
 
 function ManageUserProfile() {
