@@ -5,7 +5,7 @@ import { UserWeights } from '../types/matchProfile';
 const COLLECTION_NAME = 'matches';
 
 export interface Match {
-  matchId?: string;
+  matchId: string;  // Always present after creation
   menteeId: string;
   mentorId: string;
   menteeProfileId: string;
@@ -18,12 +18,14 @@ export interface Match {
     menteeWeights: UserWeights;
     mentorWeights: UserWeights;
   };
-  status: 'pending' | 'accepted' | 'declined' | 'completed';
+  status: 'pending' | 'accepted' | 'declined' | 'completed' | 'ended';
   initiatedBy: 'mentee' | 'mentor';
   matchedAt: Timestamp;
   acceptedAt?: Timestamp | null;
   declinedAt?: Timestamp | null;
   completedAt?: Timestamp | null;
+  endedAt?: Timestamp | null;
+  endedBy?: 'mentee' | 'mentor' | null;
   notes?: string;
 }
 
@@ -93,7 +95,8 @@ async function getMatchesForMentee(menteeId: string): Promise<Match[]> {
 }
 
 /**
- * Check if a match already exists between mentee and mentor
+ * Check if an ACTIVE match already exists between mentee and mentor
+ * Ended/declined matches are ignored so reconnection is possible
  */
 async function matchExists(menteeProfileId: string, mentorProfileId: string): Promise<boolean> {
   const q = query(
@@ -103,15 +106,82 @@ async function matchExists(menteeProfileId: string, mentorProfileId: string): Pr
   );
   
   const snapshot = await getDocs(q);
-  return !snapshot.empty;
+  if (snapshot.empty) return false;
+  
+  // Only block if there is a pending or accepted match (not ended/declined)
+  const activeMatch = snapshot.docs.find(doc => {
+    const status = doc.data().status;
+    return status === 'pending' || status === 'accepted';
+  });
+  return !!activeMatch;
+}
+
+/**
+ * Get all accepted matches for a mentor (My Mentees)
+ */
+async function getAcceptedMatchesForMentor(mentorId: string): Promise<Match[]> {
+  const q = query(
+    collection(db, COLLECTION_NAME),
+    where('mentorId', '==', mentorId),
+    where('status', '==', 'accepted')
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => doc.data() as Match);
+}
+
+/**
+ * End a mentorship - updates status and sends notification message to mentee messages
+ */
+async function endMentorship(
+  matchId: string,
+  endedBy: 'mentee' | 'mentor',
+  endingUserUID: string,
+  notifyUserUID: string,
+  endingUserName: string,
+  notifyUserName: string,
+  menteeUID?: string,
+  mentorUID?: string,
+  menteeProfileId?: string,
+  mentorProfileId?: string
+): Promise<void> {
+  const matchRef = doc(db, COLLECTION_NAME, matchId);
+  await updateDoc(matchRef, {
+    status: 'ended',
+    endedAt: Timestamp.now(),
+    endedBy
+  });
+
+  // Message always goes to mentee so it shows in MenteeMessages
+  const resolvedMenteeUID = menteeUID || (endedBy === 'mentee' ? endingUserUID : notifyUserUID);
+  const resolvedMentorUID = mentorUID || (endedBy === 'mentor' ? endingUserUID : notifyUserUID);
+
+  const notificationMessage = endedBy === 'mentee'
+    ? `You have ended your mentorship with ${notifyUserName}. We hope it was a valuable experience!`
+    : `${endingUserName} has ended the mentorship with you. We hope it was a valuable learning experience!`;
+
+  const messageCollection = collection(db, 'messages');
+  await addDoc(messageCollection, {
+    menteeUID: resolvedMenteeUID,
+    mentorUID: resolvedMentorUID,
+    menteeProfileId: menteeProfileId || '',
+    mentorProfileId: mentorProfileId || '',
+    message: notificationMessage,
+    mentorReply: '',
+    technicalInterest: 'Mentorship Notification',
+    professionalInterest: `Ended by ${endedBy}`,
+    sentByUID: endingUserUID,
+    sentOn: Timestamp.now(),
+  });
 }
 
 const matchDbService = {
   createMatch,
   updateMatchStatus,
   getPendingMatchesForMentor,
+  getAcceptedMatchesForMentor,
   getMatchesForMentee,
-  matchExists
+  matchExists,
+  endMentorship
 };
 
 export default matchDbService;

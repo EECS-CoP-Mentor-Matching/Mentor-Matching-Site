@@ -74,10 +74,13 @@ function FindMatches() {
         );
         setConnectedMatches(connectedMentorIds);
 
-        // Track individual statuses per mentor
+        // Track individual statuses per mentor - only show active statuses
+        // Ended/declined matches should allow reconnection so we skip them
         const statusMap = new Map<string, 'pending' | 'accepted' | 'declined'>();
         existingMatches.forEach(m => {
-          statusMap.set(m.mentorId, m.status as 'pending' | 'accepted' | 'declined');
+          if (m.status === 'pending' || m.status === 'accepted') {
+            statusMap.set(m.mentorId, m.status as 'pending' | 'accepted' | 'declined');
+          }
         });
         setMatchStatuses(statusMap);
 
