@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import { useAppSelector } from '../../redux/hooks';
 import CreateMentorProfile from "./components/CreateMentorProfile";
 import PortalNavigationBar from "../common/navigation/PortalNavigationBar";
 import { Box } from "@mui/material";
 import ActiveProfiles from "./components/ActiveProfiles";
 import MentorMatches from "./components/MentorMatches";
+import MatchRequests from "./components/MatchRequests";
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import MentorMatchHistory from "./components/MentorMatchHistory";
-import TopNav from "../nav/TopNav"; // Make sure to import
-import SideNav from "../nav/SideNav"; // Make sure to import
 
 function MentorPortal() {
-  const navItems = ['Active Profiles', 'Create Profile', 'Matches', 'Match History'];
+  const navItems = ['Active Profiles', 'Create Profile', 'Match Requests', 'Messages'];
   const [selectedTab, setSelectedTab] = useState('Active Profiles');
   const handleNavChange = (newValue: string) => {
     setSelectedTab(newValue);
@@ -24,15 +22,15 @@ function MentorPortal() {
         return <CreateMentorProfile />;
       case 'Active Profiles':
         return <ActiveProfiles />;
-      case 'Matches':
+      case 'Match Requests':
+        return <MatchRequests />;
+      case 'Messages':
         return <MentorMatches />;
       default:
         return <MentorMatchHistory />;
     }
     
   };
-  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
-
   return (
     <>
       <AuthenticatedView>
