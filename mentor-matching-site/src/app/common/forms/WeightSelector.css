@@ -92,6 +92,18 @@
   flex-direction: column;
 }
 
+.weight-item.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.disabled-message {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
 .weight-label {
   display: flex;
   justify-content: space-between;

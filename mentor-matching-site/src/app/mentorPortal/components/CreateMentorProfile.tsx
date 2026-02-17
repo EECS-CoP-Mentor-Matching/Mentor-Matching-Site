@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Button, 
   Card, 
@@ -50,6 +50,20 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
 
   // Get available technical interests based on selected career fields
   const availableTechnicalInterests = getTechnicalInterestOptions(careerFields);
+
+  // Auto-disable life experiences weight if user chooses not to share
+  const isLifeExperiencesSkipped = lifeExperiences.some(exp => 
+    exp.toLowerCase().includes('prefer not to share')
+  );
+
+  useEffect(() => {
+    if (isLifeExperiencesSkipped && weights.lifeExperiences !== 0) {
+      setWeights({
+        ...weights,
+        lifeExperiences: 0
+      });
+    }
+  }, [isLifeExperiencesSkipped]);
 
   const createProfile = async () => {
     setErrorState(resetError());
@@ -308,7 +322,11 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
 
         {/* Section: Matching Preferences (Weights) */}
         <Box>
-          <WeightSelector weights={weights} onChange={setWeights} />
+          <WeightSelector 
+            weights={weights} 
+            onChange={setWeights}
+            disableLifeExperiences={isLifeExperiencesSkipped}
+          />
         </Box>
 
         {/* Actions */}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Button, 
   Card, 
@@ -44,13 +44,28 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
   const [lifeExperiences, setLifeExperiences] = useState<string[]>([]);
   const [languages, setLanguages] = useState<string[]>(['English']); // Default to English
   const [otherLanguage, setOtherLanguage] = useState<string>('');
-  const [introduction, setIntroduction] = useState<string>('');
+  const [introduction, setIntroduction] = useState<string>(''); // Profile name (50 chars)
+  const [aboutMe, setAboutMe] = useState<string>(''); // About me section (500 chars)
   const [mentorshipGoal, setMentorshipGoal] = useState<string>('');
   const [mentorshipGoalOther, setMentorshipGoalOther] = useState<string>('');
   const [weights, setWeights] = useState<UserWeights>(initUserWeights());
 
   // Get available technical interests based on selected career fields
   const availableTechnicalInterests = getTechnicalInterestOptions(careerFields);
+
+  // Auto-disable life experiences weight if user chooses not to share
+  const isLifeExperiencesSkipped = lifeExperiences.some(exp => 
+    exp.toLowerCase().includes('prefer not to share')
+  );
+
+  useEffect(() => {
+    if (isLifeExperiencesSkipped && weights.lifeExperiences !== 0) {
+      setWeights({
+        ...weights,
+        lifeExperiences: 0
+      });
+    }
+  }, [isLifeExperiencesSkipped]);
 
   const createProfile = async () => {
     setErrorState(resetError());
@@ -80,7 +95,8 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
         lifeExperiences,
         languages,
         weights,
-        introduction,
+        introduction, // Profile name (50 chars)
+        aboutMe, // About me section (500 chars)
         mentorshipGoal,
         isActive: true,
         currentMatchCount: 0,
@@ -128,6 +144,9 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
     }
     if (!introduction.trim()) {
       throw new Error("Please give your profile a name");
+    }
+    if (!aboutMe.trim()) {
+      throw new Error("Please write something about yourself in the About Me section");
     }
   }
 
@@ -208,12 +227,12 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
 
           {/* Life Experiences */}
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Tell us about yourself *</InputLabel>
+            <InputLabel>Life Experiences *</InputLabel>
             <Select
               multiple
               value={lifeExperiences}
               onChange={(e) => setLifeExperiences(e.target.value as string[])}
-              input={<OutlinedInput label="Tell us about yourself *" />}
+              input={<OutlinedInput label="Life Experiences *" />}
               renderValue={(selected) => selected.join(', ')}
             >
               {LIFE_EXPERIENCES.map((experience) => (
@@ -275,6 +294,26 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
             sx={{ mb: 2 }}
             inputProps={{ maxLength: 50 }}
           />
+
+          {/* About Me / Elevator Pitch */}
+          <TextField
+            fullWidth
+            required
+            label="Your Elevator Pitch *"
+            placeholder="What makes you an awesome mentee? Share your passion, goals, and what you bring to a mentorship..."
+            multiline
+            rows={4}
+            value={aboutMe}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value.length <= 500) {
+                setAboutMe(value);
+              }
+            }}
+            helperText={`${aboutMe.length}/500 characters - This is your elevator pitch! What makes you an awesome mentee?`}
+            sx={{ mb: 2 }}
+            inputProps={{ maxLength: 500 }}
+          />
         </Box>
 
         {/* Section: Mentorship Goal */}
@@ -310,7 +349,11 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
 
         {/* Section: Matching Preferences (Weights) */}
         <Box>
-          <WeightSelector weights={weights} onChange={setWeights} />
+          <WeightSelector 
+            weights={weights} 
+            onChange={setWeights}
+            disableLifeExperiences={isLifeExperiencesSkipped}
+          />
         </Box>
 
         {/* Actions */}
