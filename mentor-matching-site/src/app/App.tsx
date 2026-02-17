@@ -30,6 +30,8 @@ import { UserProfile } from "../types/userProfile";
 import MenteeMessageForm from './menteePortal/components/menteeMessages/MenteeMessageForm';
 import { Box, CircularProgress, Typography, Fade } from '@mui/material';
 import { MatchRole } from '../types/matchProfile'; // Import your roles
+import TestMatchDbComponent from './common/forms/TestMatchDbComponent'; // Test component
+import TestMatchingComponent from './common/forms/TestMatchingComponent'; // Matching test
 
 // --- PROTECTED ROUTE COMPONENT ---
 interface ProtectedRouteProps {
@@ -131,6 +133,16 @@ function App() {
               <Route path="/admin-portal/edit-user/:userID" element={
                 <ProtectedRoute allowedRoles={[MatchRole.admin]}>
                   <ManageUserProfile />
+                </ProtectedRoute>
+              } />
+              <Route path="/test-db" element={
+                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                  <TestMatchDbComponent />
+                </ProtectedRoute>
+              } />
+              <Route path="/test-matching" element={
+                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                  <TestMatchingComponent />
                 </ProtectedRoute>
               } />
 

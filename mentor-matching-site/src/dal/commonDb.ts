@@ -1,10 +1,20 @@
-import { addDoc, collection, doc, writeBatch, query, QueryConstraint, getDocs, QuerySnapshot, updateDoc, getDoc, deleteDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, writeBatch, query, QueryConstraint, getDocs, QuerySnapshot, updateDoc, getDoc, deleteDoc, where, CollectionReference, Query, DocumentReference } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { DocItem, DbReadResult, DbReadResults, DbUpdateResult, DbWriteResult, DbDeleteResult } from "../types/types";
 
+// Helper functions to allow for collection references to be passed into 
+function ensureCollectionRef(collectionName: string | CollectionReference): CollectionReference {
+  return typeof collectionName === "string" ? collection(db, collectionName) : collectionName;
+}
+
+function ensureDocRef(collectionName: string | CollectionReference, docId: string): DocumentReference {
+  return typeof collectionName === "string" ? doc(db, collectionName, docId) : doc(collectionName, docId)
+}
+
 // Write Logic
-export async function writeSingle(collectionName: string, data: any): Promise<DbWriteResult> {
-  const doc = await addDoc(collection(db, collectionName), data);
+export async function writeSingle(collectionName: string | CollectionReference, data: any): Promise<DbWriteResult> {
+  const ref = ensureCollectionRef(collectionName);
+  const doc = await addDoc(ref, data);
   return {
     docId: doc.id,
     success: true,
@@ -12,10 +22,11 @@ export async function writeSingle(collectionName: string, data: any): Promise<Db
   } as DbWriteResult;
 }
 
-export async function writeMany(collectionName: string, data: Array<any>): Promise<DbWriteResult> {
+export async function writeMany(collectionName: string | CollectionReference, data: Array<any>): Promise<DbWriteResult> {
   const batch = writeBatch(db);
+  const ref = ensureCollectionRef(collectionName);
   data.forEach(item => {
-    const itemRef = doc(db, collectionName);
+    const itemRef = doc(ref);
     batch.set(itemRef, item)
   });
   await batch.commit();
@@ -26,8 +37,8 @@ export async function writeMany(collectionName: string, data: Array<any>): Promi
 }
 
 // Update Logic
-export async function updateSingle(collectionName: string, docId: string, updateValue: any) {
-  const docRef = doc(db, collectionName, docId);
+export async function updateSingle(collectionName: string | CollectionReference, docId: string, updateValue: any) {
+  const docRef = ensureDocRef(collectionName, docId);
   await updateDoc(docRef, updateValue);
 
   return {
@@ -38,18 +49,19 @@ export async function updateSingle(collectionName: string, docId: string, update
 }
 
 // Read
-export async function readSingle<T>(collectionName: string): Promise<DbReadResult<T>> {
+export async function readSingle<T>(collectionName: string | CollectionReference): Promise<DbReadResult<T>> {
   const records = await readCommon(collectionName);
   return processSingleReadResults(records);
 }
 
-export async function readMany<T>(collectionName: string): Promise<DbReadResults<T>> {
+export async function readMany<T>(collectionName: string | CollectionReference): Promise<DbReadResults<T>> {
   const records = await readCommon(collectionName);
   return processManyReadResults(records);
 }
 
-async function readCommon(collectionName: string): Promise<QuerySnapshot> {
-  const readQuery = query(collection(db, collectionName));
+async function readCommon(collectionName: string | CollectionReference): Promise<QuerySnapshot> {
+  const ref = ensureCollectionRef(collectionName);
+  const readQuery = query(ref);
   const records = await getDocs(readQuery);
   return records;
 }
@@ -67,18 +79,19 @@ export async function queryDocId<T>(collectionName: string, docId: string): Prom
 }
 
 // Query
-export async function querySingle<T>(collectionName: string, ...conditions: QueryConstraint[]): Promise<DbReadResult<T>> {
+export async function querySingle<T>(collectionName: string | CollectionReference, ...conditions: QueryConstraint[]): Promise<DbReadResult<T>> {
   const records = await queryCommon(collectionName, ...conditions);
   return processSingleReadResults(records);
 }
 
-export async function queryMany<T>(collectionName: string, ...conditions: QueryConstraint[]): Promise<DbReadResults<T>> {
+export async function queryMany<T>(collectionName: string | CollectionReference, ...conditions: QueryConstraint[]): Promise<DbReadResults<T>> {
   const records = await queryCommon(collectionName, ...conditions);
   return processManyReadResults(records);
 }
 
-async function queryCommon(collectionName: string, ...conditions: QueryConstraint[]): Promise<QuerySnapshot> {
-  const readQuery = query(collection(db, collectionName), ...conditions);
+async function queryCommon(collectionName: string | CollectionReference, ...conditions: QueryConstraint[]): Promise<QuerySnapshot> {
+  const ref = ensureCollectionRef(collectionName);
+  const readQuery = query((ref), ...conditions);
   const records = await getDocs(readQuery);
   return records;
 }
@@ -116,8 +129,8 @@ function processManyReadResults<T>(records: QuerySnapshot) {
   } as DbReadResults<T>;
 }
 
-export async function deleteDocId(collectionName: string, docId: string): Promise<DbDeleteResult> {
-  const docRef = doc(db, collectionName, docId);
+export async function deleteDocId(collectionName: string | CollectionReference, docId: string): Promise<DbDeleteResult> {
+  const docRef = ensureDocRef(collectionName, docId);
   await deleteDoc(docRef);
 
   return {

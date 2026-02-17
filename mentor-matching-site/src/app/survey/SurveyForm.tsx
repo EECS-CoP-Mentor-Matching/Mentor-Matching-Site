@@ -1,0 +1,156 @@
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  Paper,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Checkbox,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  FormControl,
+  FormLabel
+} from "@mui/material";
+
+import surveyService from "../../service/surveyService";
+import { Question, DisplayUi } from "../../types/survey";
+import { DocItem , DbWriteResult } from "../../types/types";
+import { useAppSelector } from "../../redux/hooks";
+
+interface SurveyFormProps {
+  userRole: "mentee" | "mentor";
+}
+
+export default function SurveyForm({ userRole }: SurveyFormProps) {
+  const [questions, setQuestions] = useState<DocItem<Question>[]>([]);
+  const [responses, setResponses] = useState<Record<string, any>>({});
+  const uid = useAppSelector(state => state.userProfile.userProfile?.UID);
+  
+  useEffect(() => {
+    async function loadQuestions() {
+      const data = await surveyService.getAllQuestions();
+      setQuestions(data);
+    }
+    loadQuestions();
+  }, []);
+
+  function handleChange(docId: string, value: any) {
+    setResponses((prev) => ({...prev, [docId]: value}));
+  }
+
+  function handleCheckboxChange(docId: string, option: string) {
+    const current = responses[docId] || [];
+    const updated = current.includes(option)
+      ? current.filter((o: string) => o !== option)
+      : [...current, option];
+
+    handleChange(docId, updated);
+  }
+
+  async function handleSubmit() {
+    
+    try {
+      await surveyService.createSurveyResponse(uid, userRole, responses);
+      setResponses({});
+    } catch (error) {
+      console.error('An error occurred while submitting survey responses.');
+      alert('An error occurred while submitting survey');
+    }
+  }
+
+  return (
+    <Paper sx={{ p: 4 }}>
+      <Typography variant="h5" mb={3}>
+        Survey
+      </Typography>
+
+      <Box display="flex" flexDirection="column" gap={4}>
+        {questions.map((doc, index) => {
+          const question = doc.data
+          const docId = doc.docId
+          
+          const prompt =
+            userRole === "mentee"
+              ? question.prompts.mentee
+              : question.prompts.mentor;
+
+          return (
+            <Box key={index}>
+              <FormControl fullWidth>
+                <FormLabel>
+                  {prompt}
+                  {question.required && " *"}
+                </FormLabel>
+
+                {/* radio */}
+                {question.displayUi === DisplayUi.radio && (
+                  <RadioGroup
+                    value={responses[docId] || ""}
+                    onChange={(e) =>
+                      handleChange(docId, e.target.value)
+                    }
+                  >
+                    {question.options.map((option, i) => (
+                      <FormControlLabel
+                        key={i}
+                        value={option.label}
+                        control={<Radio />}
+                        label={option.label}
+                      />
+                    ))}
+                  </RadioGroup>
+                )}
+
+                {/* checkbox */}
+                {question.displayUi === DisplayUi.checkbox &&
+                  question.options.map((option, i) => (
+                    <FormControlLabel
+                      key={i}
+                      control={
+                        <Checkbox
+                          checked={responses[docId]?.includes(option.label) || false}
+                          onChange={() => handleCheckboxChange(docId, option.label)}
+                        />
+                      }
+                      label={option.label}
+                    />
+                  ))}
+
+                {/* dropdown */}
+                {question.displayUi === DisplayUi.dropdown && (
+                  <Select
+                    value={responses[docId] || ""}
+                    onChange={(e) => handleChange(docId, e.target.value)}
+                  >
+                    {question.options.map((option, i) => (
+                      <MenuItem key={i} value={option.label}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+
+                {/* text */}
+                {question.displayUi === DisplayUi.text && (
+                  <TextField
+                    multiline
+                    minRows={3}
+                    value={responses[docId] || ""}
+                    onChange={(e) => handleChange(docId, e.target.value)}
+                  />
+                )}
+              </FormControl>
+            </Box>
+          );
+        })}
+
+        <Button variant="contained" onClick={handleSubmit}>
+          Submit Survey
+        </Button>
+      </Box>
+    </Paper>
+  );
+}
