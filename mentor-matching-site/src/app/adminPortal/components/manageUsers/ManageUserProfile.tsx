@@ -4,18 +4,14 @@ import { Button, Dialog, DialogTitle, DialogActions, DialogContent, DialogConten
 import userService from '../../../../service/userService';
 import { UserProfile } from '../../../../types/userProfile';
 import UploadUserProfileImage from '../../../userProfileCommon/imageUpload/UploadUserProfileImage';
-import UpdatePersonalInformation from '../../../updateUserProfile/components/UpdatePersonalInformation';
-import UpdateUserContactInformation from '../../../updateUserProfile/components/UpdateUserContactInformation';
-import UpdateUserDemographicInformation from '../../../updateUserProfile/components/UpdateDemographicsInformation';
-import UpdateEducationInformation from '../../../updateUserProfile/components/UpdateEducationInformation';
 import AuthenticatedView from '../../../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../../../common/auth/UnauthenticatedView';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { updateProfile } from '../../../../redux/reducers/userProfileReducer';
-import AdminUpdatePersonalInformation from '../../../common/manageUsers/UpdatePersonalInformation';
-import AdminUpdateUserContactInformation from '../../../common/manageUsers/UpdateUserContactInformation';
-import AdminUpdateUserDemographicInformation from '../../../common/manageUsers/UpdateDemographicsInformation';
-import AdminUpdateEducationInformation from '../../../common/manageUsers/UpdateEducationInformation';
+import UpdatePersonalInformation from '../../../common/manageUsers/UpdatePersonalInformation';
+import UpdateUserContactInformation from '../../../common/manageUsers/UpdateUserContactInformation';
+import UpdateUserDemographicInformation from '../../../common/manageUsers/UpdateDemographicsInformation';
+import UpdateEducationInformation from '../../../common/manageUsers/UpdateEducationInformation';
 
 
 function ManageUserProfile() {
@@ -63,10 +59,10 @@ function ManageUserProfile() {
       return  (
         <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
             <UploadUserProfileImage userProfile={{ ...profileDetails, imageUrl: profileDetails?.imageUrl }} />
-            <AdminUpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <AdminUpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <AdminUpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <AdminUpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
         </FormGroup>
       );
     }

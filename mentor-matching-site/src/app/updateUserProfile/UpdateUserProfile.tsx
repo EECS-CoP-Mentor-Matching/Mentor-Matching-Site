@@ -4,14 +4,16 @@ import "./UserProfile.css";
 import authService from "../../service/authService";
 import userService from "../../service/userService";
 import UploadUserProfileImage from "../userProfileCommon/imageUpload/UploadUserProfileImage";
-import UpdatePersonalInformation from "./components/UpdatePersonalInformation";
-import UpdateUserContactInformation from "./components/UpdateUserContactInformation";
-import UpdateUserDemographicInformation from "./components/UpdateDemographicsInformation";
-import UpdateEducationInformation from "./components/UpdateEducationInformation";
+//import UpdatePersonalInformation from '../../../common/manageUsers/UpdatePersonalInformation';
+import UpdatePersonalInformation from '../common/manageUsers/UpdatePersonalInformation';
+import UpdateUserContactInformation from '../common/manageUsers/UpdateUserContactInformation';
+import UpdateUserDemographicInformation from '../common/manageUsers/UpdateDemographicsInformation';
+import UpdateEducationInformation from '../common/manageUsers/UpdateEducationInformation';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/userProfileReducer";
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
+import { UserProfile } from '../../types/userProfile';
 
 function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);
@@ -20,6 +22,7 @@ function UpdateUserProfile() {
   const dispatch = useAppDispatch();
   const selector = useAppSelector;
   const userProfileState = selector(state => state.userProfile.userProfile);
+  const [profileDetails, setProfileDetails] = useState<UserProfile | null>(userProfileState);
 
   const showEditStyle = {
     borderBottom: showEdit ? "solid orange 1px" : ""
@@ -37,8 +40,16 @@ function UpdateUserProfile() {
   }, [dispatch]);
 
   const saveChanges = async () => {
-    await userService.updateUserProfile(userProfileState.UID, userProfileState);
-    setShowEdit(!showEdit);
+    // Check to ensure that profileDetails populated, so we don't accidentally overwrite with a null user profile:
+    if (profileDetails)
+    {
+          await userService.updateUserProfile(profileDetails.UID, profileDetails);
+          // Let's refresh their account from the user store so that changes show up right away:
+          dispatch(updateProfile(profileDetails))
+          console.log(profileDetails);
+          setShowEdit(!showEdit);
+
+    }
   }
 
   // Function to open the delete dialog
@@ -51,6 +62,7 @@ function UpdateUserProfile() {
     setOpenDeleteDialog(false);
   };
 
+  // TODO: Copilot recommended changing this later to use the profile stored in state and not the one from the Redux store.  
   const handleDeleteAccount = async () => {
     // Assuming deleteUserProfile method exists and handles the deletion of user data
     await userService.deleteUserProfile(userProfileState.UID);
@@ -82,24 +94,23 @@ function UpdateUserProfile() {
   );
 
   const dataIsLoading = () => {
-    if (userProfileState === undefined) {
+    if (profileDetails === null) {
       return (<>Data is loading...</>);
     } else {
-      return dataDisplay;
+      return (
+        <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
+            <UploadUserProfileImage userProfile={{ ...profileDetails, imageUrl: profileDetails?.imageUrl }} />
+            <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+        </FormGroup>
+      );
     }
   }
 
-  const dataDisplay = (
-    <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
-      <UploadUserProfileImage userProfile={{ ...userProfileState, imageUrl: userProfileState.imageUrl }} />
-      
-      <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={userProfileState} />
-      <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={userProfileState} />
-      <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={userProfileState}/>
-      <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={userProfileState} />
-      {/* Adding the Delete Account button outside the FormGroup for layout purposes */}
-    </FormGroup>
-  );
+
+    
 
   return (
     <>
