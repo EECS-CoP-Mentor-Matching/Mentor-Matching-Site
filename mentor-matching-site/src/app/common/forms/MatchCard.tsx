@@ -28,9 +28,11 @@ interface MatchCardProps {
   match: CalculatedMatch;
   onConnect?: () => void;
   onViewProfile?: () => void;
+  isConnected?: boolean;
+  matchStatus?: 'pending' | 'accepted' | 'declined' | null;
 }
 
-export const MatchCard: React.FC<MatchCardProps> = ({ match, onConnect, onViewProfile }) => {
+export const MatchCard: React.FC<MatchCardProps> = ({ match, onConnect, onViewProfile, isConnected = false, matchStatus = null }) => {
   const [showBreakdown, setShowBreakdown] = useState(false);
 
   const getMatchColor = (percentage: number): string => {
@@ -307,15 +309,32 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, onConnect, onViewPr
               variant="contained" 
               fullWidth
               onClick={onConnect}
+              disabled={isConnected}
               sx={{
-                bgcolor: matchColor,
+                bgcolor: matchStatus === 'accepted' ? '#22c55e !important'
+                       : matchStatus === 'declined' ? '#ef4444 !important'
+                       : isConnected ? '#9ca3af' 
+                       : matchColor,
+                color: 'white !important',
                 '&:hover': {
-                  bgcolor: matchColor,
-                  filter: 'brightness(0.9)'
+                  bgcolor: matchStatus === 'accepted' ? '#22c55e !important'
+                         : matchStatus === 'declined' ? '#ef4444 !important'
+                         : isConnected ? '#9ca3af' 
+                         : matchColor,
+                  filter: isConnected ? 'none' : 'brightness(0.9)'
+                },
+                '&.Mui-disabled': {
+                  bgcolor: matchStatus === 'accepted' ? '#22c55e !important'
+                         : matchStatus === 'declined' ? '#ef4444 !important'
+                         : '#9ca3af',
+                  color: 'white !important'
                 }
               }}
             >
-              Connect
+              {matchStatus === 'accepted' ? '✓ Match Accepted!' 
+             : matchStatus === 'declined' ? '✗ Declined'
+             : isConnected ? '⏳ Request Pending...' 
+             : 'Connect'}
             </Button>
           )}
         </Box>

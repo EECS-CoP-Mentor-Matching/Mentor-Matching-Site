@@ -47,7 +47,8 @@ export interface MatchProfile {
   weights?: UserWeights
   
   // NEW: Public profile fields
-  introduction?: string // Short bio for potential matches
+  introduction?: string // Short profile name (50 chars)
+  aboutMe?: string // Longer introduction for vetting (200-500 chars)
   mentorshipGoal?: string // What they want to work on
   mentorshipGoalOther?: string // If "Other" selected
   areasOfExpertise?: string[] // For mentors only
