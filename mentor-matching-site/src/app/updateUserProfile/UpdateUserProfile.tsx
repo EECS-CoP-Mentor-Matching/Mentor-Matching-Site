@@ -46,7 +46,6 @@ function UpdateUserProfile() {
           await userService.updateUserProfile(profileDetails.UID, profileDetails);
           // Let's refresh their account from the user store so that changes show up right away:
           dispatch(updateProfile(profileDetails))
-          console.log(profileDetails);
           setShowEdit(!showEdit);
 
     }
