@@ -1,5 +1,5 @@
 
-function AdminUpdateAccountSettings() {
+function UpdateAccountSettings() {
   return (<></>)
 }
-export default AdminUpdateAccountSettings;
+export default UpdateAccountSettings;

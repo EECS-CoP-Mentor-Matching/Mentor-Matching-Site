@@ -4,12 +4,12 @@ import selectionItemsDb from "../../../dal/selectionItemsDb";
 import { TimeZone } from "../../../types/userProfile";
 import { DocItem } from "../../../types/types";
 
-interface AdminSelectTimeZoneProps {
+interface SelectTimeZoneProps {
   value: string;
   onChange: (value: string) => void;
 }
 
-export default function AdminSelectTimeZone({ value, onChange }: AdminSelectTimeZoneProps) {
+export default function SelectTimeZone({ value, onChange }: SelectTimeZoneProps) {
   const [timeZones, setTimeZones] = useState<{ id: string; label: string }[]>([]);
 
   useEffect(() => {

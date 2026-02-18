@@ -1,13 +1,9 @@
 import { Checkbox, FormControlLabel, FormLabel } from "@mui/material";
-import { updateDegreeProgram, updateEducationInformation, updateStudentStatus } from "../../../redux/reducers/userProfileReducer";
 import FormGroupCols from "../forms/layout/FormGroupCols";
 import FormGroupRows from "../forms/layout/FormGroupRows";
-import SelectLevelOfEducation from "../../userProfileCommon/dropdowns/SelectLevelOfEductation";
-import SelectDegreeProgram from "../../userProfileCommon/dropdowns/SelectDegreeProgram";
-import CheckboxControlRedux from "../forms/checkbox/CheckBoxControlRedux";
 import { UserProfile } from "../../../types/userProfile";
-import AdminSelectEducationLevel from "./SelectLevelOfEducation";
-import AdminSelectDegreeProgram from "./SelectDegreeProgram";
+import SelectEducationLevel from "./SelectLevelOfEducation";
+import SelectDegreeProgram from "./SelectDegreeProgram";
 
 interface UpdateEducationInformationProps {
   showEdit: boolean,
@@ -16,7 +12,7 @@ interface UpdateEducationInformationProps {
   onChange: (updatedProfile: UserProfile) => void;  
 }
 
-function AdminUpdateEducationInformation({ showEdit, showEditStyle, userProfile, onChange}: UpdateEducationInformationProps) {
+function UpdateEducationInformation({ showEdit, showEditStyle, userProfile, onChange}: UpdateEducationInformationProps) {
   //const educationInformation = selector(state => state.userProfile.userProfile.education);
   const educationInformation = userProfile.education;
 
@@ -38,8 +34,8 @@ function AdminUpdateEducationInformation({ showEdit, showEditStyle, userProfile,
       <FormGroupCols>
         <FormLabel>Education Information</FormLabel>
         <FormGroupRows>
-          <AdminSelectEducationLevel value={educationInformation.highestLevelOfEducation} onChange={(value) => updateEducationField("highestLevelOfEducation", value)}/>
-          <AdminSelectDegreeProgram value={educationInformation.degreeProgram} onChange={(value) => updateEducationField("degreeProgram", value)} />
+          <SelectEducationLevel value={educationInformation.highestLevelOfEducation} onChange={(value) => updateEducationField("highestLevelOfEducation", value)} style={showEditStyle}/>
+          <SelectDegreeProgram value={educationInformation.degreeProgram} onChange={(value) => updateEducationField("degreeProgram", value)} />
           <FormControlLabel control={<Checkbox checked={educationInformation.studentStatus} disabled={!showEdit} onChange={(e) => updateEducationField("studentStatus", e.target.checked)} />}
                       label="Currently a Student" />
         </FormGroupRows>
@@ -47,4 +43,4 @@ function AdminUpdateEducationInformation({ showEdit, showEditStyle, userProfile,
     }</>
   );
 }
-export default AdminUpdateEducationInformation;
+export default UpdateEducationInformation;

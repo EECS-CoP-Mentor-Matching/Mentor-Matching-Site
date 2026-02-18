@@ -4,15 +4,15 @@ import selectionItemsDb from "../../../dal/selectionItemsDb";
 import { DocItem } from "../../../types/types";
 import { DegreeProgram } from "../../../types/userProfile";
 
-interface AdminSelectDegreeProgramProps {
+interface SelectDegreeProgramProps {
   value: string;
   onChange: (value: string) => void;
 }
 
-export default function AdminSelectDegreeProgram({
+export default function SelectDegreeProgram({
   value,
   onChange
-}: AdminSelectDegreeProgramProps) {
+}: SelectDegreeProgramProps) {
   const [degreePrograms, setDegreePrograms] = useState<{ id: string; label: string }[]>([]);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ interface UpdatePersonalInformationProps {
   onChange: (updatedProfile: UserProfile) => void;
 }
 
-function AdminUpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdatePersonalInformationProps) {
+function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdatePersonalInformationProps) {
   //const personalInformation = selector(state => state.userProfile.userProfile.personal);
   const personalInformation = userProfile.personal;
 
@@ -61,4 +61,4 @@ function AdminUpdatePersonalInformation({ showEdit, showEditStyle, userProfile, 
   );
 }
 
-export default AdminUpdatePersonalInformation;
+export default UpdatePersonalInformation;
