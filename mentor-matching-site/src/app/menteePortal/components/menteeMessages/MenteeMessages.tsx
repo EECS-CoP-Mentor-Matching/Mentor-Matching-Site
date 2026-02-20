@@ -18,12 +18,12 @@ function MenteeMessages({ backToPage, userId }: MenteeMessagesProps) {
   // State variable for messages sent by mentee
   const [menteeMessagesSent, setMenteeMessagesSent] = useState<DocItem<Message>[]>([]);
   const selector = useAppSelector;
-  const menteeUID = selector(state => state.userProfile.userProfile.UID);
+  //const menteeUID = selector(state => state.userProfile.userProfile.UID);
 
   // Get messages addressed to this mentee
   useEffect(() => {
     const getMessagesInbound = async () => {
-      const messages = await messagingService.getMessagesSentToMentee(menteeUID);
+      const messages = await messagingService.getMessagesSentToMentee(userId);
       if (messages.length === 0) {
         console.log("No inbound messages yet");
       }
@@ -31,7 +31,7 @@ function MenteeMessages({ backToPage, userId }: MenteeMessagesProps) {
     }
     // Get messages sent by this mentee:
     const getMessagesSent = async () => {
-      const messages = await messagingService.getMessagesSentByMentee(menteeUID);
+      const messages = await messagingService.getMessagesSentByMentee(userId);
       if (messages.length === 0) {
         console.log("No messages yet")
         // If there are no messages, the below line executes and returns us to the previous page.  Commenting it out lets us see the Messages screen:
