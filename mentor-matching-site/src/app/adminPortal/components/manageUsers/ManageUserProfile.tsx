@@ -12,6 +12,7 @@ import UpdatePersonalInformation from '../../../common/manageUsers/UpdatePersona
 import UpdateUserContactInformation from '../../../common/manageUsers/UpdateUserContactInformation';
 import UpdateUserDemographicInformation from '../../../common/manageUsers/UpdateDemographicsInformation';
 import UpdateEducationInformation from '../../../common/manageUsers/UpdateEducationInformation';
+import Messages from '../../../common/messaging/Messages';
 
 
 function ManageUserProfile() {
@@ -79,6 +80,9 @@ function ManageUserProfile() {
                   onClose={handleMessagesClose}
                   >
                     <h2>DEBUG</h2>
+                    {profileDetails &&
+                        <Messages backToPage={() => {}} userProfile={profileDetails} />
+                    }
 
                     
                 </Menu>
