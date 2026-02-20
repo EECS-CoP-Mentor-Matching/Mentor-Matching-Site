@@ -1,8 +1,8 @@
-import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
-import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
+import FormGroupRows from "../forms/layout/FormGroupRows";
+import FormGroupCols from "../forms/layout/FormGroupCols";
 import { FormLabel } from "@mui/material";
-import { UserProfile } from "../../../../../types/userProfile";
-import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
+import { UserProfile } from "../../../types/userProfile";
+import TextInputControl from "../forms/textInputs/TextInputControl";
 
 interface UpdatePersonalInformationProps {
   showEdit: boolean,
@@ -11,7 +11,7 @@ interface UpdatePersonalInformationProps {
   onChange: (updatedProfile: UserProfile) => void;
 }
 
-function AdminUpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdatePersonalInformationProps) {
+function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdatePersonalInformationProps) {
   //const personalInformation = selector(state => state.userProfile.userProfile.personal);
   const personalInformation = userProfile.personal;
 
@@ -61,4 +61,4 @@ function AdminUpdatePersonalInformation({ showEdit, showEditStyle, userProfile, 
   );
 }
 
-export default AdminUpdatePersonalInformation;
+export default UpdatePersonalInformation;

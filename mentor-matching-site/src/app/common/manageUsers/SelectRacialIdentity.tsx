@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import selectionItemsDb from "../../../../../dal/selectionItemsDb";
-import { DocItem } from "../../../../../types/types";
-import { RacialIdentity } from "../../../../../types/userProfile";
+import selectionItemsDb from "../../../dal/selectionItemsDb";
+import { DocItem } from "../../../types/types";
+import { RacialIdentity } from "../../../types/userProfile";
 
-interface AdminSelectRacialIdentityProps {
+interface SelectRacialIdentityProps {
   value: string;
   onChange: (value: string) => void;
 }
 
-export default function AdminSelectRacialIdentity({
+export default function SelectRacialIdentity({
   value,
   onChange
-}: AdminSelectRacialIdentityProps) {
+}: SelectRacialIdentityProps) {
   const [identities, setIdentities] = useState<{ id: string; label: string }[]>([]);
 
   useEffect(() => {
