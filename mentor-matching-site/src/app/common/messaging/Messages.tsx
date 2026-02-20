@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import ContentContainer from "../../../common/ContentContainer";
+import ContentContainer from "../ContentContainer";
 import { Box, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
-import { messagingService } from "../../../../service/messagingService";
-import { useAppSelector } from "../../../../redux/hooks";
-import { DocItem } from "../../../../types/types";
-import { Message } from "../../../../types/matchProfile";
-import ViewMenteeMessage from "./components/ViewMenteeMessage";
+import { messagingService } from "../../../service/messagingService";
+import { useAppSelector } from "../../../redux/hooks";
+import { DocItem } from "../../../types/types";
+import { Message } from "../../../types/matchProfile";
+import ViewMessage from "./ViewMessage";
 
-interface MenteeMessagesProps {
+interface MessagesProps {
   backToPage: () => void,
   userId: string
 }
 
-function MenteeMessages({ backToPage, userId }: MenteeMessagesProps) {
+function Messages({ backToPage, userId }: MessagesProps) {
   // State variable for received mentee messages:
   const [menteeMessagesInbound, setMenteeMessagesInbound] = useState<DocItem<Message>[]>([]);
   // State variable for messages sent by mentee
@@ -50,7 +50,7 @@ function MenteeMessages({ backToPage, userId }: MenteeMessagesProps) {
         <Box>
           <List>
             {menteeMessagesInbound.map((message, index) => (
-              <ViewMenteeMessage message={message} index={index} messagesLength={menteeMessagesInbound.length}/>
+              <ViewMessage message={message} index={index} messagesLength={menteeMessagesInbound.length}/>
             ))}
           </List>
         </Box>
@@ -65,4 +65,4 @@ function MenteeMessages({ backToPage, userId }: MenteeMessagesProps) {
   );
 }
 
-export default MenteeMessages;
+export default Messages;

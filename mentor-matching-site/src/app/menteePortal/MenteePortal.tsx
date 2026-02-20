@@ -6,7 +6,7 @@ import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import ActiveMenteeProfiles from './components/activeMenteeProfiles/ActiveMenteeProfiles';
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
-import MenteeMessages from './components/menteeMessages/MenteeMessages';
+import Messages from '../common/messaging/Messages';
 import FindMatches from './components/findMatches/FindMatches';
 import MyMentors from './components/myMentors/MyMentors';
 
@@ -92,7 +92,7 @@ function MenteePortal() {
               {/* Messages */}
               {selectedPage === Pages.menteeMessages.toString() && (
                 <div className="mentee-portal">
-                  <MenteeMessages backToPage={backToActive} userId={userProfile.UID}  />
+                  <Messages backToPage={backToActive} userId={userProfile.UID}  />
                 </div>
               )}
             </>
