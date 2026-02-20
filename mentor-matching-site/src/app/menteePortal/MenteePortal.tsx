@@ -92,7 +92,7 @@ function MenteePortal() {
               {/* Messages */}
               {selectedPage === Pages.menteeMessages.toString() && (
                 <div className="mentee-portal">
-                  <Messages backToPage={backToActive} userId={userProfile.UID}  />
+                  <Messages backToPage={backToActive} userProfile={userProfile}  />
                 </div>
               )}
             </>

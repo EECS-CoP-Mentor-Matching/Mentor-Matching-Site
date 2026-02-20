@@ -6,13 +6,14 @@ import { useAppSelector } from "../../../redux/hooks";
 import { DocItem } from "../../../types/types";
 import { Message } from "../../../types/matchProfile";
 import ViewMessage from "./ViewMessage";
+import { UserProfile } from "../../../types/userProfile";
 
 interface MessagesProps {
   backToPage: () => void,
-  userId: string
+  userProfile: UserProfile
 }
 
-function Messages({ backToPage, userId }: MessagesProps) {
+function Messages({ backToPage, userProfile }: MessagesProps) {
   // State variable for received mentee messages:
   const [messagesInbound, setMessagesInbound] = useState<DocItem<Message>[]>([]);
   // State variable for messages sent by mentee
@@ -21,7 +22,7 @@ function Messages({ backToPage, userId }: MessagesProps) {
   // Get messages addressed to this mentee
   useEffect(() => {
     const getMessagesInbound = async () => {
-      const messages = await messagingService.getMessagesSentToMentee(userId);
+      const messages = await messagingService.getMessagesSentToMentee(userProfile.UID);
       if (messages.length === 0) {
         console.log("No inbound messages yet");
       }
@@ -29,7 +30,7 @@ function Messages({ backToPage, userId }: MessagesProps) {
     }
     // Get messages sent by this mentee:
     const getMessagesSent = async () => {
-      const messages = await messagingService.getMessagesSentByMentee(userId);
+      const messages = await messagingService.getMessagesSentByMentee(userProfile.UID);
       if (messages.length === 0) {
         console.log("No messages yet")
         // If there are no messages, the below line executes and returns us to the previous page.  Commenting it out lets us see the Messages screen:
