@@ -14,11 +14,9 @@ interface MessagesProps {
 
 function Messages({ backToPage, userId }: MessagesProps) {
   // State variable for received mentee messages:
-  const [menteeMessagesInbound, setMenteeMessagesInbound] = useState<DocItem<Message>[]>([]);
+  const [messagesInbound, setMessagesInbound] = useState<DocItem<Message>[]>([]);
   // State variable for messages sent by mentee
-  const [menteeMessagesSent, setMenteeMessagesSent] = useState<DocItem<Message>[]>([]);
-  const selector = useAppSelector;
-  //const menteeUID = selector(state => state.userProfile.userProfile.UID);
+  const [messagesSent, setMessagesSent] = useState<DocItem<Message>[]>([]);
 
   // Get messages addressed to this mentee
   useEffect(() => {
@@ -27,7 +25,7 @@ function Messages({ backToPage, userId }: MessagesProps) {
       if (messages.length === 0) {
         console.log("No inbound messages yet");
       }
-      setMenteeMessagesInbound(messages);
+      setMessagesInbound(messages);
     }
     // Get messages sent by this mentee:
     const getMessagesSent = async () => {
@@ -37,25 +35,25 @@ function Messages({ backToPage, userId }: MessagesProps) {
         // If there are no messages, the below line executes and returns us to the previous page.  Commenting it out lets us see the Messages screen:
         //backToPage();
       }
-      setMenteeMessagesSent(messages);
+      setMessagesSent(messages);
     }
     getMessagesInbound();
     getMessagesSent();
-  }, [setMenteeMessagesInbound, setMenteeMessagesSent])
+  }, [setMessagesInbound, setMessagesSent])
 
   // This currently only shows messages addressed to this user.  TODO: Show sent messages separately.
   return (
     <ContentContainer title="Messages">
-      {menteeMessagesInbound.length > 0 &&
+      {messagesInbound.length > 0 &&
         <Box>
           <List>
-            {menteeMessagesInbound.map((message, index) => (
-              <ViewMessage message={message} index={index} messagesLength={menteeMessagesInbound.length}/>
+            {messagesInbound.map((message, index) => (
+              <ViewMessage message={message} index={index} messagesLength={messagesInbound.length}/>
             ))}
           </List>
         </Box>
       }
-      {menteeMessagesInbound.length === 0 &&
+      {messagesInbound.length === 0 &&
         <Box>
           <div>No messages received...</div>
         </Box>
