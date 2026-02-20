@@ -8,10 +8,11 @@ import { Message } from "../../../../types/matchProfile";
 import ViewMenteeMessage from "./components/ViewMenteeMessage";
 
 interface MenteeMessagesProps {
-  backToPage: () => void
+  backToPage: () => void,
+  userId: string
 }
 
-function MenteeMessages({ backToPage }: MenteeMessagesProps) {
+function MenteeMessages({ backToPage, userId }: MenteeMessagesProps) {
   // State variable for received mentee messages:
   const [menteeMessagesInbound, setMenteeMessagesInbound] = useState<DocItem<Message>[]>([]);
   // State variable for messages sent by mentee
