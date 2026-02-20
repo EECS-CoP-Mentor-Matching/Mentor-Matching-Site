@@ -79,9 +79,8 @@ function ManageUserProfile() {
                   anchorEl={anchorElement}
                   onClose={handleMessagesClose}
                   >
-                    <h2>DEBUG</h2>
                     {profileDetails &&
-                        <Messages backToPage={() => {}} userProfile={profileDetails} />
+                        <Messages userProfile={profileDetails} adminView={true} />
                     }
 
                     

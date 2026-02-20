@@ -9,11 +9,12 @@ import ViewMessage from "./ViewMessage";
 import { UserProfile } from "../../../types/userProfile";
 
 interface MessagesProps {
-  backToPage: () => void,
-  userProfile: UserProfile
+  //backToPage: () => void,
+  userProfile: UserProfile,
+  adminView: Boolean // If the user is an admin requesting to see this users' messages, then return a lighter version with components they don't need removed.
 }
 
-function Messages({ backToPage, userProfile }: MessagesProps) {
+function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   // State variable for received messages:
   const [messagesInbound, setMessagesInbound] = useState<DocItem<Message>[]>([]);
   // State variable for messages sent by user
@@ -70,7 +71,9 @@ function Messages({ backToPage, userProfile }: MessagesProps) {
           <div>No messages received...</div>
         </Box>
       }
-      <a href="/send-message">Send New Message</a>
+      {!adminView &&
+        <a href="/send-message">Send New Message</a>
+      }
     </ContentContainer>
   );
 }
