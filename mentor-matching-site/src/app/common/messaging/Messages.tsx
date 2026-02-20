@@ -14,12 +14,23 @@ interface MessagesProps {
 }
 
 function Messages({ backToPage, userProfile }: MessagesProps) {
-  // State variable for received mentee messages:
+  // State variable for received messages:
   const [messagesInbound, setMessagesInbound] = useState<DocItem<Message>[]>([]);
-  // State variable for messages sent by mentee
+  // State variable for messages sent by user
   const [messagesSent, setMessagesSent] = useState<DocItem<Message>[]>([]);
 
-  // Get messages addressed to this mentee
+  // Check which type of user we are looking at:
+  let fetchMessages = null;
+  if (userProfile.preferences.role == "Mentee")
+  {
+    fetchMessages = messagingService.getMessagesSentToMentee;
+  }
+  else if (userProfile.preferences.role == "Mentor")
+  {
+    fetchMessages = messagingService.getMessagesSentToMentor;
+  }
+
+  // Get messages addressed to this user
   useEffect(() => {
     const getMessagesInbound = async () => {
       const messages = await messagingService.getMessagesSentToMentee(userProfile.UID);
@@ -28,7 +39,7 @@ function Messages({ backToPage, userProfile }: MessagesProps) {
       }
       setMessagesInbound(messages);
     }
-    // Get messages sent by this mentee:
+    // Get messages sent by this user:
     const getMessagesSent = async () => {
       const messages = await messagingService.getMessagesSentByMentee(userProfile.UID);
       if (messages.length === 0) {
