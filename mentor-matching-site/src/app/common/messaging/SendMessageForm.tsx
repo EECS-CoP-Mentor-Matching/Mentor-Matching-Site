@@ -8,7 +8,7 @@ import userService from '../../../service/userService';
 
 
 
-function MenteeMessageForm() {
+function SendMessageForm() {
 
     // A useNavigate object allows us to move the user to another page.  We'll use this later when they click the button:
     const redirectToSite = useNavigate();
@@ -128,4 +128,4 @@ function MenteeMessageForm() {
     );
 }
 
-export default MenteeMessageForm;
+export default SendMessageForm;
