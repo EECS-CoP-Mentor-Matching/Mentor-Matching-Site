@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { messagingService } from "../../../../service/messagingService";
-import { useAppSelector } from "../../../../redux/hooks";
-import ContentContainer from "../../../common/ContentContainer";
+import { messagingService } from "../../../service/messagingService";
+import { useAppSelector } from "../../../redux/hooks";
+import ContentContainer from "../ContentContainer";
 import { useNavigate } from "react-router-dom";
-import { UserProfile } from "../../../../types/userProfile";
-import userService from '../../../../service/userService';
+import { UserProfile } from "../../../types/userProfile";
+import userService from '../../../service/userService';
 
 
 
