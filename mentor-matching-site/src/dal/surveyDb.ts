@@ -1,8 +1,8 @@
 import { queryDocId, queryMany, querySingle, readMany, readSingle, writeSingle} from "./commonDb";
 import { DocItem, DbReadResult, DbReadResults, DbWriteResult } from "../types/types";
-import { Option, Question, SurveyResponse, SurveySchema, CompatibilityScoreResult } from "../types/survey";
+import { Option, Question, SurveyResponse, SurveySchema, CompatibilityScoreResult, DisplayUi } from "../types/survey";
 import { app, db } from "../firebaseConfig";
-import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore, orderBy } from "firebase/firestore";
+import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore, orderBy, getDoc } from "firebase/firestore";
 
 const schemaCollectionName = 'surveySchema';
 const resultsCollectionName = 'surveyResults';
@@ -46,45 +46,102 @@ async function getAllMenteeSurveyRespAsync(): Promise<DocItem<SurveyResponse>[]>
   return responses.results;
 }
 
-// Score calcualted with Jaccard method
-// score = |intersection| / |union|
+function calculateCompatibilityWithWeights(
+  r1: Record<string, any>,
+  r2: Record<string, any>,
+  questionMeta: Record<string, { algorithmWeight: number; displayUi?: DisplayUi }>
+): number {
+
+  let totalWeightedScore = 0;
+  let totalWeight = 0;
+
+  for (const questionId in questionMeta) {
+
+    const meta = questionMeta[questionId];
+    const weight = meta.algorithmWeight;
+    let questionScore: number | null = null;
+    const a = r1[questionId];
+    const b = r2[questionId];
+
+    // ignore questions with weight 0
+    if (!weight) continue;
+
+    // ignore question if either user didn’t answer
+    if (a == null || b == null) continue;
+
+    // ignore text questions
+    if (meta.displayUi === DisplayUi.text) continue;
+
+    // -----------------------------------
+    // Score calculated with Jaccard method
+    // score = |intersection| / |union|
+    // -----------------------------------
+    // Multi responses questions (checkbox)
+    if (meta.displayUi === DisplayUi.checkbox) {
+      const setA = new Set(a);
+      const setB = new Set(b);
+
+      const intersection = new Set([...setA].filter(x => setB.has(x)));
+      const union = new Set([...setA, ...setB]);
+
+      if (union.size > 0) {
+        questionScore = intersection.size / union.size; // Jaccard
+      }
+    }
+
+    // Single response questions (radio / dropdown)
+    else if (meta.displayUi === DisplayUi.radio || meta.displayUi === DisplayUi.dropdown) {
+      questionScore = a === b ? 1 : 0;
+    }
+
+    if (questionScore !== null) {
+      totalWeightedScore += questionScore * weight;
+      totalWeight += weight;
+    }
+  }
+
+  if (totalWeight === 0) return 0;
+
+  return totalWeightedScore / totalWeight; // normalize score [0, 1]
+}
+
 async function computeCompatibilityAsync(menteeSurveyRespId: string, mentorSurveyRespId: string): Promise<CompatibilityScoreResult> {
+  const [menteeRespDoc, mentorRespDoc, allQuestions] = await Promise.all([
+    queryDocId<SurveyResponse>(resultsCollectionName, menteeSurveyRespId),
+    queryDocId<SurveyResponse>(resultsCollectionName, mentorSurveyRespId),
+    getAllQuestionsAsync()
+  ]);
 
-  // Find the intersection of dict keys
-  function intersection(o1: Record<string, any>, o2: Record<string, any>): string[] {
-    const [k1, k2] = [Object.keys(o1), Object.keys(o2)];
-    const [first, next] = k1.length > k2.length ? [k2, o1] : [k1, o2];
-    return first.filter(k => k in next);
+  if (!menteeRespDoc?.data || !mentorRespDoc?.data) {
+    throw new Error("Survey response not found");
   }
 
-  function jaccard_index(s1: Record<string, any>, s2: Record<string, any>): number {
-    let size_s1 = s1.length;
-    let size_s2 = s2.length;
+  const questionMeta = Object.fromEntries(
+    allQuestions.map(q => [
+      q.docId,
+      {
+        algorithmWeight: q.data.algorithmWeight ?? 0,
+        displayUi: q.data.displayUi
+      }
+    ])
+  );
 
-    let intersect = intersection(s1, s2);
-    let size_in = intersect.length;
-    let jaccard_in = size_in / (size_s1 + size_s2 - size_in);
+  const score = calculateCompatibilityWithWeights(menteeRespDoc.data.responses, mentorRespDoc.data.responses, questionMeta);
 
-    return jaccard_in;
-  }
-
-  const menteeRespDoc: DbReadResult<SurveyResponse> = await queryDocId(resultsCollectionName, menteeSurveyRespId);
-  const mentorRespDoc: DbReadResult<SurveyResponse> = await queryDocId(resultsCollectionName, mentorSurveyRespId);
-  const score = jaccard_index(menteeRespDoc.data, mentorRespDoc.data);
-  
-  const result: CompatibilityScoreResult = {
+  return {
     menteeSurveyRespId,
     mentorSurveyRespId,
     score
-  }
-  return result;
+  };
 }
 
 const surveyDb = {
   getAllQuestionsAsync,
   createQuestionAsync,
   createSurveyResponseAsync,
-  computeCompatibilityAsync
+  computeCompatibilityAsync,
+  getAllMentorSurveyRespAsync,
+  getAllMenteeSurveyRespAsync
 }
 
 export default surveyDb

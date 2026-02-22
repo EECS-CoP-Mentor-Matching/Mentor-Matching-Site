@@ -21,11 +21,22 @@ async function computeCompatibility(menteeSurveyRespId: string, mentorSurveyResp
     return await surveyDb.computeCompatibilityAsync(menteeSurveyRespId, mentorSurveyRespId)
 }
 
+async function getAllMentorSurveyResp(): Promise<DocItem<SurveyResponse>[]> {
+  return surveyDb.getAllMentorSurveyRespAsync();
+}
+
+async function getAllMenteeSurveyResp(): Promise<DocItem<SurveyResponse>[]> {
+return surveyDb.getAllMenteeSurveyRespAsync();
+
+}
+
 const surveyService = {
     getAllQuestions,
     createQuestion,
     createSurveyResponse,
-    computeCompatibility
+    computeCompatibility,
+    getAllMentorSurveyResp,
+    getAllMenteeSurveyResp
 }
 
 export default surveyService;
