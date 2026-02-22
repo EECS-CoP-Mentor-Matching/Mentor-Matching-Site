@@ -8,6 +8,7 @@ import ModalWrapper from "../../../common/forms/modals/ModalWrapper";
 import { Box, Chip, IconButton, Paper, Typography, Grid } from '@mui/material';
 import CreateQuestionForm from "../../../survey/CreateQuestionForm";
 import SurveyForm from "../../../survey/SurveyForm";
+import MatchingEngine from "../../../survey/MatchingEngine";
 
 
 
@@ -19,7 +20,9 @@ function Settings() {
         >
           <CreateQuestionForm />
 
-          <SurveyForm userRole="mentee" />
+          <SurveyForm userRole="mentor" />
+
+          <MatchingEngine />
 
         </ContentContainer>
       );
