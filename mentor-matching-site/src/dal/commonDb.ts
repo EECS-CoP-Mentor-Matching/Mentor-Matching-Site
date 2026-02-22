@@ -66,9 +66,9 @@ async function readCommon(collectionName: string | CollectionReference): Promise
   return records;
 }
 
-export async function queryDocId<T>(collectionName: string, docId: string): Promise<DbReadResult<T>> {
-  const docRef = doc(db, collectionName, docId);
-  const docSnap = await getDoc(docRef);
+export async function queryDocId<T>(collectionName: string | CollectionReference, docId: string): Promise<DbReadResult<T>> {
+  const ref = ensureDocRef(collectionName, docId);
+  const docSnap = await getDoc(ref);
 
   return {
     success: true,
