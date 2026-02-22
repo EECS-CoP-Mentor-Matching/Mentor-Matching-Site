@@ -1,5 +1,5 @@
 import { DocItem, DbReadResult, DbReadResults, DbWriteResult } from "../types/types";
-import { Option, Question, SurveyResponse, SurveySchema } from "../types/survey";
+import { CompatibilityScoreResult, Option, Question, SurveyResponse, SurveySchema } from "../types/survey";
 import surveyDb from "../dal/surveyDb";
 import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore } from "firebase/firestore";
 import { MatchRole } from "../types/matchProfile";
@@ -17,10 +17,15 @@ async function createSurveyResponse(uid: string, role: "mentee" | "mentor", resp
     return await surveyDb.createSurveyResponseAsync(uid, role, responses);
 }
 
+async function computeCompatibility(menteeSurveyRespId: string, mentorSurveyRespId: string): Promise<CompatibilityScoreResult> {
+    return await surveyDb.computeCompatibilityAsync(menteeSurveyRespId, mentorSurveyRespId)
+}
+
 const surveyService = {
     getAllQuestions,
     createQuestion,
-    createSurveyResponse
+    createSurveyResponse,
+    computeCompatibility
 }
 
 export default surveyService;

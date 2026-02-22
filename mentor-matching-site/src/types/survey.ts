@@ -47,3 +47,9 @@ export interface SurveyResponse {
     role: "mentee" | "mentor"
     responses: Record<string, any>
 }
+
+export interface CompatibilityScoreResult {
+    menteeSurveyRespId: string
+    mentorSurveyRespId: string
+    score: number
+}
