@@ -74,6 +74,15 @@ async function getMessagesSentToMenteeAsync(menteeUID: string): Promise<DocItem<
   return await filterMessages(menteeUID, messages);
 }
 
+async function getMessagesSentToMentorAsync(mentorUID: string): Promise<DocItem<Message>[]> {
+  const messages = (await queryMany<Message>(collectionName,
+    where("mentorUID", "==", mentorUID))).results;
+
+  if (messages.length === 0) return messages;
+
+  return await filterMessages(mentorUID, messages);
+}
+
 const filterMessages = async (menteeUID: string, messages: DocItem<Message>[]) => {
   const userReports = await reportUserService.getUserReports(menteeUID);
   
@@ -98,5 +107,6 @@ export const messagingDb = {
   getProcessedMessagesSentForMentorAsync,
   getMessagesSentByMenteeAsync,
   getMessagesSentToMenteeAsync,
+  getMessagesSentToMentorAsync,
   containsReportedUserID
 }

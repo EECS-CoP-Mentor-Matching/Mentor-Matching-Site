@@ -27,7 +27,7 @@ import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton';
 import VerifyEmail from "./createAccount/components/VerifyEmail";
 import NewUserProfile from "./createAccount/components/newUserProfile/NewUserProfile";
 import { UserProfile } from "../types/userProfile";
-import MenteeMessageForm from './menteePortal/components/menteeMessages/MenteeMessageForm';
+import SendMessageForm from './common/messaging/SendMessageForm';
 import { Box, CircularProgress, Typography, Fade } from '@mui/material';
 import { MatchRole } from '../types/matchProfile'; // Import your roles
 import TestMatchDbComponent from './common/forms/TestMatchDbComponent'; // Test component
@@ -154,7 +154,7 @@ function App() {
               } />
               <Route path="/send-message" element={
                 <ProtectedRoute allowedRoles={[MatchRole.mentee, MatchRole.both]}>
-                  <MenteeMessageForm />
+                  <SendMessageForm />
                 </ProtectedRoute>
               } />
 

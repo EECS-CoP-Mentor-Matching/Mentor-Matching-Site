@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import selectionItemsDb from "../../../../../dal/selectionItemsDb";
-import { DocItem } from "../../../../../types/types";
-import { EducationLevel } from "../../../../../types/matchProfile";
+import selectionItemsDb from "../../../dal/selectionItemsDb";
+import { DocItem } from "../../../types/types";
+import { EducationLevel } from "../../../types/matchProfile";
 
-interface AdminSelectEducationLevelProps {
+interface SelectEducationLevelProps {
   value: string;
+  style: any;
   onChange: (value: string) => void;
 }
 
-export default function AdminSelectEducationLevel({
+export default function SelectEducationLevel({
   value,
+  style,
   onChange
-}: AdminSelectEducationLevelProps) {
+}: SelectEducationLevelProps) {
   const [educationLevels, setEducationLabels] = useState<{ id: string; label: string }[]>([]);
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export default function AdminSelectEducationLevel({
       <Select
         value={value}
         label="Education Label"
+        style={style}
         onChange={(e) => onChange(e.target.value as string)}
       >
         {educationLevels.map((level) => (

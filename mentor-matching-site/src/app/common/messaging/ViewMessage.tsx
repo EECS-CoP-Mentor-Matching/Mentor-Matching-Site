@@ -1,20 +1,20 @@
 import { Box, Divider, ListItem, ListItemText, Paper } from "@mui/material";
 import React, { useState } from "react";
-import { DocItem } from "../../../../../types/types";
-import { MentorReply, Message } from "../../../../../types/matchProfile";
-import SubmitButton from "../../../../common/forms/buttons/SubmitButton";
-import ModalWrapper from "../../../../common/forms/modals/ModalWrapper";
-import { UserProfile } from "../../../../../types/userProfile";
-import userService from "../../../../../service/userService";
-import TextDisplay from "../../../../common/forms/textInputs/TextDisplay";
+import { DocItem } from "../../../types/types";
+import { MentorReply, Message } from "../../../types/matchProfile";
+import SubmitButton from "../forms/buttons/SubmitButton";
+import ModalWrapper from "../forms/modals/ModalWrapper";
+import { UserProfile } from "../../../types/userProfile";
+import userService from "../../../service/userService";
+import TextDisplay from "../forms/textInputs/TextDisplay";
 
-interface ViewMenteeMessageProps {
+interface ViewMessageProps {
   message: DocItem<Message>
   index: number
   messagesLength: number
 }
 
-function ViewMenteeMessage({message, index, messagesLength}: ViewMenteeMessageProps) {
+function ViewMessage({message, index, messagesLength}: ViewMessageProps) {
   const [isOpen, setisOpen] = useState(false);
   const [mentorProfile, setMentorProfile] = useState<UserProfile>();
 
@@ -67,4 +67,4 @@ function ViewMenteeMessage({message, index, messagesLength}: ViewMenteeMessagePr
   );
 }
 
-export default ViewMenteeMessage;
+export default ViewMessage;
