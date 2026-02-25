@@ -4,6 +4,9 @@ import DropDownControlRedux from "../../common/forms/dropDowns/DropDownControlRe
 import { DocItem, DropDownOption } from "../../../types/types";
 import selectionItemsDb from "../../../dal/selectionItemsDb";
 
+// TODO: These files can not yet be refactored to match the new Edit User forms in /src/app/common/manageUsers
+// because the forms for creating a new user account still depend on them.  Leaving them as-is for now.
+
 interface SelectDegreeProgramProps {
   onSelectDispatch(payload: any): {
     payload: any

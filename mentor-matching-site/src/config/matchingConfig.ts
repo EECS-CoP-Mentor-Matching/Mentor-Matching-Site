@@ -111,7 +111,7 @@ export const LIFE_EXPERIENCES = [
   'Career Transition',
   'Entrepreneur',
   'Second Career',
-  'None of the above'
+  'Prefer not to share (skip for matching)'
 ];
 
 // ============================================

@@ -12,9 +12,14 @@ import './WeightSelector.css';
 interface WeightSelectorProps {
   weights: UserWeights;
   onChange: (weights: UserWeights) => void;
+  disableLifeExperiences?: boolean;
 }
 
-export const WeightSelector: React.FC<WeightSelectorProps> = ({ weights, onChange }) => {
+export const WeightSelector: React.FC<WeightSelectorProps> = ({ 
+  weights, 
+  onChange, 
+  disableLifeExperiences = false 
+}) => {
   const [selectedPriority, setSelectedPriority] = useState<string>('');
 
   const handlePriorityChange = (priority: string) => {
@@ -34,6 +39,7 @@ export const WeightSelector: React.FC<WeightSelectorProps> = ({ weights, onChang
 
   const getWeightLabel = (value: number): string => {
     switch (value) {
+      case 0: return 'Not Used for Matching';
       case 1: return 'Not Important';
       case 2: return 'Slightly Important';
       case 3: return 'Moderately Important';
@@ -98,19 +104,22 @@ export const WeightSelector: React.FC<WeightSelectorProps> = ({ weights, onChang
         </div>
 
         {/* Life Experiences */}
-        <div className="weight-item">
+        <div className={`weight-item ${disableLifeExperiences ? 'disabled' : ''}`}>
           <label htmlFor="life-weight" className="weight-label">
             <span className="label-text">Life Experiences</span>
-            <span className="weight-value">{getWeightLabel(weights.lifeExperiences)}</span>
+            <span className="weight-value">
+              {disableLifeExperiences ? 'Not Used for Matching' : getWeightLabel(weights.lifeExperiences)}
+            </span>
           </label>
           <input
             id="life-weight"
             type="range"
             min="1"
             max="5"
-            value={weights.lifeExperiences}
+            value={disableLifeExperiences ? 0 : weights.lifeExperiences}
             onChange={(e) => handleWeightChange('lifeExperiences', parseInt(e.target.value))}
             className="weight-slider"
+            disabled={disableLifeExperiences}
           />
           <div className="slider-labels">
             <span>1</span>
@@ -119,6 +128,9 @@ export const WeightSelector: React.FC<WeightSelectorProps> = ({ weights, onChang
             <span>4</span>
             <span>5</span>
           </div>
+          {disableLifeExperiences && (
+            <p className="disabled-message">You've chosen not to share life experiences</p>
+          )}
         </div>
 
         {/* Languages */}

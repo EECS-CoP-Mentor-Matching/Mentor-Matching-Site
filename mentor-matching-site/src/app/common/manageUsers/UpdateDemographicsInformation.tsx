@@ -1,14 +1,11 @@
 import { FormLabel } from "@mui/material";
-import {updateLgbtqPlus, updateRacialIdentity, updateRole} from "../../../../../redux/reducers/userProfileReducer";
-import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
-import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
-import SelectRacialIdentity from "../../../../userProfileCommon/dropdowns/SelectRacialIdentity";
-import CheckBoxControlRedux from "../../../../common/forms/checkbox/CheckBoxControlRedux";
-import SelectRole from "../../../../userProfileCommon/dropdowns/SelectRole";
-import AdminSelectRole from "./AdminSelectRole";
-import { UserProfile } from "../../../../../types/userProfile";
+import {updateLgbtqPlus, updateRacialIdentity, updateRole} from "../../../redux/reducers/userProfileReducer";
+import FormGroupCols from "../forms/layout/FormGroupCols";
+import FormGroupRows from "../forms/layout/FormGroupRows";
+import SelectRole from "./SelectRole";
+import { UserProfile } from "../../../types/userProfile";
 import { Checkbox, FormControlLabel } from "@mui/material";
-import AdminSelectRacialIdentity from "./AdminSelectRacialIdentity";
+import SelectRacialIdentity from "./SelectRacialIdentity";
 
 interface UpdateUserDemographicInformationProps {
   showEdit: boolean
@@ -17,7 +14,7 @@ interface UpdateUserDemographicInformationProps {
   onChange: (updatedProfile: UserProfile) => void;
 }
 
-function AdminUpdateUserDemographicInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdateUserDemographicInformationProps) {
+function UpdateUserDemographicInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdateUserDemographicInformationProps) {
   //const demographicInformation = selector(state => state.userProfile.userProfile.demographics);
   // *** FIX 1: ADD SELECTOR FOR USER PREFERENCES ***
   //const userPreferences = selector(state => state.userProfile.userProfile.preferences);
@@ -57,13 +54,13 @@ const updatePreferenceField = (
         <FormLabel>Demographic Information</FormLabel>
         <FormGroupRows>
           {/* FIX 2: Corrected line from previous steps */}
-          <AdminSelectRole value={userPreferences.role} onChange={(value) => updatePreferenceField("role", value)} />
+          <SelectRole value={userPreferences.role} onChange={(value) => updatePreferenceField("role", value)} />
           <FormControlLabel control={<Checkbox checked={demographicInformation.lgbtqPlusCommunity} disabled={!showEdit} onChange={(e) => updateDemographicField("lgbtqPlusCommunity", e.target.checked)} />}
             label="Identify as LGBTQ+" />
-          <AdminSelectRacialIdentity value={demographicInformation.racialIdentity} onChange={(value) => updateDemographicField("racialIdentity", value)}/>
+          <SelectRacialIdentity value={demographicInformation.racialIdentity} onChange={(value) => updateDemographicField("racialIdentity", value)}/>
         </FormGroupRows>
       </FormGroupCols>
     }</>
   );
 }
-export default AdminUpdateUserDemographicInformation;
+export default UpdateUserDemographicInformation;

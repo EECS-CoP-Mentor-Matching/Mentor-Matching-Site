@@ -3,80 +3,98 @@ import { useAppSelector } from '../../redux/hooks';
 import CreateMenteeProfile from './components/createMenteeProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
-import navUtilities from '../common/navigation/navUtilities';
 import ActiveMenteeProfiles from './components/activeMenteeProfiles/ActiveMenteeProfiles';
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
-import { useNavigate } from 'react-router-dom';
-import MenteeMessages from './components/menteeMessages/MenteeMessages';
+import Messages from '../common/messaging/Messages';
 import FindMatches from './components/findMatches/FindMatches';
+import MyMentors from './components/myMentors/MyMentors';
 
 export enum Pages {
-  // createProfile removed - now accessed via button
   activeProfiles = "Active Profiles",
+  myMentors = "My Mentors",
   findMatches = "Find Matches",
   menteeMessages = "Messages"
 }
 
 function MenteePortal() {
-  // Ensure the state type is explicitly the Enum string value
   const [selectedPage, setSelectedPage] = useState<string>(Pages.activeProfiles.toString());
   const [showCreateProfile, setShowCreateProfile] = useState(false);
 
-  const navigate = useNavigate();
+  const userProfile = useAppSelector((state: any) => state.userProfile.userProfile);
+
+  const handleNavChange = (page: string) => {
+    setShowCreateProfile(false);
+    setSelectedPage(page);
+  };
 
   const backToActive = () => {
     setShowCreateProfile(false);
     setSelectedPage(Pages.activeProfiles.toString());
-  }
-  
-  const userProfile = useAppSelector((state) => state.userProfile.userProfile);
+  };
+
+  const goToFindMatches = () => setSelectedPage(Pages.findMatches.toString());
+
+  const navItems = [
+    Pages.activeProfiles.toString(),
+    Pages.myMentors.toString(),
+    Pages.findMatches.toString(),
+    Pages.menteeMessages.toString()
+  ];
 
   return (
     <>
       <AuthenticatedView>
         <div className="portal-container">
-          
           {!userProfile ? (
             <div className="loading-container" style={{ padding: '2rem', textAlign: 'center' }}>
               <h3>Loading your profile...</h3>
             </div>
           ) : (
             <>
+              <PortalNavigationBar
+                onNavChange={handleNavChange}
+                selected={selectedPage}
+                navItems={navItems}
+              />
 
-            <PortalNavigationBar 
-              onNavChange={setSelectedPage} 
-              selected={selectedPage} 
-              navItems={navUtilities.navItemsFromEnum(Pages)} 
-            />
-
-              {/* Conditional Rendering Blocks */}
-              {selectedPage === Pages.activeProfiles.toString() && !showCreateProfile &&
+              {/* Active Profiles */}
+              {selectedPage === Pages.activeProfiles.toString() && !showCreateProfile && (
                 <div className="mentee-portal">
-                  <ActiveMenteeProfiles 
-                    backToPage={backToActive} 
-                    onCreateProfile={() => setShowCreateProfile(true)} 
+                  <ActiveMenteeProfiles
+                    backToPage={backToActive}
+                    onCreateProfile={() => setShowCreateProfile(true)}
                   />
                 </div>
-              }
+              )}
 
-              {showCreateProfile &&
+              {/* Create Profile - shown within Active Profiles tab */}
+              {selectedPage === Pages.activeProfiles.toString() && showCreateProfile && (
                 <div className="mentee-portal">
                   <CreateMenteeProfile backToPage={backToActive} />
                 </div>
-              }
+              )}
 
-              {selectedPage === Pages.findMatches.toString() &&
+              {/* My Mentors */}
+              {selectedPage === Pages.myMentors.toString() && (
+                <div className="mentee-portal">
+                  <MyMentors onFindMentors={goToFindMatches} />
+                </div>
+              )}
+
+              {/* Find Matches */}
+              {selectedPage === Pages.findMatches.toString() && (
                 <div className="mentee-portal">
                   <FindMatches />
                 </div>
-              }
+              )}
 
-              {selectedPage === Pages.menteeMessages.toString() &&
+              {/* Messages */}
+              {selectedPage === Pages.menteeMessages.toString() && (
                 <div className="mentee-portal">
-                  <MenteeMessages backToPage={backToActive} />
+                  <Messages userProfile={userProfile} adminView={false} />
                 </div>
-              }
+              )}
             </>
           )}
         </div>

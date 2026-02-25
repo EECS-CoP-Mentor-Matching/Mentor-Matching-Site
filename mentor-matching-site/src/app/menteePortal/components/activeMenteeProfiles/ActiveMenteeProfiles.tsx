@@ -83,11 +83,11 @@ function ActiveMenteeProfiles({ backToPage, onCreateProfile }: ActiveMenteeProfi
 
     const getWeightColor = (weight: number): string => {
         switch(weight) {
-            case 5: return '#22c55e'; // Green - Extremely Important
-            case 4: return '#eab308'; // Yellow - Very Important (brighter!)
-            case 3: return '#14b8a6'; // Teal - Moderately Important (middle)
-            case 2: return '#9333ea'; // Purple - Slightly Important
-            case 1: return '#6b7280'; // Gray - Not Important
+            case 5: return '#22c55e'; // Green - Full saturation (Extremely Important)
+            case 4: return '#eab308'; // Yellow - 90% saturation (Very Important)
+            case 3: return '#fb8b24'; // Orange - 70% saturation (Moderately Important)
+            case 2: return '#a855f7'; // Purple - 50% saturation (Slightly Important)
+            case 1: return '#9ca3af'; // Gray - 30% saturation (Not Important)
             default: return '#6b7280';
         }
     };
@@ -96,20 +96,22 @@ function ActiveMenteeProfiles({ backToPage, onCreateProfile }: ActiveMenteeProfi
         <>
             <LoadingMessage message="Loading Profiles..." loading={loadingProfiles} />
             <ContentContainer title="Active Profiles">
-                {/* Create New Profile Button */}
-                <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button 
-                        variant="contained" 
-                        startIcon={<AddIcon />}
-                        onClick={onCreateProfile}
-                        sx={{ 
-                            backgroundColor: '#0066cc',
-                            '&:hover': { backgroundColor: '#0052a3' }
-                        }}
-                    >
-                        Create New Profile
-                    </Button>
-                </Box>
+                {/* Create New Profile Button - Only show when profiles exist */}
+                {menteeProfiles.length > 0 && (
+                    <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button 
+                            variant="contained" 
+                            startIcon={<AddIcon />}
+                            onClick={onCreateProfile}
+                            sx={{ 
+                                backgroundColor: '#0066cc',
+                                '&:hover': { backgroundColor: '#0052a3' }
+                            }}
+                        >
+                            Create New Profile
+                        </Button>
+                    </Box>
+                )}
 
                 <Box display='flex' gap={5}>
                     <Box sx={{ flex: 1 }}>
@@ -148,6 +150,18 @@ function ActiveMenteeProfiles({ backToPage, onCreateProfile }: ActiveMenteeProfi
                                     </Box>
 
                                     <Divider sx={{ mb: 2 }} />
+
+                                    {/* Elevator Pitch */}
+                                    {profile.data.aboutMe && profile.data.aboutMe.trim() && (
+                                        <Box sx={{ mb: 2, p: 2, bgcolor: '#f9fafb', borderRadius: 1, border: '1px solid #e5e7eb' }}>
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#555' }}>
+                                                Elevator Pitch
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ color: '#374151', lineHeight: 1.6 }}>
+                                                {profile.data.aboutMe}
+                                            </Typography>
+                                        </Box>
+                                    )}
 
                                     {/* Career Fields */}
                                     <Box sx={{ mb: 2 }}>
