@@ -1,21 +1,18 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, FormGroup } from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, FormGroup, Menu } from "@mui/material";
 import userService from '../../../../service/userService';
 import { UserProfile } from '../../../../types/userProfile';
 import UploadUserProfileImage from '../../../userProfileCommon/imageUpload/UploadUserProfileImage';
-import UpdatePersonalInformation from '../../../updateUserProfile/components/UpdatePersonalInformation';
-import UpdateUserContactInformation from '../../../updateUserProfile/components/UpdateUserContactInformation';
-import UpdateUserDemographicInformation from '../../../updateUserProfile/components/UpdateDemographicsInformation';
-import UpdateEducationInformation from '../../../updateUserProfile/components/UpdateEducationInformation';
 import AuthenticatedView from '../../../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../../../common/auth/UnauthenticatedView';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { updateProfile } from '../../../../redux/reducers/userProfileReducer';
-import AdminUpdatePersonalInformation from './components/AdminUpdatePersonalInformation';
-import AdminUpdateUserContactInformation from './components/AdminUpdateUserContactInformation';
-import AdminUpdateUserDemographicInformation from './components/AdminUpdateDemographicsInformation';
-import AdminUpdateEducationInformation from './components/AdminUpdateEducationInformation';
+import UpdatePersonalInformation from '../../../common/manageUsers/UpdatePersonalInformation';
+import UpdateUserContactInformation from '../../../common/manageUsers/UpdateUserContactInformation';
+import UpdateUserDemographicInformation from '../../../common/manageUsers/UpdateDemographicsInformation';
+import UpdateEducationInformation from '../../../common/manageUsers/UpdateEducationInformation';
+import Messages from '../../../common/messaging/Messages';
 
 
 function ManageUserProfile() {
@@ -29,6 +26,10 @@ function ManageUserProfile() {
     const [showEdit, setShowEdit] = useState(false);
     // State to store the profile details that we are planning to edit:
     const [profileDetails, setProfileDetails] = useState<UserProfile | null>(null);
+    // State to manage showing the messages popout
+    const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
+    const handleMessagesClick = (event: React.MouseEvent<HTMLButtonElement>) => {setAnchorElement(event.currentTarget)};
+    const handleMessagesClose = () => {setAnchorElement(null)};
     const showEditStyle = {
         borderBottom: showEdit ? "solid orange 1px" : ""
     }
@@ -59,10 +60,10 @@ function ManageUserProfile() {
       return  (
         <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
             <UploadUserProfileImage userProfile={{ ...profileDetails, imageUrl: profileDetails?.imageUrl }} />
-            <AdminUpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <AdminUpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <AdminUpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <AdminUpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
+            <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
         </FormGroup>
       );
     }
@@ -71,7 +72,19 @@ function ManageUserProfile() {
     return (
         <>
             <AuthenticatedView>
-                <p> Received user ID: {userID} with display name: {profileDetails?.contact.displayName}</p>
+                <p> User ID: {userID} with display name: {profileDetails?.contact.displayName}</p>
+                <Button onClick={handleMessagesClick}>View Messages</Button>
+                <Menu
+                  open={(Boolean(anchorElement))}
+                  anchorEl={anchorElement}
+                  onClose={handleMessagesClose}
+                  >
+                    {profileDetails &&
+                        <Messages userProfile={profileDetails} adminView={true} />
+                    }
+
+                    
+                </Menu>
                 {dataIsLoading()}
                 {!showEdit &&
                     <Button onClick={() => { setShowEdit(true) }}>Edit Profile</Button>

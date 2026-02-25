@@ -1,10 +1,10 @@
 import { FormLabel, Select } from "@mui/material";
-import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
-import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
-import TextDisplay from "../../../../common/forms/textInputs/TextDisplay";
-import AdminSelectTimeZone from "./AdminSelectTimezone";
-import { UserProfile } from "../../../../../types/userProfile";
-import TextInputControl from "../../../../common/forms/textInputs/TextInputControl";
+import FormGroupCols from "../forms/layout/FormGroupCols";
+import FormGroupRows from "../forms/layout/FormGroupRows";
+import TextDisplay from "../forms/textInputs/TextDisplay";
+import SelectTimeZone from "./SelectTimezone";
+import { UserProfile } from "../../../types/userProfile";
+import TextInputControl from "../forms/textInputs/TextInputControl";
 
 interface UpdateUserContactInformationProps {
   showEdit: boolean,
@@ -13,7 +13,7 @@ interface UpdateUserContactInformationProps {
   onChange: (updatedProfile: UserProfile) => void;
 }
 
-function AdminUpdateUserContactInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdateUserContactInformationProps) {
+function UpdateUserContactInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdateUserContactInformationProps) {
   const contactInformation = userProfile.contact
 
   const updateContactField = (field: keyof typeof contactInformation, value: string) =>
@@ -41,10 +41,10 @@ function AdminUpdateUserContactInformation({ showEdit, showEditStyle, userProfil
         </FormGroupRows>
         <FormGroupRows>
           <TextInputControl value={contactInformation.pronouns} label="Pronouns" readonly={!showEdit} onInput={(value) => updateContactField("pronouns", value)} style={showEditStyle} />
-          <AdminSelectTimeZone value={contactInformation.timeZone} onChange={(value) => updateContactField("timeZone", value)} />
+          <SelectTimeZone value={contactInformation.timeZone} onChange={(value) => updateContactField("timeZone", value)} />
         </FormGroupRows>
       </FormGroupCols>
     }</>
   );
 }
-export default AdminUpdateUserContactInformation;
+export default UpdateUserContactInformation;

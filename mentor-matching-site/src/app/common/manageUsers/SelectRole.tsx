@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import {MatchRole} from "../../../../../types/matchProfile";
+import {MatchRole} from "../../../types/matchProfile";
 
-interface AdminSelectRoleProps {
+interface SelectRoleProps {
   value: string;
   onChange: (value: string) => void;
 }
 
-export default function AdminSelectRole({ value, onChange }: AdminSelectRoleProps) {
+export default function SelectRole({ value, onChange }: SelectRoleProps) {
   const [roles, setRoles] = useState<{ id: string; label: string }[]>([]);
 
   useEffect(() => {
