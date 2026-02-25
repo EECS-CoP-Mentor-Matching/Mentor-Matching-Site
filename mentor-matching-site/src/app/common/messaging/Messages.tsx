@@ -37,7 +37,17 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
 
   // Finally, handle deleting the message:
   async function handleDeleteMessage() {
-    //await messagingService.deleteMessage();
+    if (messageToDelete) {
+      await messagingService.deleteMessage(messageToDelete);
+    }
+    else {
+      alert("An error occured while deleting your message.  Please refresh the site and try again.");
+    }
+    
+    // Regardless of the outcome, we should reset the state variable messageToDelete for hygiene purposes and then close out the dialog.
+    setMessageToDelete(null);
+    handleCloseDeleteDialog();
+
   }
 
 
