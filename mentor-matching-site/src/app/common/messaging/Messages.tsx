@@ -39,6 +39,8 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   async function handleDeleteMessage() {
     if (messageToDelete) {
       await messagingService.deleteMessage(messageToDelete);
+      // Refresh the list of messages:
+      setMessagesInbound(await fetchMessages(userProfile.UID))
     }
     else {
       alert("An error occured while deleting your message.  Please refresh the site and try again.");
@@ -47,7 +49,6 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
     // Regardless of the outcome, we should reset the state variable messageToDelete for hygiene purposes and then close out the dialog.
     setMessageToDelete(null);
     handleCloseDeleteDialog();
-
   }
 
 
@@ -77,7 +78,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
 
 
   // Check which type of user we are looking at:
-  let fetchMessages = null;
+  let fetchMessages: ((arg0: string) => any);
   if (userProfile.preferences.role == "Mentee")
   {
     fetchMessages = messagingService.getMessagesSentToMentee;
