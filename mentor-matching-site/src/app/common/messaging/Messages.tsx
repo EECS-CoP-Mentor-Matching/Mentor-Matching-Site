@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ContentContainer from "../ContentContainer";
-import { Box, Divider, IconButton, List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Paper } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { messagingService } from "../../../service/messagingService";
 import { useAppSelector } from "../../../redux/hooks";
@@ -20,6 +20,51 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   const [messagesInbound, setMessagesInbound] = useState<DocItem<Message>[]>([]);
   // State variable for messages sent by user
   const [messagesSent, setMessagesSent] = useState<DocItem<Message>[]>([]);
+  // Track if we should show the delete dialog below or not:
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
+
+  // Function to open the delete dialog
+  const handleOpenDeleteDialog = (messageId: string) => {
+    setMessageToDelete(messageId);
+    setOpenDeleteDialog(true);
+  };
+
+  // Function to close the delete dialog
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  // Finally, handle deleting the message:
+  async function handleDeleteMessage() {
+    //await messagingService.deleteMessage();
+  }
+
+
+  // Function to display a confirmation dialog before deleting a message:
+  const deleteMessageDialog = (
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete Message"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to permanently delete this message? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+          <Button onClick={handleDeleteMessage} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+
+
 
   // Check which type of user we are looking at:
   let fetchMessages = null;
@@ -58,12 +103,13 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   // This currently only shows messages addressed to this user.  TODO: Show sent messages separately.
   return (
     <ContentContainer title="Messages">
+      {deleteMessageDialog}
       {messagesInbound.length > 0 &&
         <Box>
           <List>
             {messagesInbound.map((message, index) => (
               <span>
-                <IconButton style={{float:"right"}}>
+                <IconButton style={{float:"right"}} onClick={() => handleOpenDeleteDialog(message.docId)}>
                   <DeleteIcon />
                 </IconButton>
                 <ViewMessage message={message} index={index} messagesLength={messagesInbound.length}/>

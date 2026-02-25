@@ -5,6 +5,10 @@ async function sendMessage(message: Message) {
   return await messagingDb.sendMessageAsync(message);
 }
 
+async function deleteMessage(messageId: string) {
+  return await messagingDb.DeleteMessageAsync(messageId);
+}
+
 async function mentorReply(docId: string, message: Message, reply: MentorReply) {
   return await messagingDb.mentorReplyAsync(docId, message, reply);
 }
@@ -35,6 +39,7 @@ async function getMessagesSentToMentee(menteeUID: string) {
 
 export const messagingService = {
   sendMessage,
+  deleteMessage,
   mentorReply,
   getMessagesSentForMenteeProfile,
   getAwaitingMessagesSentForMentor,

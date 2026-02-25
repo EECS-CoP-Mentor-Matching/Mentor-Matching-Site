@@ -1,6 +1,6 @@
-import {doc, updateDoc, where} from "firebase/firestore";
+import {deleteDoc, doc, updateDoc, where} from "firebase/firestore";
 import {MatchProfile, MentorReply, Message, MessageState} from "../types/matchProfile";
-import { queryMany, writeSingle } from "./commonDb";
+import { deleteDocId, queryMany, writeSingle } from "./commonDb";
 import { DocItem, UserReport } from "../types/types";
 import {db} from "../firebaseConfig";
 import { reportUserService } from "../service/reportUserService";
@@ -19,6 +19,10 @@ function containsReportedUserID(usersReported: DocItem<UserReport>[], mentorUID:
 
 async function sendMessageAsync(message: Message) {
   return await writeSingle(collectionName, message);
+}
+
+async function DeleteMessageAsync(messageId: string) {
+  return await deleteDocId(collectionName, messageId);
 }
 
 async function mentorReplyAsync(docId: string, message: Message, reply: MentorReply) {
@@ -101,6 +105,7 @@ const filterMessages = async (menteeUID: string, messages: DocItem<Message>[]) =
 
 export const messagingDb = {
   sendMessageAsync,
+  DeleteMessageAsync,
   mentorReplyAsync,
   getMessagesSentForMenteeProfileAsync,
   getAwaitingMessagesSentForMentorAsync,
