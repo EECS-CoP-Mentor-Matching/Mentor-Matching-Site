@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ContentContainer from "../ContentContainer";
-import { Box, Divider, List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, Divider, IconButton, List, ListItem, ListItemText, Paper } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { messagingService } from "../../../service/messagingService";
 import { useAppSelector } from "../../../redux/hooks";
 import { DocItem } from "../../../types/types";
@@ -61,8 +62,14 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
         <Box>
           <List>
             {messagesInbound.map((message, index) => (
-              <ViewMessage message={message} index={index} messagesLength={messagesInbound.length}/>
+              <span>
+                <IconButton style={{float:"right"}}>
+                  <DeleteIcon />
+                </IconButton>
+                <ViewMessage message={message} index={index} messagesLength={messagesInbound.length}/>
+              </span>
             ))}
+            
           </List>
         </Box>
       }
