@@ -87,6 +87,11 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   {
     fetchMessages = messagingService.getMessagesSentToMentor;
   }
+  // Just for debugging purposes!  We probably do not want Admins to see each others messages, but this will allow us to test the admin functions on our own accounts for now:
+  else if (userProfile.preferences.role == "Admin")
+  {
+    fetchMessages = messagingService.getMessagesSentToMentee;
+  }
 
   // Get messages addressed to this user
   useEffect(() => {
