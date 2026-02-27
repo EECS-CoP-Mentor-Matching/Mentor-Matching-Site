@@ -11,6 +11,8 @@ import authService from "../../service/authService";
 import Password from "./components/Password";
 import LoadingMessage from "../common/forms/modals/LoadingMessage";
 import {refreshNavigate} from "../common/auth/refreshNavigate";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
 
 function CreateAccount() {
   const [error, setError] = useState<ErrorState>({
@@ -85,7 +87,15 @@ function CreateAccount() {
     if (!userEmail.toLowerCase().endsWith("@oregonstate.edu"))
     {
       // Add the user to the pendingUsers database for now:
-      console.log("DEBUG: Non OSU email address entered.");
+      await setDoc(doc(db, "pendingUsers", uid), {
+        email: userEmail,
+        createdAt: serverTimestamp()
+      });
+
+      setError({
+        isError: true,
+        errorMessage: "Your account has been created and is pending approval by the Mentor Match staff."
+      });
 
       // Stop processing for these accounts here.  They will need to be approved manually before they can create a profile.
       return;
