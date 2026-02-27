@@ -7,6 +7,7 @@ import ActiveProfiles from "../common/profiles/ActiveProfiles";
 import MentorMatches from "./components/MentorMatches";
 import MatchRequests from "./components/MatchRequests";
 import MyMentees from "./components/MyMentees";
+import Messages from '../common/messaging/Messages';
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
@@ -15,7 +16,7 @@ export enum Pages {
   createProfile = "Create Profile",
   pendingRequests = "Pending Requests",
   myMentees = "My Mentees",
-  messages = "Messages"
+  mentorMessages = "Messages"
 }
 
 function MentorPortal() {
@@ -38,7 +39,7 @@ function MentorPortal() {
     Pages.activeProfiles.toString(),
     Pages.pendingRequests.toString(),
     Pages.myMentees.toString(),
-    Pages.messages.toString()
+    Pages.mentorMessages.toString()
   ];
 
   return (
@@ -90,9 +91,9 @@ function MentorPortal() {
               )}
 
               {/* Messages */}
-              {selectedPage === Pages.messages.toString() && (
+              {selectedPage === Pages.mentorMessages.toString() && (
                 <div className="mentor-portal">
-                  <MentorMatches />
+                  <Messages userProfile={userProfile} adminView={false} />
                 </div>
               )}
             </>

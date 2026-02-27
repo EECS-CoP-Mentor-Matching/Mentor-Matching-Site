@@ -153,7 +153,7 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/send-message" element={
-                <ProtectedRoute allowedRoles={[MatchRole.mentee, MatchRole.both]}>
+                <ProtectedRoute allowedRoles={[MatchRole.mentee, MatchRole.mentor, MatchRole.both]}>
                   <SendMessageForm />
                 </ProtectedRoute>
               } />
