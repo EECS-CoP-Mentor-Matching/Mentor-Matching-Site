@@ -1,42 +1,103 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useAppSelector } from '../../redux/hooks';
 import CreateMentorProfile from "./components/CreateMentorProfile";
+import "./MentorPortal.css"
 import PortalNavigationBar from "../common/navigation/PortalNavigationBar";
-import { Box } from "@mui/material";
-import ActiveProfiles from "./components/ActiveProfiles";
+import ActiveProfiles from "../common/profiles/ActiveProfiles";
 import MentorMatches from "./components/MentorMatches";
 import MatchRequests from "./components/MatchRequests";
 import MyMentees from "./components/MyMentees";
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 
-function MentorPortal() {
-  const navItems = ['Active Profiles', 'Create Profile', 'Pending Requests', 'My Mentees', 'Messages'];
-  const [selectedTab, setSelectedTab] = useState('Active Profiles');
+export enum Pages {
+  activeProfiles = "Active Profiles",
+  createProfile = "Create Profile",
+  pendingRequests = "Pending Requests",
+  myMentees = "My Mentees",
+  messages = "Messages"
+}
 
-  const renderTabContent = () => {
-    switch (selectedTab) {
-      case 'Create Profile':
-        return <CreateMentorProfile />;
-      case 'Active Profiles':
-        return <ActiveProfiles />;
-      case 'Pending Requests':
-        return <MatchRequests />;
-      case 'My Mentees':
-        return <MyMentees />;
-      case 'Messages':
-        return <MentorMatches />;
-      default:
-        return <ActiveProfiles />;
-    }
+function MentorPortal() {
+  const [selectedPage, setSelectedPage] = useState<string>(Pages.activeProfiles.toString());
+  const [showCreateProfile, setShowCreateProfile] = useState(false);
+
+  const userProfile = useAppSelector((state: any) => state.userProfile.userProfile);
+
+  const handleNavChange = (page: string) => {
+    setShowCreateProfile(false);
+    setSelectedPage(page);
   };
+
+  const backToActive = () => {
+    setShowCreateProfile(false);
+    setSelectedPage(Pages.activeProfiles.toString());
+  };
+
+  const navItems = [
+    Pages.activeProfiles.toString(),
+    Pages.pendingRequests.toString(),
+    Pages.myMentees.toString(),
+    Pages.messages.toString()
+  ];
 
   return (
     <>
       <AuthenticatedView>
-        <Box>
-          <PortalNavigationBar navItems={navItems} selected={selectedTab} onNavChange={setSelectedTab} />
-          {renderTabContent()}
-        </Box>
+        <div className="portal-container">
+          {!userProfile ? (
+            <div className="loading-container" style={{ padding: '2rem', textAlign: 'center' }}>
+              <h3>Loading your profile...</h3>
+            </div>
+          ) : (
+            <>
+              <PortalNavigationBar
+                onNavChange={handleNavChange}
+                selected={selectedPage}
+                navItems={navItems}
+              />
+
+              {/* Active Profiles */}
+              {selectedPage === Pages.activeProfiles.toString() && !showCreateProfile && (
+                <div className="mentor-portal">
+                  <ActiveProfiles
+                    userType="mentor"
+                    backToPage={backToActive}
+                    onCreateProfile={() => setShowCreateProfile(true)}
+                  />
+                </div>
+              )}
+
+              {/* Create Profile - shown within Active Profiles tab when button clicked */}
+              {selectedPage === Pages.activeProfiles.toString() && showCreateProfile && (
+                <div className="mentor-portal">
+                  <CreateMentorProfile />
+                </div>
+              )}
+
+              {/* Pending Requests */}
+              {selectedPage === Pages.pendingRequests.toString() && (
+                <div className="mentor-portal">
+                  <MatchRequests />
+                </div>
+              )}
+
+              {/* My Mentees */}
+              {selectedPage === Pages.myMentees.toString() && (
+                <div className="mentor-portal">
+                  <MyMentees />
+                </div>
+              )}
+
+              {/* Messages */}
+              {selectedPage === Pages.messages.toString() && (
+                <div className="mentor-portal">
+                  <MentorMatches />
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </AuthenticatedView>
       <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
     </>

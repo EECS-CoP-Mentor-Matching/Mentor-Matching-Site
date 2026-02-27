@@ -3,7 +3,7 @@ import { useAppSelector } from '../../redux/hooks';
 import CreateMenteeProfile from './components/createMenteeProfile/CreateMenteeProfile';
 import "./MenteePortal.css"
 import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
-import ActiveMenteeProfiles from './components/activeMenteeProfiles/ActiveMenteeProfiles';
+import ActiveProfiles from '../common/profiles/ActiveProfiles';
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import Messages from '../common/messaging/Messages';
@@ -61,7 +61,8 @@ function MenteePortal() {
               {/* Active Profiles */}
               {selectedPage === Pages.activeProfiles.toString() && !showCreateProfile && (
                 <div className="mentee-portal">
-                  <ActiveMenteeProfiles
+                  <ActiveProfiles
+                    userType="mentee"
                     backToPage={backToActive}
                     onCreateProfile={() => setShowCreateProfile(true)}
                   />
