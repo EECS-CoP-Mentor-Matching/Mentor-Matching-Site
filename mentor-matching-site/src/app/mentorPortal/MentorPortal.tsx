@@ -71,7 +71,7 @@ function MentorPortal() {
               {/* Create Profile - shown within Active Profiles tab when button clicked */}
               {selectedPage === Pages.activeProfiles.toString() && showCreateProfile && (
                 <div className="mentor-portal">
-                  <CreateMentorProfile />
+                  <CreateMentorProfile backToPage={backToActive} />
                 </div>
               )}
 
