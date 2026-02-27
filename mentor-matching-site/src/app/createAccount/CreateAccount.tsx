@@ -78,7 +78,11 @@ function CreateAccount() {
   }
 
   const validateValue = (currEmailValue: string): boolean => {
-    const regex = new RegExp("^[a-zA-Z0-9._-]+@oregonstate\\.edu$");
+    // OSU email address only:
+    //const regex = new RegExp("^[a-zA-Z0-9._-]+@oregonstate\\.edu$");
+
+    // General email address:
+    const regex = new RegExp("^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[a-zA-Z0-9._-]+");
     return regex.test(currEmailValue);
   }
 
