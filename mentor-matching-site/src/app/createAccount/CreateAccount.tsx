@@ -31,14 +31,14 @@ function CreateAccount() {
     updateEmail(email)
   }
 
-  async function createNewUser() : Promise<boolean> {
+  async function createNewUser() : Promise<any | null> {
     setCreateAccountLoading(true);
 
     try {
       const user = await authService.createUser(email, password);
       if (user) {
         setCreateAccountLoading(false);
-        return true;
+        return user; // Returns the user object if successful
       }
     } catch (error: any) {  // Use 'any' to handle different error types
       if (error.code === 'auth/email-already-in-use') {
@@ -54,7 +54,7 @@ function CreateAccount() {
     }
 
     setCreateAccountLoading(false);
-    return false;
+    return null;
   }
 
   const signup = async () => {
@@ -70,11 +70,29 @@ function CreateAccount() {
       return;
     }
 
-    const userCreated = await createNewUser()
+    const newUser = await createNewUser()
 
-    if (userCreated) {
-      refreshNavigate('/new-profile');
+    // Just to be safe, check for a null user, which means that the create user process failed.  Return and stop processing here:
+    if (!newUser) return;
+
+    // Extract the user ID and email address if provided:
+    const uid = newUser.uid;
+    const userEmail = newUser.email ?? "";
+
+    console.log("Receivied email: " + userEmail);
+
+    // Handle non-OSU email addresses-- they will need to be approved before they can make a profile.
+    if (!userEmail.toLowerCase().endsWith("@oregonstate.edu"))
+    {
+      // Add the user to the pendingUsers database for now:
+      console.log("DEBUG: Non OSU email address entered.");
+
+      // Stop processing for these accounts here.  They will need to be approved manually before they can create a profile.
+      return;
     }
+
+    // Here the user has an OSU email address.  Move them to the new profile screen:
+    refreshNavigate('/new-profile');
   }
 
   const validateValue = (currEmailValue: string): boolean => {
