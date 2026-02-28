@@ -32,6 +32,7 @@ import { Box, CircularProgress, Typography, Fade } from '@mui/material';
 import { MatchRole } from '../types/matchProfile'; // Import your roles
 import TestMatchDbComponent from './common/forms/TestMatchDbComponent'; // Test component
 import TestMatchingComponent from './common/forms/TestMatchingComponent'; // Matching test
+import ApprovePendingUsers from './adminPortal/components/manageUsers/ApprovePendingUsers';
 
 // --- PROTECTED ROUTE COMPONENT ---
 interface ProtectedRouteProps {
@@ -135,6 +136,12 @@ function App() {
                   <ManageUserProfile />
                 </ProtectedRoute>
               } />
+              <Route path="/admin-portal/pending-users" element={
+                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                  <ApprovePendingUsers />
+                </ProtectedRoute>
+              }
+              />
               <Route path="/test-db" element={
                 <ProtectedRoute allowedRoles={[MatchRole.admin]}>
                   <TestMatchDbComponent />
