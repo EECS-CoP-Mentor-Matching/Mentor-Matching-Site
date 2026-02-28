@@ -48,6 +48,64 @@ function TopNav() {
     border: '3px solid white' 
   };
 
+  // ============================================
+  // DYNAMIC PROFILE RENDERING
+  // ============================================
+  
+  // Convert camelCase to Title Case with spaces
+  const formatFieldName = (key: string): string => {
+    return key
+      .replace(/([A-Z])/g, ' $1') // Add space before capitals
+      .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
+      .trim();
+  };
+
+  // Format values for display
+  const formatValue = (value: any): string => {
+    if (value === null || value === undefined || value === '') return '';
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    if (typeof value === 'object') return ''; // Skip nested objects (will be rendered separately)
+    return String(value);
+  };
+
+  // Recursively render profile sections
+  const renderProfileSection = (sectionKey: string, sectionData: any) => {
+    // Skip these fields
+    const skipFields = ['UID', 'matchHistory', 'profilePictureUrl', 'imageUrl', 'accountSettings', 'preferences'];
+    if (skipFields.includes(sectionKey)) return null;
+    
+    // If it's not an object, skip (we only want nested sections)
+    if (typeof sectionData !== 'object' || sectionData === null) return null;
+
+    const fields: { key: string; value: any }[] = [];
+    
+    // Collect all non-object fields in this section
+    Object.entries(sectionData).forEach(([key, value]) => {
+      if (typeof value !== 'object' || value === null) {
+        const formattedValue = formatValue(value);
+        if (formattedValue) { // Only include if there's a value
+          fields.push({ key, value: formattedValue });
+        }
+      }
+    });
+
+    // If no fields to show, skip this section
+    if (fields.length === 0) return null;
+
+    return (
+      <Box key={sectionKey}>
+        <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>
+          {formatFieldName(sectionKey).toUpperCase()}
+        </Typography>
+        {fields.map(({ key, value }) => (
+          <Typography key={key} variant="body2">
+            <strong>{formatFieldName(key)}:</strong> {value}
+          </Typography>
+        ))}
+      </Box>
+    );
+  };
+
   return (
     <nav className="top-nav">
       {/* LEFT: Logo */}
@@ -89,7 +147,7 @@ function TopNav() {
                 </IconButton>
               </Tooltip>
 
-              {/* PROFILE POPUP MENU */}
+              {/* PROFILE POPUP MENU - FULLY DYNAMIC */}
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -129,37 +187,16 @@ function TopNav() {
                   Account Details
                 </Typography>
 
+                {/* FULLY DYNAMIC RENDERING - Shows whatever fields exist */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>PERSONAL</Typography>
-                    <Typography variant="body2"><strong>Full Name:</strong> {userProfile?.personal?.firstName} {userProfile?.personal?.middleName} {userProfile?.personal?.lastName}</Typography>
-                    <Typography variant="body2"><strong>DOB:</strong> {userProfile?.personal?.dob?.month}/{userProfile?.personal?.dob?.day}/{userProfile?.personal?.dob?.year}</Typography>
-                    <Typography variant="body2"><strong>Pronouns:</strong> {userProfile?.contact?.pronouns}</Typography>
-                  </Box>
-
-                  <Box>
-                    <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>CONTACT</Typography>
-                    <Typography variant="body2"><strong>Email:</strong> {userProfile?.contact?.email || "No email set"}</Typography>
-                    <Typography variant="body2"><strong>Time Zone:</strong> {userProfile?.contact?.timeZone}</Typography>
-                  </Box>
-
-                  <Box>
-                    <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>DEMOGRAPHICS</Typography>
-                    <Typography variant="body2"><strong>LGBTQ+:</strong> {userProfile?.demographics?.lgbtqPlusCommunity ? "Yes" : "No"}</Typography>
-                    <Typography variant="body2"><strong>Racial Identity:</strong> {userProfile?.demographics?.racialIdentity}</Typography>
-                  </Box>
-
-                  <Box>
-                    <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>EDUCATION</Typography>
-                    <Typography variant="body2"><strong>Level:</strong> {userProfile?.education?.highestLevelOfEducation}</Typography>
-                    <Typography variant="body2"><strong>Program:</strong> {userProfile?.education?.degreeProgram || "N/A"}</Typography>
-                    <Typography variant="body2"><strong>Active Student:</strong> {userProfile?.education?.studentStatus ? "Yes" : "No"}</Typography>
-                  </Box>
+                  {userProfile && Object.entries(userProfile).map(([key, value]) => 
+                    renderProfileSection(key, value)
+                  )}
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
 
-                {/* Footer Link Style */}
+                {/* Footer Link */}
                 <Box 
                   onClick={goToUpdate} 
                   sx={{ 
