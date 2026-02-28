@@ -29,7 +29,7 @@ import NewUserProfile from "./createAccount/components/newUserProfile/NewUserPro
 import { UserProfile } from "../types/userProfile";
 import SendMessageForm from './common/messaging/SendMessageForm';
 import { Box, CircularProgress, Typography, Fade } from '@mui/material';
-import { MatchRole } from '../types/matchProfile'; // Import your roles
+import { AdminMatchRole, MatchRole } from '../types/matchProfile'; // Import your roles
 import TestMatchDbComponent from './common/forms/TestMatchDbComponent'; // Test component
 import TestMatchingComponent from './common/forms/TestMatchingComponent'; // Matching test
 import ApprovePendingUsers from './adminPortal/components/manageUsers/ApprovePendingUsers';
@@ -37,7 +37,7 @@ import ApprovePendingUsers from './adminPortal/components/manageUsers/ApprovePen
 // --- PROTECTED ROUTE COMPONENT ---
 interface ProtectedRouteProps {
   children: JSX.Element;
-  allowedRoles: MatchRole[];
+  allowedRoles: AdminMatchRole[];
 }
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
@@ -50,14 +50,14 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   }
 
   // Check if current role is in the list of allowed roles for this route
-  const isAuthorized = allowedRoles.includes(userRole as MatchRole);
+  const isAuthorized = allowedRoles.includes(userRole as AdminMatchRole);
 
   if (!isAuthorized) {
     // Redirect logic if they try to access a portal they don't belong in
-    if (userRole === MatchRole.admin) return <Navigate to="/admin-portal" replace />;
-    if (userRole === MatchRole.mentor) return <Navigate to="/mentor-portal" replace />;
-    if (userRole === MatchRole.mentee) return <Navigate to="/mentee-portal" replace />;
-    if (userRole === MatchRole.both) return <Navigate to="/mentee-portal" replace />;
+    if (userRole === AdminMatchRole.admin) return <Navigate to="/admin-portal" replace />;
+    if (userRole === AdminMatchRole.mentor) return <Navigate to="/mentor-portal" replace />;
+    if (userRole === AdminMatchRole.mentee) return <Navigate to="/mentee-portal" replace />;
+    if (userRole === AdminMatchRole.both) return <Navigate to="/mentee-portal" replace />;
     return <Navigate to="/" replace />;
   }
 
@@ -127,47 +127,47 @@ function App() {
 
               {/* Protected Admin Routes */}
               <Route path="/admin-portal" element={
-                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                <ProtectedRoute allowedRoles={[AdminMatchRole.admin]}>
                   <AdminPortal />
                 </ProtectedRoute>
               } />
               <Route path="/admin-portal/edit-user/:userID" element={
-                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                <ProtectedRoute allowedRoles={[AdminMatchRole.admin]}>
                   <ManageUserProfile />
                 </ProtectedRoute>
               } />
               <Route path="/admin-portal/pending-users" element={
-                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                <ProtectedRoute allowedRoles={[AdminMatchRole.admin]}>
                   <ApprovePendingUsers />
                 </ProtectedRoute>
               }
               />
               <Route path="/test-db" element={
-                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                <ProtectedRoute allowedRoles={[AdminMatchRole.admin]}>
                   <TestMatchDbComponent />
                 </ProtectedRoute>
               } />
               <Route path="/test-matching" element={
-                <ProtectedRoute allowedRoles={[MatchRole.admin]}>
+                <ProtectedRoute allowedRoles={[AdminMatchRole.admin]}>
                   <TestMatchingComponent />
                 </ProtectedRoute>
               } />
 
               {/* Protected Mentee Routes (Includes 'Both') */}
               <Route path="/mentee-portal" element={
-                <ProtectedRoute allowedRoles={[MatchRole.mentee, MatchRole.both]}>
+                <ProtectedRoute allowedRoles={[AdminMatchRole.mentee, AdminMatchRole.both]}>
                   <MenteePortal />
                 </ProtectedRoute>
               } />
               <Route path="/send-message" element={
-                <ProtectedRoute allowedRoles={[MatchRole.mentee, MatchRole.mentor, MatchRole.both]}>
+                <ProtectedRoute allowedRoles={[AdminMatchRole.mentee, AdminMatchRole.mentor, AdminMatchRole.both]}>
                   <SendMessageForm />
                 </ProtectedRoute>
               } />
 
               {/* Protected Mentor Routes (Includes 'Both') */}
               <Route path="/mentor-portal" element={
-                <ProtectedRoute allowedRoles={[MatchRole.mentor, MatchRole.both]}>
+                <ProtectedRoute allowedRoles={[AdminMatchRole.mentor, AdminMatchRole.both]}>
                   <MentorPortal />
                 </ProtectedRoute>
               } />

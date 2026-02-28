@@ -6,7 +6,7 @@ import { osuIcon } from "../../icons/icons";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"; 
 import { updateProfile } from "../../redux/reducers/userProfileReducer"; 
 import { initUserProfile } from "../../types/userProfile"; 
-import { MatchRole } from "../../types/matchProfile";
+import { AdminMatchRole } from "../../types/matchProfile";
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -26,10 +26,10 @@ function TopNav() {
   const isLoggedIn = !!(userProfile?.UID); 
   const userRole = userProfile?.preferences?.role;
 
-  const isAdmin = userRole === MatchRole.admin;
-  const isMentor = userRole === MatchRole.mentor;
-  const isMentee = userRole === MatchRole.mentee;
-  const isBoth = userRole === MatchRole.both;
+  const isAdmin = userRole === AdminMatchRole.admin;
+  const isMentor = userRole === AdminMatchRole.mentor;
+  const isMentee = userRole === AdminMatchRole.mentee;
+  const isBoth = userRole === AdminMatchRole.both;
 
   async function logout() {
     try {
