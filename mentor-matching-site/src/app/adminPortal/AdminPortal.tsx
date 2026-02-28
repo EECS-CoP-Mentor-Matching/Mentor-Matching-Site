@@ -6,7 +6,8 @@ import navUtilities from '../common/navigation/navUtilities';
 import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/FeedbackAdminPortal';
 import ManageUsers from '../adminPortal/components/manageUsers/ManageUsers';
 import Settings from './components/settings/Settings';
-import TestingPanel from './components/testing/TestingPanel'; // NEW
+import TestingPanel from './components/testing/TestingPanel';
+import SendEmailForm from './components/sendEmail/SendEmailForm';
 
 import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
 import { getSettings } from '../../service/settingsService';
@@ -16,7 +17,8 @@ export enum Pages {
   viewReports = "View Reports",
   settings = "Settings",
   userFeedback = "User Feedback",
-  testing = "Testing" // NEW
+  testing = "Testing",
+  sendEmail = "Send Email"
 }
 
 interface AdminPortalProps {}
@@ -69,7 +71,8 @@ function AdminPortal(props: AdminPortalProps) {
       )}
       {/* {page === Pages.viewReports && <ViewReports />} */}
       {page === Pages.settings && <Settings />}
-      {page === Pages.testing && <TestingPanel />} {/* NEW */}
+      {page === Pages.testing && <TestingPanel />}
+      {page === Pages.sendEmail && <SendEmailForm />}
        
     </FeedbackSettingsContext.Provider>
     

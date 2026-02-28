@@ -28,7 +28,7 @@ function ManageUsers() {
         title="Manage Users"
         subtitle="A table of active users enrolled in Mentor Match"
     >
- 
+    <Link to="/admin-portal/pending-users">View Pending User Accounts</Link>
     <Box sx={{ minWidth: '500px', paddingInline: "20%", paddingBlockStart: 2, margin: 'auto' }}>
         <TableContainer component={Paper}>
           <Table size="small">

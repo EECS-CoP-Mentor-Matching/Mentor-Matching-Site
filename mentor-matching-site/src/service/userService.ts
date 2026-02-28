@@ -36,6 +36,14 @@ async function getAllUserProfiles(): Promise<UserProfile[]> {
   return await userDb.getAllUserProfilesAsync();
 }
 
+async function getAllPendingUsers() {
+  return await userDb.getAllPendingUsersAsync();
+}
+
+async function deletePendingUser(uid: string) {
+  return await userDb.deletePendingUserAsync(uid);
+}
+
 const userService = {
   updateProfileImageUrl,
   createNewUser,
@@ -43,7 +51,9 @@ const userService = {
   updateUserProfile,
   userExists,
   deleteUserProfile,
-  getAllUserProfiles
+  getAllUserProfiles,
+  getAllPendingUsers,
+  deletePendingUser
 }
 
 export default userService;
