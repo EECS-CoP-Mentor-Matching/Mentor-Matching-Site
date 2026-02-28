@@ -7,7 +7,7 @@ const approvePendingUser = httpsCallable(getFunctions(), "approvePendingUser");
 
 function ApprovePendingUsers()
 {
-    const [pendingUserList, setPendingUserList] = useState<any>();
+    const [pendingUserList, setPendingUserList] = useState<any[]>([]);
 
     const fetchPendingUsers = async () => {
         try {
@@ -22,11 +22,18 @@ function ApprovePendingUsers()
     useEffect(() => {
         fetchPendingUsers();
     }, []);
-    
+
+    console.log(pendingUserList);
+
     return(
         <>
+
             DEBUG!  A list of pending users with the option to approve them will be coming soon!
-            {pendingUserList && console.log(pendingUserList)}
+            {pendingUserList && pendingUserList.map((pendingUser: any) => 
+                <p>{pendingUser.uid}: {pendingUser.details.email}</p>
+                
+                )
+            };
         </>
     );
 }
