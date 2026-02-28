@@ -9,15 +9,18 @@ const adminFunctions = getFunctions();
 const approvePendingUser = httpsCallable(getFunctions(), "approvePendingUser");
 
 
-// DEBUG: This gives the user "admin" privilege in Firebase, which is not done by default.  This is here for debugging purposes, but should be moved later:
- const selector = useAppSelector;
- const currentUserId = selector(state => state.userProfile.userProfile.UID);
- const setAdminPrivileges = httpsCallable(getFunctions(), "setAdminPrivileges");
 
- setAdminPrivileges({uid: currentUserId});
 
 function ApprovePendingUsers()
 {
+
+    // DEBUG: This gives the user "admin" privilege in Firebase, which is not done by default.  This is here for debugging purposes, but should be moved later:
+    const currentUserId = useAppSelector(state => state.userProfile.userProfile.UID);
+    const setAdminPrivileges = httpsCallable(getFunctions(), "setAdminPrivileges");
+
+    console.log("Currently logged in as:", currentUserId);
+
+
     const [pendingUserList, setPendingUserList] = useState<any[]>([]);
 
     const fetchPendingUsers = async () => {
@@ -31,15 +34,19 @@ function ApprovePendingUsers()
     };
 
     useEffect(() => {
-        fetchPendingUsers();
-    }, []);
+        async function adminSetup() { // Fetches a list of pending users and also sets the account as admin:
+            await fetchPendingUsers();
+            await setAdminPrivileges({uid: currentUserId});
+        }
+        adminSetup();
+    }, [currentUserId]);
 
     console.log(pendingUserList);
 
     async function handleApproveUser(uid: string) {
         // Function to handle the click for the approe button.  Takes the user's ID and marks them as approved in Firebase.
         try {
-            const approveResult = await approvePendingUser(uid);
+            const approveResult = await approvePendingUser({ uid });
             // Log the results for debugging purposes:
             console.log("Approval result: ", approveResult.data);
             // approveResult also deletes the user from the pendingUsers table.  Let's refresh the entries we have on the screen:
