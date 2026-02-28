@@ -41,7 +41,7 @@ function FindMatches() {
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
   const [minMatchPercentage, setMinMatchPercentage] = useState<number>(10); // Lowered from 30 to show more matches
   const [refreshKey, setRefreshKey] = useState(0); // Add refresh trigger
-  const [connectedMatches, setConnectedMatches] = useState<Set<string>>(new Set()); // Track connected mentor IDs
+  const [connectedMatches, setConnectedMatches] = useState<Set<string>>(new Set()); // Track connected mentor PROFILE IDs
   const [matchStatuses, setMatchStatuses] = useState<Map<string, 'pending' | 'accepted' | 'declined'>>(new Map());
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -70,7 +70,7 @@ function FindMatches() {
         const connectedMentorIds = new Set(
           existingMatches
             .filter(m => m.status === 'pending' || m.status === 'accepted')
-            .map(m => m.mentorId)
+            .map(m => m.mentorProfileId)
         );
         setConnectedMatches(connectedMentorIds);
 
@@ -79,7 +79,7 @@ function FindMatches() {
         const statusMap = new Map<string, 'pending' | 'accepted' | 'declined'>();
         existingMatches.forEach(m => {
           if (m.status === 'pending' || m.status === 'accepted') {
-            statusMap.set(m.mentorId, m.status as 'pending' | 'accepted' | 'declined');
+            statusMap.set(m.mentorProfileId, m.status as 'pending' | 'accepted' | 'declined');
           }
         });
         setMatchStatuses(statusMap);
@@ -134,7 +134,14 @@ function FindMatches() {
         );
         
         const mentorSnapshot = await getDocs(mentorProfilesQuery);
-        const mentorProfiles: MatchProfile[] = [];
+        
+        // Create array of profiles WITH their document IDs
+        interface MentorProfileWithId {
+          docId: string;
+          profile: MatchProfile;
+        }
+        
+        const mentorProfilesWithIds: MentorProfileWithId[] = [];
         
         mentorSnapshot.forEach(doc => {
           const data = doc.data() as MatchProfile;
@@ -142,15 +149,21 @@ function FindMatches() {
           if (data.UID === userProfile?.UID) return;
           // Only include profiles with new matching fields
           if (data.careerFields && data.technicalInterests && data.weights) {
-            mentorProfiles.push(data);
+            mentorProfilesWithIds.push({
+              docId: doc.id,  // ← The actual Firestore document ID
+              profile: data
+            });
           }
         });
 
-        if (mentorProfiles.length === 0) {
+        if (mentorProfilesWithIds.length === 0) {
           setError('No mentor profiles available yet. Check back soon!');
           setLoading(false);
           return;
         }
+
+        // Extract just the profiles for matching algorithm
+        const mentorProfiles = mentorProfilesWithIds.map(m => m.profile);
 
         // Calculate matches
         const calculatedMatches = await matchingService.findMentorMatches(
@@ -161,10 +174,11 @@ function FindMatches() {
 
         console.log('📊 Calculated matches:', calculatedMatches.map(m => `${m.matchPercentage}%`));
 
-        // Add profile IDs (we'll need to fetch these properly)
-        const matchesWithIds = calculatedMatches.map(match => ({
+        // Map matches back to their correct profileIds
+        // Since both arrays are in the same order, we can match by index
+        const matchesWithIds = calculatedMatches.map((match, index) => ({
           ...match,
-          profileId: match.userId // Using userId as profileId for now
+          profileId: mentorProfilesWithIds[index].docId  // ← Use the actual document ID!
         }));
 
         // Force React to re-render by clearing first
@@ -172,6 +186,7 @@ function FindMatches() {
         setTimeout(() => {
           setMatches(matchesWithIds);
           console.log('✅ Matches state updated with', matchesWithIds.length, 'matches');
+          console.log('Profile IDs:', matchesWithIds.map(m => m.profileId));
         }, 0);
       } catch (err: any) {
         console.error('Error finding matches:', err);
@@ -227,7 +242,7 @@ function FindMatches() {
       });
       
       // Track this match as connected
-      setConnectedMatches(prev => new Set(prev).add(match.userId));
+      setConnectedMatches(prev => new Set(prev).add(match.profileId));
       
       setSuccessMessage('Match request sent! The mentor will be notified.');
       setShowSuccess(true);
@@ -366,8 +381,8 @@ function FindMatches() {
                 match={match}
                 onConnect={() => handleConnect(match)}
                 onViewProfile={() => handleViewProfile(match)}
-                isConnected={connectedMatches.has(match.userId)}
-                matchStatus={matchStatuses.get(match.userId) || null}
+                isConnected={connectedMatches.has(match.profileId)}
+                matchStatus={matchStatuses.get(match.profileId) || null}
               />
             ))}
           </>
