@@ -132,6 +132,12 @@ async function getAllUserProfilesAsync(): Promise<UserProfile[]> {
   return results.results.map((doc) => doc.data as UserProfile);
 }
 
+// Get a list of all pending users in our database:
+async function getAllPendingUsersAsync() {
+  const results = await queryMany("pendingUsers");
+  return results;
+}
+
 const userDb = {
   updateUserProfileImage,
   createNewUserAsync,
@@ -139,7 +145,8 @@ const userDb = {
   getUserProfileAsync,
   updateUserProfileAsync,
   deleteUserProfileAsync,
-  getAllUserProfilesAsync
+  getAllUserProfilesAsync,
+  getAllPendingUsersAsync
 }
 
 export default userDb;
