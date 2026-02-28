@@ -61,7 +61,7 @@ function ApprovePendingUsers()
     return(
         <>
 
-            DEBUG!  A list of pending users with the option to approve them will be coming soon!
+            <h3>DEBUG! On loading, this page makes a call that gives your account Firebase permissions.  Please log out after loading it for the first time and come back for the new permissions to take effect.</h3>
             {pendingUserList && pendingUserList.map((pendingUser: any) => 
                     <p>{pendingUser.uid}: {pendingUser.details.email}</p>
                 )
