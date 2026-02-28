@@ -37,3 +37,12 @@ export const approvePendingUser = onCall(async (request) => {
 
   return { success: true };
 });
+
+// Function for granting a user Firebase admin privileges.
+// TODO: we will want to set this up as part of making a user an admin.
+
+export const setAdminPrivileges = onCall(async (request) => {
+  const uid = request.data.uid;
+  await adminFunctions.auth().setCustomUserClaims(uid, { admin: true });
+  return { success: true };
+});

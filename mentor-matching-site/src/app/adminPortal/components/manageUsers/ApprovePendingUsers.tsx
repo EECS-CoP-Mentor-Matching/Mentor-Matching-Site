@@ -3,9 +3,18 @@ import { useEffect, useState } from "react";
 import userService from "../../../../service/userService";
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { Timestamp } from "firebase/firestore";
+import { useAppSelector } from "../../../../redux/hooks";
 
 const adminFunctions = getFunctions();
 const approvePendingUser = httpsCallable(getFunctions(), "approvePendingUser");
+
+
+// DEBUG: This gives the user "admin" privilege in Firebase, which is not done by default.  This is here for debugging purposes, but should be moved later:
+ const selector = useAppSelector;
+ const currentUserId = selector(state => state.userProfile.userProfile.UID);
+ const setAdminPrivileges = httpsCallable(getFunctions(), "setAdminPrivileges");
+
+ setAdminPrivileges({uid: currentUserId});
 
 function ApprovePendingUsers()
 {
@@ -33,12 +42,14 @@ function ApprovePendingUsers()
             const approveResult = await approvePendingUser(uid);
             // Log the results for debugging purposes:
             console.log("Approval result: ", approveResult.data);
+            // approveResult also deletes the user from the pendingUsers table.  Let's refresh the entries we have on the screen:
+            await fetchPendingUsers();
         }
         catch (error) {
             console.log("Error approving user: ", error);
         }
-
     }
+
 
     return(
         <>
@@ -65,7 +76,7 @@ function ApprovePendingUsers()
                         <TableRow key={pendingUser.uid}>
                             <TableCell>{pendingUser.details.email}</TableCell>
                             <TableCell>{Timestamp.fromMillis(pendingUser.details.createdAt.seconds*1000).toDate().toDateString()}</TableCell>
-                            <TableCell><Button>Approve</Button></TableCell>
+                            <TableCell><Button onClick={() => handleApproveUser(pendingUser.uid)}>Approve</Button></TableCell>
                         </TableRow>
                     ))}
                     </TableBody>

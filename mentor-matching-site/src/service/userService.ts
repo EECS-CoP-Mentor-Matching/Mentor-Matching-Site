@@ -40,6 +40,10 @@ async function getAllPendingUsers() {
   return await userDb.getAllPendingUsersAsync();
 }
 
+async function deletePendingUser(uid: string) {
+  return await userDb.deletePendingUserAsync(uid);
+}
+
 const userService = {
   updateProfileImageUrl,
   createNewUser,
@@ -48,7 +52,8 @@ const userService = {
   userExists,
   deleteUserProfile,
   getAllUserProfiles,
-  getAllPendingUsers
+  getAllPendingUsers,
+  deletePendingUser
 }
 
 export default userService;

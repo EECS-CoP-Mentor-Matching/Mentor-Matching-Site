@@ -132,7 +132,7 @@ async function getAllUserProfilesAsync(): Promise<UserProfile[]> {
   return results.results.map((doc) => doc.data as UserProfile);
 }
 
-// Get a list of all pending users in our database:
+// Get a list of all pending users in our database. Please note, this is a separate table from where regular user accounts are.
 async function getAllPendingUsersAsync() {
   const results = await queryMany("pendingUsers");
   return results.results.map((doc) => ({
@@ -140,6 +140,13 @@ async function getAllPendingUsersAsync() {
     details: doc.data,
   }));
 }
+
+// Remove a user from the pendingUsers table.  Does not affect the regular userProfile table.
+async function deletePendingUserAsync(uid: string) {
+  const userDocRef = doc(db, "pendingUsers", uid);
+  await deleteDoc(userDocRef);
+}
+
 
 const userDb = {
   updateUserProfileImage,
@@ -149,7 +156,8 @@ const userDb = {
   updateUserProfileAsync,
   deleteUserProfileAsync,
   getAllUserProfilesAsync,
-  getAllPendingUsersAsync
+  getAllPendingUsersAsync,
+  deletePendingUserAsync
 }
 
 export default userDb;
