@@ -1,10 +1,10 @@
 /**
- * FIND MATCHES COMPONENT
+ * FIND MATCHES COMPONENT - Using Enhanced MatchCard
  * 
  * Shows potential mentor matches for a mentee based on their profile
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   Box, 
   Typography, 
@@ -17,9 +17,9 @@ import {
   Slider,
   Paper,
   Button,
-  IconButton,
   Tooltip,
-  Snackbar
+  Snackbar,
+  Grid
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -28,44 +28,46 @@ import { useAppSelector } from '../../../../redux/hooks';
 import matchingService from '../../../../service/matchingService';
 import menteeService from '../../../../service/menteeService';
 import matchDbService from '../../../../service/matchDbService';
-import MatchCard from '../../../common/forms/MatchCard';
+import userService from '../../../../service/userService';
+import MatchCard from '../../../common/forms/MatchCard'; // Enhanced version
 import { MatchProfile, CalculatedMatch } from '../../../../types/matchProfile';
+import { UserProfile } from '../../../../types/userProfile';
 import { DocItem } from '../../../../types/types';
 import ContentContainer from '../../../common/ContentContainer';
+
+interface MatchWithUserProfile extends CalculatedMatch {
+  userProfile?: UserProfile;
+}
 
 function FindMatches() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
-  const [matches, setMatches] = useState<CalculatedMatch[]>([]);
+  const [matches, setMatches] = useState<MatchWithUserProfile[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState<string>('');
   const [menteeProfiles, setMenteeProfiles] = useState<DocItem<MatchProfile>[]>([]);
-  const [minMatchPercentage, setMinMatchPercentage] = useState<number>(10); // Lowered from 30 to show more matches
-  const [refreshKey, setRefreshKey] = useState(0); // Add refresh trigger
-  const [connectedMatches, setConnectedMatches] = useState<Set<string>>(new Set()); // Track connected mentor PROFILE IDs
+  const [minMatchPercentage, setMinMatchPercentage] = useState<number>(10);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [connectedMatches, setConnectedMatches] = useState<Set<string>>(new Set());
   const [matchStatuses, setMatchStatuses] = useState<Map<string, 'pending' | 'accepted' | 'declined'>>(new Map());
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
   const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
-  // Load mentee's profiles (refreshes when refreshKey changes)
-  useEffect(() => {
-    const loadProfiles = async () => {
-      if (!userProfile?.UID) return;
-      
-      console.log('🔄 LOADING PROFILES FROM FIRESTORE (refreshKey:', refreshKey, ')');
-      setLoading(true);
-      try {
-        const profiles = await menteeService.searchMenteeProfilesByUser(userProfile.UID);
-        console.log('✅ Loaded profiles:', profiles.length, 'profiles');
-        console.log('Profile weights:', profiles[0]?.data.weights);
+  // Load mentee's profiles
+  const loadProfiles = useCallback(async () => {
+    if (!userProfile?.UID) return;
+    
+    setLoading(true);
+    try {
+      const profiles = await menteeService.searchMenteeProfilesByUser(userProfile.UID);
         setMenteeProfiles(profiles);
         
         if (profiles.length > 0) {
           setSelectedProfileId(profiles[0].docId);
         }
 
-        // Load existing matches to restore "Request Sent" state
+        // Load existing matches
         const existingMatches = await matchDbService.getMatchesForMentee(userProfile.UID);
         const connectedMentorIds = new Set(
           existingMatches
@@ -74,8 +76,6 @@ function FindMatches() {
         );
         setConnectedMatches(connectedMentorIds);
 
-        // Track individual statuses per mentor - only show active statuses
-        // Ended/declined matches should allow reconnection so we skip them
         const statusMap = new Map<string, 'pending' | 'accepted' | 'declined'>();
         existingMatches.forEach(m => {
           if (m.status === 'pending' || m.status === 'accepted') {
@@ -90,21 +90,21 @@ function FindMatches() {
       } finally {
         setLoading(false);
       }
-    };
+    }, [userProfile?.UID]); // Remove refreshKey from here
 
-    loadProfiles();
-  }, [userProfile, refreshKey]);
+    useEffect(() => {
+      loadProfiles();
+    }, [loadProfiles, refreshKey]); // Add refreshKey here instead
 
   // Load matches when profile is selected
   useEffect(() => {
     const loadMatches = async () => {
-      if (!selectedProfileId) return;
+      if (!selectedProfileId || !userProfile?.UID) return;
       
       setLoading(true);
       setError('');
       
       try {
-        // Get the selected mentee profile
         const selectedProfile = menteeProfiles.find(p => p.docId === selectedProfileId);
         if (!selectedProfile) {
           setError('Profile not found');
@@ -114,20 +114,13 @@ function FindMatches() {
 
         const menteeProfile = selectedProfile.data as MatchProfile;
 
-        // Check if profile has the new matching fields
-        // TODO: FUTURE DYNAMIC SURVEY INTEGRATION
-        // When implementing the dynamic survey system (surveySchema collection),
-        // this validation will need to be updated to:
-        // 1. Fetch current survey schema from Firestore
-        // 2. Check if profile has responses for all algorithmWeight > 0 questions
-        // 3. Map survey responses to matching algorithm inputs dynamically
         if (!menteeProfile.careerFields || !menteeProfile.technicalInterests || !menteeProfile.weights) {
-          setError('This profile needs to be updated with matching preferences. Please edit your profile to add career fields, technical interests, and weight preferences.');
+          setError('This profile needs to be updated with matching preferences.');
           setLoading(false);
           return;
         }
 
-        // Fetch all active mentor profiles from Firestore
+        // Fetch active mentor profiles
         const mentorProfilesQuery = query(
           collection(db, 'mentorProfile'),
           where('isActive', '==', true)
@@ -135,7 +128,6 @@ function FindMatches() {
         
         const mentorSnapshot = await getDocs(mentorProfilesQuery);
         
-        // Create array of profiles WITH their document IDs
         interface MentorProfileWithId {
           docId: string;
           profile: MatchProfile;
@@ -145,12 +137,10 @@ function FindMatches() {
         
         mentorSnapshot.forEach(doc => {
           const data = doc.data() as MatchProfile;
-          // Exclude self-matches (same UID as mentee)
-          if (data.UID === userProfile?.UID) return;
-          // Only include profiles with new matching fields
+          if (data.UID === userProfile?.UID) return; // Exclude self
           if (data.careerFields && data.technicalInterests && data.weights) {
             mentorProfilesWithIds.push({
-              docId: doc.id,  // ← The actual Firestore document ID
+              docId: doc.id,
               profile: data
             });
           }
@@ -162,7 +152,6 @@ function FindMatches() {
           return;
         }
 
-        // Extract just the profiles for matching algorithm
         const mentorProfiles = mentorProfilesWithIds.map(m => m.profile);
 
         // Calculate matches
@@ -172,22 +161,28 @@ function FindMatches() {
           minMatchPercentage
         );
 
-        console.log('📊 Calculated matches:', calculatedMatches.map(m => `${m.matchPercentage}%`));
+        // Fetch user profiles
+        const matchesWithUserProfiles = await Promise.all(
+          calculatedMatches.map(async (match, index) => {
+            const mentorProfileId = mentorProfilesWithIds[index].docId;
+            
+            let mentorUserProfile: UserProfile | undefined;
+            try {
+              mentorUserProfile = await userService.getUserProfile(match.userId);
+            } catch (err) {
+              console.log('Could not load mentor user profile for', match.userId);
+            }
 
-        // Map matches back to their correct profileIds
-        // Since both arrays are in the same order, we can match by index
-        const matchesWithIds = calculatedMatches.map((match, index) => ({
-          ...match,
-          profileId: mentorProfilesWithIds[index].docId  // ← Use the actual document ID!
-        }));
+            return {
+              ...match,
+              profileId: mentorProfileId,
+              userProfile: mentorUserProfile
+            };
+          })
+        );
 
-        // Force React to re-render by clearing first
-        setMatches([]);
-        setTimeout(() => {
-          setMatches(matchesWithIds);
-          console.log('✅ Matches state updated with', matchesWithIds.length, 'matches');
-          console.log('Profile IDs:', matchesWithIds.map(m => m.profileId));
-        }, 0);
+        setMatches(matchesWithUserProfiles);
+        
       } catch (err: any) {
         console.error('Error finding matches:', err);
         setError('Failed to find matches: ' + err.message);
@@ -199,15 +194,14 @@ function FindMatches() {
     if (selectedProfileId) {
       loadMatches();
     }
-  }, [selectedProfileId, minMatchPercentage, menteeProfiles]);
+  }, [selectedProfileId, minMatchPercentage, menteeProfiles, userProfile?.UID]);
 
-  const handleConnect = async (match: CalculatedMatch) => {
+  const handleConnect = async (match: MatchWithUserProfile) => {
     if (!userProfile?.UID || !selectedProfileId) return;
     
     try {
       setLoading(true);
       
-      // Check if match already exists
       const exists = await matchDbService.matchExists(selectedProfileId, match.profileId);
       if (exists) {
         setSuccessMessage('You already have a pending request with this mentor!');
@@ -216,13 +210,11 @@ function FindMatches() {
         return;
       }
       
-      // Get the selected mentee profile for weights
       const selectedProfile = menteeProfiles.find(p => p.docId === selectedProfileId);
       if (!selectedProfile) {
         throw new Error('Profile not found');
       }
       
-      // Create match request
       await matchDbService.createMatch({
         menteeId: userProfile.UID,
         mentorId: match.userId,
@@ -241,8 +233,8 @@ function FindMatches() {
         matchedAt: new Date() as any
       });
       
-      // Track this match as connected
       setConnectedMatches(prev => new Set(prev).add(match.profileId));
+      setMatchStatuses(prev => new Map(prev).set(match.profileId, 'pending'));
       
       setSuccessMessage('Match request sent! The mentor will be notified.');
       setShowSuccess(true);
@@ -256,38 +248,36 @@ function FindMatches() {
     }
   };
 
-  const handleViewProfile = (match: CalculatedMatch) => {
-    // TODO: Implement view full profile
-    console.log('View profile:', match);
-    alert('View profile functionality coming soon!');
+  const getConnectionStatus = (match: MatchWithUserProfile): 'pending' | 'accepted' | null => {
+    const status = matchStatuses.get(match.profileId);
+    if (status === 'pending') return 'pending';
+    if (status === 'accepted') return 'accepted';
+    return null;
   };
 
   return (
     <ContentContainer title="Find Mentors">
-      <Box sx={{ maxWidth: 1200, margin: '0 auto', padding: 3 }}>
+      <Box sx={{ 
+        bgcolor: '#fafafa', // Very light gray like wireframe
+        minHeight: '100vh',
+        py: 3
+      }}>
+        <Box sx={{ maxWidth: 1400, margin: '0 auto', padding: 3 }}>
         
-        {/* Info Banner */}
         <Alert severity="info" sx={{ marginBottom: 3 }}>
           <Typography variant="body2" sx={{ mb: 1 }}>
             <strong>Finding Matches:</strong> We match you with mentors based on career fields, technical interests, 
             life experiences, and languages, weighted by your preferences.
           </Typography>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            <strong>Match Criteria:</strong> Matches appear when you share at least one career field or technical interest 
-            AND at least one language in common. Low percentages mean less overlap, but they can still be valuable connections!
-          </Typography>
           <Typography variant="caption" color="text.secondary">
-            Note: Only mentors with updated profiles (including matching preferences) will appear in results.
-            As more mentors update their profiles, you'll see more matches!
+            Only mentors with updated profiles will appear.
           </Typography>
         </Alert>
         
         {/* Profile Selector & Filters */}
         <Paper sx={{ padding: 3, marginBottom: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6">
-              Search Settings
-            </Typography>
+            <Typography variant="h6">Search Settings</Typography>
             <Tooltip title="Refresh profiles and recalculate matches">
               <Button 
                 variant="outlined" 
@@ -301,7 +291,6 @@ function FindMatches() {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', alignItems: 'center' }}>
-            {/* Profile Selector */}
             {menteeProfiles.length > 1 && (
               <FormControl sx={{ minWidth: 250 }}>
                 <InputLabel>Select Your Profile</InputLabel>
@@ -319,7 +308,6 @@ function FindMatches() {
               </FormControl>
             )}
 
-            {/* Min Match Percentage Slider */}
             <Box sx={{ flex: 1, minWidth: 200 }}>
               <Typography variant="body2" gutterBottom>
                 Minimum Match: {minMatchPercentage}%
@@ -341,63 +329,64 @@ function FindMatches() {
           </Box>
         </Paper>
 
-        {/* Loading State */}
         {loading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', padding: 4 }}>
             <CircularProgress />
           </Box>
         )}
 
-        {/* Error State */}
         {error && (
           <Alert severity="warning" sx={{ marginBottom: 3 }}>
             {error}
           </Alert>
         )}
 
-        {/* No Profiles State */}
         {!loading && menteeProfiles.length === 0 && (
           <Alert severity="info">
             You need to create a mentee profile first to find matches.
-            Go to the "Create Profile" tab to get started!
           </Alert>
         )}
 
-        {/* Matches Display */}
+        {/* 2-COLUMN GRID WITH ENHANCED MATCHCARD */}
         {!loading && !error && matches.length > 0 && (
           <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
               <Typography variant="h6">
                 Found {matches.length} {matches.length === 1 ? 'Match' : 'Matches'}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Sorted by match percentage
-              </Typography>
             </Box>
 
-            {matches.map((match, index) => (
-              <MatchCard
-                key={`${match.userId}-${match.matchPercentage}-${index}`}
-                match={match}
-                onConnect={() => handleConnect(match)}
-                onViewProfile={() => handleViewProfile(match)}
-                isConnected={connectedMatches.has(match.profileId)}
-                matchStatus={matchStatuses.get(match.profileId) || null}
-              />
-            ))}
+            <Grid container spacing={3}>
+              {matches.map((match, index) => {
+                const selectedProfile = menteeProfiles.find(p => p.docId === selectedProfileId);
+                
+                return (
+                  <Grid item xs={12} md={6} key={`${match.userId}-${index}`}>
+                    <MatchCard
+                      match={match}
+                      currentUserProfile={selectedProfile?.data}
+                      matchUserProfile={match.userProfile}
+                      onConnect={() => handleConnect(match)}
+                      isConnected={connectedMatches.has(match.profileId)}
+                      matchStatus={getConnectionStatus(match)}
+                      cardType="mentee-finding-mentor"
+                    />
+                  </Grid>
+                );
+              })}
+            </Grid>
           </>
         )}
 
-        {/* No Matches State */}
         {!loading && !error && selectedProfileId && matches.length === 0 && (
           <Alert severity="info">
             No matches found with at least {minMatchPercentage}% compatibility.
-            Try lowering the minimum match percentage or updating your profile preferences.
+            Try lowering the minimum match percentage.
           </Alert>
         )}
       </Box>
+      </Box>
 
-      {/* Success Snackbar */}
       <Snackbar
         open={showSuccess}
         autoHideDuration={4000}

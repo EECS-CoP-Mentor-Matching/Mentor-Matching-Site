@@ -26,8 +26,7 @@ import {
   CAREER_FIELDS, 
   getTechnicalInterestOptions, 
   LIFE_EXPERIENCES, 
-  LANGUAGES,
-  RACIAL_IDENTITY_OPTIONS      
+  LANGUAGES
 } from "../../../config/matchingConfig";
 
 interface CreateMentorProfileProps {
@@ -42,7 +41,6 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
   const [careerFields, setCareerFields] = useState<string[]>([]);
   const [technicalInterests, setTechnicalInterests] = useState<string[]>([]);
   const [lifeExperiences, setLifeExperiences] = useState<string[]>([]);
-  const [racialIdentity, setRacialIdentity] = useState<string>(''); 
   const [languages, setLanguages] = useState<string[]>(['English']); // Default to English
   const [otherLanguage, setOtherLanguage] = useState<string>('');
   const [introduction, setIntroduction] = useState<string>('');
@@ -96,7 +94,6 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
         languages,
         weights,
         introduction,
-        racialIdentity, 
         // Convert comma-separated string to array and trim whitespace
         areasOfExpertise: areasOfExpertise 
           ? areasOfExpertise.split(',').map(area => area.trim()).filter(area => area.length > 0)
@@ -140,6 +137,9 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
     }
     if (!introduction.trim()) {
       throw new Error("Please write a brief introduction about yourself");
+    }
+    if (!areasOfExpertise.trim()) {
+      throw new Error("Please add at least one area of expertise");
     }
   }
 
@@ -213,7 +213,8 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
           {/* Areas of Expertise */}
           <TextField
             fullWidth
-            label="Areas of Expertise (Optional)"
+            required
+            label="Areas of Expertise *"
             placeholder="e.g., Machine Learning, Career Development, Interview Prep"
             value={areasOfExpertise}
             onChange={(e) => setAreasOfExpertise(e.target.value)}
@@ -250,29 +251,7 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
               Select experiences you'd like to share with potential mentees (affects matching)
             </Typography>
           </FormControl>
-          {/* Racial Identity - Only if selected "Racial Minority" */}
-          {lifeExperiences.includes('Racial Minority') && (
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>Racial Identity (Optional)</InputLabel>
-              <Select
-                value={racialIdentity}
-                onChange={(e) => setRacialIdentity(e.target.value)}
-                label="Racial Identity (Optional)"
-              >
-                <MenuItem value="">
-                  <em>Prefer not to specify</em>
-                </MenuItem>
-                {RACIAL_IDENTITY_OPTIONS.map((identity) => (
-                  <MenuItem key={identity} value={identity}>
-                    {identity}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, ml: 1.5 }}>
-                This helps mentees understand your background but won't affect matching
-              </Typography>
-            </FormControl>
-          )}
+
           {/* Languages */}
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>Languages</InputLabel>

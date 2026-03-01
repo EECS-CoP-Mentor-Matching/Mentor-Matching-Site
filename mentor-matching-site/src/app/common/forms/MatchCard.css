@@ -1,239 +1,124 @@
+/* Container & Shape */
 .match-card {
+  position: relative; /* CRITICAL: Allows absolute positioning of Connect button */
+  border-radius: 24px !important;
+  border: 1px solid #e5e7eb;
   background: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.match-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Header */
-.match-header {
-  margin-bottom: 16px;
-}
-
-.match-percentage {
-  display: inline-flex;
+  overflow: hidden;
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 12px 20px;
-  border-radius: 8px;
-  color: white;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
-.percentage-value {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1;
+/* Action Button Container - Top Left */
+.action-button-container {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
 }
 
-.percentage-label {
-  font-size: 11px;
-  font-weight: 500;
-  margin-top: 4px;
-  opacity: 0.9;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+/* Connect Button - Orange Pill */
+.btn-connect-pill {
+  background-color: #e47c2a !important;
+  color: white !important;
+  border-radius: 20px !important;
+  font-weight: 700 !important;
+  padding: 4px 16px !important;
+  text-transform: none !important;
+  font-size: 0.75rem !important;
 }
 
-/* Profile Info */
-.match-profile {
-  margin-bottom: 16px;
+.btn-connect-pill:hover {
+  background-color: #c86a1f !important;
 }
 
-.profile-name {
-  margin: 0 0 12px 0;
-  font-size: 18px;
-  color: #1a1a1a;
+.btn-connect-pill:disabled {
+  background-color: #9ca3af !important;
+  color: white !important;
 }
 
-.profile-field {
-  margin-bottom: 8px;
-  font-size: 14px;
+/* Accept/Decline Buttons */
+.btn-accept {
+  background-color: #22c55e !important;
+  color: white !important;
+  text-transform: none !important;
+  font-weight: 600 !important;
+  border-radius: 20px !important;
+  padding: 4px 12px !important;
+  font-size: 0.75rem !important;
 }
 
-.field-label {
-  font-weight: 600;
-  color: #555;
-  margin-right: 6px;
+.btn-accept:hover {
+  background-color: #16a34a !important;
 }
 
-.field-value {
-  color: #333;
+.btn-decline {
+  border: 1px solid #ef4444 !important;
+  color: #ef4444 !important;
+  background-color: transparent !important;
+  text-transform: none !important;
+  font-weight: 600 !important;
+  border-radius: 20px !important;
+  padding: 4px 12px !important;
+  font-size: 0.75rem !important;
 }
 
-.field-tags {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
+.btn-decline:hover {
+  background-color: #fef2f2 !important;
+  border-color: #dc2626 !important;
 }
 
-.tag {
-  display: inline-block;
-  padding: 4px 10px;
-  background: #e6f2ff;
-  color: #0066cc;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
+/* Centered Profile Section */
+.profile-top-section {
+  padding: 48px 20px 16px 20px;
+  text-align: center;
 }
 
-.profile-intro {
-  margin-top: 12px;
-  padding: 12px;
-  background: #f9fafb;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #555;
-  line-height: 1.5;
+.match-avatar-huge {
+  width: 150px !important;
+  height: 150px !important;
+  margin: 0 auto 12px auto;
+  background-color: #9ca3af !important;
+  font-size: 3rem !important;
+  font-weight: 700 !important;
+  border: 4px solid #ffffff;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
 }
 
-.profile-intro p {
-  margin: 0;
+.profile-name-centered {
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  color: #111827;
+  margin-top: 8px !important;
 }
 
-/* Breakdown Toggle */
-.breakdown-toggle {
-  width: 100%;
-  padding: 10px;
-  background: #f5f5f5;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #666;
-  cursor: pointer;
-  margin-bottom: 12px;
-  text-align: left;
-  transition: background 0.2s ease;
-}
-
-.breakdown-toggle:hover {
-  background: #ebebeb;
-}
-
-/* Match Breakdown */
-.match-breakdown {
+/* Light Grey Match Block */
+.match-data-block {
+  background: #f3f4f6;
+  color: #374151;
   padding: 16px;
-  background: #fafafa;
-  border-radius: 8px;
-  margin-bottom: 16px;
+  margin: 0 16px 16px 16px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
 }
 
-.match-breakdown h5 {
-  margin: 0 0 16px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #333;
-}
-
-.breakdown-item {
-  margin-bottom: 16px;
-}
-
-.breakdown-item:last-child {
-  margin-bottom: 0;
-}
-
-.breakdown-header {
+.match-score-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
 }
 
-.breakdown-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #555;
+.score-large-orange {
+  color: #e47c2a;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
 }
 
-.breakdown-score {
-  font-size: 13px;
-  font-weight: 700;
-  color: #333;
-}
-
-.breakdown-bar {
-  width: 100%;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.breakdown-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-
-.breakdown-details {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #777;
-  font-style: italic;
-}
-
-/* Actions */
-.match-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.btn-primary,
-.btn-secondary {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-primary {
-  background: #0066cc;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #0052a3;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
-}
-
-.btn-secondary {
-  background: white;
-  color: #0066cc;
-  border: 2px solid #0066cc;
-}
-
-.btn-secondary:hover {
-  background: #f5f9ff;
-  transform: translateY(-1px);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .match-card {
-    padding: 16px;
-  }
-
-  .match-actions {
-    flex-direction: column;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-  }
+/* Elevator Pitch Footer */
+.profile-intro {
+  padding: 0 16px 16px 16px;
+  text-align: center;
 }

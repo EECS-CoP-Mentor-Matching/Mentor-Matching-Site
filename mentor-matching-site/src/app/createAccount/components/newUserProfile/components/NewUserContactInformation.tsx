@@ -12,7 +12,7 @@ function NewUserContactInformation() {
   return (
     <FormGroupCols>
       <FormHeader>Contact Information</FormHeader>
-      <TextInputControlRedux value={contactInformation.displayName} label="Display Name" onInputDispatch={updateDisplayName} widthMulti={.15} />
+      <TextInputControlRedux value={contactInformation.displayName} label="Display Name *" onInputDispatch={updateDisplayName} widthMulti={.15} />
       <TextInputControlRedux value={contactInformation.pronouns} label="Pronouns" onInputDispatch={updatePronouns} />
       <SelectTimeZone onSelectDispatch={updateTimeZone} currentValue={contactInformation.timeZone} />
     </FormGroupCols>
