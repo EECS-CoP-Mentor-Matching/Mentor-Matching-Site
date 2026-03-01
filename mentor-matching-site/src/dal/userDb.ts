@@ -20,16 +20,16 @@ async function updateUserProfileAsync(uid: string, userProfile: UserProfile): Pr
 
 async function createNewUserAsync(user: User, userProfile: UserProfile): Promise<boolean> {
   try {
-    const { contact, personal, demographics,
-      education, accountSettings,
+    // UPDATED: Use new structure with availability instead of demographics/education
+    const { contact, personal, availability,
+      accountSettings,
       profilePictureUrl, preferences } = userProfile;
 
     const initialUserProfile: UserProfile = {
       UID: user.uid,
       contact,
       personal,
-      demographics,
-      education,
+      availability, // NEW: Added availability
       accountSettings: {
         userStatus: "active",
         menteePortalEnabled: accountSettings.menteePortalEnabled,

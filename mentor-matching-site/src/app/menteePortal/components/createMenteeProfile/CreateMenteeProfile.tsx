@@ -27,8 +27,11 @@ import {
   getTechnicalInterestOptions, 
   LIFE_EXPERIENCES, 
   LANGUAGES, 
-  MENTORSHIP_GOALS 
+  MENTORSHIP_GOALS,
+  COLLEGE_YEAR_OPTIONS,        
+  RACIAL_IDENTITY_OPTIONS      
 } from "../../../../config/matchingConfig";
+
 
 interface CreateMenteeProfileProps {
   backToPage: () => any
@@ -44,6 +47,9 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
   const [lifeExperiences, setLifeExperiences] = useState<string[]>([]);
   const [languages, setLanguages] = useState<string[]>(['English']); // Default to English
   const [otherLanguage, setOtherLanguage] = useState<string>('');
+  const [isStudent, setIsStudent] = useState<boolean>(false);
+  const [collegeYear, setCollegeYear] = useState<string>('');
+  const [racialIdentity, setRacialIdentity] = useState<string>('');
   const [introduction, setIntroduction] = useState<string>(''); // Profile name (50 chars)
   const [aboutMe, setAboutMe] = useState<string>(''); // About me section (500 chars)
   const [mentorshipGoal, setMentorshipGoal] = useState<string>('');
@@ -94,6 +100,9 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
         technicalInterests,
         lifeExperiences,
         languages,
+        isStudent,                    
+        collegeYear,                  
+        racialIdentity,               
         weights,
         introduction, // Profile name (50 chars)
         aboutMe, // About me section (500 chars)
@@ -247,6 +256,30 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
             </Typography>
           </FormControl>
 
+          {/* Racial Identity - Only if selected "Racial Minority" */}
+          {lifeExperiences.includes('Racial Minority') && (
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Racial Identity (Optional)</InputLabel>
+              <Select
+                value={racialIdentity}
+                onChange={(e) => setRacialIdentity(e.target.value)}
+                label="Racial Identity (Optional)"
+              >
+                <MenuItem value="">
+                  <em>Prefer not to specify</em>
+                </MenuItem>
+                {RACIAL_IDENTITY_OPTIONS.map((identity) => (
+                  <MenuItem key={identity} value={identity}>
+                    {identity}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, ml: 1.5 }}>
+                This helps mentors understand your background but won't affect matching
+              </Typography>
+            </FormControl>
+          )}
+          
           {/* Languages */}
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>Languages</InputLabel>
@@ -275,6 +308,50 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
               onChange={(e) => setOtherLanguage(e.target.value)}
               sx={{ mb: 2 }}
             />
+          )}
+
+          {/* Student Status - MENTEES ONLY */}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+              Are you currently a student?
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button
+                variant={isStudent ? "contained" : "outlined"}
+                onClick={() => setIsStudent(true)}
+                fullWidth
+              >
+                Yes
+              </Button>
+              <Button
+                variant={!isStudent ? "contained" : "outlined"}
+                onClick={() => {
+                  setIsStudent(false);
+                  setCollegeYear(''); // Clear year if not a student
+                }}
+                fullWidth
+              >
+                No
+              </Button>
+            </Box>
+          </FormControl>
+
+          {/* College Year - Only if student */}
+          {isStudent && (
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>College Year</InputLabel>
+              <Select
+                value={collegeYear}
+                onChange={(e) => setCollegeYear(e.target.value)}
+                label="College Year"
+              >
+                {COLLEGE_YEAR_OPTIONS.map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           )}
 
           {/* Profile Name */}
