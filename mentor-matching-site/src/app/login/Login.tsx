@@ -7,7 +7,7 @@ import "./Login.css";
 import { User } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import ErrorMessage, { ErrorState, resetError } from "../common/forms/ErrorMessage";
-import { MatchRole } from "../../types/matchProfile";
+import { AdminMatchRole } from "../../types/matchProfile";
 import { UserProfile } from "../../types/userProfile";
 
 // REDUX IMPORTS: Needed to update the app state immediately
@@ -37,13 +37,13 @@ function Login() {
         const role = userProfile.preferences?.role;
 
         // 3. Direct Redirect based on Database Role
-        if (role === MatchRole.admin) {
+        if (role === AdminMatchRole.admin) {
           navigate("/admin-portal");
-        } else if (role === MatchRole.mentee) {
+        } else if (role === AdminMatchRole.mentee) {
           navigate("/mentee-portal");
-        } else if (role === MatchRole.mentor) {
+        } else if (role === AdminMatchRole.mentor) {
           navigate("/mentor-portal");
-        } else if (role === MatchRole.both) {
+        } else if (role === AdminMatchRole.both) {
           // Handling the 'both' case specifically if it exists in your logic
           navigate("/mentee-portal"); 
         } else {

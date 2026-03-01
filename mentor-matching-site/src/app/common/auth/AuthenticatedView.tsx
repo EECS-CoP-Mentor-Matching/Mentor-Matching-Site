@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import authService from "../../../service/authService";
 import {UserProfile} from "../../../types/userProfile";
 import userService from "../../../service/userService";
-import {MatchRole} from "../../../types/matchProfile";
+import {AdminMatchRole} from "../../../types/matchProfile";
 import {useNavigate} from "react-router-dom";
 
 interface AuthenticatedViewProps {
@@ -33,14 +33,14 @@ function AuthenticatedView({ children, mentor, mentee, admin }: AuthenticatedVie
             userProfile = await userService.getUserProfile(user.uid);
           }
           if (userProfile.UID === user.uid) {
-            const role = userProfile.preferences?.role || MatchRole.both;
-            if (role == MatchRole.mentee || role == MatchRole.both) {
+            const role = userProfile.preferences?.role || AdminMatchRole.both;
+            if (role == AdminMatchRole.mentee || role == AdminMatchRole.both) {
               setShowMentee(true);
             }
-            if (role == MatchRole.mentor || role == MatchRole.both) {
+            if (role == AdminMatchRole.mentor || role == AdminMatchRole.both) {
               setShowMentor(true);
             }
-            if (role == MatchRole.admin || role == MatchRole.both){
+            if (role == AdminMatchRole.admin || role == AdminMatchRole.both){
               setShowAdmin(true);
             }
             setShowAuth(true);
