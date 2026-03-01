@@ -26,7 +26,8 @@ import {
   CAREER_FIELDS, 
   getTechnicalInterestOptions, 
   LIFE_EXPERIENCES, 
-  LANGUAGES
+  LANGUAGES,
+  RACIAL_IDENTITY_OPTIONS      
 } from "../../../config/matchingConfig";
 
 interface CreateMentorProfileProps {
@@ -41,6 +42,7 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
   const [careerFields, setCareerFields] = useState<string[]>([]);
   const [technicalInterests, setTechnicalInterests] = useState<string[]>([]);
   const [lifeExperiences, setLifeExperiences] = useState<string[]>([]);
+  const [racialIdentity, setRacialIdentity] = useState<string>(''); 
   const [languages, setLanguages] = useState<string[]>(['English']); // Default to English
   const [otherLanguage, setOtherLanguage] = useState<string>('');
   const [introduction, setIntroduction] = useState<string>('');
@@ -94,6 +96,7 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
         languages,
         weights,
         introduction,
+        racialIdentity, 
         // Convert comma-separated string to array and trim whitespace
         areasOfExpertise: areasOfExpertise 
           ? areasOfExpertise.split(',').map(area => area.trim()).filter(area => area.length > 0)
@@ -247,7 +250,29 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
               Select experiences you'd like to share with potential mentees (affects matching)
             </Typography>
           </FormControl>
-
+          {/* Racial Identity - Only if selected "Racial Minority" */}
+          {lifeExperiences.includes('Racial Minority') && (
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Racial Identity (Optional)</InputLabel>
+              <Select
+                value={racialIdentity}
+                onChange={(e) => setRacialIdentity(e.target.value)}
+                label="Racial Identity (Optional)"
+              >
+                <MenuItem value="">
+                  <em>Prefer not to specify</em>
+                </MenuItem>
+                {RACIAL_IDENTITY_OPTIONS.map((identity) => (
+                  <MenuItem key={identity} value={identity}>
+                    {identity}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, ml: 1.5 }}>
+                This helps mentees understand your background but won't affect matching
+              </Typography>
+            </FormControl>
+          )}
           {/* Languages */}
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>Languages</InputLabel>

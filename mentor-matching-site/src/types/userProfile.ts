@@ -8,8 +8,7 @@ export interface UserProfile {
   UID: string
   contact: UserContactInformation
   personal: UserPersonalInformation
-  demographics: UserDemographicInformation
-  education: UserEducationInformation
+  availability: UserAvailability  // NEW
   accountSettings: UserAccountSettings
   matchHistory: MatchHistoryItem[]
   profilePictureUrl: string | undefined;
@@ -22,8 +21,7 @@ export const initUserProfile = () => {
     UID: "",
     contact: initUserContactInformation(),
     personal: initUserPersonalInformation(),
-    demographics: initUserDemographicInformation(),
-    education: initUserEducationInformation(),
+    availability: initUserAvailability(),  // NEW
     accountSettings: initUserAccountSettings(),
     matchHistory: Array<MatchHistoryItem>(),
     profilePictureUrl: "",
@@ -33,15 +31,11 @@ export const initUserProfile = () => {
 
 export interface UserPreferences {
   role: UserRole
-  useRacialIdentityForMatching: boolean
-  useLgbtqPlusCommunityForMatching: boolean
 }
 
 export const initUserPreferences = () => {
   return {
-    role: "none",
-    useRacialIdentityForMatching: false,
-    useLgbtqPlusCommunityForMatching: false
+    role: "none"
   } as UserPreferences
 }
 
@@ -67,43 +61,34 @@ export interface UserPersonalInformation {
   firstName: string
   lastName: string
   middleName: string
-  dob: DateOfBirth
 }
 
 export const initUserPersonalInformation = () => {
   return {
     firstName: "",
     lastName: "",
-    middleName: "",
-    dob: initDateOfBirth()
+    middleName: ""
   } as UserPersonalInformation
 }
 
-export interface UserDemographicInformation {
-  racialIdentity: string
-  lgbtqPlusCommunity: boolean
+// NEW: Availability Information
+export interface UserAvailability {
+  hoursPerWeek: string
 }
 
-export const initUserDemographicInformation = () => {
+export const initUserAvailability = () => {
   return {
-    racialIdentity: "",
-    lgbtqPlusCommunity: false
-  } as UserDemographicInformation
+    hoursPerWeek: ""
+  } as UserAvailability
 }
 
-export interface UserEducationInformation {
-  highestLevelOfEducation: string
-  degreeProgram: string
-  studentStatus: boolean
-}
-
-export const initUserEducationInformation = () => {
-  return {
-    highestLevelOfEducation: "",
-    degreeProgram: "",
-    studentStatus: false
-  } as UserEducationInformation
-}
+// Hours per week options for dropdown
+export const HOURS_PER_WEEK_OPTIONS = [
+  "1-2 hours per week",
+  "3-5 hours per week",
+  "6-10 hours per week",
+  "10+ hours per week"
+];
 
 export interface UserAccountSettings {
   userStatus: string
@@ -115,8 +100,7 @@ export const initUserAccountSettings = () => {
   return {
     userStatus: "",
     menteePortalEnabled: false,
-    mentorPortalEnabled: false,
-    useDemographicsForMatching: false
+    mentorPortalEnabled: false
   } as UserAccountSettings
 }
 
@@ -127,33 +111,21 @@ export interface MatchHistoryItem {
   matchStatus: boolean
 }
 
-export interface DateOfBirth {
-  month: number
-  day: number
-  year: number
-}
-
-export const initDateOfBirth = () => {
-  return {
-    month: 0,
-    day: 0,
-    year: 1900
-  }
-}
-
 export interface UserStatus {
   name: string
-}
-
-export interface RacialIdentity {
-  id: number
-  identityName: string
 }
 
 export interface TimeZone {
   id: number
   timeZoneName: string
   utcOffset: number
+}
+
+// Keep these type definitions for database queries
+// (Not used in UserProfile interface, but needed for selection dropdowns)
+export interface RacialIdentity {
+  id: number
+  identityName: string
 }
 
 export interface DegreeProgram {

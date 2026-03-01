@@ -3,8 +3,6 @@ import {useEffect, useRef, useState} from "react";
 import FormGroupCols from "../../../common/forms/layout/FormGroupCols";
 import NewUserContactInformation from "./components/NewUserContactInformation";
 import NewUserPersonalInformation from "./components/NewUserPersonalInformation";
-import NewUserDemographicInformation from "./components/NewUserDemographicInformation";
-import NewUserEducationInformation from "./components/NewUserEducationInformation";
 import NewUserNavigation from "./components/NewUserNavigation";
 import {useAppDispatch, useAppSelector} from "../../../../redux/hooks";
 import { refreshNavigate } from "../../../common/auth/refreshNavigate";
@@ -20,8 +18,6 @@ import {updateProfile} from "../../../../redux/reducers/userProfileReducer";
 enum FormStep {
   VerifyEmail,
   Contact,
-  Demographic,
-  Educational,
   Personal,
   UserAgreement
 }
@@ -154,10 +150,6 @@ function NewUserProfile() {
         return <VerifyEmail />
       case FormStep.Contact:
         return <NewUserContactInformation />
-      case FormStep.Demographic:
-        return <NewUserDemographicInformation />
-      case FormStep.Educational:
-        return <NewUserEducationInformation />
       case FormStep.Personal:
         return <NewUserPersonalInformation />
       case FormStep.UserAgreement:
@@ -179,7 +171,7 @@ function NewUserProfile() {
             <NewUserNavigation nextStep={nextStep}
               hideNext={currentStep < FormStep.Contact || currentStep === FormStep.UserAgreement}
               previousStep={previousStep}
-              hidePrevious={currentStep < FormStep.Demographic}
+              hidePrevious={currentStep < FormStep.Personal}
             />
           </FormGroupCols>
           <LoadingMessage message="Creating profile..." loading={createAccountLoading} />

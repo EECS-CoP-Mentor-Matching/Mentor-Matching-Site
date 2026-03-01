@@ -107,6 +107,7 @@ export const LIFE_EXPERIENCES = [
   'International Background',
   'English as a second language',
   'LGBTQ+',
+  'Racial Minority',
   'Military Service',
   'Career Transition',
   'Entrepreneur',
@@ -223,3 +224,33 @@ export function getDefaultWeights(priority: string) {
     languages: 3
   };
 }
+
+// ============================================
+// Additional Profile Information (Non-matching)
+// ============================================
+
+/**
+ * College year options for students
+ */
+export const COLLEGE_YEAR_OPTIONS = [
+  'Freshman',
+  'Sophomore',
+  'Junior',
+  'Senior',
+  'Masters Candidate',
+  'PhD Candidate'
+];
+
+/**
+ * Racial identity options (optional, if user selected "Racial Minority")
+ */
+export const RACIAL_IDENTITY_OPTIONS = [
+  'African American / Black',
+  'Asian / Asian American',
+  'Hispanic / Latinx',
+  'Native American / Indigenous',
+  'Pacific Islander',
+  'Middle Eastern / North African',
+  'Multiracial',
+  'Prefer not to specify'
+];

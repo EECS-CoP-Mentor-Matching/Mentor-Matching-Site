@@ -49,6 +49,11 @@ export interface MatchProfile {
   languages?: string[] // Q4: Languages
   otherLanguage?: string // If "Other" selected in languages
   
+  // NEW: Additional profile information (non-matching, for display only)
+  isStudent?: boolean // For mentees: Are they currently a student?
+  collegeYear?: string // If student: Freshman, Sophomore, Junior, Senior, Graduate
+  racialIdentity?: string // If selected "Racial Minority" in life experiences
+  
   // NEW: User-defined weights (1-5 scale)
   weights?: UserWeights
   
