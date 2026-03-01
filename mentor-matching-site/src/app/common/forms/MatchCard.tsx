@@ -1,343 +1,262 @@
 /**
- * ENHANCED MATCH CARD COMPONENT
- * 
- * Displays a potential match with prominent percentage score and detailed breakdown
+ * MATCH CARD COMPONENT - REDESIGNED
+ * * Layout:
+ * 1. Connect/Accept buttons (top-left, orange pill)
+ * 2. Avatar (extra large, 150px, centered)
+ * 3. Name & Student info (centered)
+ * 4. "How You Match" Section (High-contrast grey block per wireframe)
  */
 
-import React, { useState } from 'react';
+import React from 'react';
+import './MatchCard.css'; // Ensure this CSS is applied
 import { 
   Card, 
   CardContent, 
   Box, 
   Typography, 
   Chip, 
-  LinearProgress,
-  Collapse,
   Button,
   Divider,
   Avatar
 } from '@mui/material';
 import { 
-  ExpandMore as ExpandMoreIcon,
-  Person as PersonIcon,
-  EmojiEvents as TrophyIcon
+  EmojiEvents as TrophyIcon,
+  AccessTime,
+  Public,
+  School,
+  WorkOutline,
+  Favorite,
+  Language
 } from '@mui/icons-material';
 import { CalculatedMatch } from '../../../types/matchProfile';
+import { UserProfile } from '../../../types/userProfile';
+import ExpandableMatchCategory from '../../common/matching/ExpandableMatchCategory';
 
 interface MatchCardProps {
   match: CalculatedMatch;
+  currentUserProfile?: any; 
+  matchUserProfile?: UserProfile; 
   onConnect?: () => void;
-  onViewProfile?: () => void;
+  onAccept?: (event: React.MouseEvent<HTMLElement>) => void;
+  onDecline?: (event: React.MouseEvent<HTMLElement>) => void;
   isConnected?: boolean;
   matchStatus?: 'pending' | 'accepted' | 'declined' | null;
+  cardType?: 'mentee-finding-mentor' | 'mentor-reviewing-mentee';
 }
 
-export const MatchCard: React.FC<MatchCardProps> = ({ match, onConnect, onViewProfile, isConnected = false, matchStatus = null }) => {
-  const [showBreakdown, setShowBreakdown] = useState(false);
+export const MatchCard: React.FC<MatchCardProps> = ({ 
+  match, 
+  currentUserProfile,
+  matchUserProfile,
+  onConnect, 
+  onAccept,
+  onDecline,
+  isConnected = false, 
+  matchStatus = null,
+  cardType = 'mentee-finding-mentor'
+}) => {
 
-  const getMatchColor = (percentage: number): string => {
-    if (percentage >= 80) return '#22c55e'; // Green
-    if (percentage >= 60) return '#3b82f6'; // Blue
-    if (percentage >= 40) return '#f59e0b'; // Orange
-    return '#ef4444'; // Red
+  const [showOverlay, setShowOverlay] = React.useState(false);
+
+  const getDisplayName = (): string => {
+    if (matchUserProfile?.contact?.displayName) return matchUserProfile.contact.displayName;
+    if (matchUserProfile?.personal?.firstName) {
+      const firstName = matchUserProfile.personal.firstName;
+      const lastName = matchUserProfile.personal.lastName || '';
+      return `${firstName} ${lastName}`.trim();
+    }
+    return 'User'; // Fallback if no name data
   };
 
-  const getMatchLabel = (percentage: number): string => {
-    if (percentage >= 80) return 'Excellent Match';
-    if (percentage >= 60) return 'Good Match';
-    if (percentage >= 40) return 'Fair Match';
-    return 'Potential Match';
+  const getUsername = (): string => {
+    const displayName = matchUserProfile?.contact?.displayName || '';
+    return displayName ? `@${displayName.replace(/\s+/g, '').toLowerCase()}` : '';
+  };
+
+  const getInitials = (): string => {
+    const name = getDisplayName();
+    const parts = name.split(' ');
+    return parts.length >= 2 ? `${parts[0][0]}${parts[1][0]}`.toUpperCase() : name.substring(0, 2).toUpperCase();
   };
 
   const profile = match.profile;
-  const matchColor = getMatchColor(match.matchPercentage);
   const matchPercent = Math.round(match.matchPercentage);
 
   return (
-    <Card 
-      sx={{ 
-        mb: 2,
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: 6
-        },
-        border: `2px solid ${matchColor}20`
-      }}
-    >
-      <CardContent>
-        {/* Header with Prominent Match Percentage */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Avatar sx={{ bgcolor: matchColor, width: 56, height: 56 }}>
-              <PersonIcon />
+    <Card className="match-card" elevation={0}>
+      <CardContent sx={{ p: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
+        
+        {/* 1. Action Buttons - Top Left per wireframe requirements */}
+        <Box className="action-button-container">
+          {cardType === 'mentor-reviewing-mentee' && onAccept && onDecline ? (
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button className="btn-decline" size="small" onClick={onDecline}>Decline</Button>
+              <Button className="btn-accept" size="small" onClick={onAccept}>Accept</Button>
+            </Box>
+          ) : onConnect && (
+            <Button
+              className="btn-connect-pill"
+              size="small"
+              onClick={onConnect}
+              disabled={isConnected}
+            >
+              {matchStatus === 'accepted' ? '✓ Connected' 
+               : matchStatus === 'declined' ? '✗ Declined'
+               : isConnected ? 'Sent' 
+               : 'Connect'}
+            </Button>
+          )}
+        </Box>
+
+        {/* 2. Top Profile Section (Centered & Large Image) */}
+        <Box className="profile-top-section">
+          <Box 
+            sx={{ 
+              position: 'relative', 
+              width: 150, 
+              height: 150, 
+              margin: '0 auto 12px auto',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={() => setShowOverlay(true)}
+            onMouseLeave={() => setShowOverlay(false)}
+          >
+            <Avatar
+              src={matchUserProfile?.imageUrl}
+              className="match-avatar-huge"
+              sx={{
+                transition: 'opacity 0.3s',
+                opacity: showOverlay ? 0.3 : 1
+              }}
+            >
+              {getInitials()}
             </Avatar>
             
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-                {profile.introduction?.split('\n')[0] || 'Potential Match'}
+            {/* Hover Overlay - Show Elevator Pitch */}
+            {showOverlay && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 2,
+                  pointerEvents: 'none'
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: '#111827',
+                    fontWeight: 600,
+                    textAlign: 'center',
+                    fontSize: '0.7rem',
+                    lineHeight: 1.2
+                  }}
+                >
+                  {profile.aboutMe || profile.mentorshipGoal || 'Ready to connect!'}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+
+          <Typography className="profile-name-centered">
+            {getDisplayName()}
+          </Typography>
+
+          {/* Timezone & Availability */}
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Public sx={{ fontSize: 16, color: '#6b7280' }} />
+              <Typography variant="caption" color="text.secondary">
+                {matchUserProfile?.contact?.timeZone || 'PST'}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {profile.careerFields?.[0] || 'Various Fields'}
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <AccessTime sx={{ fontSize: 16, color: '#6b7280' }} />
+              <Typography variant="caption" color="text.secondary">
+                {matchUserProfile?.availability?.hoursPerWeek || '0-2 hours per week'} hrs/wk
               </Typography>
             </Box>
           </Box>
 
-          {/* Large Percentage Display */}
-          <Box 
-            sx={{ 
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              bgcolor: `${matchColor}15`,
-              borderRadius: 2,
-              padding: 2,
-              minWidth: 100
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-              <Typography 
-                variant="h3" 
-                sx={{ 
-                  fontWeight: 700,
-                  color: matchColor,
-                  lineHeight: 1
-                }}
-              >
-                {matchPercent}
+          {/* Student Info */}
+          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', mb: 1 }}>
+            {profile.isStudent && (
+              <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
+                {profile.collegeYear || 'Student'} • {profile.careerFields?.[0]}
               </Typography>
-              <Typography 
-                variant="h5" 
-                sx={{ 
-                  fontWeight: 600,
-                  color: matchColor 
-                }}
-              >
-                %
-              </Typography>
-            </Box>
-            <Typography 
-              variant="caption" 
-              sx={{ 
-                fontWeight: 600,
-                color: matchColor,
-                textTransform: 'uppercase',
-                letterSpacing: 0.5
-              }}
-            >
-              {getMatchLabel(match.matchPercentage)}
-            </Typography>
-            {matchPercent >= 80 && (
-              <TrophyIcon sx={{ color: matchColor, fontSize: 20, mt: 0.5 }} />
             )}
           </Box>
         </Box>
 
-        {/* Career Fields */}
-        {profile.careerFields && profile.careerFields.length > 0 && (
-          <Box sx={{ mb: 2 }}>
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              {profile.careerFields.map((field, index) => (
-                <Chip 
-                  key={index} 
-                  label={field} 
-                  size="small"
-                  sx={{ bgcolor: '#e3f2fd', color: '#0066cc' }}
-                />
-              ))}
-            </Box>
-          </Box>
-        )}
-
-        {/* Technical Interests Preview */}
-        {profile.technicalInterests && profile.technicalInterests.length > 0 && (
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-              <strong>Interests:</strong>
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-              {profile.technicalInterests.slice(0, 5).map((interest, index) => (
-                <Chip 
-                  key={index} 
-                  label={interest} 
-                  size="small"
-                  variant="outlined"
-                />
-              ))}
-              {profile.technicalInterests.length > 5 && (
-                <Chip 
-                  label={`+${profile.technicalInterests.length - 5} more`} 
-                  size="small"
-                  variant="outlined"
-                />
-              )}
-            </Box>
-          </Box>
-        )}
-
-        {/* Mentorship Goal */}
-        {profile.mentorshipGoal && (
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              <strong>Goal:</strong> {profile.mentorshipGoal}
-            </Typography>
-          </Box>
-        )}
-
-        {/* Introduction */}
-        {profile.introduction && profile.introduction.trim() && (
-          <Box sx={{ mb: 2, p: 1.5, bgcolor: '#f5f5f5', borderRadius: 1 }}>
-            <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
-              "{profile.introduction}"
-            </Typography>
-          </Box>
-        )}
-
-        <Divider sx={{ my: 2 }} />
-
-        {/* Match Breakdown Toggle */}
-        <Button
-          fullWidth
-          onClick={() => setShowBreakdown(!showBreakdown)}
-          endIcon={<ExpandMoreIcon sx={{ transform: showBreakdown ? 'rotate(180deg)' : 'rotate(0deg)', transition: '0.3s' }} />}
-          sx={{ mb: showBreakdown ? 2 : 0 }}
-        >
-          {showBreakdown ? 'Hide' : 'Show'} Match Breakdown
-        </Button>
-
-        {/* Match Breakdown */}
-        <Collapse in={showBreakdown}>
-          <Box sx={{ bgcolor: '#fafafa', p: 2, borderRadius: 1 }}>
-            <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-              Category Scores
-            </Typography>
-
-            {/* Career & Technical Interests */}
-            <Box sx={{ mb: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography variant="body2">Career & Technical Interests</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: matchColor }}>
-                  {Math.round(match.categoryScores.technicalInterests)}%
-                </Typography>
-              </Box>
-              <LinearProgress 
-                variant="determinate" 
-                value={match.categoryScores.technicalInterests}
-                sx={{
-                  height: 8,
-                  borderRadius: 4,
-                  bgcolor: '#e0e0e0',
-                  '& .MuiLinearProgress-bar': {
-                    bgcolor: matchColor,
-                    borderRadius: 4
-                  }
-                }}
-              />
-            </Box>
-
-            {/* Life Experiences */}
-            <Box sx={{ mb: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography variant="body2">Life Experiences</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: matchColor }}>
-                  {Math.round(match.categoryScores.lifeExperiences)}%
-                </Typography>
-              </Box>
-              <LinearProgress 
-                variant="determinate" 
-                value={match.categoryScores.lifeExperiences}
-                sx={{
-                  height: 8,
-                  borderRadius: 4,
-                  bgcolor: '#e0e0e0',
-                  '& .MuiLinearProgress-bar': {
-                    bgcolor: matchColor,
-                    borderRadius: 4
-                  }
-                }}
-              />
-              {profile.lifeExperiences && profile.lifeExperiences.length > 0 && (
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                  {profile.lifeExperiences.join(', ')}
-                </Typography>
-              )}
-            </Box>
-
-            {/* Languages */}
+        {/* 3. Match Data Block (Wireframe Grayscale Section) */}
+        <Box className="match-data-block">
+          <Box className="match-score-row">
             <Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography variant="body2">Languages</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: matchColor }}>
-                  {Math.round(match.categoryScores.languages)}%
-                </Typography>
-              </Box>
-              <LinearProgress 
-                variant="determinate" 
-                value={match.categoryScores.languages}
-                sx={{
-                  height: 8,
-                  borderRadius: 4,
-                  bgcolor: '#e0e0e0',
-                  '& .MuiLinearProgress-bar': {
-                    bgcolor: matchColor,
-                    borderRadius: 4
-                  }
-                }}
-              />
-              {profile.languages && profile.languages.length > 0 && (
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                  {profile.languages.join(', ')}
-                </Typography>
-              )}
+              <Typography sx={{ fontWeight: 700, fontSize: '14px', color: '#111827' }}>
+                How You Match
+              </Typography>
+            </Box>
+            <Box sx={{ textAlign: 'right' }}>
+              <Typography sx={{ fontSize: '10px', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Overall Match
+              </Typography>
+              <Typography className="score-large-orange">
+                {matchPercent}%
+              </Typography>
             </Box>
           </Box>
-        </Collapse>
 
-        {/* Action Buttons */}
-        <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-          {onViewProfile && (
-            <Button 
-              variant="outlined" 
-              fullWidth
-              onClick={onViewProfile}
-            >
-              View Profile
-            </Button>
-          )}
-          {onConnect && (
-            <Button 
-              variant="contained" 
-              fullWidth
-              onClick={onConnect}
-              disabled={isConnected}
-              sx={{
-                bgcolor: matchStatus === 'accepted' ? '#22c55e !important'
-                       : matchStatus === 'declined' ? '#ef4444 !important'
-                       : isConnected ? '#9ca3af' 
-                       : matchColor,
-                color: 'white !important',
-                '&:hover': {
-                  bgcolor: matchStatus === 'accepted' ? '#22c55e !important'
-                         : matchStatus === 'declined' ? '#ef4444 !important'
-                         : isConnected ? '#9ca3af' 
-                         : matchColor,
-                  filter: isConnected ? 'none' : 'brightness(0.9)'
-                },
-                '&.Mui-disabled': {
-                  bgcolor: matchStatus === 'accepted' ? '#22c55e !important'
-                         : matchStatus === 'declined' ? '#ef4444 !important'
-                         : '#9ca3af',
-                  color: 'white !important'
-                }
-              }}
-            >
-              {matchStatus === 'accepted' ? '✓ Match Accepted!' 
-             : matchStatus === 'declined' ? '✗ Declined'
-             : isConnected ? '⏳ Request Pending...' 
-             : 'Connect'}
-            </Button>
-          )}
+          {/* Detailed Categories */}
+          <Box sx={{ mt: 1 }}>
+            {/* Technical Interests - combine career fields + technical interests */}
+            <ExpandableMatchCategory
+              categoryName="Technical Interests"
+              icon={<WorkOutline sx={{ fontSize: 16, color: '#6b7280' }} />}
+              score={match.categoryScores?.technicalInterests || 0}
+              userItems={[
+                ...(currentUserProfile?.careerFields || []),
+                ...(currentUserProfile?.technicalInterests || [])
+              ]}
+              matchItems={[
+                ...(profile.careerFields || []),
+                ...(profile.technicalInterests || [])
+              ]}
+            />
+            
+            {/* Life Experiences - pass matchProfile for racial identity lookup */}
+            <ExpandableMatchCategory
+              categoryName="Life Experiences"
+              icon={<Favorite sx={{ fontSize: 16, color: '#6b7280' }} />}
+              score={match.categoryScores?.lifeExperiences || 0}
+              userItems={currentUserProfile?.lifeExperiences || []}
+              matchItems={profile.lifeExperiences || []}
+              matchProfile={profile}
+            />
+            
+            {/* Languages */}
+            <ExpandableMatchCategory
+              categoryName="Languages"
+              icon={<Language sx={{ fontSize: 16, color: '#6b7280' }} />}
+              score={match.categoryScores?.languages || 0}
+              userItems={currentUserProfile?.languages || []}
+              matchItems={profile.languages || []}
+            />
+          </Box>
         </Box>
+
+        {/* 4. Elevator Pitch / Goal (Bottom Footer) */}
+        <Box className="profile-intro">
+          <Typography variant="body2" sx={{ fontStyle: 'italic', color: '#4b5563' }}>
+            "{profile.mentorshipGoal || profile.aboutMe || "Ready to connect!"}"
+          </Typography>
+        </Box>
+
       </CardContent>
     </Card>
   );
