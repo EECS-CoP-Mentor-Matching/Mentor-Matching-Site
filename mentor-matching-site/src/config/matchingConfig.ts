@@ -206,6 +206,40 @@ export function getTechnicalInterestOptions(careerFields: string[]): string[] {
   return Array.from(allInterests).sort();
 }
 
+// ============================================
+// NEW: User Profile Field Options
+// ============================================
+
+export const CREDENTIALS = [
+  'PhD',
+  'Masters',
+  'Bachelors',
+  'Business Owner',
+  'Self-Taught',
+  'Student'
+];
+
+export const COLLEGE_YEARS = [
+  'Freshman',
+  'Sophomore',
+  'Junior',
+  'Senior',
+  'Masters Candidate',
+  'PhD Candidate'
+];
+
+export const RACIAL_IDENTITIES = [
+  'Asian / Asian American',
+  'Black / African American',
+  'Hispanic / Latino/a/x',
+  'Indigenous / Native American',
+  'Middle Eastern / North African',
+  'Pacific Islander',
+  'White / Caucasian',
+  'Multiracial',
+  'Prefer not to specify'
+];
+
 /**
  * Get all weightable field names
  */

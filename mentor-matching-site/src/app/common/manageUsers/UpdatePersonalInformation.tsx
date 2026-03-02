@@ -5,6 +5,7 @@ import { UserProfile, HOURS_PER_WEEK_OPTIONS } from "../../../types/userProfile"
 import TextInputControl from "../forms/textInputs/TextInputControl";
 import { useAppSelector } from "../../../redux/hooks";
 import { MatchRole } from "../../../types/matchProfile";
+import { CREDENTIALS, COLLEGE_YEARS } from "../../../config/matchingConfig";
 
 interface UpdatePersonalInformationProps {
   showEdit: boolean,
@@ -110,6 +111,66 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
             </Select>
           </FormControl>
         </FormGroupRows>
+        
+        {/* Mentor-specific fields */}
+        {userPreferences.role === 'Mentor' && (
+          <>
+            <FormLabel sx={{ mt: 2 }}>Professional Information</FormLabel>
+            <FormGroupRows>
+              <FormControl fullWidth sx={{ minWidth: 250 }} disabled={!showEdit}>
+                <InputLabel>Credentials *</InputLabel>
+                <Select
+                  value={personalInformation.credentials || ''}
+                  onChange={(e) => updateNameField("credentials", e.target.value)}
+                  label="Credentials *"
+                >
+                  {CREDENTIALS.map((credential) => (
+                    <MenuItem key={credential} value={credential}>{credential}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </FormGroupRows>
+            <FormGroupRows>
+              <TextInputControl 
+                value={personalInformation.currentProfession || ''} 
+                label="Current Profession *" 
+                readonly={!showEdit} 
+                onInput={(value) => updateNameField("currentProfession", value)} 
+                style={showEditStyle}
+              />
+            </FormGroupRows>
+          </>
+        )}
+
+        {/* Mentee-specific fields */}
+        {userPreferences.role === 'Mentee' && (
+          <>
+            <FormLabel sx={{ mt: 2 }}>Student Information</FormLabel>
+            <FormGroupRows>
+              <FormControl fullWidth sx={{ minWidth: 250 }} disabled={!showEdit}>
+                <InputLabel>College Year *</InputLabel>
+                <Select
+                  value={personalInformation.collegeYear || ''}
+                  onChange={(e) => updateNameField("collegeYear", e.target.value)}
+                  label="College Year *"
+                >
+                  {COLLEGE_YEARS.map((year) => (
+                    <MenuItem key={year} value={year}>{year}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </FormGroupRows>
+            <FormGroupRows>
+              <TextInputControl 
+                value={personalInformation.degreeProgram || ''} 
+                label="Degree Program *" 
+                readonly={!showEdit} 
+                onInput={(value) => updateNameField("degreeProgram", value)} 
+                style={showEditStyle}
+              />
+            </FormGroupRows>
+          </>
+        )}
       </FormGroupCols>
     }</>
   );

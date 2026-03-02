@@ -22,6 +22,12 @@ export const userProfileSlice = createSlice({
     updateFirstName: (state, action: PayloadAction<string>) => { state.userProfile.personal.firstName = action.payload; },
     updateLastName: (state, action: PayloadAction<string>) => { state.userProfile.personal.lastName = action.payload; },
     updateMiddleName: (state, action: PayloadAction<string>) => { state.userProfile.personal.middleName = action.payload; },
+    // Mentor-specific fields
+    updateCredentials: (state, action: PayloadAction<string>) => { state.userProfile.personal.credentials = action.payload; },
+    updateCurrentProfession: (state, action: PayloadAction<string>) => { state.userProfile.personal.currentProfession = action.payload; },
+    // Mentee-specific fields
+    updateCollegeYear: (state, action: PayloadAction<string>) => { state.userProfile.personal.collegeYear = action.payload; },
+    updatePersonalDegreeProgram: (state, action: PayloadAction<string>) => { state.userProfile.personal.degreeProgram = action.payload; },
     // update availability
     updateHoursPerWeek: (state, action: PayloadAction<string>) => { state.userProfile.availability.hoursPerWeek = action.payload; },
     // update contact information
@@ -49,6 +55,7 @@ export const {
   updateProfile, updateUID,
   // update personal information
   updatePersonalInformation, updateFirstName, updateLastName, updateMiddleName,
+  updateCredentials, updateCurrentProfession, updateCollegeYear, updatePersonalDegreeProgram,
   // update contact information
   updateContactInformation, updateDisplayName, updateRole, updateEmail, updateTimeZone, updatePronouns, updateUserBio,
   // update availability

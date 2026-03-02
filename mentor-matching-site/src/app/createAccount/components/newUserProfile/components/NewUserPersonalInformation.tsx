@@ -2,9 +2,11 @@ import { useAppSelector } from "../../../../../redux/hooks";
 import FormGroupCols from "../../../../common/forms/layout/FormGroupCols";
 import FormGroupRows from "../../../../common/forms/layout/FormGroupRows";
 import TextInputControlRedux from "../../../../common/forms/textInputs/TextInputControlRedux";
-import { updateFirstName, updateLastName, updateMiddleName, updateRole, updateHoursPerWeek } from "../../../../../redux/reducers/userProfileReducer";
+import { updateFirstName, updateLastName, updateMiddleName, updateRole, updateHoursPerWeek, updateCredentials, updateCurrentProfession, updateCollegeYear, updatePersonalDegreeProgram } from "../../../../../redux/reducers/userProfileReducer";
 import SelectHoursPerWeek from "../../../../userProfileCommon/dropdowns/SelectHoursPerWeek";
 import SelectRole from "../../../../userProfileCommon/dropdowns/SelectRole";
+import SelectCredentials from "../../../../userProfileCommon/dropdowns/SelectCredentials";
+import SelectCollegeYear from "../../../../userProfileCommon/dropdowns/SelectCollegeYear";
 import FormHeader from "../../../../common/forms/layout/FormHeader";
 import FormSectionHeader from "../../../../common/forms/layout/FormSectionHeader";
 
@@ -33,6 +35,32 @@ function NewUserPersonalInformation() {
         <FormSectionHeader>Availability</FormSectionHeader>
         <SelectHoursPerWeek onSelectDispatch={updateHoursPerWeek} currentValue={availability.hoursPerWeek} />
       </FormGroupCols>
+
+      {/* Mentor-specific fields */}
+      {userPreferences.role === 'Mentor' && (
+        <FormGroupCols>
+          <FormSectionHeader>Professional Information</FormSectionHeader>
+          <SelectCredentials onSelectDispatch={updateCredentials} currentValue={personalInformation.credentials} />
+          <TextInputControlRedux 
+            value={personalInformation.currentProfession || ''} 
+            label="Current Profession *" 
+            onInputDispatch={updateCurrentProfession}
+          />
+        </FormGroupCols>
+      )}
+
+      {/* Mentee-specific fields */}
+      {userPreferences.role === 'Mentee' && (
+        <FormGroupCols>
+          <FormSectionHeader>Student Information</FormSectionHeader>
+          <SelectCollegeYear onSelectDispatch={updateCollegeYear} currentValue={personalInformation.collegeYear} />
+          <TextInputControlRedux 
+            value={personalInformation.degreeProgram || ''} 
+            label="Degree Program *" 
+            onInputDispatch={updatePersonalDegreeProgram}
+          />
+        </FormGroupCols>
+      )}
     </FormGroupCols>
   );
 }
