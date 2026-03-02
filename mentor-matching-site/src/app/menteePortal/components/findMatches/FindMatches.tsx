@@ -163,8 +163,10 @@ function FindMatches() {
 
         // Fetch user profiles
         const matchesWithUserProfiles = await Promise.all(
-          calculatedMatches.map(async (match, index) => {
-            const mentorProfileId = mentorProfilesWithIds[index].docId;
+          calculatedMatches.map(async (match) => {
+            // Find the correct mentor profile by UID (not by array index!)
+            const mentorProfileWithId = mentorProfilesWithIds.find(m => m.profile.UID === match.userId);
+            const mentorProfileId = mentorProfileWithId?.docId || '';
             
             let mentorUserProfile: UserProfile | undefined;
             try {

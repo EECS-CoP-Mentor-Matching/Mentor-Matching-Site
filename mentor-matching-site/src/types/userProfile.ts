@@ -61,6 +61,12 @@ export interface UserPersonalInformation {
   firstName: string
   lastName: string
   middleName: string
+  // Mentor-specific fields
+  credentials?: string
+  currentProfession?: string
+  // Mentee-specific fields  
+  collegeYear?: string
+  degreeProgram?: string
 }
 
 export const initUserPersonalInformation = () => {

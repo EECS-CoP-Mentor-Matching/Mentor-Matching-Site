@@ -28,8 +28,8 @@ import {
   LIFE_EXPERIENCES, 
   LANGUAGES, 
   MENTORSHIP_GOALS,
-  COLLEGE_YEAR_OPTIONS,        
-  RACIAL_IDENTITY_OPTIONS      
+  COLLEGE_YEARS,
+  RACIAL_IDENTITIES
 } from "../../../../config/matchingConfig";
 
 
@@ -47,11 +47,9 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
   const [lifeExperiences, setLifeExperiences] = useState<string[]>([]);
   const [languages, setLanguages] = useState<string[]>(['English']); // Default to English
   const [otherLanguage, setOtherLanguage] = useState<string>('');
-  const [isStudent, setIsStudent] = useState<boolean>(false);
-  const [collegeYear, setCollegeYear] = useState<string>('');
   const [racialIdentity, setRacialIdentity] = useState<string>('');
   const [introduction, setIntroduction] = useState<string>(''); // Profile name (50 chars)
-  const [aboutMe, setAboutMe] = useState<string>(''); // About me section (500 chars)
+  const [aboutMe, setAboutMe] = useState<string>(''); // Elevator pitch (150 chars)
   const [mentorshipGoal, setMentorshipGoal] = useState<string>('');
   const [mentorshipGoalOther, setMentorshipGoalOther] = useState<string>('');
   const [weights, setWeights] = useState<UserWeights>(initUserWeights());
@@ -100,12 +98,11 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
         technicalInterests,
         lifeExperiences,
         languages,
-        isStudent,                    
-        collegeYear,                  
-        racialIdentity,               
+        // Only include racialIdentity if "Racial Minority" selected
+        racialIdentity: lifeExperiences.includes('Racial Minority') ? racialIdentity : '',
         weights,
         introduction, // Profile name (50 chars)
-        aboutMe, // About me section (500 chars)
+        aboutMe, // Elevator pitch (150 chars)
         mentorshipGoal,
         isActive: true,
         currentMatchCount: 0,
@@ -155,7 +152,10 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
       throw new Error("Please give your profile a name");
     }
     if (!aboutMe.trim()) {
-      throw new Error("Please write something about yourself in the About Me section");
+      throw new Error("Please write your elevator pitch");
+    }
+    if (aboutMe.length > 150) {
+      throw new Error("Elevator pitch must be 150 characters or less");
     }
   }
 
@@ -268,7 +268,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
                 <MenuItem value="">
                   <em>Prefer not to specify</em>
                 </MenuItem>
-                {RACIAL_IDENTITY_OPTIONS.map((identity) => (
+                {RACIAL_IDENTITIES.map((identity) => (
                   <MenuItem key={identity} value={identity}>
                     {identity}
                   </MenuItem>
@@ -310,50 +310,6 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
             />
           )}
 
-          {/* Student Status - MENTEES ONLY */}
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-              Are you currently a student?
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant={isStudent ? "contained" : "outlined"}
-                onClick={() => setIsStudent(true)}
-                fullWidth
-              >
-                Yes
-              </Button>
-              <Button
-                variant={!isStudent ? "contained" : "outlined"}
-                onClick={() => {
-                  setIsStudent(false);
-                  setCollegeYear(''); // Clear year if not a student
-                }}
-                fullWidth
-              >
-                No
-              </Button>
-            </Box>
-          </FormControl>
-
-          {/* College Year - Only if student */}
-          {isStudent && (
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>College Year</InputLabel>
-              <Select
-                value={collegeYear}
-                onChange={(e) => setCollegeYear(e.target.value)}
-                label="College Year"
-              >
-                {COLLEGE_YEAR_OPTIONS.map((year) => (
-                  <MenuItem key={year} value={year}>
-                    {year}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-
           {/* Profile Name */}
           <TextField
             fullWidth
@@ -377,19 +333,19 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
             fullWidth
             required
             label="Your Elevator Pitch *"
-            placeholder="What makes you an awesome mentee? Share your passion, goals, and what you bring to a mentorship..."
+            placeholder="Why are you seeking mentorship? What are your goals?"
             multiline
-            rows={4}
+            rows={3}
             value={aboutMe}
             onChange={(e) => {
               const value = e.target.value;
-              if (value.length <= 500) {
+              if (value.length <= 150) {
                 setAboutMe(value);
               }
             }}
-            helperText={`${aboutMe.length}/500 characters - This is your elevator pitch! What makes you an awesome mentee?`}
+            helperText={`${aboutMe.length}/150 characters`}
             sx={{ mb: 2 }}
-            inputProps={{ maxLength: 500 }}
+            inputProps={{ maxLength: 150 }}
           />
         </Box>
 

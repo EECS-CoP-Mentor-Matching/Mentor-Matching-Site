@@ -124,6 +124,30 @@ function NewUserProfile() {
         });
         return;
       }
+      
+      // Mentor validation
+      if (userProfile?.preferences?.role === 'Mentor') {
+        if (!userProfile?.personal?.credentials?.trim()) {
+          setErrorState({ errorMessage: 'Credentials are required for mentors', isError: true });
+          return;
+        }
+        if (!userProfile?.personal?.currentProfession?.trim()) {
+          setErrorState({ errorMessage: 'Current Profession is required for mentors', isError: true });
+          return;
+        }
+      }
+      
+      // Mentee validation
+      if (userProfile?.preferences?.role === 'Mentee') {
+        if (!userProfile?.personal?.collegeYear?.trim()) {
+          setErrorState({ errorMessage: 'College Year is required for mentees', isError: true });
+          return;
+        }
+        if (!userProfile?.personal?.degreeProgram?.trim()) {
+          setErrorState({ errorMessage: 'Degree Program is required for mentees', isError: true });
+          return;
+        }
+      }
     }
 
     if (currentStep >= FormStep.Contact && currentStep < FormStep.UserAgreement) {
@@ -172,6 +196,34 @@ function NewUserProfile() {
       });
       setCreateAccountLoading(false);
       return;
+    }
+
+    // Mentor validation
+    if (userProfile?.preferences?.role === 'Mentor') {
+      if (!userProfile?.personal?.credentials?.trim()) {
+        setErrorState({ errorMessage: 'Credentials are required for mentors', isError: true });
+        setCreateAccountLoading(false);
+        return;
+      }
+      if (!userProfile?.personal?.currentProfession?.trim()) {
+        setErrorState({ errorMessage: 'Current Profession is required for mentors', isError: true });
+        setCreateAccountLoading(false);
+        return;
+      }
+    }
+
+    // Mentee validation
+    if (userProfile?.preferences?.role === 'Mentee') {
+      if (!userProfile?.personal?.collegeYear?.trim()) {
+        setErrorState({ errorMessage: 'College Year is required for mentees', isError: true });
+        setCreateAccountLoading(false);
+        return;
+      }
+      if (!userProfile?.personal?.degreeProgram?.trim()) {
+        setErrorState({ errorMessage: 'Degree Program is required for mentees', isError: true });
+        setCreateAccountLoading(false);
+        return;
+      }
     }
 
     if (currentStep === FormStep.UserAgreement && !userHasAgreed) {

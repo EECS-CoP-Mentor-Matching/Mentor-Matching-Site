@@ -186,9 +186,9 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
           {/* Student Info */}
           <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', mb: 1 }}>
-            {profile.isStudent && (
+            {matchUserProfile?.personal?.collegeYear && (
               <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
-                {profile.collegeYear || 'Student'} • {profile.careerFields?.[0]}
+                {matchUserProfile.personal.collegeYear} • {matchUserProfile.personal.degreeProgram || profile.careerFields?.[0]}
               </Typography>
             )}
           </Box>

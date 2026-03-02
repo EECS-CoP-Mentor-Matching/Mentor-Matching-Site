@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Button, Card, TextField, FormControl, InputLabel, Select, MenuItem, OutlinedInput, Checkbox, ListItemText, Typography, Divider, Alert } from "@mui/material";
 import { MatchProfile, UserWeights, initUserWeights } from "../../../types/matchProfile";
 import { DocItem } from "../../../types/types";
-import { CAREER_FIELDS, LIFE_EXPERIENCES, LANGUAGES, MENTORSHIP_GOALS, getTechnicalInterestOptions } from "../../../config/matchingConfig";
+import { CAREER_FIELDS, LIFE_EXPERIENCES, LANGUAGES, MENTORSHIP_GOALS, getTechnicalInterestOptions, RACIAL_IDENTITIES } from "../../../config/matchingConfig";
 import { WeightSelector } from "../forms/WeightSelector";
 import ModalWrapper from "../forms/modals/ModalWrapper";
 
@@ -31,9 +31,15 @@ function EditProfile({ matchProfile, updateProfileState, editing, setEditing, us
   const [aboutMe, setAboutMe] = useState<string>(matchProfile.data.aboutMe || '');
   const [mentorshipGoal, setMentorshipGoal] = useState<string>(matchProfile.data.mentorshipGoal || '');
   const [mentorshipGoalOther, setMentorshipGoalOther] = useState<string>(matchProfile.data.mentorshipGoalOther || '');
-  const [areasOfExpertise, setAreasOfExpertise] = useState<string>(
-    matchProfile.data.areasOfExpertise?.join(', ') || ''
-  );
+  const [areasOfExpertise, setAreasOfExpertise] = useState<string>(() => {
+    const expertise = matchProfile.data.areasOfExpertise;
+    if (Array.isArray(expertise)) {
+      // Old data was array, convert to string
+      return expertise.join(', ');
+    }
+    return expertise || '';
+  });
+  const [racialIdentity, setRacialIdentity] = useState<string>(matchProfile.data.racialIdentity || '');
   const [weights, setWeights] = useState<UserWeights>(matchProfile.data.weights || initUserWeights());
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -82,14 +88,19 @@ function EditProfile({ matchProfile, updateProfileState, editing, setEditing, us
         if (!areasOfExpertise.trim()) {
           throw new Error('Areas of Expertise is required for mentors');
         }
-        updatedProfile.areasOfExpertise = areasOfExpertise 
-          ? areasOfExpertise.split(',').map(area => area.trim()).filter(area => area.length > 0)
-          : [];
+        updatedProfile.areasOfExpertise = areasOfExpertise;
       }
 
       // Add optional fields
       if (languages.includes('Other') && otherLanguage.trim()) {
         updatedProfile.otherLanguage = otherLanguage;
+      }
+      
+      // Racial Identity - only save if "Racial Minority" selected
+      if (lifeExperiences.includes('Racial Minority') && racialIdentity.trim()) {
+        updatedProfile.racialIdentity = racialIdentity;
+      } else {
+        updatedProfile.racialIdentity = ''; // Clear if not racial minority
       }
 
       // Call appropriate service method based on userType
@@ -285,6 +296,22 @@ function EditProfile({ matchProfile, updateProfileState, editing, setEditing, us
             onChange={(e) => setOtherLanguage(e.target.value)}
             sx={{ mb: 2 }}
           />
+        )}
+
+        {/* Racial Identity - Only if "Racial Minority" selected */}
+        {lifeExperiences.includes('Racial Minority') && (
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Racial Identity *</InputLabel>
+            <Select
+              value={racialIdentity}
+              onChange={(e) => setRacialIdentity(e.target.value)}
+              label="Racial Identity *"
+            >
+              {RACIAL_IDENTITIES.map((identity) => (
+                <MenuItem key={identity} value={identity}>{identity}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         )}
 
         {/* Mentorship Goal (Mentee only) */}
