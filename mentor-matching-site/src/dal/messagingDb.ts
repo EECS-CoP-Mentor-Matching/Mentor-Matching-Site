@@ -38,15 +38,7 @@ async function mentorReplyAsync(docId: string, message: Message, reply: MentorRe
   }
 }
 
-async function getMessagesSentForMenteeProfileAsync(mentorProfileId: string, menteeProfileId: string) : Promise<DocItem<Message>[]> {
-  const messages = (await queryMany<Message>(collectionName, 
-    where("mentorProfileId", "==", mentorProfileId), 
-    where("menteeProfileId", "==", menteeProfileId))).results;
-  
-  if (messages.length === 0) return messages;
 
-  return await filterMessages(messages[0].data.menteeUID, messages);
-}
 
 async function getAwaitingMessagesSentForMentorAsync(mentorUID: string) : Promise<DocItem<Message>[]> {
   return (await queryMany<Message>(collectionName,
@@ -87,14 +79,23 @@ async function getMessagesSentToMentorAsync(mentorUID: string): Promise<DocItem<
   return await filterMessages(mentorUID, messages);
 }
 
-const filterMessages = async (menteeUID: string, messages: DocItem<Message>[]) => {
-  const userReports = await reportUserService.getUserReports(menteeUID);
+async function getMessagesSentToUserAsync(userUID: string): Promise<DocItem<Message>[]> {
+  const messages = (await queryMany<Message>(collectionName,
+    where("recipientUID", "==", userUID))).results;
+
+    if (messages.length === 0) return messages;
+
+    return await filterMessages(userUID, messages);
+}
+
+const filterMessages = async (userUID: string, messages: DocItem<Message>[]) => {
+  const userReports = await reportUserService.getUserReports(userUID);
   
   // hide messages of reported users and rejected messages
   const filteredMessages = Array.of<DocItem<Message>>();
   messages.forEach(message => {
     const mentorDenied = parseInt(message.data.mentorReply) === MentorReply.denied;
-    const mentorReported = reportUserService.containsReportedUserID(userReports, message.data.mentorUID)
+    const mentorReported = reportUserService.containsReportedUserID(userReports, message.data.senderUID)
     
     if (!mentorDenied && !mentorReported) {
       filteredMessages.push(message);
@@ -107,11 +108,9 @@ export const messagingDb = {
   sendMessageAsync,
   DeleteMessageAsync,
   mentorReplyAsync,
-  getMessagesSentForMenteeProfileAsync,
   getAwaitingMessagesSentForMentorAsync,
   getProcessedMessagesSentForMentorAsync,
   getMessagesSentByMenteeAsync,
-  getMessagesSentToMenteeAsync,
-  getMessagesSentToMentorAsync,
+  getMessagesSentToUserAsync,
   containsReportedUserID
 }
