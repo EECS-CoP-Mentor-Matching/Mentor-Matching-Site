@@ -174,6 +174,7 @@ export interface CalculatedMatch {
 export interface Message {
   senderUID: string
   senderProfileId: string
+  senderDisplayName: string
   recipientUID: string
   recipientProfileId: string
   message: string
