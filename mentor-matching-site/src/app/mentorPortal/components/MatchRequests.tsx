@@ -1,62 +1,75 @@
-import { useState, useEffect } from 'react';
+/**
+ * MATCH REQUESTS COMPONENT - Using Enhanced MatchCard
+ * 
+ * Shows pending mentee connection requests for mentors to review
+ */
+
+import { useState, useEffect, useCallback } from 'react';
 import {
   Box,
-  Card,
-  CardContent,
   Typography,
-  Button,
-  Chip,
   CircularProgress,
   Alert,
-  Avatar,
-  Divider,
   Grid
 } from '@mui/material';
-import {
-  CheckCircle as AcceptIcon,
-  Cancel as DeclineIcon,
-  Person as PersonIcon
-} from '@mui/icons-material';
 import { useAppSelector } from '../../../redux/hooks';
 import matchDbService, { Match } from '../../../service/matchDbService';
 import menteeService from '../../../service/menteeService';
+import userService from '../../../service/userService';
+import { mentorService } from '../../../service/mentorService';
+import MatchCard from '../../common/forms/MatchCard'; // Enhanced version
 import { MatchProfile } from '../../../types/matchProfile';
+import { UserProfile } from '../../../types/userProfile';
 import ContentContainer from '../../common/ContentContainer';
 
 interface MatchRequestWithProfile extends Match {
   menteeProfile?: MatchProfile;
+  menteeUserProfile?: UserProfile;
 }
 
 function MatchRequests() {
   const [matches, setMatches] = useState<MatchRequestWithProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [processingId, setProcessingId] = useState<string | null>(null);
+  const [mentorProfile, setMentorProfile] = useState<MatchProfile | null>(null);
 
   const userProfile = useAppSelector((state) => state.userProfile.userProfile);
 
-  useEffect(() => {
-    loadPendingMatches();
-  }, [userProfile]);
-
-  const loadPendingMatches = async () => {
+  const loadPendingMatches = useCallback(async () => {
     if (!userProfile?.UID) return;
 
     setLoading(true);
     setError('');
 
     try {
+      // Get mentor's profile for comparison
+      const mentorProfiles = await mentorService.searchMentorProfilesByUser(userProfile.UID);
+      if (mentorProfiles.length > 0) {
+        setMentorProfile(mentorProfiles[0].data);
+      }
+
       // Get pending matches for this mentor
       const pendingMatches = await matchDbService.getPendingMatchesForMentor(userProfile.UID);
 
-      // Load mentee profile data for each match
+      // Load mentee profile AND user profile data for each match
       const matchesWithProfiles = await Promise.all(
         pendingMatches.map(async (match) => {
           try {
+            // Get mentee's matching profile
             const menteeProfile = await menteeService.searchMenteeProfileById(match.menteeProfileId);
+            
+            // Get mentee's user profile for additional info
+            let menteeUserProfile: UserProfile | undefined;
+            try {
+              menteeUserProfile = await userService.getUserProfile(match.menteeId);
+            } catch (err) {
+              console.log('Could not load mentee user profile');
+            }
+
             return {
               ...match,
-              menteeProfile: menteeProfile?.data
+              menteeProfile: menteeProfile?.data,
+              menteeUserProfile
             };
           } catch (err) {
             console.error('Error loading mentee profile:', err);
@@ -72,51 +85,47 @@ function MatchRequests() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userProfile?.UID]);
 
-  const handleAccept = async (matchId: string) => {
-    setProcessingId(matchId);
+  useEffect(() => {
+    loadPendingMatches();
+  }, [loadPendingMatches]);
+
+  const handleAccept = async (match: MatchRequestWithProfile, event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    if (!match.matchId) return;
+
     try {
-      await matchDbService.updateMatchStatus(matchId, 'accepted');
+      await matchDbService.updateMatchStatus(match.matchId, 'accepted');
       await loadPendingMatches(); // Refresh list
     } catch (err) {
       console.error('Error accepting match:', err);
       setError('Failed to accept match. Please try again.');
-    } finally {
-      setProcessingId(null);
     }
   };
 
-  const handleDecline = async (matchId: string) => {
-    setProcessingId(matchId);
+  const handleDecline = async (match: MatchRequestWithProfile, event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    if (!match.matchId) return;
+
     try {
-      await matchDbService.updateMatchStatus(matchId, 'declined');
+      await matchDbService.updateMatchStatus(match.matchId, 'declined');
       await loadPendingMatches(); // Refresh list
     } catch (err) {
       console.error('Error declining match:', err);
       setError('Failed to decline match. Please try again.');
-    } finally {
-      setProcessingId(null);
     }
-  };
-
-  const getMatchColor = (percentage: number): string => {
-    if (percentage >= 80) return '#22c55e';
-    if (percentage >= 60) return '#3b82f6';
-    if (percentage >= 40) return '#f59e0b';
-    return '#ef4444';
-  };
-
-  const getMatchLabel = (percentage: number): string => {
-    if (percentage >= 80) return 'Excellent Match';
-    if (percentage >= 60) return 'Good Match';
-    if (percentage >= 40) return 'Fair Match';
-    return 'Potential Match';
   };
 
   return (
     <ContentContainer title="Match Requests">
-      <Box sx={{ maxWidth: 1200, margin: '0 auto', padding: 3 }}>
+      <Box sx={{ 
+        bgcolor: '#fafafa', // Very light gray like wireframe
+        minHeight: '100vh',
+        py: 3
+      }}>
+        <Box sx={{ maxWidth: 1400, margin: '0 auto', padding: 3 }}>
+        
         {/* Info Banner */}
         <Alert severity="info" sx={{ marginBottom: 3 }}>
           <Typography variant="body2">
@@ -151,166 +160,44 @@ function MatchRequests() {
           </Box>
         )}
 
-        {/* Match Requests List */}
+        {/* Pending Matches - 2 COLUMN GRID WITH ENHANCED MATCHCARD */}
         {!loading && matches.length > 0 && (
           <>
-            <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
-              {matches.length} Pending {matches.length === 1 ? 'Request' : 'Requests'}
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6">
+                {matches.length} Pending {matches.length === 1 ? 'Request' : 'Requests'}
+              </Typography>
+            </Box>
 
             <Grid container spacing={3}>
-              {matches.map((match) => {
-                const matchColor = getMatchColor(match.matchPercentage);
-                const isProcessing = processingId === match.matchId;
-
-                return (
-                  <Grid item xs={12} key={match.matchId}>
-                    <Card sx={{ border: '1px solid #e0e0e0', position: 'relative' }}>
-                      <CardContent>
-                        {/* Header: Avatar, Name, Match % */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                          <Avatar sx={{ bgcolor: matchColor, mr: 2, width: 56, height: 56 }}>
-                            <PersonIcon />
-                          </Avatar>
-                          
-                          <Box sx={{ flex: 1 }}>
-                            <Typography variant="h6" sx={{ fontWeight: 600, color: '#0066cc' }}>
-                              {match.menteeProfile?.introduction || 'Mentee Profile'}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Requested {new Date(match.matchedAt.seconds * 1000).toLocaleDateString()}
-                            </Typography>
-                          </Box>
-
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Typography variant="h4" sx={{ color: matchColor, fontWeight: 700 }}>
-                              {Math.round(match.matchPercentage)}%
-                            </Typography>
-                            <Chip 
-                              label={getMatchLabel(match.matchPercentage)} 
-                              size="small"
-                              sx={{ 
-                                bgcolor: matchColor + '20',
-                                color: matchColor,
-                                fontWeight: 600
-                              }}
-                            />
-                          </Box>
-                        </Box>
-
-                        <Divider sx={{ my: 2 }} />
-
-                        {/* Mentee Details */}
-                        {match.menteeProfile && (
-                          <Box sx={{ mb: 2 }}>
-                            {/* Elevator Pitch */}
-                            {match.menteeProfile.aboutMe && (
-                              <Box sx={{ mb: 2, p: 2, bgcolor: '#f9fafb', borderRadius: 1 }}>
-                                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#555' }}>
-                                  About This Mentee
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: '#374151' }}>
-                                  {match.menteeProfile.aboutMe}
-                                </Typography>
-                              </Box>
-                            )}
-
-                            {/* Career Fields */}
-                            <Box sx={{ mb: 1 }}>
-                              <Typography variant="caption" sx={{ fontWeight: 600, color: '#555' }}>
-                                Career Fields:
-                              </Typography>
-                              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                                {match.menteeProfile.careerFields?.map((field) => (
-                                  <Chip key={field} label={field} size="small" color="primary" />
-                                ))}
-                              </Box>
-                            </Box>
-
-                            {/* Technical Interests */}
-                            <Box sx={{ mb: 1 }}>
-                              <Typography variant="caption" sx={{ fontWeight: 600, color: '#555' }}>
-                                Technical Interests:
-                              </Typography>
-                              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                                {match.menteeProfile.technicalInterests?.map((interest) => (
-                                  <Chip key={interest} label={interest} size="small" sx={{ bgcolor: '#e3f2fd' }} />
-                                ))}
-                              </Box>
-                            </Box>
-
-                            {/* Mentorship Goal */}
-                            {match.menteeProfile.mentorshipGoal && (
-                              <Box sx={{ mt: 1 }}>
-                                <Typography variant="caption" sx={{ fontWeight: 600, color: '#555' }}>
-                                  Goal: 
-                                </Typography>
-                                <Typography variant="body2" component="span" sx={{ ml: 1 }}>
-                                  {match.menteeProfile.mentorshipGoal}
-                                </Typography>
-                              </Box>
-                            )}
-                          </Box>
-                        )}
-
-                        {/* Match Breakdown */}
-                        <Box sx={{ mb: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
-                          <Typography variant="caption" sx={{ fontWeight: 600, color: '#555', display: 'block', mb: 1 }}>
-                            Match Breakdown:
-                          </Typography>
-                          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                            <Box>
-                              <Typography variant="caption" color="text.secondary">Career/Technical:</Typography>
-                              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                                {match.matchDetails.technicalInterestsScore}%
-                              </Typography>
-                            </Box>
-                            <Box>
-                              <Typography variant="caption" color="text.secondary">Life Experiences:</Typography>
-                              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                                {match.matchDetails.lifeExperiencesScore}%
-                              </Typography>
-                            </Box>
-                            <Box>
-                              <Typography variant="caption" color="text.secondary">Languages:</Typography>
-                              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                                {match.matchDetails.languagesScore}%
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Box>
-
-                        {/* Action Buttons */}
-                        <Box sx={{ display: 'flex', gap: 2 }}>
-                          <Button
-                            variant="contained"
-                            color="success"
-                            fullWidth
-                            startIcon={<AcceptIcon />}
-                            onClick={() => handleAccept(match.matchId!)}
-                            disabled={isProcessing}
-                          >
-                            {isProcessing ? 'Processing...' : 'Accept'}
-                          </Button>
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            fullWidth
-                            startIcon={<DeclineIcon />}
-                            onClick={() => handleDecline(match.matchId!)}
-                            disabled={isProcessing}
-                          >
-                            {isProcessing ? 'Processing...' : 'Decline'}
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                );
-              })}
+              {matches.map((match: MatchRequestWithProfile) => (
+                <Grid item xs={12} md={6} key={match.matchId}>
+                  <MatchCard
+                    match={{
+                      ...match,
+                      profile: match.menteeProfile!,
+                      userId: match.menteeId,
+                      userType: 'mentee',
+                      profileId: match.menteeProfileId,
+                      matchPercentage: match.matchPercentage,
+                      categoryScores: {
+                        technicalInterests: match.matchDetails?.technicalInterestsScore || 0,
+                        lifeExperiences: match.matchDetails?.lifeExperiencesScore || 0,
+                        languages: match.matchDetails?.languagesScore || 0
+                      }
+                    }}
+                    currentUserProfile={mentorProfile}
+                    matchUserProfile={match.menteeUserProfile}
+                    onAccept={(event) => handleAccept(match, event)}
+                    onDecline={(event) => handleDecline(match, event)}
+                    cardType="mentor-reviewing-mentee"
+                  />
+                </Grid>
+              ))}
             </Grid>
           </>
         )}
+      </Box>
       </Box>
     </ContentContainer>
   );

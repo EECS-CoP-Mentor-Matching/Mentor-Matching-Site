@@ -49,15 +49,19 @@ export interface MatchProfile {
   languages?: string[] // Q4: Languages
   otherLanguage?: string // If "Other" selected in languages
   
+  // NEW: Additional profile information (non-matching, for display only)
+  racialIdentity?: string // Optional for both
+  
   // NEW: User-defined weights (1-5 scale)
   weights?: UserWeights
   
   // NEW: Public profile fields
-  introduction?: string // Short profile name (50 chars)
-  aboutMe?: string // Longer introduction for vetting (200-500 chars)
-  mentorshipGoal?: string // What they want to work on
+  introduction?: string // Short profile name (50 chars) - PRIVATE
+  aboutMe?: string // Mentee elevator pitch (150 chars)
+  whyIMentor?: string // Mentor elevator pitch (150 chars) - shows on hover
+  mentorshipGoal?: string // What mentee wants to work on
   mentorshipGoalOther?: string // If "Other" selected
-  areasOfExpertise?: string[] // For mentors only
+  areasOfExpertise?: string // Mentor specializations (50 chars text, NOT array)
   
   // NEW: Matching availability
   isActive?: boolean // Available for matching

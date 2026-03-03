@@ -7,8 +7,6 @@ import UploadUserProfileImage from "../userProfileCommon/imageUpload/UploadUserP
 //import UpdatePersonalInformation from '../../../common/manageUsers/UpdatePersonalInformation';
 import UpdatePersonalInformation from '../common/manageUsers/UpdatePersonalInformation';
 import UpdateUserContactInformation from '../common/manageUsers/UpdateUserContactInformation';
-import UpdateUserDemographicInformation from '../common/manageUsers/UpdateDemographicsInformation';
-import UpdateEducationInformation from '../common/manageUsers/UpdateEducationInformation';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/userProfileReducer";
 import AuthenticatedView from '../common/auth/AuthenticatedView';
@@ -101,8 +99,6 @@ function UpdateUserProfile() {
             <UploadUserProfileImage userProfile={{ ...profileDetails, imageUrl: profileDetails?.imageUrl }} />
             <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
             <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <UpdateUserDemographicInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
-            <UpdateEducationInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
         </FormGroup>
       );
     }

@@ -130,6 +130,12 @@ export async function findMentorMatches(
   const matches: CalculatedMatch[] = [];
   
   for (const mentorProfile of mentorProfiles) {
+    // PREVENT SELF-MATCHING: Skip if same user
+    if (mentorProfile.UID === menteeProfile.UID) {
+      console.log('⚠️ Skipping self-match:', mentorProfile.UID);
+      continue;
+    }
+    
     if (mentorProfile.isActive === false) continue;
     
     // Check capacity
@@ -164,6 +170,12 @@ export async function findMenteeMatches(
   const matches: CalculatedMatch[] = [];
   
   for (const menteeProfile of menteeProfiles) {
+    // PREVENT SELF-MATCHING: Skip if same user
+    if (menteeProfile.UID === mentorProfile.UID) {
+      console.log('⚠️ Skipping self-match:', menteeProfile.UID);
+      continue;
+    }
+    
     if (menteeProfile.isActive === false) continue;
     
     const { matchPercentage, categoryScores } = calculateMatchScore(menteeProfile, mentorProfile);

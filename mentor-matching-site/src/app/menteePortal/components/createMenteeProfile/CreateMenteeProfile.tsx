@@ -27,8 +27,11 @@ import {
   getTechnicalInterestOptions, 
   LIFE_EXPERIENCES, 
   LANGUAGES, 
-  MENTORSHIP_GOALS 
+  MENTORSHIP_GOALS,
+  COLLEGE_YEARS,
+  RACIAL_IDENTITIES
 } from "../../../../config/matchingConfig";
+
 
 interface CreateMenteeProfileProps {
   backToPage: () => any
@@ -44,8 +47,9 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
   const [lifeExperiences, setLifeExperiences] = useState<string[]>([]);
   const [languages, setLanguages] = useState<string[]>(['English']); // Default to English
   const [otherLanguage, setOtherLanguage] = useState<string>('');
+  const [racialIdentity, setRacialIdentity] = useState<string>('');
   const [introduction, setIntroduction] = useState<string>(''); // Profile name (50 chars)
-  const [aboutMe, setAboutMe] = useState<string>(''); // About me section (500 chars)
+  const [aboutMe, setAboutMe] = useState<string>(''); // Elevator pitch (150 chars)
   const [mentorshipGoal, setMentorshipGoal] = useState<string>('');
   const [mentorshipGoalOther, setMentorshipGoalOther] = useState<string>('');
   const [weights, setWeights] = useState<UserWeights>(initUserWeights());
@@ -94,9 +98,11 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
         technicalInterests,
         lifeExperiences,
         languages,
+        // Only include racialIdentity if "Racial Minority" selected
+        racialIdentity: lifeExperiences.includes('Racial Minority') ? racialIdentity : '',
         weights,
         introduction, // Profile name (50 chars)
-        aboutMe, // About me section (500 chars)
+        aboutMe, // Elevator pitch (150 chars)
         mentorshipGoal,
         isActive: true,
         currentMatchCount: 0,
@@ -146,7 +152,10 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
       throw new Error("Please give your profile a name");
     }
     if (!aboutMe.trim()) {
-      throw new Error("Please write something about yourself in the About Me section");
+      throw new Error("Please write your elevator pitch");
+    }
+    if (aboutMe.length > 150) {
+      throw new Error("Elevator pitch must be 150 characters or less");
     }
   }
 
@@ -247,6 +256,30 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
             </Typography>
           </FormControl>
 
+          {/* Racial Identity - Only if selected "Racial Minority" */}
+          {lifeExperiences.includes('Racial Minority') && (
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Racial Identity (Optional)</InputLabel>
+              <Select
+                value={racialIdentity}
+                onChange={(e) => setRacialIdentity(e.target.value)}
+                label="Racial Identity (Optional)"
+              >
+                <MenuItem value="">
+                  <em>Prefer not to specify</em>
+                </MenuItem>
+                {RACIAL_IDENTITIES.map((identity) => (
+                  <MenuItem key={identity} value={identity}>
+                    {identity}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, ml: 1.5 }}>
+                This helps mentors understand your background but won't affect matching
+              </Typography>
+            </FormControl>
+          )}
+          
           {/* Languages */}
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>Languages</InputLabel>
@@ -300,19 +333,19 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
             fullWidth
             required
             label="Your Elevator Pitch *"
-            placeholder="What makes you an awesome mentee? Share your passion, goals, and what you bring to a mentorship..."
+            placeholder="Why are you seeking mentorship? What are your goals?"
             multiline
-            rows={4}
+            rows={3}
             value={aboutMe}
             onChange={(e) => {
               const value = e.target.value;
-              if (value.length <= 500) {
+              if (value.length <= 150) {
                 setAboutMe(value);
               }
             }}
-            helperText={`${aboutMe.length}/500 characters - This is your elevator pitch! What makes you an awesome mentee?`}
+            helperText={`${aboutMe.length}/150 characters`}
             sx={{ mb: 2 }}
-            inputProps={{ maxLength: 500 }}
+            inputProps={{ maxLength: 150 }}
           />
         </Box>
 

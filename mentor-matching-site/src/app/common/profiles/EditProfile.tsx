@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Button, Card, TextField, FormControl, InputLabel, Select, MenuItem, OutlinedInput, Checkbox, ListItemText, Typography, Divider, Alert } from "@mui/material";
 import { MatchProfile, UserWeights, initUserWeights } from "../../../types/matchProfile";
 import { DocItem } from "../../../types/types";
-import { CAREER_FIELDS, LIFE_EXPERIENCES, LANGUAGES, MENTORSHIP_GOALS, getTechnicalInterestOptions } from "../../../config/matchingConfig";
+import { CAREER_FIELDS, LIFE_EXPERIENCES, LANGUAGES, MENTORSHIP_GOALS, getTechnicalInterestOptions, RACIAL_IDENTITIES } from "../../../config/matchingConfig";
 import { WeightSelector } from "../forms/WeightSelector";
 import ModalWrapper from "../forms/modals/ModalWrapper";
 
@@ -31,6 +31,15 @@ function EditProfile({ matchProfile, updateProfileState, editing, setEditing, us
   const [aboutMe, setAboutMe] = useState<string>(matchProfile.data.aboutMe || '');
   const [mentorshipGoal, setMentorshipGoal] = useState<string>(matchProfile.data.mentorshipGoal || '');
   const [mentorshipGoalOther, setMentorshipGoalOther] = useState<string>(matchProfile.data.mentorshipGoalOther || '');
+  const [areasOfExpertise, setAreasOfExpertise] = useState<string>(() => {
+    const expertise = matchProfile.data.areasOfExpertise;
+    if (Array.isArray(expertise)) {
+      // Old data was array, convert to string
+      return expertise.join(', ');
+    }
+    return expertise || '';
+  });
+  const [racialIdentity, setRacialIdentity] = useState<string>(matchProfile.data.racialIdentity || '');
   const [weights, setWeights] = useState<UserWeights>(matchProfile.data.weights || initUserWeights());
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -64,17 +73,34 @@ function EditProfile({ matchProfile, updateProfileState, editing, setEditing, us
         languages,
         weights,
         introduction,
-        aboutMe,
-        mentorshipGoal,
         updatedAt: new Date()
       };
+
+      // Add role-specific fields
+      if (userType === 'mentee') {
+        updatedProfile.aboutMe = aboutMe;
+        updatedProfile.mentorshipGoal = mentorshipGoal;
+        if (mentorshipGoal === 'Other' && mentorshipGoalOther.trim()) {
+          updatedProfile.mentorshipGoalOther = mentorshipGoalOther;
+        }
+      } else {
+        // Mentor fields - validate required
+        if (!areasOfExpertise.trim()) {
+          throw new Error('Areas of Expertise is required for mentors');
+        }
+        updatedProfile.areasOfExpertise = areasOfExpertise;
+      }
 
       // Add optional fields
       if (languages.includes('Other') && otherLanguage.trim()) {
         updatedProfile.otherLanguage = otherLanguage;
       }
-      if (mentorshipGoal === 'Other' && mentorshipGoalOther.trim()) {
-        updatedProfile.mentorshipGoalOther = mentorshipGoalOther;
+      
+      // Racial Identity - only save if "Racial Minority" selected
+      if (lifeExperiences.includes('Racial Minority') && racialIdentity.trim()) {
+        updatedProfile.racialIdentity = racialIdentity;
+      } else {
+        updatedProfile.racialIdentity = ''; // Clear if not racial minority
       }
 
       // Call appropriate service method based on userType
@@ -140,25 +166,41 @@ function EditProfile({ matchProfile, updateProfileState, editing, setEditing, us
           inputProps={{ maxLength: 50 }}
         />
 
-        {/* Elevator Pitch */}
-        <TextField
-          fullWidth
-          required
-          label={userType === 'mentee' ? "Your Elevator Pitch *" : "About You *"}
-          placeholder={userType === 'mentee' ? "What makes you an awesome mentee?" : "What makes you a great mentor?"}
-          multiline
-          rows={4}
-          value={aboutMe}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (value.length <= 500) {
-              setAboutMe(value);
-            }
-          }}
-          helperText={`${aboutMe.length}/500 characters`}
-          sx={{ mb: 2 }}
-          inputProps={{ maxLength: 500 }}
-        />
+        {/* Elevator Pitch - Mentees only */}
+        {userType === 'mentee' && (
+          <TextField
+            fullWidth
+            required
+            label="Your Elevator Pitch *"
+            placeholder="What makes you an awesome mentee?"
+            multiline
+            rows={4}
+            value={aboutMe}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value.length <= 500) {
+                setAboutMe(value);
+              }
+            }}
+            helperText={`${aboutMe.length}/500 characters`}
+            sx={{ mb: 2 }}
+            inputProps={{ maxLength: 500 }}
+          />
+        )}
+
+        {/* Areas of Expertise - Mentors only */}
+        {userType === 'mentor' && (
+          <TextField
+            fullWidth
+            required
+            label="Areas of Expertise *"
+            placeholder="e.g., Machine Learning, Career Development, Interview Prep"
+            value={areasOfExpertise}
+            onChange={(e) => setAreasOfExpertise(e.target.value)}
+            helperText="Separate multiple areas with commas"
+            sx={{ mb: 2 }}
+          />
+        )}
 
         {/* Career Fields */}
         <FormControl fullWidth sx={{ mb: 2 }}>
@@ -256,6 +298,22 @@ function EditProfile({ matchProfile, updateProfileState, editing, setEditing, us
           />
         )}
 
+        {/* Racial Identity - Only if "Racial Minority" selected */}
+        {lifeExperiences.includes('Racial Minority') && (
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Racial Identity *</InputLabel>
+            <Select
+              value={racialIdentity}
+              onChange={(e) => setRacialIdentity(e.target.value)}
+              label="Racial Identity *"
+            >
+              {RACIAL_IDENTITIES.map((identity) => (
+                <MenuItem key={identity} value={identity}>{identity}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+
         {/* Mentorship Goal (Mentee only) */}
         {userType === 'mentee' && (
           <>
@@ -316,7 +374,14 @@ function EditProfile({ matchProfile, updateProfileState, editing, setEditing, us
           <Button
             variant="contained"
             onClick={handleUpdate}
-            disabled={loading || !introduction.trim() || !aboutMe.trim() || careerFields.length === 0 || technicalInterests.length === 0 || languages.length === 0 || (userType === 'mentee' && !mentorshipGoal)}
+            disabled={
+              loading || 
+              !introduction.trim() || 
+              careerFields.length === 0 || 
+              technicalInterests.length === 0 || 
+              languages.length === 0 || 
+              (userType === 'mentee' && (!aboutMe.trim() || !mentorshipGoal))
+            }
             fullWidth
             sx={{ 
               backgroundColor: '#0066cc',

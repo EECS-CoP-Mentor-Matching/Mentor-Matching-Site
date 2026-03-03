@@ -1,8 +1,11 @@
 import FormGroupRows from "../forms/layout/FormGroupRows";
 import FormGroupCols from "../forms/layout/FormGroupCols";
-import { FormLabel } from "@mui/material";
-import { UserProfile } from "../../../types/userProfile";
+import { FormControl, FormLabel, InputLabel, MenuItem, Select } from "@mui/material";
+import { UserProfile, HOURS_PER_WEEK_OPTIONS } from "../../../types/userProfile";
 import TextInputControl from "../forms/textInputs/TextInputControl";
+import { useAppSelector } from "../../../redux/hooks";
+import { MatchRole } from "../../../types/matchProfile";
+import { CREDENTIALS, COLLEGE_YEARS } from "../../../config/matchingConfig";
 
 interface UpdatePersonalInformationProps {
   showEdit: boolean,
@@ -12,8 +15,20 @@ interface UpdatePersonalInformationProps {
 }
 
 function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onChange }: UpdatePersonalInformationProps) {
-  //const personalInformation = selector(state => state.userProfile.userProfile.personal);
   const personalInformation = userProfile.personal;
+  const availability = userProfile.availability;
+  const userPreferences = userProfile.preferences;
+
+  // Check if the LOGGED-IN user is an Admin
+  const currentLoggedInUser = useAppSelector((state) => state.userProfile.userProfile);
+  const isLoggedInUserAdmin = currentLoggedInUser?.preferences?.role === "Admin";
+
+  // Determine which roles to show
+  // Regular users: Mentee, Mentor, Both (no Admin)
+  // Admins: Mentee, Mentor, Both, Admin
+  const availableRoles = isLoggedInUserAdmin
+    ? [MatchRole.mentee, MatchRole.mentor, MatchRole.both, "Admin"]
+    : [MatchRole.mentee, MatchRole.mentor, MatchRole.both];
 
   const updateNameField = (field: keyof typeof personalInformation, value: string) =>
     onChange(
@@ -26,20 +41,27 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
       }
     );
 
-    const updateDobField = (field: keyof typeof personalInformation.dob, value: string) =>
-      onChange(
-        {
-          ...userProfile,
-          personal: {
-            ...personalInformation,
-            dob: {
-              ...personalInformation.dob,
-              [field]: value
-            }
-          }
+  const updateAvailabilityField = (field: keyof typeof availability, value: string) =>
+    onChange(
+      {
+        ...userProfile,
+        availability: {
+          ...availability,
+          [field]: value
         }
-      )
-  
+      }
+    );
+
+  const updateRoleField = (value: string) =>
+    onChange(
+      {
+        ...userProfile,
+        preferences: {
+          ...userPreferences,
+          role: value as any
+        }
+      }
+    );
 
   return (
     <>{personalInformation !== undefined &&
@@ -50,12 +72,105 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
           <TextInputControl value={personalInformation.middleName} label="Middle Name" readonly={!showEdit} onInput={(value) => updateNameField("middleName", value)} style={showEditStyle}/>
           <TextInputControl value={personalInformation.lastName} label="Last Name" readonly={!showEdit} onInput={(value) => updateNameField("lastName", value)} style={showEditStyle}/>
         </FormGroupRows>
+        
+        <FormLabel sx={{ mt: 2 }}>Role</FormLabel>
         <FormGroupRows>
-          <FormLabel>Date of Birth</FormLabel>
-          <TextInputControl value={personalInformation.dob.month} onInput={(value) => updateDobField("month", value)} widthMulti={.025} />/
-          <TextInputControl value={personalInformation.dob.day} onInput={(value) => updateDobField("day", value)} widthMulti={.025} />/
-          <TextInputControl value={personalInformation.dob.year} onInput={(value) => updateDobField("year", value)} widthMulti={.05} />
+          <FormControl fullWidth sx={{ minWidth: 250 }} disabled={!showEdit}>
+            <InputLabel>User Role</InputLabel>
+            <Select
+              value={userPreferences.role || ""}
+              onChange={(e) => updateRoleField(e.target.value)}
+              label="User Role"
+            >
+              {availableRoles.map((role) => (
+                <MenuItem key={String(role)} value={String(role)}>
+                  {String(role)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </FormGroupRows>
+        
+        <FormLabel sx={{ mt: 2 }}>Availability</FormLabel>
+        <FormGroupRows>
+          <FormControl fullWidth sx={{ minWidth: 250 }} disabled={!showEdit}>
+            <InputLabel>Hours Available Per Week</InputLabel>
+            <Select
+              value={availability?.hoursPerWeek || ""}
+              onChange={(e) => updateAvailabilityField("hoursPerWeek", e.target.value)}
+              label="Hours Available Per Week"
+            >
+              <MenuItem value="">
+                <em>Select availability</em>
+              </MenuItem>
+              {HOURS_PER_WEEK_OPTIONS.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </FormGroupRows>
+        
+        {/* Mentor-specific fields */}
+        {userPreferences.role === 'Mentor' && (
+          <>
+            <FormLabel sx={{ mt: 2 }}>Professional Information</FormLabel>
+            <FormGroupRows>
+              <FormControl fullWidth sx={{ minWidth: 250 }} disabled={!showEdit}>
+                <InputLabel>Credentials *</InputLabel>
+                <Select
+                  value={personalInformation.credentials || ''}
+                  onChange={(e) => updateNameField("credentials", e.target.value)}
+                  label="Credentials *"
+                >
+                  {CREDENTIALS.map((credential) => (
+                    <MenuItem key={credential} value={credential}>{credential}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </FormGroupRows>
+            <FormGroupRows>
+              <TextInputControl 
+                value={personalInformation.currentProfession || ''} 
+                label="Current Profession *" 
+                readonly={!showEdit} 
+                onInput={(value) => updateNameField("currentProfession", value)} 
+                style={showEditStyle}
+              />
+            </FormGroupRows>
+          </>
+        )}
+
+        {/* Mentee-specific fields */}
+        {userPreferences.role === 'Mentee' && (
+          <>
+            <FormLabel sx={{ mt: 2 }}>Student Information</FormLabel>
+            <FormGroupRows>
+              <FormControl fullWidth sx={{ minWidth: 250 }} disabled={!showEdit}>
+                <InputLabel>College Year *</InputLabel>
+                <Select
+                  value={personalInformation.collegeYear || ''}
+                  onChange={(e) => updateNameField("collegeYear", e.target.value)}
+                  label="College Year *"
+                >
+                  {COLLEGE_YEARS.map((year) => (
+                    <MenuItem key={year} value={year}>{year}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </FormGroupRows>
+            <FormGroupRows>
+              <TextInputControl 
+                value={personalInformation.degreeProgram || ''} 
+                label="Degree Program *" 
+                readonly={!showEdit} 
+                onInput={(value) => updateNameField("degreeProgram", value)} 
+                style={showEditStyle}
+              />
+            </FormGroupRows>
+          </>
+        )}
       </FormGroupCols>
     }</>
   );

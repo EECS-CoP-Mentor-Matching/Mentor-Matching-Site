@@ -3,8 +3,6 @@ import {useEffect, useRef, useState} from "react";
 import FormGroupCols from "../../../common/forms/layout/FormGroupCols";
 import NewUserContactInformation from "./components/NewUserContactInformation";
 import NewUserPersonalInformation from "./components/NewUserPersonalInformation";
-import NewUserDemographicInformation from "./components/NewUserDemographicInformation";
-import NewUserEducationInformation from "./components/NewUserEducationInformation";
 import NewUserNavigation from "./components/NewUserNavigation";
 import {useAppDispatch, useAppSelector} from "../../../../redux/hooks";
 import { refreshNavigate } from "../../../common/auth/refreshNavigate";
@@ -20,8 +18,6 @@ import {updateProfile} from "../../../../redux/reducers/userProfileReducer";
 enum FormStep {
   VerifyEmail,
   Contact,
-  Demographic,
-  Educational,
   Personal,
   UserAgreement
 }
@@ -40,14 +36,12 @@ function NewUserProfile() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    function loadProfile() {
+      const userProfile: UserProfile = initUserProfile();
+      dispatch(updateProfile(userProfile));
+    }
     loadProfile();
   }, [dispatch]);
-
-  function loadProfile() {
-    const userProfile: UserProfile = initUserProfile();
-
-    dispatch(updateProfile(userProfile));
-  }
 
 
   useEffect(() => {
@@ -103,6 +97,59 @@ function NewUserProfile() {
   const nextStep = () => {
     resetError();
 
+    // Validate Contact Information step
+    if (currentStep === FormStep.Contact) {
+      if (!userProfile?.contact?.displayName?.trim()) {
+        setErrorState({ 
+          errorMessage: 'Display Name is required to continue', 
+          isError: true 
+        });
+        return;
+      }
+      if (!userProfile?.contact?.timeZone?.trim()) {
+        setErrorState({ 
+          errorMessage: 'Time Zone is required to continue', 
+          isError: true 
+        });
+        return;
+      }
+    }
+
+    // Validate Personal Information step
+    if (currentStep === FormStep.Personal) {
+      if (!userProfile?.availability?.hoursPerWeek?.trim()) {
+        setErrorState({ 
+          errorMessage: 'Availability (Hours Per Week) is required to continue', 
+          isError: true 
+        });
+        return;
+      }
+      
+      // Mentor validation
+      if (userProfile?.preferences?.role === 'Mentor') {
+        if (!userProfile?.personal?.credentials?.trim()) {
+          setErrorState({ errorMessage: 'Credentials are required for mentors', isError: true });
+          return;
+        }
+        if (!userProfile?.personal?.currentProfession?.trim()) {
+          setErrorState({ errorMessage: 'Current Profession is required for mentors', isError: true });
+          return;
+        }
+      }
+      
+      // Mentee validation
+      if (userProfile?.preferences?.role === 'Mentee') {
+        if (!userProfile?.personal?.collegeYear?.trim()) {
+          setErrorState({ errorMessage: 'College Year is required for mentees', isError: true });
+          return;
+        }
+        if (!userProfile?.personal?.degreeProgram?.trim()) {
+          setErrorState({ errorMessage: 'Degree Program is required for mentees', isError: true });
+          return;
+        }
+      }
+    }
+
     if (currentStep >= FormStep.Contact && currentStep < FormStep.UserAgreement) {
       setCurrentStep(currentStep + 1);
     }
@@ -122,6 +169,62 @@ function NewUserProfile() {
 
   async function profileSubmit ()  {
     resetError();
+
+    // Validate all required fields before final submission
+    if (!userProfile?.contact?.displayName?.trim()) {
+      setErrorState({ 
+        errorMessage: 'Display Name is required', 
+        isError: true 
+      });
+      setCreateAccountLoading(false);
+      return;
+    }
+
+    if (!userProfile?.contact?.timeZone?.trim()) {
+      setErrorState({ 
+        errorMessage: 'Time Zone is required', 
+        isError: true 
+      });
+      setCreateAccountLoading(false);
+      return;
+    }
+
+    if (!userProfile?.availability?.hoursPerWeek?.trim()) {
+      setErrorState({ 
+        errorMessage: 'Availability (Hours Per Week) is required', 
+        isError: true 
+      });
+      setCreateAccountLoading(false);
+      return;
+    }
+
+    // Mentor validation
+    if (userProfile?.preferences?.role === 'Mentor') {
+      if (!userProfile?.personal?.credentials?.trim()) {
+        setErrorState({ errorMessage: 'Credentials are required for mentors', isError: true });
+        setCreateAccountLoading(false);
+        return;
+      }
+      if (!userProfile?.personal?.currentProfession?.trim()) {
+        setErrorState({ errorMessage: 'Current Profession is required for mentors', isError: true });
+        setCreateAccountLoading(false);
+        return;
+      }
+    }
+
+    // Mentee validation
+    if (userProfile?.preferences?.role === 'Mentee') {
+      if (!userProfile?.personal?.collegeYear?.trim()) {
+        setErrorState({ errorMessage: 'College Year is required for mentees', isError: true });
+        setCreateAccountLoading(false);
+        return;
+      }
+      if (!userProfile?.personal?.degreeProgram?.trim()) {
+        setErrorState({ errorMessage: 'Degree Program is required for mentees', isError: true });
+        setCreateAccountLoading(false);
+        return;
+      }
+    }
 
     if (currentStep === FormStep.UserAgreement && !userHasAgreed) {
       setErrorState({ errorMessage: 'You must agree to the terms of service before continuing', isError: true });
@@ -154,10 +257,6 @@ function NewUserProfile() {
         return <VerifyEmail />
       case FormStep.Contact:
         return <NewUserContactInformation />
-      case FormStep.Demographic:
-        return <NewUserDemographicInformation />
-      case FormStep.Educational:
-        return <NewUserEducationInformation />
       case FormStep.Personal:
         return <NewUserPersonalInformation />
       case FormStep.UserAgreement:
@@ -179,7 +278,7 @@ function NewUserProfile() {
             <NewUserNavigation nextStep={nextStep}
               hideNext={currentStep < FormStep.Contact || currentStep === FormStep.UserAgreement}
               previousStep={previousStep}
-              hidePrevious={currentStep < FormStep.Demographic}
+              hidePrevious={currentStep < FormStep.Personal}
             />
           </FormGroupCols>
           <LoadingMessage message="Creating profile..." loading={createAccountLoading} />
