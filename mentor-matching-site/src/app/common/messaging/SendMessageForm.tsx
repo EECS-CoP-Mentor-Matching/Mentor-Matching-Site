@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { UserProfile } from "../../../types/userProfile";
 import userService from '../../../service/userService';
 import { Message } from "../../../types/matchProfile";
+import { Timestamp } from "firebase/firestore";
 
 
 
@@ -70,7 +71,7 @@ function SendMessageForm() {
             technicalInterest: "DEBUG",
             professionalInterest: "DEBUG",
             sentByUID: userProfile?.UID,
-            sentOn: Date.now().toLocaleString()
+            sentOn: Timestamp.fromMillis(Date.now()).toDate().toDateString()
         };
 
         messagingService.sendMessage(message);
