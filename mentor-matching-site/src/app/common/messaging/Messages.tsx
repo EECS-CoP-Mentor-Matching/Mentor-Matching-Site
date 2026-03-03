@@ -86,7 +86,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
     }
     // Get messages sent by this user:
     const getMessagesSent = async () => {
-      const messages = await messagingService.getMessagesSentByMentee(userProfile.UID);
+      const messages = await messagingService.getMessagesSentByUser(userProfile.UID);
       if (messages.length === 0) {
         console.log("No messages yet")
         // If there are no messages, the below line executes and returns us to the previous page.  Commenting it out lets us see the Messages screen:

@@ -38,8 +38,6 @@ async function mentorReplyAsync(docId: string, message: Message, reply: MentorRe
   }
 }
 
-
-
 async function getAwaitingMessagesSentForMentorAsync(mentorUID: string) : Promise<DocItem<Message>[]> {
   return (await queryMany<Message>(collectionName,
       where("mentorUID", "==", mentorUID),
@@ -52,31 +50,13 @@ async function getProcessedMessagesSentForMentorAsync(mentorUID: string) : Promi
       where("mentorReply", "in", [MentorReply.accepted.toString(), MentorReply.denied.toString()]))).results;
 }
 
-async function getMessagesSentByMenteeAsync(menteeUID: string): Promise<DocItem<Message>[]> {
+async function getMessagesSentByUserAsync(userUID: string): Promise<DocItem<Message>[]> {
   const messages = (await queryMany<Message>(collectionName,
-    where("sentByUID", "==", menteeUID))).results;
+    where("senderUID", "==", userUID))).results;
 
   if (messages.length === 0) return messages;
 
-  return await filterMessages(menteeUID, messages);
-}
-
-async function getMessagesSentToMenteeAsync(menteeUID: string): Promise<DocItem<Message>[]> {
-  const messages = (await queryMany<Message>(collectionName,
-    where("menteeUID", "==", menteeUID))).results;
-
-  if (messages.length === 0) return messages;
-
-  return await filterMessages(menteeUID, messages);
-}
-
-async function getMessagesSentToMentorAsync(mentorUID: string): Promise<DocItem<Message>[]> {
-  const messages = (await queryMany<Message>(collectionName,
-    where("mentorUID", "==", mentorUID))).results;
-
-  if (messages.length === 0) return messages;
-
-  return await filterMessages(mentorUID, messages);
+  return await filterMessages(userUID, messages);
 }
 
 async function getMessagesSentToUserAsync(userUID: string): Promise<DocItem<Message>[]> {
@@ -110,7 +90,7 @@ export const messagingDb = {
   mentorReplyAsync,
   getAwaitingMessagesSentForMentorAsync,
   getProcessedMessagesSentForMentorAsync,
-  getMessagesSentByMenteeAsync,
+  getMessagesSentByUserAsync,
   getMessagesSentToUserAsync,
   containsReportedUserID
 }

@@ -21,8 +21,8 @@ async function getProcessedMessagesSentForMentor(mentorUID: string) {
   return await messagingDb.getProcessedMessagesSentForMentorAsync(mentorUID);
 }
 
-async function getMessagesSentByMentee(mentorUID: string) {
-  return await messagingDb.getMessagesSentByMenteeAsync(mentorUID);
+async function getMessagesSentByUser(userUID: string) {
+  return await messagingDb.getMessagesSentByUserAsync(userUID);
 }
 
 async function getMessagesSentToUser(userUID: string) {
@@ -35,6 +35,6 @@ export const messagingService = {
   mentorReply,
   getAwaitingMessagesSentForMentor,
   getProcessedMessagesSentForMentor,
-  getMessagesSentByMentee,
+  getMessagesSentByUser,
   getMessagesSentToUser
 }
