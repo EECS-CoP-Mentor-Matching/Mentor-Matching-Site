@@ -39,6 +39,7 @@ function ViewMessage({message, index, messagesLength}: ViewMessageProps) {
   return (
     <React.Fragment key={message.docId}>
       <Paper elevation={2} style={{ ...displayStyle }}>
+        <ListItemText secondary={`From: ${message.data.senderDisplayName}`} />
         <ListItem sx={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'flex-start', marginBottom: '15px' }}>
           <Box display='flex' flexDirection='column' alignItems='center' width='100%' justifyContent='flex-end'>
             <ListItemText primary={`Message #${index + 1}`} secondary={message.data.message} />
