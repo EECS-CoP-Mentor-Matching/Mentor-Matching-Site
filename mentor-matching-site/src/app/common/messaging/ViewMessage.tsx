@@ -16,11 +16,12 @@ interface ViewMessageProps {
 
 function ViewMessage({message, index, messagesLength}: ViewMessageProps) {
   const [isOpen, setisOpen] = useState(false);
+  // This is for storing if the recipient is a mentor and if they've accepted a mentorship request or not
   const [mentorProfile, setMentorProfile] = useState<UserProfile>();
 
   const getContactInfo = async () => {
     if (mentorProfile === undefined) {
-      const userProfile = await userService.getUserProfile(message.data.mentorUID);
+      const userProfile = await userService.getUserProfile(message.data.recipientUID);
       setMentorProfile(userProfile);
     }
   }
@@ -41,8 +42,9 @@ function ViewMessage({message, index, messagesLength}: ViewMessageProps) {
         <ListItem sx={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'flex-start', marginBottom: '15px' }}>
           <Box display='flex' flexDirection='column' alignItems='center' width='100%' justifyContent='flex-end'>
             <ListItemText primary={`Message #${index + 1}`} secondary={message.data.message} />
-            {parseInt(message.data.mentorReply) === MentorReply.accepted &&
+            {parseInt(message.data.mentorReply) === MentorReply.accepted && 
               <>
+              {/* Note: This should only fire if the recipient is a mentor and accepted the sender as a mentee; else mentorReply should be "not_applicable" in all other cases.*/}
               <ListItemText secondary={"The mentor accepted your request! Click the button to view their contact info."} />
               <SubmitButton onClick={openContactInfo} text="Contact Info"/>
               <ModalWrapper setIsOpen={setisOpen} open={isOpen} >
