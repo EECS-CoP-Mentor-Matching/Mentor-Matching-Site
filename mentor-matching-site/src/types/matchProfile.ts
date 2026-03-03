@@ -172,10 +172,10 @@ export interface CalculatedMatch {
 // Existing Interfaces (unchanged)
 // ============================================
 export interface Message {
-  menteeUID: string
-  menteeProfileId: string
-  mentorUID: string
-  mentorProfileId: string
+  senderUID: string
+  senderProfileId: string
+  recipientUID: string
+  recipientProfileId: string
   message: string
   mentorReply: string
   technicalInterest: string
@@ -191,6 +191,7 @@ export enum MessageState {
 }
 
 export enum MentorReply {
+  not_applicable,
   awaiting,
   accepted,
   denied
