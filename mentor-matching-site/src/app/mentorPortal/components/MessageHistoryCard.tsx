@@ -30,7 +30,7 @@ const MessageHistoryCard = ({
         <Paper elevation={2} sx={cardStyle}>
             <Box sx={{ padding: 3, textAlign: 'left', overflow: 'hidden' }}>
                 <Typography variant="subtitle1" gutterBottom>
-                    Message from {message.data.sentByUID === message.data.menteeUID ? "Mentee" : "Mentor"}:
+                    Message from {message.data.sentByUID === message.data.senderUID ? "Mentee" : "Mentor"}:
                 </Typography>
                 <Typography variant="body1" gutterBottom mb={2}>
                     {message.data.message}

@@ -40,7 +40,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
     if (messageToDelete) {
       await messagingService.deleteMessage(messageToDelete);
       // Refresh the list of messages:
-      setMessagesInbound(await fetchMessages(userProfile.UID))
+      setMessagesInbound(await messagingService.getMessagesSentToUser(userProfile.UID))
     }
     else {
       alert("An error occured while deleting your message.  Please refresh the site and try again.");
@@ -75,28 +75,10 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
       </Dialog>
     );
 
-
-
-  // Check which type of user we are looking at:
-  let fetchMessages: ((arg0: string) => any);
-  if (userProfile.preferences.role == "Mentee")
-  {
-    fetchMessages = messagingService.getMessagesSentToMentee;
-  }
-  else if (userProfile.preferences.role == "Mentor")
-  {
-    fetchMessages = messagingService.getMessagesSentToMentor;
-  }
-  // Just for debugging purposes!  We probably do not want Admins to see each others messages, but this will allow us to test the admin functions on our own accounts for now:
-  else if (userProfile.preferences.role == "Admin")
-  {
-    fetchMessages = messagingService.getMessagesSentToMentee;
-  }
-
   // Get messages addressed to this user
   useEffect(() => {
     const getMessagesInbound = async () => {
-      const messages = await messagingService.getMessagesSentToMentee(userProfile.UID);
+      const messages = await messagingService.getMessagesSentToUser(userProfile.UID);
       if (messages.length === 0) {
         console.log("No inbound messages yet");
       }
