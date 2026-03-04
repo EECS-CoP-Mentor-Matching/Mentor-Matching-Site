@@ -5,6 +5,8 @@ import ContentContainer from "../ContentContainer";
 import { useNavigate } from "react-router-dom";
 import { UserProfile } from "../../../types/userProfile";
 import userService from '../../../service/userService';
+import { MentorReply, Message } from "../../../types/matchProfile";
+import { Timestamp } from "firebase/firestore";
 
 
 
@@ -58,17 +60,18 @@ function SendMessageForm() {
             return;
         }
 
-        let message = {
-            menteeUID: messageDetails.recipient,
-            menteeProfileId: "DEBUG",
-            mentorUID: "DEBUG",
-            mentorProfileId: "DEBUG",
+        let message: Message = {
+            senderUID: userProfile.UID,
+            senderProfileId: "DEBUG",
+            senderDisplayName: userProfile.contact.displayName,
+            recipientUID: messageDetails.recipient,
+            recipientProfileId: "DEBUG",
             message: messageDetails.message,
-            mentorReply: "0",
+            mentorReply: MentorReply.not_applicable.toString(),
             technicalInterest: "DEBUG",
             professionalInterest: "DEBUG",
             sentByUID: userProfile?.UID,
-            sentOn: 0
+            sentOn: Timestamp.now()
         };
 
         messagingService.sendMessage(message);
