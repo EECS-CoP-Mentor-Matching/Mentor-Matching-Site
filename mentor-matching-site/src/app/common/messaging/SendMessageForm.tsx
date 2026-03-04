@@ -71,7 +71,7 @@ function SendMessageForm() {
             technicalInterest: "DEBUG",
             professionalInterest: "DEBUG",
             sentByUID: userProfile?.UID,
-            sentOn: Timestamp.now().toDate().toLocaleString()
+            sentOn: Timestamp.now()
         };
 
         messagingService.sendMessage(message);
