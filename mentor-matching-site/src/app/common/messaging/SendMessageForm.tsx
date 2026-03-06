@@ -81,8 +81,7 @@ function SendMessageForm() {
     }
 
     // Update state whenever the user types in the boxes:
-    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>
-) {
+    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) {
         const inputName = e.target.name;
         const inputValue = e.target.value;
 
