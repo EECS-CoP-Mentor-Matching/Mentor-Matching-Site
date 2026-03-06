@@ -60,29 +60,31 @@ function Login() {
 
   return (
     <div className="login">
-      <section className="intro-heading">
+      <div className="login-container">
+        {/* Logo and Welcome - ABOVE the card */}
+        <div className="intro-heading">
           <img 
-              src={osuIcon} 
-              alt="orange and black osu icon" 
-              /*className="intro-image" */
+            src={osuIcon} 
+            alt="Oregon State University logo" 
+            className="osu-logo"
           />
-          
           <div className="welcome-text">
-              <h2>Welcome</h2>
-              <h2>Mentor Match Login</h2>
+            <h2>Welcome</h2>
+            <h2>Mentor Match Login</h2>
           </div>
-      </section>
-      <section>
-      <FormGroup className="form-group">
-        <FormLabel>Log In</FormLabel>
-        <EmailPassword setEmail={setEmail} setPassword={setPassword} onSubmit={login} />
-        <FormControl className="form-control">
-          <Button onClick={login} variant="contained">Login</Button>
-          <button className="create-account-link" onClick={() => navigate("/create-account")}>Create an Account</button>
-        </FormControl>
-        <ErrorMessage errorState={errorState} />
-      </FormGroup>
-      </section>
+        </div>
+
+        {/* Login Form Card */}
+        <FormGroup className="form-group">
+          <FormLabel>Log In</FormLabel>
+          <EmailPassword setEmail={setEmail} setPassword={setPassword} onSubmit={login} />
+          <FormControl className="form-control">
+            <Button onClick={login} variant="contained">LOGIN</Button>
+            <Button onClick={() => navigate("/create-account")}>Create an Account</Button>
+          </FormControl>
+          <ErrorMessage errorState={errorState} />
+        </FormGroup>
+      </div>
     </div>
   );
 }

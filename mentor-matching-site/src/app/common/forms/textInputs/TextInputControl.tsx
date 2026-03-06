@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Input, FormControl, Box } from "@mui/material";
 import React, { useState } from "react";
 
 interface TextInputControlProps {
@@ -15,33 +15,54 @@ interface TextInputControlProps {
   style?: any
 }
 
-function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, sensitive, editColor, style }: TextInputControlProps) {
-  const [isValid, setIsValid] = useState(true);
-  const [internalValue, setInternalValue] = useState('');
+function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive, editColor, style }: TextInputControlProps) {
+  const controlStyle = {
+    width: `${widthMulti === undefined ? 10 : widthMulti * 100}rem`,
+    borderBottomColor: editColor !== undefined ? editColor : ""
+  }
 
-  // Use external value if provided (controlled), otherwise use internal state (uncontrolled)
-  const isControlled = value !== undefined;
-  const displayValue = isControlled ? (value ?? '') : internalValue;
+  const [isValid, setIsValid] = useState(true);
+  const [currValue, setCurrValue] = useState("");
+  const [maskedValue, setMaskedValue] = useState('');
+
+  function updateMasked(value: string) {
+    let masked = '';
+    for (let i = 0; i < value.length; i++) {
+      masked += '•';
+    }
+    setMaskedValue(masked);
+    if (onInput !== undefined) {
+      onInput(value);
+    }
+  }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter" && onSubmit !== undefined) {
-      if (checkModelState(onSubmitValidation, displayValue)) {
-        onSubmit();
-      } else {
-        setIsValid(false);
+    if (e.key === "Enter") {
+      if (onSubmit !== undefined) {
+        if (checkModelState(onSubmitValidation, currValue)) {
+          onSubmit();
+        }
+        else {
+          setIsValid(false);
+        }
       }
     }
   }
 
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value;
-    if (!isControlled) {
-      setInternalValue(val);
+    if (sensitive) {
+      updateMasked(e.target.value);
     }
+    handleInputValue(e.target.value);
+  }
+
+  function handleInputValue(value: string) {
+    setCurrValue(value);
     if (onInput !== undefined) {
-      if (checkModelState(onInputValidation, val)) {
-        onInput(val);
-      } else {
+      if (checkModelState(onInputValidation, value)) {
+        onInput(value);
+      }
+      else {
         setIsValid(false);
       }
     }
@@ -55,31 +76,43 @@ function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValida
   }
 
   return (
-    <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
-      <TextField
-        fullWidth
-        variant="outlined"
-        label={label}
-        type={sensitive ? 'password' : 'text'}
-        value={displayValue}
-        disabled={readonly}
+    <FormControl className="form-control" sx={{ mb: 2 }}>
+      {label && (
+        <Box component="label" sx={{ 
+          display: 'block',
+          mb: 1,
+          fontWeight: 600,
+          fontSize: '0.875rem',
+          color: '#333'
+        }}>
+          {label}
+        </Box>
+      )}
+      <Input 
+        value={value}
+        readOnly={readonly}
         onChange={handleInput}
         onKeyDown={handleKeyDown}
-        error={!isValid}
-        helperText={!isValid ? "Invalid Input" : ""}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': {
-              borderColor: editColor ?? '#D73F09',
-            },
-          },
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: editColor ?? '#D73F09',
-          },
-          ...style
-        }}
+        type={sensitive ? 'password' : 'text'}
+        disableUnderline
+        sx={{ 
+          ...controlStyle, 
+          ...style,
+          bgcolor: '#fff',
+          borderRadius: '4px',
+          padding: '12px 16px',
+          fontSize: '1rem',
+          border: '1px solid #ddd',
+          '&:focus': {
+            bgcolor: '#fff',
+            borderColor: '#D73F09'
+          }
+        }} 
       />
-    </div>
+      {!isValid &&
+        <div style={{ color: 'red' }}>Invalid Input</div>
+      }
+    </FormControl>
   );
 }
 
