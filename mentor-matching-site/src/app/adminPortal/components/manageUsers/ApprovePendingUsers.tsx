@@ -39,8 +39,6 @@ function ApprovePendingUsers()
         adminSetup();
     }, [currentUserId]);
 
-    console.log(pendingUserList);
-
     async function handleApproveUser(uid: string) {
         // Function to handle the click for the approe button.  Takes the user's ID and marks them as approved in Firebase.
         try {
