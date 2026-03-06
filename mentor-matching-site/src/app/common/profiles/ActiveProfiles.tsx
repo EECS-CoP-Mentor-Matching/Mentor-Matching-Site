@@ -112,8 +112,8 @@ function ActiveProfiles({ userType, onCreateProfile, backToPage }: ActiveProfile
                                 startIcon={<AddIcon />}
                                 onClick={onCreateProfile}
                                 sx={{ 
-                                    backgroundColor: '#0066cc',
-                                    '&:hover': { backgroundColor: '#0052a3' }
+                                    backgroundColor: '#D73F09',
+                                    '&:hover': { backgroundColor: '#181716' }
                                 }}
                             >
                                 Create New Profile
@@ -296,8 +296,8 @@ function ActiveProfiles({ userType, onCreateProfile, backToPage }: ActiveProfile
                                         startIcon={<AddIcon />}
                                         onClick={onCreateProfile}
                                         sx={{ 
-                                            backgroundColor: '#0066cc',
-                                            '&:hover': { backgroundColor: '#0052a3' }
+                                            backgroundColor: '#D73F09',
+                                            '&:hover': { backgroundColor: '#181716' }
                                         }}
                                     >
                                         Create Profile

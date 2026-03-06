@@ -1,17 +1,211 @@
-.user-profile {
-  padding-top: 2.75rem;
-
+/* ── OSU Design Tokens ─────────────────────────────────── */
+:root {
+  --osu-orange:      #D73F09;
+  --osu-orange-light:#FDF1EC;
+  --osu-grey:        #6B6B6B;
+  --osu-grey-light:  #F7F7F7;
+  --osu-border:      #E8E8E8;
+  --osu-text:        #1A1A1A;
+  --osu-text-muted:  #8A8A8A;
+  --section-radius:  12px;
+  --section-shadow:  0 1px 4px rgba(0,0,0,0.06);
 }
 
-.profile-section {
-  margin-bottom: 5rem;
+/* ── Page Shell ────────────────────────────────────────── */
+.user-profile-page {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1.5rem 4rem;
+  box-sizing: border-box;
 }
 
-.delete-account-button {
-  background-color: red;
-  color: white;
-  padding: 10px 20px;
-  border: none;
+/* ── Sticky Action Bar ─────────────────────────────────── */
+.profile-action-bar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(8px);
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 2px solid var(--osu-orange);
+  margin-bottom: 2.5rem;
+}
+
+.profile-action-bar h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--osu-text);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.profile-edit-btn {
+  background: none !important;
+  border: 1.5px solid var(--osu-orange) !important;
+  color: var(--osu-orange) !important;
+  border-radius: 6px !important;
+  padding: 6px 20px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  transition: background 0.15s, color 0.15s !important;
+}
+
+.profile-edit-btn:hover {
+  background: var(--osu-orange) !important;
+  color: #fff !important;
+}
+
+.profile-save-btn {
+  background: var(--osu-orange) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 6px 20px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+  transition: opacity 0.15s !important;
+}
+
+.profile-save-btn:hover {
+  opacity: 0.88;
+}
+
+/* ── Section Card ──────────────────────────────────────── */
+.profile-section-card {
+  width: 100%;
+  max-width: 760px;
+  border: 1px solid var(--osu-border);
+  border-radius: var(--section-radius);
+  box-shadow: var(--section-shadow);
+  margin-bottom: 1.5rem;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Section header strip */
+.profile-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--osu-border);
+  background: var(--osu-grey-light);
+}
+
+.profile-section-icon {
+  color: var(--osu-orange);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.profile-section-header h3 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--osu-grey);
+}
+
+/* Scrollable content area */
+.profile-section-body {
+  padding: 24px;
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--osu-border) transparent;
+}
+
+.profile-section-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.profile-section-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.profile-section-body::-webkit-scrollbar-thumb {
+  background: var(--osu-border);
+  border-radius: 99px;
+}
+
+/* Image section — no scroll needed, no max-height */
+.profile-section-body.no-scroll {
+  max-height: none;
+  overflow: visible;
+}
+
+/* ── Sub-section labels inside cards ──────────────────── */
+.profile-section-body .MuiFormLabel-root {
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.07em !important;
+  color: var(--osu-text-muted) !important;
+  margin-top: 4px;
+}
+
+/* ── MUI input containment ─────────────────────────────── */
+.profile-section-body input,
+.profile-section-body .MuiTextField-root,
+.profile-section-body .MuiFormControl-root,
+.profile-section-body .MuiInputBase-root,
+.profile-section-body .MuiInput-underline,
+.profile-section-body .MuiInput-underline::before,
+.profile-section-body .MuiInput-underline::after {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Orange underline on editable fields */
+.profile-section-body .MuiInput-underline.Mui-focused::after {
+  border-bottom-color: var(--osu-orange) !important;
+}
+
+/* ── Loading state ─────────────────────────────────────── */
+.profile-loading {
+  color: var(--osu-text-muted);
+  font-size: 0.95rem;
+  padding: 3rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+/* ── Delete Account Section ────────────────────────────── */
+.delete-account-section {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 0.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--osu-border);
+}
+
+.delete-account-link {
+  font-size: 0.85rem;
+  color: var(--osu-text-muted);
+  text-decoration: underline;
   cursor: pointer;
-  margin-top: 20px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.delete-account-link:hover {
+  color: var(--osu-text);
 }

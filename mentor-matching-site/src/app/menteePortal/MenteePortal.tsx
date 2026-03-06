@@ -60,7 +60,7 @@ function MenteePortal() {
 
               {/* Active Profiles */}
               {selectedPage === Pages.activeProfiles.toString() && !showCreateProfile && (
-                <div className="mentee-portal">
+                <div className="mentee-portal-centered">
                   <ActiveProfiles
                     userType="mentee"
                     backToPage={backToActive}
@@ -71,7 +71,7 @@ function MenteePortal() {
 
               {/* Create Profile - shown within Active Profiles tab */}
               {selectedPage === Pages.activeProfiles.toString() && showCreateProfile && (
-                <div className="mentee-portal">
+                <div className="mentee-portal-centered">
                   <CreateMenteeProfile backToPage={backToActive} />
                 </div>
               )}
@@ -92,7 +92,7 @@ function MenteePortal() {
 
               {/* Messages */}
               {selectedPage === Pages.menteeMessages.toString() && (
-                <div className="mentee-portal">
+                <div className="mentee-portal-centered">
                   <Messages userProfile={userProfile} adminView={false} />
                 </div>
               )}

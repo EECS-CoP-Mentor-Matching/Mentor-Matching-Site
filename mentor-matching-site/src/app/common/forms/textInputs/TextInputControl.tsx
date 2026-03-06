@@ -1,4 +1,4 @@
-import { Input, FormControl, InputLabel } from "@mui/material";
+import { TextField } from "@mui/material";
 import React, { useState } from "react";
 
 interface TextInputControlProps {
@@ -15,55 +15,33 @@ interface TextInputControlProps {
   style?: any
 }
 
-function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive, editColor, style }: TextInputControlProps) {
-  const controlStyle = {
-    width: `${widthMulti === undefined ? 10 : widthMulti * 100}rem`,
-    color: sensitive ? "transparent" : "",
-    borderBottomColor: editColor !== undefined ? editColor : ""
-  }
-
+function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, sensitive, editColor, style }: TextInputControlProps) {
   const [isValid, setIsValid] = useState(true);
-  const [currValue, setCurrValue] = useState("");
-  const [maskedValue, setMaskedValue] = useState('');
+  const [internalValue, setInternalValue] = useState('');
 
-  function updateMasked(value: string) {
-    let masked = '';
-    for (let i = 0; i < value.length; i++) {
-      masked += '•';
-    }
-    setMaskedValue(masked);
-    if (onInput !== undefined) {
-      onInput(value);
-    }
-  }
+  // Use external value if provided (controlled), otherwise use internal state (uncontrolled)
+  const isControlled = value !== undefined;
+  const displayValue = isControlled ? (value ?? '') : internalValue;
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter") {
-      if (onSubmit !== undefined) {
-        if (checkModelState(onSubmitValidation, currValue)) {
-          onSubmit();
-        }
-        else {
-          setIsValid(false);
-        }
+    if (e.key === "Enter" && onSubmit !== undefined) {
+      if (checkModelState(onSubmitValidation, displayValue)) {
+        onSubmit();
+      } else {
+        setIsValid(false);
       }
     }
   }
 
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
-    if (sensitive) {
-      updateMasked(e.target.value);
+    const val = e.target.value;
+    if (!isControlled) {
+      setInternalValue(val);
     }
-    handleInputValue(e.target.value);
-  }
-
-  function handleInputValue(value: string) {
-    setCurrValue(value);
     if (onInput !== undefined) {
-      if (checkModelState(onInputValidation, value)) {
-        onInput(value);
-      }
-      else {
+      if (checkModelState(onInputValidation, val)) {
+        onInput(val);
+      } else {
         setIsValid(false);
       }
     }
@@ -77,20 +55,31 @@ function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValida
   }
 
   return (
-    <FormControl className="form-control">
-      <InputLabel>{label}</InputLabel>
-      <Input value={value}
-        readOnly={readonly}
+    <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
+      <TextField
+        fullWidth
+        variant="outlined"
+        label={label}
+        type={sensitive ? 'password' : 'text'}
+        value={displayValue}
+        disabled={readonly}
         onChange={handleInput}
         onKeyDown={handleKeyDown}
-        sx={{ ...controlStyle, ...style }} />
-      {sensitive &&
-        <div style={{ zIndex: 100, position: 'absolute', bottom: 5, backgroundColor: 'white', fontSize: '1.5rem' }}>{maskedValue}</div>
-      }
-      {!isValid &&
-        <div style={{ color: 'red' }}>Invalid Input</div>
-      }
-    </FormControl>
+        error={!isValid}
+        helperText={!isValid ? "Invalid Input" : ""}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+              borderColor: editColor ?? '#D73F09',
+            },
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: editColor ?? '#D73F09',
+          },
+          ...style
+        }}
+      />
+    </div>
   );
 }
 

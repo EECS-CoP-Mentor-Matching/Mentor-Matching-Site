@@ -48,63 +48,7 @@ function TopNav() {
     border: '3px solid white' 
   };
 
-  // ============================================
-  // DYNAMIC PROFILE RENDERING
-  // ============================================
   
-  // Convert camelCase to Title Case with spaces
-  const formatFieldName = (key: string): string => {
-    return key
-      .replace(/([A-Z])/g, ' $1') // Add space before capitals
-      .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
-      .trim();
-  };
-
-  // Format values for display
-  const formatValue = (value: any): string => {
-    if (value === null || value === undefined || value === '') return '';
-    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-    if (typeof value === 'object') return ''; // Skip nested objects (will be rendered separately)
-    return String(value);
-  };
-
-  // Recursively render profile sections
-  const renderProfileSection = (sectionKey: string, sectionData: any) => {
-    // Skip these fields
-    const skipFields = ['UID', 'matchHistory', 'profilePictureUrl', 'imageUrl', 'accountSettings', 'preferences'];
-    if (skipFields.includes(sectionKey)) return null;
-    
-    // If it's not an object, skip (we only want nested sections)
-    if (typeof sectionData !== 'object' || sectionData === null) return null;
-
-    const fields: { key: string; value: any }[] = [];
-    
-    // Collect all non-object fields in this section
-    Object.entries(sectionData).forEach(([key, value]) => {
-      if (typeof value !== 'object' || value === null) {
-        const formattedValue = formatValue(value);
-        if (formattedValue) { // Only include if there's a value
-          fields.push({ key, value: formattedValue });
-        }
-      }
-    });
-
-    // If no fields to show, skip this section
-    if (fields.length === 0) return null;
-
-    return (
-      <Box key={sectionKey}>
-        <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>
-          {formatFieldName(sectionKey).toUpperCase()}
-        </Typography>
-        {fields.map(({ key, value }) => (
-          <Typography key={key} variant="body2">
-            <strong>{formatFieldName(key)}:</strong> {value}
-          </Typography>
-        ))}
-      </Box>
-    );
-  };
 
   return (
     <nav className="top-nav">
@@ -177,7 +121,7 @@ function TopNav() {
                     {userProfile?.personal?.firstName} {userProfile?.personal?.lastName}
                   </Typography>
                   <Typography variant="subtitle2" sx={{ color: '#d73f09', fontWeight: 'bold' }}>
-                    {userProfile?.preferences?.role || "Mentee"}
+                    Role: {userProfile?.preferences?.role || "Mentee"}
                   </Typography>
                 </Box>
 
@@ -187,11 +131,65 @@ function TopNav() {
                   Account Details
                 </Typography>
 
-                {/* FULLY DYNAMIC RENDERING - Shows whatever fields exist */}
+                {/* ROLE-AWARE PROFILE SECTIONS */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {userProfile && Object.entries(userProfile).map(([key, value]) => 
-                    renderProfileSection(key, value)
+
+                  {/* Contact — always shown */}
+                  <Box>
+                    <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>
+                      CONTACT
+                    </Typography>
+                    {userProfile?.contact?.email && (
+                      <Typography variant="body2"><strong>Email:</strong> {userProfile.contact.email}</Typography>
+                    )}
+                    {userProfile?.contact?.pronouns && (
+                      <Typography variant="body2"><strong>Pronouns:</strong> {userProfile.contact.pronouns}</Typography>
+                    )}
+                    {userProfile?.contact?.timeZone && (
+                      <Typography variant="body2"><strong>Time Zone:</strong> {userProfile.contact.timeZone}</Typography>
+                    )}
+                  </Box>
+
+                  {/* Availability — always shown */}
+                  {userProfile?.availability?.hoursPerWeek && (
+                    <Box>
+                      <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>
+                        AVAILABILITY
+                      </Typography>
+                      <Typography variant="body2"><strong>Hours Per Week:</strong> {userProfile.availability.hoursPerWeek}</Typography>
+                    </Box>
                   )}
+
+                  {/* Professional Information — Mentor, Both, Admin */}
+                  {(isMentor || isBoth || isAdmin) && (
+                    <Box>
+                      <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>
+                        PROFESSIONAL INFORMATION
+                      </Typography>
+                      {userProfile?.personal?.credentials && (
+                        <Typography variant="body2"><strong>Credentials:</strong> {userProfile.personal.credentials}</Typography>
+                      )}
+                      {userProfile?.personal?.currentProfession && (
+                        <Typography variant="body2"><strong>Profession:</strong> {userProfile.personal.currentProfession}</Typography>
+                      )}
+                    </Box>
+                  )}
+
+                  {/* Student Information — Mentee or Both */}
+                  {(isMentee || isBoth) && (
+                    <Box>
+                      <Typography variant="caption" sx={{ color: '#d73f09', fontWeight: 'bold' }}>
+                        STUDENT INFORMATION
+                      </Typography>
+                      {userProfile?.personal?.collegeYear && (
+                        <Typography variant="body2"><strong>College Year:</strong> {userProfile.personal.collegeYear}</Typography>
+                      )}
+                      {userProfile?.personal?.degreeProgram && (
+                        <Typography variant="body2"><strong>Degree Program:</strong> {userProfile.personal.degreeProgram}</Typography>
+                      )}
+                    </Box>
+                  )}
+
                 </Box>
 
                 <Divider sx={{ my: 2 }} />

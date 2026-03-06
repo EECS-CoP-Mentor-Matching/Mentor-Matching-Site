@@ -13,6 +13,8 @@ import LoadingMessage from "../common/forms/modals/LoadingMessage";
 import {refreshNavigate} from "../common/auth/refreshNavigate";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import osuIcon from '../../icons/osu_logo.png';
+import "./CreateAccount.css";
 
 function CreateAccount() {
   const [error, setError] = useState<ErrorState>({
@@ -128,9 +130,21 @@ function CreateAccount() {
 
   return (
     <div className='login'>
+      <section className="intro-heading">
+          <img 
+              src={osuIcon} 
+              alt="orange and black osu icon" 
+              /*className="intro-image" */
+          />
+          
+          <div className="welcome-text">
+              <h2>Welcome</h2>
+              <h3>Create Your Account</h3>
+          </div>
+      </section>
       <FormGroup className="form-group">
-          <FormHeader>Welcome, start by entering your email</FormHeader>
-          <FormLabel>Please use your Oregon State email if you have it.</FormLabel>
+          <FormHeader>Start by entering your email</FormHeader>
+          <FormLabel className="form-label">Please use your Oregon State email if you have it.</FormLabel>
           <Email submitEmail={setEmail} />
           <Password label="Password" onInput={setPassword} />
           <Password label="Confirm Password" onInput={setConfirmPassword} />

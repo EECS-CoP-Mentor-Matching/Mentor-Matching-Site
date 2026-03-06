@@ -50,12 +50,6 @@ export function calculateMatchScore(
     languages: number;
   };
 } {
-  console.log('=== CALCULATING MATCH ===');
-  console.log('Mentee weights:', menteeProfile.weights);
-  console.log('Mentee life exp:', menteeProfile.lifeExperiences);
-  console.log('Mentee languages:', menteeProfile.languages);
-  console.log('Mentor life exp:', mentorProfile.lifeExperiences);
-  console.log('Mentor languages:', mentorProfile.languages);
   
   // 1. Get Weights (Default to 3 if missing)
   const mWeights = menteeProfile.weights || {
@@ -74,7 +68,6 @@ export function calculateMatchScore(
   const lifeExpScore = calculateArrayRatio(menteeProfile.lifeExperiences || [], mentorProfile.lifeExperiences || []);
   const langScore = calculateArrayRatio(menteeProfile.languages || [], mentorProfile.languages || []);
 
-  console.log('Scores - Career/Tech:', careerTechCombined, 'Life:', lifeExpScore, 'Lang:', langScore);
 
   // 4. Overall Match based on Mentee Priority
   const categories = [
@@ -92,21 +85,17 @@ export function calculateMatchScore(
   if (allEqual) {
     // Equal weights: use simple average (33.3% each)
     finalMatchPercentage = (careerTechCombined + lifeExpScore + langScore) / 3;
-    console.log('Equal weights - using average:', careerTechCombined, '+', lifeExpScore, '+', langScore, '/ 3 =', finalMatchPercentage);
   } else {
     // Different weights: use priority system (50/25/25)
     const sorted = [...categories].sort((a, b) => b.weight - a.weight);
-    console.log('Priority order:', sorted.map(c => `${c.id}(${c.weight}): ${c.score}`));
     
     const priorityScore = sorted[0].score; 
     const secondaryScore = sorted[1].score;
     const tertiaryScore = sorted[2].score;
 
     finalMatchPercentage = (priorityScore * 0.50) + (secondaryScore * 0.25) + (tertiaryScore * 0.25);
-    console.log('Final calculation:', priorityScore, '* 0.50 +', secondaryScore, '* 0.25 +', tertiaryScore, '* 0.25 =', finalMatchPercentage);
   }
 
-  console.log('Final percentage:', Math.round(finalMatchPercentage * 1000) / 10);
 
   return {
     matchPercentage: Math.round(finalMatchPercentage * 1000) / 10, // Result like 85.5
@@ -132,7 +121,6 @@ export async function findMentorMatches(
   for (const mentorProfile of mentorProfiles) {
     // PREVENT SELF-MATCHING: Skip if same user
     if (mentorProfile.UID === menteeProfile.UID) {
-      console.log('⚠️ Skipping self-match:', mentorProfile.UID);
       continue;
     }
     
@@ -172,7 +160,6 @@ export async function findMenteeMatches(
   for (const menteeProfile of menteeProfiles) {
     // PREVENT SELF-MATCHING: Skip if same user
     if (menteeProfile.UID === mentorProfile.UID) {
-      console.log('⚠️ Skipping self-match:', menteeProfile.UID);
       continue;
     }
     

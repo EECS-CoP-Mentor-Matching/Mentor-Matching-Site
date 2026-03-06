@@ -3,6 +3,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 10px;
+  width: 100%;
+}
+
+.mentor-portal-centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   margin: 10px;
 }
