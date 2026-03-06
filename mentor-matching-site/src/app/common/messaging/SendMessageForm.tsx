@@ -5,6 +5,8 @@ import ContentContainer from "../ContentContainer";
 import { useNavigate } from "react-router-dom";
 import { UserProfile } from "../../../types/userProfile";
 import userService from '../../../service/userService';
+import { MentorReply, Message } from "../../../types/matchProfile";
+import { Timestamp } from "firebase/firestore";
 
 
 
@@ -47,7 +49,6 @@ function SendMessageForm() {
     // Create a Message object based on the user's input and send the message
     function sendMessageHandler(e: React.FormEvent) {
         e.preventDefault();
-        console.log("Send message button pressed\n" + messageDetails.recipient + "\n" + messageDetails.message);
         // Check for no value in recipient or message:
         if (messageDetails.recipient == "") {
             setErrorMessageText("Please choose a recipient");
@@ -58,17 +59,18 @@ function SendMessageForm() {
             return;
         }
 
-        let message = {
-            menteeUID: messageDetails.recipient,
-            menteeProfileId: "DEBUG",
-            mentorUID: "DEBUG",
-            mentorProfileId: "DEBUG",
+        let message: Message = {
+            senderUID: userProfile.UID,
+            senderProfileId: "",
+            senderDisplayName: userProfile.contact.displayName,
+            recipientUID: messageDetails.recipient,
+            recipientProfileId: "",
             message: messageDetails.message,
-            mentorReply: "0",
-            technicalInterest: "DEBUG",
-            professionalInterest: "DEBUG",
+            mentorReply: MentorReply.not_applicable.toString(),
+            technicalInterest: "",
+            professionalInterest: "",
             sentByUID: userProfile?.UID,
-            sentOn: 0
+            sentOn: Timestamp.now()
         };
 
         messagingService.sendMessage(message);
@@ -78,8 +80,7 @@ function SendMessageForm() {
     }
 
     // Update state whenever the user types in the boxes:
-    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>
-) {
+    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) {
         const inputName = e.target.name;
         const inputValue = e.target.value;
 

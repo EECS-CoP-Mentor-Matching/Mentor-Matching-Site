@@ -1,6 +1,6 @@
 import { collection, addDoc, updateDoc, doc, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
-import { UserWeights } from '../types/matchProfile';
+import { MentorReply, UserWeights } from '../types/matchProfile';
 
 const COLLECTION_NAME = 'matches';
 
@@ -151,22 +151,20 @@ async function endMentorship(
     endedBy
   });
 
-  // Message always goes to mentee so it shows in MenteeMessages
-  const resolvedMenteeUID = menteeUID || (endedBy === 'mentee' ? endingUserUID : notifyUserUID);
-  const resolvedMentorUID = mentorUID || (endedBy === 'mentor' ? endingUserUID : notifyUserUID);
-
   const notificationMessage = endedBy === 'mentee'
     ? `You have ended your mentorship with ${notifyUserName}. We hope it was a valuable experience!`
     : `${endingUserName} has ended the mentorship with you. We hope it was a valuable learning experience!`;
 
   const messageCollection = collection(db, 'messages');
   await addDoc(messageCollection, {
-    menteeUID: resolvedMenteeUID,
-    mentorUID: resolvedMentorUID,
-    menteeProfileId: menteeProfileId || '',
-    mentorProfileId: mentorProfileId || '',
+    senderUID: endingUserUID,
+    senderDisplayName: endingUserName,
+    recipientUID: notifyUserUID,
+    // Determine if the sender is the mentor or mentee, and assign the profileIds based on those:
+    senderProfileId: (endedBy === 'mentee' ? menteeProfileId: mentorProfileId) || '',
+    recipientProfileId: (endedBy === 'mentee' ? mentorProfileId: menteeProfileId) || '',
     message: notificationMessage,
-    mentorReply: '',
+    mentorReply: MentorReply.not_applicable,
     technicalInterest: 'Mentorship Notification',
     professionalInterest: `Ended by ${endedBy}`,
     sentByUID: endingUserUID,
