@@ -127,20 +127,23 @@ function CreateAccount() {
   }, [navigate]);
 
   return (
-    <div className='login'>
-      <section className="intro-heading">
+    <div className='create-account-page'>
+      <div className="create-account-container">
+        {/* Logo and Welcome - ABOVE the card */}
+        <div className="intro-heading">
           <img 
-              src={osuIcon} 
-              alt="orange and black osu icon" 
-              /*className="intro-image" */
+            src={osuIcon} 
+            alt="Oregon State University logo" 
+            className="osu-logo"
           />
-          
           <div className="welcome-text">
-              <h2>Welcome</h2>
-              <h3>Create Your Account</h3>
+            <h2>Welcome</h2>
+            <h3>Create Your Account</h3>
           </div>
-      </section>
-      <FormGroup className="form-group">
+        </div>
+
+        {/* Create Account Form Card */}
+        <FormGroup className="form-group">
           <FormHeader>Start by entering your email</FormHeader>
           <FormLabel className="form-label">Please use your Oregon State email if you have it.</FormLabel>
           <Email submitEmail={setEmail} />
@@ -149,8 +152,9 @@ function CreateAccount() {
           <FormControl className="form-control">
             <SubmitButton onClick={signup} text="Create an Account" widthMulti={.15} />
           </FormControl>
-        <ErrorMessage errorState={error} />
-      </FormGroup>
+          <ErrorMessage errorState={error} />
+        </FormGroup>
+      </div>
       <LoadingMessage message="Creating your account.... Don't refresh!" loading={createAccountLoading} />
     </div>
   )

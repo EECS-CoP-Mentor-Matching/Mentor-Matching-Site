@@ -1,4 +1,76 @@
-.form-label{
-    color: rgb(215, 63, 9);
-    background: none;
+.form-label {
+  color: rgb(215, 63, 9);
+  background: none;
+}
+
+.create-account-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #fff;
+  padding: 40px 20px;
+}
+
+.create-account-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.create-account-page .intro-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.create-account-page .osu-logo {
+  width: 120px;
+  height: auto;
+}
+
+.create-account-page .welcome-text {
+  text-align: center;
+}
+
+.create-account-page .welcome-text h2 {
+  margin: 8px 0;
+  font-size: 1.2rem;
+  font-weight: normal;
+  color: #333;
+}
+
+.create-account-page .welcome-text h3 {
+  margin: 8px 0;
+  font-size: 1.1rem;
+  font-weight: normal;
+  color: #333;
+}
+
+.create-account-page .form-group {
+  background: #fafafa;
+  padding: 40px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-account-page .form-control {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.create-account-page .form-control button {
+  width: 100%;
+  max-width: 300px;
 }
