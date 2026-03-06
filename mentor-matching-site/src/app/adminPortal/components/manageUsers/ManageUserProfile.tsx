@@ -68,7 +68,6 @@ function ManageUserProfile() {
     return (
         <>
             <AuthenticatedView>
-                <p> User ID: {userID} with display name: {profileDetails?.contact.displayName}</p>
                 <Button onClick={handleMessagesClick}>View Messages</Button>
                 <Menu
                   open={(Boolean(anchorElement))}

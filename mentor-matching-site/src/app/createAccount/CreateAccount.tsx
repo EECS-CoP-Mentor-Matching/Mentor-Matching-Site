@@ -81,8 +81,6 @@ function CreateAccount() {
     const uid = newUser.uid;
     const userEmail = newUser.email ?? "";
 
-    console.log("Receivied email: " + userEmail);
-
     // Handle non-OSU email addresses-- they will need to be approved before they can make a profile.
     if (!userEmail.toLowerCase().endsWith("@oregonstate.edu"))
     {

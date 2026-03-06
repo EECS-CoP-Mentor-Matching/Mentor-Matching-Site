@@ -18,8 +18,6 @@ function ApprovePendingUsers()
     const currentUserId = useAppSelector(state => state.userProfile.userProfile.UID);
     const setAdminPrivileges = httpsCallable(getFunctions(), "setAdminPrivileges");
 
-    console.log("Currently logged in as:", currentUserId);
-
 
     const [pendingUserList, setPendingUserList] = useState<any[]>([]);
 
@@ -41,8 +39,6 @@ function ApprovePendingUsers()
         adminSetup();
     }, [currentUserId]);
 
-    console.log(pendingUserList);
-
     async function handleApproveUser(uid: string) {
         // Function to handle the click for the approe button.  Takes the user's ID and marks them as approved in Firebase.
         try {
@@ -61,11 +57,7 @@ function ApprovePendingUsers()
     return(
         <>
 
-            <h3>DEBUG! On loading, this page makes a call that gives your account Firebase permissions.  Please log out after loading it for the first time and come back for the new permissions to take effect.</h3>
-            {pendingUserList && pendingUserList.map((pendingUser: any) => 
-                    <p>{pendingUser.uid}: {pendingUser.details.email}</p>
-                )
-            };
+            <h3>Users awaiting approval:</h3>
             <Box sx={{
                 maxWidth: 750,
                 margin: "30px auto",

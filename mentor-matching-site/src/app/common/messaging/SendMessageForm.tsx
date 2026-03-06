@@ -49,7 +49,6 @@ function SendMessageForm() {
     // Create a Message object based on the user's input and send the message
     function sendMessageHandler(e: React.FormEvent) {
         e.preventDefault();
-        console.log("Send message button pressed\n" + messageDetails.recipient + "\n" + messageDetails.message);
         // Check for no value in recipient or message:
         if (messageDetails.recipient == "") {
             setErrorMessageText("Please choose a recipient");
@@ -62,14 +61,14 @@ function SendMessageForm() {
 
         let message: Message = {
             senderUID: userProfile.UID,
-            senderProfileId: "DEBUG",
+            senderProfileId: "",
             senderDisplayName: userProfile.contact.displayName,
             recipientUID: messageDetails.recipient,
-            recipientProfileId: "DEBUG",
+            recipientProfileId: "",
             message: messageDetails.message,
             mentorReply: MentorReply.not_applicable.toString(),
-            technicalInterest: "DEBUG",
-            professionalInterest: "DEBUG",
+            technicalInterest: "",
+            professionalInterest: "",
             sentByUID: userProfile?.UID,
             sentOn: Timestamp.now()
         };
@@ -81,8 +80,7 @@ function SendMessageForm() {
     }
 
     // Update state whenever the user types in the boxes:
-    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>
-) {
+    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) {
         const inputName = e.target.name;
         const inputValue = e.target.value;
 
