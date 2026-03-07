@@ -40,9 +40,41 @@ export const approvePendingUser = onCall(async (request) => {
 
 // Function for granting a user Firebase admin privileges.
 // TODO: we will want to set this up as part of making a user an admin.
-
 export const setAdminPrivileges = onCall(async (request) => {
   const uid = request.data.uid;
   await adminFunctions.auth().setCustomUserClaims(uid, { admin: true });
+  return { success: true };
+});
+
+// Function for deleting a user's Firebase Authentication record.
+// Can only be called by an authenticated admin.
+// Deletes the auth record for the target UID — the Firestore profile
+// should be deleted separately via userService.deleteUserProfile().
+export const deleteUserAccount = onCall(async (request) => {
+  if (!request.auth) {
+    throw new Error("You are not signed in.  Please sign in first.");
+  }
+
+  // Verify the calling user is an admin by checking their Firestore role
+  const callerProfile = await adminFunctions.firestore()
+    .doc(`userProfile/${request.auth.uid}`)
+    .get();
+
+  if (!callerProfile.exists) {
+    throw new Error("Caller profile not found.");
+  }
+
+  const callerRole = callerProfile.data()?.preferences?.role;
+  if (callerRole !== "Admin") {
+    throw new Error("This function can be run by authorized Mentor Match Admins only.");
+  }
+
+  const uid = request.data.uid;
+  if (!uid) {
+    throw new Error("User ID (UID) not provided.");
+  }
+
+  await adminFunctions.auth().deleteUser(uid);
+
   return { success: true };
 });

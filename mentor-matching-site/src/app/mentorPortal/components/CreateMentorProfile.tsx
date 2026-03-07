@@ -224,7 +224,7 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
         </Box>
 
         {/* Section: About You */}
-        <Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant="h6" gutterBottom sx={{ color: '#0066cc', fontWeight: 600 }}>
             About You
           </Typography>
@@ -251,6 +251,22 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
               Select experiences you'd like to share with potential mentees (affects matching)
             </Typography>
           </FormControl>
+          
+          {/* Racial Identity - Only if "Racial Minority" selected */}
+          {lifeExperiences.includes('Racial Minority') && (
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Racial Identity *</InputLabel>
+              <Select
+                value={racialIdentity}
+                onChange={(e) => setRacialIdentity(e.target.value)}
+                label="Racial Identity *"
+              >
+                {RACIAL_IDENTITIES.map((identity) => (
+                  <MenuItem key={identity} value={identity}>{identity}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
 
           {/* Languages */}
           <FormControl fullWidth sx={{ mb: 2 }}>
@@ -278,7 +294,7 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
               label="Specify Other Language"
               value={otherLanguage}
               onChange={(e) => setOtherLanguage(e.target.value)}
-              sx={{ mb: 2 }}
+              sx={{ mb: 2, width: '100%', maxWidth: '600px', alignSelf: 'center' }}
             />
           )}
 
@@ -296,7 +312,7 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
               }
             }}
             helperText={`${introduction.length}/50 characters - This name is private (only you see it)`}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, width: '100%', maxWidth: '600px', alignSelf: 'center' }}
             inputProps={{ maxLength: 50 }}
           />
 
@@ -307,7 +323,7 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
             label="Why I Mentor *"
             placeholder="What motivates you to mentor others?"
             multiline
-            rows={3}
+            rows={4}
             value={whyIMentor}
             onChange={(e) => {
               const value = e.target.value;
@@ -316,7 +332,7 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
               }
             }}
             helperText={`${whyIMentor.length}/150 characters - Shows when mentees hover over your profile picture`}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, width: '100%', maxWidth: '600px', alignSelf: 'center' }}
             inputProps={{ maxLength: 150 }}
           />
 
@@ -334,25 +350,10 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
               }
             }}
             helperText={`${areasOfExpertise.length}/50 characters`}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, width: '100%', maxWidth: '600px', alignSelf: 'center' }}
             inputProps={{ maxLength: 50 }}
           />
 
-          {/* Racial Identity - Only if "Racial Minority" selected */}
-          {lifeExperiences.includes('Racial Minority') && (
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>Racial Identity *</InputLabel>
-              <Select
-                value={racialIdentity}
-                onChange={(e) => setRacialIdentity(e.target.value)}
-                label="Racial Identity *"
-              >
-                {RACIAL_IDENTITIES.map((identity) => (
-                  <MenuItem key={identity} value={identity}>{identity}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
         </Box>
 
         {/* Section: Mentorship Capacity */}

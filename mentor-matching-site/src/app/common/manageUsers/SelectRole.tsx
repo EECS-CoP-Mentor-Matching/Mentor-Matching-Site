@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { MatchRole } from "../../../types/matchProfile";
+import { MatchRole, AdminMatchRole } from "../../../types/matchProfile";
 
 interface SelectRoleProps {
   value: string;
@@ -14,8 +14,8 @@ export default function SelectRole({ value, onChange, allowAdmin = false }: Sele
   useEffect(() => {
     // Build role list based on allowAdmin prop
     const roleValues = allowAdmin 
-      ? [MatchRole.mentee, MatchRole.mentor, MatchRole.both, "Admin"] // Include Admin
-      : [MatchRole.mentee, MatchRole.mentor, MatchRole.both]; // Exclude Admin
+      ? [MatchRole.mentee, MatchRole.mentor, MatchRole.both, AdminMatchRole.admin]
+      : [MatchRole.mentee, MatchRole.mentor, MatchRole.both];
     
     const mappedRoles = roleValues.map((roleValue) => ({ 
       id: String(roleValue), 

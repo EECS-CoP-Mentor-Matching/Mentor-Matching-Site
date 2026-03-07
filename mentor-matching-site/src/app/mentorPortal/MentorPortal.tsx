@@ -60,7 +60,7 @@ function MentorPortal() {
 
               {/* Active Profiles */}
               {selectedPage === Pages.activeProfiles.toString() && !showCreateProfile && (
-                <div className="mentor-portal">
+                <div className="mentor-portal-centered">
                   <ActiveProfiles
                     userType="mentor"
                     backToPage={backToActive}
@@ -71,7 +71,7 @@ function MentorPortal() {
 
               {/* Create Profile - shown within Active Profiles tab when button clicked */}
               {selectedPage === Pages.activeProfiles.toString() && showCreateProfile && (
-                <div className="mentor-portal">
+                <div className="mentor-portal-centered">
                   <CreateMentorProfile backToPage={backToActive} />
                 </div>
               )}
@@ -92,7 +92,7 @@ function MentorPortal() {
 
               {/* Messages */}
               {selectedPage === Pages.mentorMessages.toString() && (
-                <div className="mentor-portal">
+                <div className="mentor-portal-centered">
                   <Messages userProfile={userProfile} adminView={false} />
                 </div>
               )}

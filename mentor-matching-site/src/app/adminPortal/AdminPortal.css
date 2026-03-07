@@ -5,3 +5,17 @@
     align-items: center;
     margin: 10px;
   }
+
+/* ── Edit User Profile input containment ───────────────── */
+.manage-user-profile input,
+.manage-user-profile .MuiFormControl-root,
+.manage-user-profile .MuiInputBase-root {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.manage-user-profile .MuiFormGroup-root[style*="flex-direction: row"] .MuiFormControl-root:not(:only-child) {
+  width: auto;
+  flex: 1;
+}

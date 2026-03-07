@@ -228,7 +228,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
         </Box>
 
         {/* Section: About You */}
-        <Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant="h6" gutterBottom sx={{ color: '#0066cc', fontWeight: 600 }}>
             About You
           </Typography>
@@ -306,7 +306,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
               label="Specify Other Language"
               value={otherLanguage}
               onChange={(e) => setOtherLanguage(e.target.value)}
-              sx={{ mb: 2 }}
+              sx={{ mb: 2, width: '100%', maxWidth: '600px', alignSelf: 'center' }}
             />
           )}
 
@@ -324,7 +324,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
               }
             }}
             helperText={`${introduction.length}/50 characters - Give this profile a memorable name`}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, width: '100%', maxWidth: '600px', alignSelf: 'center' }}
             inputProps={{ maxLength: 50 }}
           />
 
@@ -335,7 +335,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
             label="Your Elevator Pitch *"
             placeholder="Why are you seeking mentorship? What are your goals?"
             multiline
-            rows={3}
+            rows={4}
             value={aboutMe}
             onChange={(e) => {
               const value = e.target.value;
@@ -344,7 +344,7 @@ function CreateMenteeProfile({ backToPage }: CreateMenteeProfileProps) {
               }
             }}
             helperText={`${aboutMe.length}/150 characters`}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, width: '100%', maxWidth: '600px', alignSelf: 'center' }}
             inputProps={{ maxLength: 150 }}
           />
         </Box>

@@ -1,4 +1,4 @@
-import { Input, FormControl, InputLabel } from "@mui/material";
+import { Input, FormControl, Box } from "@mui/material";
 import React, { useState } from "react";
 
 interface TextInputControlProps {
@@ -18,7 +18,6 @@ interface TextInputControlProps {
 function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive, editColor, style }: TextInputControlProps) {
   const controlStyle = {
     width: `${widthMulti === undefined ? 10 : widthMulti * 100}rem`,
-    color: sensitive ? "transparent" : "",
     borderBottomColor: editColor !== undefined ? editColor : ""
   }
 
@@ -77,16 +76,39 @@ function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValida
   }
 
   return (
-    <FormControl className="form-control">
-      <InputLabel>{label}</InputLabel>
-      <Input value={value}
+    <FormControl className="form-control" sx={{ mb: 2 }}>
+      {label && (
+        <Box component="label" sx={{ 
+          display: 'block',
+          mb: 1,
+          fontWeight: 600,
+          fontSize: '0.875rem',
+          color: '#333'
+        }}>
+          {label}
+        </Box>
+      )}
+      <Input 
+        value={value}
         readOnly={readonly}
         onChange={handleInput}
         onKeyDown={handleKeyDown}
-        sx={{ ...controlStyle, ...style }} />
-      {sensitive &&
-        <div style={{ zIndex: 100, position: 'absolute', bottom: 5, backgroundColor: 'white', fontSize: '1.5rem' }}>{maskedValue}</div>
-      }
+        type={sensitive ? 'password' : 'text'}
+        disableUnderline
+        sx={{ 
+          ...controlStyle, 
+          ...style,
+          bgcolor: '#fff',
+          borderRadius: '4px',
+          padding: '12px 16px',
+          fontSize: '1rem',
+          border: '1px solid #ddd',
+          '&:focus': {
+            bgcolor: '#fff',
+            borderColor: '#D73F09'
+          }
+        }} 
+      />
       {!isValid &&
         <div style={{ color: 'red' }}>Invalid Input</div>
       }
