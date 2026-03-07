@@ -11,6 +11,7 @@ import { updateProfile } from '../../../../redux/reducers/userProfileReducer';
 import UpdatePersonalInformation from '../../../common/manageUsers/UpdatePersonalInformation';
 import UpdateUserContactInformation from '../../../common/manageUsers/UpdateUserContactInformation';
 import Messages from '../../../common/messaging/Messages';
+import '../../AdminPortal.css';
 
 
 function ManageUserProfile() {
@@ -56,7 +57,16 @@ function ManageUserProfile() {
       return (<>Data is loading...</>);
     } else {
       return  (
-        <FormGroup sx={{ gap: '3.5rem', paddingTop: '2.5rem', paddingBottom: '4.5rem' }}>
+        <FormGroup sx={{
+          gap: '2rem',
+          paddingTop: '2.5rem',
+          paddingBottom: '4.5rem',
+          maxWidth: '760px',
+          width: '100%',
+          margin: '0 auto',
+          padding: '2rem 1.5rem',
+          boxSizing: 'border-box'
+        }}>
             <UploadUserProfileImage userProfile={{ ...profileDetails, imageUrl: profileDetails?.imageUrl }} />
             <UpdatePersonalInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
             <UpdateUserContactInformation showEdit={showEdit} showEditStyle={showEditStyle} userProfile={profileDetails} onChange={setProfileDetails} />
@@ -68,25 +78,44 @@ function ManageUserProfile() {
     return (
         <>
             <AuthenticatedView>
-                <Button onClick={handleMessagesClick}>View Messages</Button>
-                <Menu
-                  open={(Boolean(anchorElement))}
-                  anchorEl={anchorElement}
-                  onClose={handleMessagesClose}
+                <div className="manage-user-profile" style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: '0 1.5rem 4rem',
+                  minHeight: '100vh',
+                  boxSizing: 'border-box'
+                }}>
+                  <div style={{
+                    width: '100%',
+                    maxWidth: '760px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '14px 0',
+                    borderBottom: '2px solid #D73F09',
+                    marginBottom: '1rem'
+                  }}>
+                    <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Edit User Profile</h2>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                      <Button onClick={handleMessagesClick}>View Messages</Button>
+                      {!showEdit
+                        ? <Button onClick={() => setShowEdit(true)}>Edit Profile</Button>
+                        : <Button variant="contained" onClick={saveChanges} sx={{ backgroundColor: '#D73F09' }}>Save Profile</Button>
+                      }
+                    </div>
+                  </div>
+                  <Menu
+                    open={(Boolean(anchorElement))}
+                    anchorEl={anchorElement}
+                    onClose={handleMessagesClose}
                   >
                     {profileDetails &&
-                        <Messages userProfile={profileDetails} adminView={true} />
+                      <Messages userProfile={profileDetails} adminView={true} />
                     }
-
-                    
-                </Menu>
-                {dataIsLoading()}
-                {!showEdit &&
-                    <Button onClick={() => { setShowEdit(true) }}>Edit Profile</Button>
-                }
-                {showEdit &&
-                    <Button onClick={saveChanges}>Save Profile</Button>
-                }
+                  </Menu>
+                  {dataIsLoading()}
+                </div>
             </AuthenticatedView>
             <UnauthenticatedView onloadNavigate={true} navigateToRoute='/login' />
         </>

@@ -47,7 +47,7 @@ function UserAgreementForm({ updateAgreementAcceptance, userHasAgreed, submit }:
       <TextDisplay widthMulti={.30}>In order to continue with creating your account you must agree to these services.</TextDisplay>
       <CheckBoxControl label="Click here to agree." onChange={updateAgreementAcceptance} checked={userHasAgreed} />
       <DocuSignButton />
-      <FormControl className="form-control">
+      <FormControl className="form-control" sx={{ alignItems: 'center' }}>
         <SubmitButton onClick={submit} text="Submit" widthMulti={.15} />
       </FormControl>
     </FormGroupCols>

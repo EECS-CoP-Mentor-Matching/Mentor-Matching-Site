@@ -13,7 +13,6 @@ import LoadingMessage from "../common/forms/modals/LoadingMessage";
 import {refreshNavigate} from "../common/auth/refreshNavigate";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import osuIcon from '../../icons/osu_logo.png';
 import "./CreateAccount.css";
 
 function CreateAccount() {
@@ -27,7 +26,7 @@ function CreateAccount() {
 
   const navigate = useNavigate();
   const selector = useAppSelector;
-  const email = selector(state => state.userProfile.userProfile.contact.email);
+  const email = selector(state => state.userProfile.userProfile?.contact?.email ?? '');
 
   const [createAccountLoading, setCreateAccountLoading] = useState(false);
 
@@ -131,11 +130,7 @@ function CreateAccount() {
       <div className="create-account-container">
         {/* Logo and Welcome - ABOVE the card */}
         <div className="intro-heading">
-          <img 
-            src={osuIcon} 
-            alt="Oregon State University logo" 
-            className="osu-logo"
-          />
+
           <div className="welcome-text">
             <h2>Welcome</h2>
             <h3>Create Your Account</h3>

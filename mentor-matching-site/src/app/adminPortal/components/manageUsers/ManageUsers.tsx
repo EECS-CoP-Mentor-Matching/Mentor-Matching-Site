@@ -1,15 +1,21 @@
 // src/components/manage/ManageUsers.tsx
 import React, { useEffect, useState } from "react";
-import {Avatar, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box} from "@mui/material";
-import userService from "../../../../service/userService"; // adjust path if needed
+import { Avatar, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import userService from "../../../../service/userService";
 import { UserProfile } from "../../../../types/userProfile";
 import ContentContainer from "../../../common/ContentContainer";
 import { Link } from "react-router-dom";
 
+const deleteUserAccount = httpsCallable(getFunctions(), "deleteUserAccount");
+
 function ManageUsers() {
   const [users, setUsers] = useState<UserProfile[]>([]);
+  const [userToDelete, setUserToDelete] = useState<UserProfile | null>(null);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
-  const fetchUsers = async() => {
+  const fetchUsers = async () => {
     try {
       const result = await userService.getAllUserProfiles();
       setUsers(result.length ? result : []);
@@ -20,16 +26,41 @@ function ManageUsers() {
   };
 
   useEffect(() => {
-     fetchUsers();
+    fetchUsers();
   }, []);
+
+  const handleDeleteClick = (user: UserProfile) => {
+    setUserToDelete(user);
+    setOpenConfirm(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      try {
+        // Delete Firestore profile first, then remove Firebase Auth record
+        await userService.deleteUserProfile(userToDelete.UID);
+        await deleteUserAccount({ uid: userToDelete.UID });
+        setUsers(prev => prev.filter(u => u.UID !== userToDelete.UID));
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    }
+    setUserToDelete(null);
+    setOpenConfirm(false);
+  };
+
+  const handleCancelDelete = () => {
+    setUserToDelete(null);
+    setOpenConfirm(false);
+  };
 
   return (
     <ContentContainer
-        title="Manage Users"
-        subtitle="A table of active users enrolled in Mentor Match"
+      title="Manage Users"
+      subtitle="A table of active users enrolled in Mentor Match"
     >
-    <Link to="/admin-portal/pending-users">View Pending User Accounts</Link>
-    <Box sx={{ minWidth: '500px', paddingInline: "20%", paddingBlockStart: 2, margin: 'auto' }}>
+      <Link to="/admin-portal/pending-users">View Pending User Accounts</Link>
+      <Box sx={{ minWidth: '500px', paddingInline: "20%", paddingBlockStart: 2, margin: 'auto' }}>
         <TableContainer component={Paper}>
           <Table size="small">
             <TableHead>
@@ -38,6 +69,7 @@ function ManageUsers() {
                 <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Role</TableCell>
+                <TableCell align="center">Delete</TableCell>
               </TableRow>
             </TableHead>
 
@@ -46,9 +78,7 @@ function ManageUsers() {
                 <TableRow key={u.UID}>
                   <TableCell>
                     <Link to={"/admin-portal/edit-user/" + u.UID}>
-                      <Avatar
-                        src={u.profilePictureUrl || u.imageUrl} // There are two places for profile pictures?
-                      />
+                      <Avatar src={u.profilePictureUrl || u.imageUrl} />
                     </Link>
                   </TableCell>
 
@@ -59,13 +89,45 @@ function ManageUsers() {
                   <TableCell>{u.contact?.email || "N/A"}</TableCell>
 
                   <TableCell>{u.preferences?.role || "N/A"}</TableCell>
+
+                  <TableCell align="center">
+                    <IconButton
+                      onClick={() => handleDeleteClick(u)}
+                      size="small"
+                      sx={{
+                        color: 'grey.500',
+                        '&:hover': { color: 'error.main' }
+                      }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Box>
-      </ContentContainer>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={openConfirm} onClose={handleCancelDelete}>
+        <DialogTitle>Delete User</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete <strong>{userToDelete?.contact?.displayName || "this user"}</strong> ({userToDelete?.contact?.email})?
+            <br /><br />
+            This will permanently remove their profile and authentication record. They will need to create a completely new account if they wish to rejoin.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="error" variant="contained">
+            Delete User
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+    </ContentContainer>
   );
 }
 

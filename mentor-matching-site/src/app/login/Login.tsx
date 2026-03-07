@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import ErrorMessage, { ErrorState, resetError } from "../common/forms/ErrorMessage";
 import { AdminMatchRole } from "../../types/matchProfile";
 import { UserProfile } from "../../types/userProfile";
-import osuIcon from '../../icons/osu_logo.png';
 // REDUX IMPORTS: Needed to update the app state immediately
 import { useAppDispatch } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/userProfileReducer";
@@ -63,11 +62,6 @@ function Login() {
       <div className="login-container">
         {/* Logo and Welcome - ABOVE the card */}
         <div className="intro-heading">
-          <img 
-            src={osuIcon} 
-            alt="Oregon State University logo" 
-            className="osu-logo"
-          />
           <div className="welcome-text">
             <h2>Welcome</h2>
             <h2>Mentor Match Login</h2>

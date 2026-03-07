@@ -69,9 +69,13 @@ function UpdateUserProfile() {
   const handleCloseDeleteDialog = () => setOpenDeleteDialog(false);
 
   const handleDeleteAccount = async () => {
-    await userService.deleteUserProfile(userProfileState.UID);
-    await authService.signOut();
-    window.location.href = "/";
+    try {
+      await userService.deleteUserProfile(userProfileState.UID);
+      await authService.deleteUserAccount();
+      window.location.href = "/";
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
   };
 
   const deleteAccountDialog = (
