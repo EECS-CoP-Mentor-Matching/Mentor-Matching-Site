@@ -164,7 +164,7 @@ function FindMatches() {
         // Fetch user profiles
         const matchesWithUserProfiles = await Promise.all(
           calculatedMatches.map(async (match) => {
-            // Find the correct mentor profile by UID (not by array index!)
+            // Map by UID instead of array index to handle filtered profiles correctly
             const mentorProfileWithId = mentorProfilesWithIds.find(m => m.profile.UID === match.userId);
             const mentorProfileId = mentorProfileWithId?.docId || '';
             

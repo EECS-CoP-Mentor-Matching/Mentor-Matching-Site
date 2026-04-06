@@ -13,6 +13,7 @@ import LoadingMessage from "../common/forms/modals/LoadingMessage";
 import {refreshNavigate} from "../common/auth/refreshNavigate";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import "./CreateAccount.css";
 
 function CreateAccount() {
   const [error, setError] = useState<ErrorState>({
@@ -25,7 +26,7 @@ function CreateAccount() {
 
   const navigate = useNavigate();
   const selector = useAppSelector;
-  const email = selector(state => state.userProfile.userProfile.contact.email);
+  const email = selector(state => state.userProfile.userProfile?.contact?.email ?? '');
 
   const [createAccountLoading, setCreateAccountLoading] = useState(false);
 
@@ -125,18 +126,30 @@ function CreateAccount() {
   }, [navigate]);
 
   return (
-    <div className='login'>
-      <FormGroup className="form-group">
-          <FormHeader>Welcome, start by entering your email</FormHeader>
-          <FormLabel>Please use your Oregon State email if you have it.</FormLabel>
+    <div className='create-account-page'>
+      <div className="create-account-container">
+        {/* Logo and Welcome - ABOVE the card */}
+        <div className="intro-heading">
+
+          <div className="welcome-text">
+            <h2>Welcome</h2>
+            <h3>Create Your Account</h3>
+          </div>
+        </div>
+
+        {/* Create Account Form Card */}
+        <FormGroup className="form-group">
+          <FormHeader>Start by entering your email</FormHeader>
+          <FormLabel className="form-label">Please use your Oregon State email if you have it.</FormLabel>
           <Email submitEmail={setEmail} />
           <Password label="Password" onInput={setPassword} />
           <Password label="Confirm Password" onInput={setConfirmPassword} />
           <FormControl className="form-control">
             <SubmitButton onClick={signup} text="Create an Account" widthMulti={.15} />
           </FormControl>
-        <ErrorMessage errorState={error} />
-      </FormGroup>
+          <ErrorMessage errorState={error} />
+        </FormGroup>
+      </div>
       <LoadingMessage message="Creating your account.... Don't refresh!" loading={createAccountLoading} />
     </div>
   )

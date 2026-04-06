@@ -4,8 +4,9 @@ import { FormControl, FormLabel, InputLabel, MenuItem, Select } from "@mui/mater
 import { UserProfile, HOURS_PER_WEEK_OPTIONS } from "../../../types/userProfile";
 import TextInputControl from "../forms/textInputs/TextInputControl";
 import { useAppSelector } from "../../../redux/hooks";
-import { MatchRole } from "../../../types/matchProfile";
+import { MatchRole, AdminMatchRole } from "../../../types/matchProfile";
 import { CREDENTIALS, COLLEGE_YEARS } from "../../../config/matchingConfig";
+import SelectDegreeProgram from "./SelectDegreeProgram";
 
 interface UpdatePersonalInformationProps {
   showEdit: boolean,
@@ -21,13 +22,12 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
 
   // Check if the LOGGED-IN user is an Admin
   const currentLoggedInUser = useAppSelector((state) => state.userProfile.userProfile);
-  const isLoggedInUserAdmin = currentLoggedInUser?.preferences?.role === "Admin";
+  const isLoggedInUserAdmin = currentLoggedInUser?.preferences?.role === AdminMatchRole.admin;
 
-  // Determine which roles to show
   // Regular users: Mentee, Mentor, Both (no Admin)
-  // Admins: Mentee, Mentor, Both, Admin
+  // Admins can also assign the Admin role
   const availableRoles = isLoggedInUserAdmin
-    ? [MatchRole.mentee, MatchRole.mentor, MatchRole.both, "Admin"]
+    ? [MatchRole.mentee, MatchRole.mentor, MatchRole.both, AdminMatchRole.admin]
     : [MatchRole.mentee, MatchRole.mentor, MatchRole.both];
 
   const updateNameField = (field: keyof typeof personalInformation, value: string) =>
@@ -68,9 +68,9 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
       <FormGroupCols>
         <FormLabel>Personal Information</FormLabel>
         <FormGroupRows>
-          <TextInputControl value={personalInformation.firstName} label="First Name" readonly={!showEdit} onInput={(value) => updateNameField("firstName", value)} style={showEditStyle}/>
-          <TextInputControl value={personalInformation.middleName} label="Middle Name" readonly={!showEdit} onInput={(value) => updateNameField("middleName", value)} style={showEditStyle}/>
-          <TextInputControl value={personalInformation.lastName} label="Last Name" readonly={!showEdit} onInput={(value) => updateNameField("lastName", value)} style={showEditStyle}/>
+          <TextInputControl value={personalInformation.firstName} label="First Name" readonly={!showEdit} onInput={(value) => updateNameField("firstName", value)} />
+          <TextInputControl value={personalInformation.middleName ?? ''} label="Middle Name" readonly={!showEdit} onInput={(value) => updateNameField("middleName", value)} />
+          <TextInputControl value={personalInformation.lastName} label="Last Name" readonly={!showEdit} onInput={(value) => updateNameField("lastName", value)} />
         </FormGroupRows>
         
         <FormLabel sx={{ mt: 2 }}>Role</FormLabel>
@@ -113,7 +113,7 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
         </FormGroupRows>
         
         {/* Mentor-specific fields */}
-        {userPreferences.role === 'Mentor' && (
+        {(userPreferences.role === MatchRole.mentor || userPreferences.role === MatchRole.both) && (
           <>
             <FormLabel sx={{ mt: 2 }}>Professional Information</FormLabel>
             <FormGroupRows>
@@ -136,14 +136,14 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
                 label="Current Profession *" 
                 readonly={!showEdit} 
                 onInput={(value) => updateNameField("currentProfession", value)} 
-                style={showEditStyle}
+               
               />
             </FormGroupRows>
           </>
         )}
 
         {/* Mentee-specific fields */}
-        {userPreferences.role === 'Mentee' && (
+        {(userPreferences.role === MatchRole.mentee || userPreferences.role === MatchRole.both) && (
           <>
             <FormLabel sx={{ mt: 2 }}>Student Information</FormLabel>
             <FormGroupRows>
@@ -161,13 +161,13 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
               </FormControl>
             </FormGroupRows>
             <FormGroupRows>
-              <TextInputControl 
-                value={personalInformation.degreeProgram || ''} 
-                label="Degree Program *" 
-                readonly={!showEdit} 
-                onInput={(value) => updateNameField("degreeProgram", value)} 
-                style={showEditStyle}
-              />
+              <FormControl fullWidth sx={{ minWidth: 250 }} disabled={!showEdit}>
+                <SelectDegreeProgram
+                  value={personalInformation.degreeProgram || ''}
+                  onChange={(value) => updateNameField("degreeProgram", value)}
+                  disabled={!showEdit}
+                />
+              </FormControl>
             </FormGroupRows>
           </>
         )}

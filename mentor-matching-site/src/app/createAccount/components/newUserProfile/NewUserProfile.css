@@ -1,0 +1,159 @@
+/* ── New User Profile Page ─────────────────────────────── */
+/* Mirrors UserProfile.css card style for visual consistency */
+
+.new-user-profile-page {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1.5rem 4rem;
+  box-sizing: border-box;
+}
+
+/* ── Action Bar ────────────────────────────────────────── */
+.new-profile-action-bar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 2px solid #D73F09;
+  margin-bottom: 2.5rem;
+}
+
+.new-profile-action-bar h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.new-profile-submit-btn {
+  background: #D73F09 !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 6px 20px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+}
+
+.new-profile-submit-btn:hover {
+  opacity: 0.88;
+}
+
+/* ── Section Card ──────────────────────────────────────── */
+.new-profile-section-card {
+  width: 100%;
+  max-width: 760px;
+  border: 1px solid #E8E8E8;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
+  background: #fff;
+  overflow: hidden;
+}
+
+.new-profile-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-bottom: 1px solid #E8E8E8;
+  background: #F7F7F7;
+}
+
+.new-profile-section-icon {
+  color: #D73F09;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.new-profile-section-header h3 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6B6B6B;
+}
+
+/* ── Section Body ──────────────────────────────────────── */
+.new-profile-section-body {
+  padding: 24px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #E8E8E8 transparent;
+}
+
+.new-profile-section-body.no-scroll {
+  max-height: none;
+  overflow: visible;
+}
+
+/* ── MUI input containment ─────────────────────────────── */
+.new-profile-section-body input,
+.new-profile-section-body .MuiTextField-root,
+.new-profile-section-body .MuiFormControl-root,
+.new-profile-section-body .MuiInputBase-root,
+.new-profile-section-body .MuiInput-underline,
+.new-profile-section-body .MuiInput-underline::before,
+.new-profile-section-body .MuiInput-underline::after {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Allow side-by-side name fields */
+.new-profile-section-body .MuiFormGroup-root[style*="flex-direction: row"] .MuiFormControl-root:not(:only-child) {
+  width: auto;
+  flex: 1;
+}
+
+/* Orange underline on focused fields */
+.new-profile-section-body .MuiInput-underline.Mui-focused::after {
+  border-bottom-color: #D73F09 !important;
+}
+
+/* ── Centered field wrapper with external label ────────── */
+.new-profile-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 6px;
+}
+
+.new-profile-field-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.new-profile-field-wrapper > * {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Force dropdowns and their inner MUI elements to respect the wrapper width */
+.new-profile-field-wrapper .MuiFormControl-root,
+.new-profile-field-wrapper .MuiAutocomplete-root,
+.new-profile-field-wrapper .MuiInputBase-root,
+.new-profile-field-wrapper .MuiSelect-root,
+.new-profile-field-wrapper .MuiOutlinedInput-root {
+  width: 100% !important;
+  max-width: 400px !important;
+}

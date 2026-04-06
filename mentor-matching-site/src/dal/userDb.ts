@@ -2,7 +2,9 @@ import { queryMany } from "./commonDb";
 import { MatchHistoryItem, UserAccountSettings, UserProfile } from "../types/userProfile";
 import { app, db } from "../firebaseConfig";
 import { collection, getDocs, doc, query, where, setDoc, updateDoc, deleteDoc, getFirestore } from "firebase/firestore";
-import { deleteUser, getAuth, User } from "firebase/auth";
+import { User } from "firebase/auth";
+import mentorDb from "./mentorDb";
+import menteeDb from "./menteeDb";
 
 
 const collectionName = "userProfile";
@@ -86,20 +88,29 @@ async function deleteUserProfileAsync(uid: string) {
     }
   });
 
-  // Delete user from authentication
-  // TODO: This works for now; but CoPilot suggested that we may not want to delete the currently signed in user (i.e. if we are logged in as an admin account)
-  const auth = getAuth();
-  const user = await auth.currentUser;
-  if (user)
-  {
-    await deleteUser(user);
-  }
-  else
-  {
-    console.log("Error deleting user auth")
+  console.log(`UserProfile with UID ${uid} and related data deleted successfully.`);
+
+  // Delete mentor profiles
+  try {
+    const mentorProfiles = await mentorDb.searchMentorProfilesByUserAsync(uid);
+    for (const profile of mentorProfiles) {
+      await mentorDb.deleteMentorProfileAsync(profile.docId);
+    }
+    console.log(`Mentor profiles for UID ${uid} deleted successfully.`);
+  } catch (error) {
+    console.error(`Error deleting mentor profiles for UID ${uid}:`, error);
   }
 
-  console.log(`UserProfile with UID ${uid} and related data deleted successfully.`);
+  // Delete mentee profiles
+  try {
+    const menteeProfiles = await menteeDb.searchMenteeProfilesByUserAsync(uid);
+    for (const profile of menteeProfiles) {
+      await menteeDb.deleteMenteeProfileByIdAsync(profile.docId);
+    }
+    console.log(`Mentee profiles for UID ${uid} deleted successfully.`);
+  } catch (error) {
+    console.error(`Error deleting mentee profiles for UID ${uid}:`, error);
+  }
 }
 
 

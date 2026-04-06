@@ -39,9 +39,10 @@ interface MatchCardProps {
   onConnect?: () => void;
   onAccept?: (event: React.MouseEvent<HTMLElement>) => void;
   onDecline?: (event: React.MouseEvent<HTMLElement>) => void;
+  onEndMentorship?: () => void;
   isConnected?: boolean;
   matchStatus?: 'pending' | 'accepted' | 'declined' | null;
-  cardType?: 'mentee-finding-mentor' | 'mentor-reviewing-mentee';
+  cardType?: 'mentee-finding-mentor' | 'mentor-reviewing-mentee' | 'active-mentorship';
 }
 
 export const MatchCard: React.FC<MatchCardProps> = ({ 
@@ -51,6 +52,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   onConnect, 
   onAccept,
   onDecline,
+  onEndMentorship,
   isConnected = false, 
   matchStatus = null,
   cardType = 'mentee-finding-mentor'
@@ -93,6 +95,26 @@ export const MatchCard: React.FC<MatchCardProps> = ({
               <Button className="btn-decline" size="small" onClick={onDecline}>Decline</Button>
               <Button className="btn-accept" size="small" onClick={onAccept}>Accept</Button>
             </Box>
+          ) : onEndMentorship ? (
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={onEndMentorship}
+              sx={{
+                borderColor: '#ef4444',
+                color: '#ef4444',
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                px: 2,
+                '&:hover': {
+                  bgcolor: '#fef2f2',
+                  borderColor: '#dc2626'
+                }
+              }}
+            >
+              End Mentorship
+            </Button>
           ) : onConnect && (
             <Button
               className="btn-connect-pill"
@@ -158,7 +180,10 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                     lineHeight: 1.2
                   }}
                 >
-                  {profile.aboutMe || profile.mentorshipGoal || 'Ready to connect!'}
+                  {/* Hover overlay text - role-specific */}
+                  {cardType === 'mentee-finding-mentor' 
+                    ? (profile?.whyIMentor || 'Ready to connect!')
+                    : (profile?.mentorshipGoal || 'Looking for mentorship!')}
                 </Typography>
               </Box>
             )}
@@ -184,9 +209,14 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             </Box>
           </Box>
 
-          {/* Student Info */}
+          {/* Student Info (Mentees) OR Professional Info (Mentors) */}
           <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', mb: 1 }}>
-            {matchUserProfile?.personal?.collegeYear && (
+            {cardType === 'mentee-finding-mentor' && matchUserProfile?.personal?.credentials && (
+              <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
+                {matchUserProfile.personal.credentials} • {matchUserProfile.personal.currentProfession || 'Mentor'}
+              </Typography>
+            )}
+            {cardType === 'mentor-reviewing-mentee' && matchUserProfile?.personal?.collegeYear && (
               <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
                 {matchUserProfile.personal.collegeYear} • {matchUserProfile.personal.degreeProgram || profile.careerFields?.[0]}
               </Typography>
@@ -213,47 +243,51 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           </Box>
 
           {/* Detailed Categories */}
-          <Box sx={{ mt: 1 }}>
-            {/* Technical Interests - combine career fields + technical interests */}
-            <ExpandableMatchCategory
-              categoryName="Technical Interests"
-              icon={<WorkOutline sx={{ fontSize: 16, color: '#6b7280' }} />}
-              score={match.categoryScores?.technicalInterests || 0}
-              userItems={[
-                ...(currentUserProfile?.careerFields || []),
-                ...(currentUserProfile?.technicalInterests || [])
-              ]}
-              matchItems={[
-                ...(profile.careerFields || []),
-                ...(profile.technicalInterests || [])
-              ]}
-            />
-            
-            {/* Life Experiences - pass matchProfile for racial identity lookup */}
-            <ExpandableMatchCategory
-              categoryName="Life Experiences"
-              icon={<Favorite sx={{ fontSize: 16, color: '#6b7280' }} />}
-              score={match.categoryScores?.lifeExperiences || 0}
-              userItems={currentUserProfile?.lifeExperiences || []}
-              matchItems={profile.lifeExperiences || []}
-              matchProfile={profile}
-            />
-            
-            {/* Languages */}
-            <ExpandableMatchCategory
-              categoryName="Languages"
-              icon={<Language sx={{ fontSize: 16, color: '#6b7280' }} />}
-              score={match.categoryScores?.languages || 0}
-              userItems={currentUserProfile?.languages || []}
-              matchItems={profile.languages || []}
-            />
-          </Box>
+          {currentUserProfile && (
+            <Box sx={{ mt: 1 }}>
+              {/* Technical Interests - combine career fields + technical interests */}
+              <ExpandableMatchCategory
+                categoryName="Technical Interests"
+                icon={<WorkOutline sx={{ fontSize: 16, color: '#6b7280' }} />}
+                score={match.categoryScores?.technicalInterests || 0}
+                userItems={[
+                  ...(currentUserProfile?.careerFields || []),
+                  ...(currentUserProfile?.technicalInterests || [])
+                ]}
+                matchItems={[
+                  ...(profile?.careerFields || []),
+                  ...(profile?.technicalInterests || [])
+                ]}
+              />
+              
+              {/* Life Experiences - pass matchProfile for racial identity lookup */}
+              <ExpandableMatchCategory
+                categoryName="Life Experiences"
+                icon={<Favorite sx={{ fontSize: 16, color: '#6b7280' }} />}
+                score={match.categoryScores?.lifeExperiences || 0}
+                userItems={currentUserProfile?.lifeExperiences || []}
+                matchItems={profile?.lifeExperiences || []}
+                matchProfile={profile}
+              />
+              
+              {/* Languages */}
+              <ExpandableMatchCategory
+                categoryName="Languages"
+                icon={<Language sx={{ fontSize: 16, color: '#6b7280' }} />}
+                score={match.categoryScores?.languages || 0}
+                userItems={currentUserProfile?.languages || []}
+                matchItems={profile?.languages || []}
+              />
+            </Box>
+          )}
         </Box>
 
         {/* 4. Elevator Pitch / Goal (Bottom Footer) */}
         <Box className="profile-intro">
           <Typography variant="body2" sx={{ fontStyle: 'italic', color: '#4b5563' }}>
-            "{profile.mentorshipGoal || profile.aboutMe || "Ready to connect!"}"
+            "{cardType === 'mentee-finding-mentor' 
+              ? (profile?.areasOfExpertise || 'Ready to connect!')
+              : (profile?.aboutMe || 'Looking for mentorship!')}"
           </Typography>
         </Box>
 

@@ -13,14 +13,18 @@ import {
 import { useAppSelector } from '../../../../redux/hooks';
 import matchDbService, { Match } from '../../../../service/matchDbService';
 import { mentorService } from '../../../../service/mentorService';
+import menteeService from '../../../../service/menteeService';
 import userService from '../../../../service/userService';
-import { MatchProfile } from '../../../../types/matchProfile';
+import { MatchProfile, CalculatedMatch } from '../../../../types/matchProfile';
 import { UserProfile } from '../../../../types/userProfile';
 import ContentContainer from '../../../common/ContentContainer';
+import MatchCard from '../../../common/forms/MatchCard';
+import '../../../common/forms/MatchCard.css';
 
 interface AcceptedMatch extends Match {
   mentorProfile?: MatchProfile;
   mentorUserProfile?: UserProfile;
+  menteeProfile?: MatchProfile;
 }
 
 interface MyMentorsProps {
@@ -66,7 +70,16 @@ function MyMentors({ onFindMentors }: MyMentorsProps) {
               console.log('Could not load mentor user profile');
             }
 
-            return { ...match, mentorProfile, mentorUserProfile };
+            // Get mentee's match profile for comparison in dropdowns
+            let menteeProfile: MatchProfile | undefined;
+            try {
+              const menteeProfileDoc = await menteeService.searchMenteeProfileById(match.menteeProfileId);
+              menteeProfile = menteeProfileDoc?.data;
+            } catch (err) {
+              console.log('Could not load mentee profile');
+            }
+
+            return { ...match, mentorProfile, mentorUserProfile, menteeProfile };
           } catch (err) {
             console.error('Error loading mentor data:', err);
             return match;
@@ -142,7 +155,12 @@ function MyMentors({ onFindMentors }: MyMentorsProps) {
 
   return (
     <ContentContainer title="My Mentors">
-      <Box sx={{ maxWidth: 1200, margin: '0 auto', padding: 3 }}>
+      <Box sx={{ 
+        bgcolor: '#fafafa',
+        minHeight: '100vh',
+        py: 3
+      }}>
+        <Box sx={{ width: '100%', margin: '0 auto', padding: 3 }}>
 
         {/* Loading */}
         {loading && (
@@ -176,13 +194,47 @@ function MyMentors({ onFindMentors }: MyMentorsProps) {
           </Box>
         )}
 
-        {/* Accepted Matches */}
+        {/* Active Mentorships Grid */}
         {!loading && acceptedMatches.length > 0 && (
           <>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Typography variant="h6">
-                {acceptedMatches.length} Active {acceptedMatches.length === 1 ? 'Mentorship' : 'Mentorships'}
-              </Typography>
+            <Box sx={{ maxWidth: 1000, margin: '0 auto' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                <Typography variant="h6">
+                  {acceptedMatches.length} Active {acceptedMatches.length === 1 ? 'Mentorship' : 'Mentorships'}
+                </Typography>
+              </Box>
+
+              <Grid container spacing={3}>
+                {acceptedMatches.map((match: AcceptedMatch) => {
+                // Convert Match to CalculatedMatch format for MatchCard
+                const calculatedMatch: CalculatedMatch = {
+                  profileId: match.mentorProfileId,
+                  userId: match.mentorId,
+                  userType: 'mentor',
+                  matchPercentage: match.matchPercentage,
+                  profile: match.mentorProfile!,
+                  categoryScores: match.matchDetails ? {
+                    technicalInterests: match.matchDetails.technicalInterestsScore || 0,
+                    lifeExperiences: match.matchDetails.lifeExperiencesScore || 0,
+                    languages: match.matchDetails.languagesScore || 0
+                  } : { technicalInterests: 0, lifeExperiences: 0, languages: 0 }
+                };
+
+                return (
+                  <Grid item xs={12} md={6} key={match.matchId}>
+                    <MatchCard
+                      match={calculatedMatch}
+                      currentUserProfile={match.menteeProfile}
+                      matchUserProfile={match.mentorUserProfile}
+                      onEndMentorship={() => handleDeleteClick(match)}
+                      cardType="mentee-finding-mentor"
+                    />
+                  </Grid>
+                );
+              })}
+            </Grid>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <Button
                 variant="outlined"
                 startIcon={<SearchIcon />}
@@ -192,92 +244,17 @@ function MyMentors({ onFindMentors }: MyMentorsProps) {
                 Find More Mentors
               </Button>
             </Box>
-
-            <Grid container spacing={3}>
-              {acceptedMatches.map((match: AcceptedMatch) => {
-                const matchColor = getMatchColor(match.matchPercentage);
-                const mentorName = getMentorDisplayName(match);
-                const mentorSubtitle = getMentorSubtitle(match);
-
-                return (
-                  <Grid item xs={12} key={match.matchId}>
-                    <Card sx={{ border: '2px solid #22c55e20', bgcolor: '#f0fdf4' }}>
-                      <CardContent>
-                        {/* Header */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                          <Avatar sx={{ bgcolor: matchColor, mr: 2, width: 56, height: 56 }}>
-                            <PersonIcon />
-                          </Avatar>
-
-                          <Box sx={{ flex: 1 }}>
-                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#111827' }}>
-                              {mentorName}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {mentorSubtitle}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              Accepted {match.acceptedAt ? new Date((match.acceptedAt as any).seconds * 1000).toLocaleDateString() : ''}
-                            </Typography>
-                          </Box>
-
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Typography variant="h4" sx={{ color: matchColor, fontWeight: 700 }}>
-                              {Math.round(match.matchPercentage)}%
-                            </Typography>
-                            <Chip
-                              label="✓ Active"
-                              size="small"
-                              sx={{ bgcolor: '#22c55e20', color: '#22c55e', fontWeight: 600 }}
-                            />
-                          </Box>
-                        </Box>
-
-                        <Divider sx={{ my: 2 }} />
-
-                        {/* Mentor Details */}
-                        {match.mentorProfile && (
-                          <Box sx={{ mb: 2 }}>
-                            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 1 }}>
-                              {match.mentorProfile.careerFields?.map((f: string) => (
-                                <Chip key={f} label={f} size="small" color="primary" />
-                              ))}
-                            </Box>
-                            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                              {match.mentorProfile.technicalInterests?.slice(0, 4).map((i: string) => (
-                                <Chip key={i} label={i} size="small" sx={{ bgcolor: '#e3f2fd' }} />
-                              ))}
-                            </Box>
-                          </Box>
-                        )}
-
-                        {/* End Mentorship Button */}
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          fullWidth
-                          onClick={() => handleDeleteClick(match)}
-                          sx={{ mt: 1 }}
-                        >
-                          End Mentorship with {mentorName}
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                );
-              })}
-            </Grid>
+            </Box>
           </>
         )}
-      </Box>
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => !deleting && setDeleteDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
+        {/* Delete Confirmation Dialog */}
+        <Dialog
+          open={deleteDialogOpen}
+          onClose={() => !deleting && setDeleteDialogOpen(false)}
+          maxWidth="sm"
+          fullWidth
+        >
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <WarningIcon sx={{ color: '#ef4444' }} />
           End Mentorship with {matchToDelete && getMentorDisplayName(matchToDelete)}?
@@ -323,6 +300,8 @@ function MyMentors({ onFindMentors }: MyMentorsProps) {
           </Button>
         </DialogActions>
       </Dialog>
+      </Box>
+      </Box>
     </ContentContainer>
   );
 }
