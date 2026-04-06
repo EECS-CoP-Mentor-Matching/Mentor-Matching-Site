@@ -109,10 +109,24 @@ function SendMessageForm() {
                     </select>
                 </label>
                 <br />
-                <label>
-                    Your Message:
-                    <TextField fullWidth multiline minRows={4} id="message" name="message" onChange={changeMessageHandler} />
-                </label>
+                    <TextField 
+                        fullWidth
+                        multiline
+                        minRows={8}
+                        id="message"
+                        label="Your Message"
+                        name="message"
+                        onChange={changeMessageHandler} 
+                        sx={{
+                            width: "100%",
+                            maxWidth: "700px",
+                            "& .MuiInputBase-input": {
+                                resize: "both",
+                                overflow: "auto"
+                            }
+                        }}
+                    />
+                <br />
                 <input type="submit" onClick={sendMessageHandler} value="Send Message"/>
             </form>
             {/*Check for an error message, and if found, display it:*/}
