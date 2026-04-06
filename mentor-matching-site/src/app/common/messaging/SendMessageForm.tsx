@@ -7,6 +7,7 @@ import { UserProfile } from "../../../types/userProfile";
 import userService from '../../../service/userService';
 import { MentorReply, Message } from "../../../types/matchProfile";
 import { Timestamp } from "firebase/firestore";
+import { TextField } from "@mui/material";
 
 
 
@@ -80,7 +81,7 @@ function SendMessageForm() {
     }
 
     // Update state whenever the user types in the boxes:
-    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) {
+    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement>) {
         const inputName = e.target.name;
         const inputValue = e.target.value;
 
@@ -110,11 +111,7 @@ function SendMessageForm() {
                 <br />
                 <label>
                     Your Message:
-                    <textarea
-                        name="message"
-                        value={messageDetails.message}
-                        onChange={changeMessageHandler}
-                    />
+                    <TextField fullWidth multiline minRows={4} id="message" name="message" onChange={changeMessageHandler} />
                 </label>
                 <input type="submit" onClick={sendMessageHandler} value="Send Message"/>
             </form>
