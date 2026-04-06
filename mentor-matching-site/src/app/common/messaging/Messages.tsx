@@ -123,7 +123,9 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
         </Box>
       }
       {!adminView &&
-        <a href="/send-message">Send New Message</a>
+        <div>
+          <Button variant="outlined" href="/send-message">Send New Message</Button>
+        </div>
       }
     </ContentContainer>
   );
