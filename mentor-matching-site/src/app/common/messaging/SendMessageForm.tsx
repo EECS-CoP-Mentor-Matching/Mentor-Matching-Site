@@ -7,7 +7,7 @@ import { UserProfile } from "../../../types/userProfile";
 import userService from '../../../service/userService';
 import { MentorReply, Message } from "../../../types/matchProfile";
 import { Timestamp } from "firebase/firestore";
-import { TextField, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Button } from "@mui/material";
+import { TextField, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 
 
 
@@ -31,6 +31,8 @@ function SendMessageForm() {
     // State and function for a list of all users in the database.  TODO: Later, we may want to filter this to only users matched to this one.
     const [usersList, setUsersList] = useState<UserProfile[]>([]);
 
+    // Track if the sent message confirmation dialog should show:
+    const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
     // Fetch a list of all users once on page load.  TODO: Add a filter so that only matched mentors are shown as an option.
     useEffect(() => {
@@ -46,7 +48,6 @@ function SendMessageForm() {
     }, []);
 
     
-
     // Create a Message object based on the user's input and send the message
     function sendMessageHandler(e: React.FormEvent) {
         e.preventDefault();
@@ -75,9 +76,7 @@ function SendMessageForm() {
         };
 
         messagingService.sendMessage(message);
-        alert("Message sent!")
-        redirectToSite("/mentee-portal");
-        
+        setShowConfirmationDialog(true);
     }
 
     // Update state whenever the user types in the boxes:
@@ -111,24 +110,24 @@ function SendMessageForm() {
                     </Select>
                 </FormControl>
 
-                    <TextField 
-                        fullWidth
-                        multiline
-                        minRows={8}
-                        id="message"
-                        label="Your Message"
-                        name="message"
-                        onChange={changeMessageHandler} 
-                        sx={{
-                            mt: 3,
-                            width: "100%",
-                            maxWidth: "700px",
-                            "& .MuiInputBase-input": {
-                                resize: "both",
-                                overflow: "auto"
-                            }
-                        }}
-                    />
+                <TextField 
+                    fullWidth
+                    multiline
+                    minRows={8}
+                    id="message"
+                    label="Your Message"
+                    name="message"
+                    onChange={changeMessageHandler} 
+                    sx={{
+                        mt: 3,
+                        width: "100%",
+                        maxWidth: "700px",
+                        "& .MuiInputBase-input": {
+                            resize: "both",
+                            overflow: "auto"
+                        }
+                    }}
+                />
                 <Button type="submit" variant="contained" sx={{mt: 3}}>Send Message</Button>
             </form>
             {/*Check for an error message, and if found, display it:*/}
@@ -137,7 +136,21 @@ function SendMessageForm() {
                     {errorMessageText}
                 </div>
             )}
-
+            
+        {/*Show a confirmation dialog box that the message has been sent*/}
+        {showConfirmationDialog && (
+            <Dialog open={true} onClose={() => redirectToSite("/mentee-portal")}>
+                <DialogTitle>Message Sent!</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Your message has been sent!  Click the button below to return to your portal.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => redirectToSite("/mentee-portal")}>OK</Button>
+                </DialogActions>
+            </Dialog>
+        )}
         </ContentContainer>
     );
 }
