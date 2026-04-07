@@ -94,12 +94,12 @@ function SendMessageForm() {
                 <h2>
                     Send a message to your contacts using the form below: <br />
                 </h2>
-                <FormControl fullWidth sx={{maxWidth: "700px", mt: 2}}>
-                    <InputLabel id="nameLabel">Recipient's Name:</InputLabel>
+                <FormControl fullWidth sx={{maxWidth: "700px", mt: 2}} variant="outlined">
+                    <InputLabel id="nameLabel" >Recipient's Name:</InputLabel>
                     <Select
                         id="recipient"
                         name="recipient"
-                        label="Select Name"
+                        label="Recipient's Name"
                         labelId="nameLabel"
                         value={messageDetails.recipient}
                         onChange={changeMessageHandler}
