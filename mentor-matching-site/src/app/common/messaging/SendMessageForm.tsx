@@ -7,7 +7,7 @@ import { UserProfile } from "../../../types/userProfile";
 import userService from '../../../service/userService';
 import { MentorReply, Message } from "../../../types/matchProfile";
 import { Timestamp } from "firebase/firestore";
-import { TextField } from "@mui/material";
+import { TextField, MenuItem, Select, SelectChangeEvent, InputLabel } from "@mui/material";
 
 
 
@@ -81,9 +81,9 @@ function SendMessageForm() {
     }
 
     // Update state whenever the user types in the boxes:
-    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement>) {
-        const inputName = e.target.name;
-        const inputValue = e.target.value;
+    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement> | SelectChangeEvent<string>) {
+        const inputName = e.target.name as string;
+        const inputValue = e.target.value as string;
 
         setMessageDetails(values => ({...values, [inputName]: inputValue}))
     }
@@ -94,20 +94,21 @@ function SendMessageForm() {
                 <h2>
                     Send a message to your contacts using the form below: <br />
                 </h2>
-                <label>
-                    Recipient's Name:
-                    <select
+                    <InputLabel id="nameLabel">Recipient's Name:</InputLabel>
+                    <Select
+                        id="recipient"
                         name="recipient"
+                        
+                        labelId="nameLabel"
                         value={messageDetails.recipient}
                         onChange={changeMessageHandler}
-                        required
+                        inputProps={{name: "recipient"}}
                     >
-                    <option value="" disabled hidden>Choose a Recipient</option>
-                    { // Create the select dropdown list from our usersList; mapping each user to a dropdown selection.
-                        usersList.map(user => <option value={user.UID}>{user.contact.displayName}</option>)
-                    }
-                    </select>
-                </label>
+                        
+                        { // Create the select dropdown list from our usersList; mapping each user to a dropdown selection.
+                            usersList.map(user => <MenuItem key={user.UID} value={user.UID}>{user.contact.displayName}</MenuItem>)
+                        }
+                    </Select>
                 <br />
                     <TextField 
                         fullWidth
