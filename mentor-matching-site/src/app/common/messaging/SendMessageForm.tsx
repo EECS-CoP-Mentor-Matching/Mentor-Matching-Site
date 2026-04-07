@@ -7,7 +7,7 @@ import { UserProfile } from "../../../types/userProfile";
 import userService from '../../../service/userService';
 import { MentorReply, Message } from "../../../types/matchProfile";
 import { Timestamp } from "firebase/firestore";
-import { TextField, MenuItem, Select, SelectChangeEvent, InputLabel } from "@mui/material";
+import { TextField, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Button } from "@mui/material";
 
 
 
@@ -90,26 +90,27 @@ function SendMessageForm() {
 
     return (
         <ContentContainer>
-            <form>
+            <form onSubmit={sendMessageHandler} style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                 <h2>
                     Send a message to your contacts using the form below: <br />
                 </h2>
+                <FormControl fullWidth sx={{maxWidth: "700px", mt: 2}}>
                     <InputLabel id="nameLabel">Recipient's Name:</InputLabel>
                     <Select
                         id="recipient"
                         name="recipient"
-                        
+                        label="Select Name"
                         labelId="nameLabel"
                         value={messageDetails.recipient}
                         onChange={changeMessageHandler}
                         inputProps={{name: "recipient"}}
                     >
-                        
                         { // Create the select dropdown list from our usersList; mapping each user to a dropdown selection.
-                            usersList.map(user => <MenuItem key={user.UID} value={user.UID}>{user.contact.displayName}</MenuItem>)
+                            usersList.map((user) => (<MenuItem key={user.UID} value={user.UID}>{user.contact.displayName}</MenuItem>))
                         }
                     </Select>
-                <br />
+                </FormControl>
+
                     <TextField 
                         fullWidth
                         multiline
@@ -119,6 +120,7 @@ function SendMessageForm() {
                         name="message"
                         onChange={changeMessageHandler} 
                         sx={{
+                            mt: 3,
                             width: "100%",
                             maxWidth: "700px",
                             "& .MuiInputBase-input": {
@@ -127,8 +129,7 @@ function SendMessageForm() {
                             }
                         }}
                     />
-                <br />
-                <input type="submit" onClick={sendMessageHandler} value="Send Message"/>
+                <Button type="submit" variant="contained" sx={{mt: 3}}>Send Message</Button>
             </form>
             {/*Check for an error message, and if found, display it:*/}
             {errorMessageText && (
