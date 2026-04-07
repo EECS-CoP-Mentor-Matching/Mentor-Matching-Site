@@ -139,7 +139,7 @@ function SendMessageForm() {
             
         {/*Show a confirmation dialog box that the message has been sent*/}
         {showConfirmationDialog && (
-            <Dialog open={true} onClose={() => redirectToSite("/mentee-portal")}>
+            <Dialog open={true} onClose={() => redirectToSite(userProfile.preferences.role == "Mentee" ? "/mentee-portal" : "/mentor-portal")}>
                 <DialogTitle>Message Sent!</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -147,7 +147,7 @@ function SendMessageForm() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => redirectToSite("/mentee-portal")}>OK</Button>
+                    <Button onClick={() => redirectToSite(userProfile.preferences.role == "Mentee" ? "/mentee-portal" : "/mentor-portal")}>OK</Button>
                 </DialogActions>
             </Dialog>
         )}
