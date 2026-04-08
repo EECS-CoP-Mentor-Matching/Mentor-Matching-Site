@@ -7,6 +7,7 @@ import { UserProfile } from "../../../types/userProfile";
 import userService from '../../../service/userService';
 import { MentorReply, Message } from "../../../types/matchProfile";
 import { Timestamp } from "firebase/firestore";
+import { TextField, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 
 
 
@@ -30,6 +31,8 @@ function SendMessageForm() {
     // State and function for a list of all users in the database.  TODO: Later, we may want to filter this to only users matched to this one.
     const [usersList, setUsersList] = useState<UserProfile[]>([]);
 
+    // Track if the sent message confirmation dialog should show:
+    const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
     // Fetch a list of all users once on page load.  TODO: Add a filter so that only matched mentors are shown as an option.
     useEffect(() => {
@@ -45,7 +48,6 @@ function SendMessageForm() {
     }, []);
 
     
-
     // Create a Message object based on the user's input and send the message
     function sendMessageHandler(e: React.FormEvent) {
         e.preventDefault();
@@ -74,49 +76,59 @@ function SendMessageForm() {
         };
 
         messagingService.sendMessage(message);
-        alert("Message sent!")
-        redirectToSite("/mentee-portal");
-        
+        setShowConfirmationDialog(true);
     }
 
     // Update state whenever the user types in the boxes:
-    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) {
-        const inputName = e.target.name;
-        const inputValue = e.target.value;
+    function changeMessageHandler(e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement> | SelectChangeEvent<string>) {
+        const inputName = e.target.name as string;
+        const inputValue = e.target.value as string;
 
         setMessageDetails(values => ({...values, [inputName]: inputValue}))
     }
 
     return (
         <ContentContainer>
-            <form>
+            <form onSubmit={sendMessageHandler} style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                 <h2>
                     Send a message to your contacts using the form below: <br />
                 </h2>
-                <label>
-                    Recipient's Name:
-                    <select
+                <FormControl fullWidth sx={{maxWidth: "700px", mt: 2}} variant="outlined">
+                    <InputLabel id="nameLabel" >Recipient's Name:</InputLabel>
+                    <Select
+                        id="recipient"
                         name="recipient"
+                        label="Recipient's Name"
+                        labelId="nameLabel"
                         value={messageDetails.recipient}
                         onChange={changeMessageHandler}
-                        required
+                        inputProps={{name: "recipient"}}
                     >
-                    <option value="" disabled hidden>Choose a Recipient</option>
-                    { // Create the select dropdown list from our usersList; mapping each user to a dropdown selection.
-                        usersList.map(user => <option value={user.UID}>{user.contact.displayName}</option>)
-                    }
-                    </select>
-                </label>
-                <br />
-                <label>
-                    Your Message:
-                    <textarea
-                        name="message"
-                        value={messageDetails.message}
-                        onChange={changeMessageHandler}
-                    />
-                </label>
-                <input type="submit" onClick={sendMessageHandler} value="Send Message"/>
+                        { // Create the select dropdown list from our usersList; mapping each user to a dropdown selection.
+                            usersList.map((user) => (<MenuItem key={user.UID} value={user.UID}>{user.contact.displayName}</MenuItem>))
+                        }
+                    </Select>
+                </FormControl>
+
+                <TextField 
+                    fullWidth
+                    multiline
+                    minRows={8}
+                    id="message"
+                    label="Your Message"
+                    name="message"
+                    onChange={changeMessageHandler} 
+                    sx={{
+                        mt: 3,
+                        width: "100%",
+                        maxWidth: "700px",
+                        "& .MuiInputBase-input": {
+                            resize: "both",
+                            overflow: "auto"
+                        }
+                    }}
+                />
+                <Button type="submit" variant="contained" sx={{mt: 3}}>Send Message</Button>
             </form>
             {/*Check for an error message, and if found, display it:*/}
             {errorMessageText && (
@@ -124,7 +136,21 @@ function SendMessageForm() {
                     {errorMessageText}
                 </div>
             )}
-
+            
+        {/*Show a confirmation dialog box that the message has been sent*/}
+        {showConfirmationDialog && (
+            <Dialog open={true} onClose={() => redirectToSite(userProfile.preferences.role == "Mentee" ? "/mentee-portal" : "/mentor-portal")}>
+                <DialogTitle>Message Sent!</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Your message has been sent!  Click the button below to return to your portal.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => redirectToSite(userProfile.preferences.role == "Mentee" ? "/mentee-portal" : "/mentor-portal")}>OK</Button>
+                </DialogActions>
+            </Dialog>
+        )}
         </ContentContainer>
     );
 }
