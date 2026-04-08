@@ -60,15 +60,15 @@ function ManageUsers() {
       subtitle="A table of active users enrolled in Mentor Match"
     >
       <Link to="/admin-portal/pending-users">View Pending User Accounts</Link>
-      <Box sx={{ minWidth: '500px', paddingInline: "20%", paddingBlockStart: 2, margin: 'auto' }}>
-        <TableContainer component={Paper}>
+      <Box sx={{ paddingInline: { xs: "4px", md: "20%" }, paddingBlockStart: 2, paddingBottom: 6, margin: "auto", boxSizing: "border-box", overflowX: "auto" }}>
+        <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
           <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>Profile</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Role</TableCell>
+                <TableCell sx={{ display: { xs: "none", sm: "table-cell" } }}>Email</TableCell>
+                <TableCell sx={{ display: { xs: "none", sm: "table-cell" } }}>Role</TableCell>
                 <TableCell align="center">Delete</TableCell>
               </TableRow>
             </TableHead>
@@ -86,9 +86,9 @@ function ManageUsers() {
                     <Link to={"/admin-portal/edit-user/" + u.UID}>{u.contact?.displayName || "No name"}</Link>
                   </TableCell>
 
-                  <TableCell>{u.contact?.email || "N/A"}</TableCell>
+                  <TableCell sx={{ display: { xs: "none", sm: "table-cell" } }}>{u.contact?.email || "N/A"}</TableCell>
 
-                  <TableCell>{u.preferences?.role || "N/A"}</TableCell>
+                  <TableCell sx={{ display: { xs: "none", sm: "table-cell" } }}>{u.preferences?.role || "N/A"}</TableCell>
 
                   <TableCell align="center">
                     <IconButton

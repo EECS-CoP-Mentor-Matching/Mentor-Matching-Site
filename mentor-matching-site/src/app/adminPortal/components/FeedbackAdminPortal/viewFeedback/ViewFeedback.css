@@ -7,6 +7,8 @@
     margin-top: 20px;
     padding: 10px;
     max-width: 1000px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .feedback-map {
@@ -28,14 +30,12 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    
     align-items: flex-start;
     background-color: #f9f9f9;
+    box-sizing: border-box;
 }
 
-.view-feedback strong {
-    color: #333;
-}
+.view-feedback strong { color: #333; }
 
 .view-feedback a {
     color: #007bff;
@@ -46,9 +46,26 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .search-sort-item {
     padding: 5px;
     width: 200px;
+}
+
+@media (max-width: 600px) {
+  .view-feedback {
+    width: 95%;
+    padding: 14px;
+  }
+
+  .search-sort-container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-sort-item {
+    width: 100%;
+  }
 }

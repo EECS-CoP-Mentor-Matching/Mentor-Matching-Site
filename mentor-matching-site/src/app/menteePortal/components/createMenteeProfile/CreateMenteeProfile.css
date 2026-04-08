@@ -5,6 +5,8 @@
   padding: 10px;
   border: darkgray 1px solid;
   max-width: 600px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .mentee-interest {
@@ -15,4 +17,13 @@
   align-items: center;
   justify-content: center;
   padding: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .mentee-interest {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
 }

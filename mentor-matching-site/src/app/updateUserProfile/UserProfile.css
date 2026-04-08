@@ -92,7 +92,6 @@
   overflow: hidden;
 }
 
-/* Section header strip */
 .profile-section-header {
   display: flex;
   align-items: center;
@@ -118,7 +117,6 @@
   color: var(--osu-grey);
 }
 
-/* Scrollable content area */
 .profile-section-body {
   padding: 24px;
   max-height: 420px;
@@ -127,26 +125,18 @@
   scrollbar-color: var(--osu-border) transparent;
 }
 
-.profile-section-body::-webkit-scrollbar {
-  width: 5px;
-}
-
-.profile-section-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+.profile-section-body::-webkit-scrollbar { width: 5px; }
+.profile-section-body::-webkit-scrollbar-track { background: transparent; }
 .profile-section-body::-webkit-scrollbar-thumb {
   background: var(--osu-border);
   border-radius: 99px;
 }
 
-/* Image section — no scroll needed, no max-height */
 .profile-section-body.no-scroll {
   max-height: none;
   overflow: visible;
 }
 
-/* ── Sub-section labels inside cards ──────────────────── */
 .profile-section-body .MuiFormLabel-root {
   font-size: 0.75rem !important;
   font-weight: 700 !important;
@@ -156,7 +146,6 @@
   margin-top: 4px;
 }
 
-/* ── MUI input containment ─────────────────────────────── */
 .profile-section-body input,
 .profile-section-body .MuiTextField-root,
 .profile-section-body .MuiFormControl-root,
@@ -169,18 +158,15 @@
   box-sizing: border-box;
 }
 
-/* ── Allow side-by-side inputs inside a row group ──────── */
 .profile-section-body .MuiFormGroup-root[style*="flex-direction: row"] .MuiFormControl-root:not(:only-child) {
   width: auto;
   flex: 1;
 }
 
-/* Orange underline on editable fields */
 .profile-section-body .MuiInput-underline.Mui-focused::after {
   border-bottom-color: var(--osu-orange) !important;
 }
 
-/* ── Loading state ─────────────────────────────────────── */
 .profile-loading {
   color: var(--osu-text-muted);
   font-size: 0.95rem;
@@ -189,7 +175,6 @@
   width: 100%;
 }
 
-/* ── Delete Account Section ────────────────────────────── */
 .delete-account-section {
   width: 100%;
   max-width: 760px;
@@ -214,4 +199,39 @@
 
 .delete-account-link:hover {
   color: var(--osu-text);
+}
+
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .user-profile-page {
+    padding: 0 0.75rem 3rem;
+  }
+
+  .profile-action-bar {
+    padding: 10px 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-action-bar h2 {
+    font-size: 0.95rem;
+  }
+
+  .profile-section-header {
+    padding: 12px 16px;
+  }
+
+  .profile-section-body {
+    padding: 16px;
+    max-height: none; /* let content expand naturally on mobile */
+  }
+
+  /* Stack side-by-side fields vertically on mobile */
+  .profile-section-body .MuiFormGroup-root[style*="flex-direction: row"] {
+    flex-direction: column !important;
+  }
+
+  .profile-section-body .MuiFormGroup-root[style*="flex-direction: row"] .MuiFormControl-root:not(:only-child) {
+    width: 100%;
+    flex: unset;
+  }
 }

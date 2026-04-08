@@ -1,8 +1,9 @@
 import { Tab, Tabs } from "@mui/material";
+import { useTheme, useMediaQuery } from "@mui/material";
 
-const style = {
+const tabStyle = {
   fontSize: {
-    xs: '0.75rem',
+    xs: '0.7rem',
     sm: '0.875rem',
     md: '1.00rem',
     lg: '1.00rem',
@@ -15,6 +16,14 @@ const style = {
     lg: '1.50rem',
     xl: '1.50rem'
   },
+  minWidth: {
+    xs: 'unset',
+    md: '90px',
+  },
+  padding: {
+    xs: '6px 8px',
+    md: '12px 16px',
+  },
 }
 
 interface TabProps {
@@ -24,6 +33,9 @@ interface TabProps {
 }
 
 function PortalNavigationTabs({ navItems, selected, handleNavChange }: TabProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
     <Tabs
       value={selected}
@@ -31,10 +43,14 @@ function PortalNavigationTabs({ navItems, selected, handleNavChange }: TabProps)
       aria-label="navigation tabs"
       textColor="inherit"
       indicatorColor="secondary"
-      sx={{ border: 'none' }}
+      variant={isMobile ? "scrollable" : "standard"}
+      scrollButtons={isMobile ? "auto" : false}
+      allowScrollButtonsMobile
+      centered={!isMobile}
+      sx={{ border: 'none', width: '100%' }}
     >
       {navItems?.map(item => (
-        <Tab sx={style} key={item} value={item} label={item} />
+        <Tab sx={tabStyle} key={item} value={item} label={item} />
       ))}
     </Tabs>
   );

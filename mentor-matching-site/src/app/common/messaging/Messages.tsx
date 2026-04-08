@@ -102,6 +102,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   return (
     <ContentContainer title="Messages">
       {deleteMessageDialog}
+      <Box sx={{ maxWidth: { xs: '100%', sm: '720px', md: '800px' }, margin: '0 auto', width: '100%' }}>
       {messagesInbound.length > 0 &&
         <Box>
           <List>
@@ -127,6 +128,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
           <Button variant="outlined" href="/send-message">Send New Message</Button>
         </div>
       }
+      </Box>
     </ContentContainer>
   );
 }

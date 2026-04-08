@@ -1,11 +1,10 @@
-
 .mentee-portal {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center removed - was constraining child width */
   margin: 10px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .mentee-portal-centered {
@@ -14,4 +13,11 @@
   justify-content: center;
   align-items: center;
   margin: 10px;
+}
+
+@media (max-width: 480px) {
+  .mentee-portal,
+  .mentee-portal-centered {
+    margin: 6px;
+  }
 }

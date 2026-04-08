@@ -1,19 +1,22 @@
-
 .profile-image:hover {
   background-color: transparent;
 }
 
-.profile-image:hover>svg {
+.profile-image:hover > svg {
   fill: gray;
 }
+
 .profile-image {
   background: none;
-  border: none;       /* This kills the black box */
+  border: none;
   padding: 0;
   cursor: pointer;
-  outline: none;      /* Removes the blue/black ring when clicked */
+  outline: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;        /* Or whatever width you want */
+  width: 100%;
+  /* Improve tap target on mobile */
+  min-height: 44px;
+  touch-action: manipulation;
 }

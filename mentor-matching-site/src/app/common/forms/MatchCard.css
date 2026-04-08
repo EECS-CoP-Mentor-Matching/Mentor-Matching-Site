@@ -1,6 +1,6 @@
 /* Container & Shape */
 .match-card {
-  position: relative; /* CRITICAL: Allows absolute positioning of Connect button */
+  position: relative;
   border-radius: 24px !important;
   border: 1px solid #e5e7eb;
   background: #ffffff;
@@ -10,7 +10,7 @@
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
-/* Action Button Container - Top Left */
+/* Action Button Container */
 .action-button-container {
   position: absolute;
   top: 16px;
@@ -18,7 +18,7 @@
   z-index: 10;
 }
 
-/* Connect Button - Orange Pill */
+/* Connect Button */
 .btn-connect-pill {
   background-color: #e47c2a !important;
   color: white !important;
@@ -29,14 +29,8 @@
   font-size: 0.75rem !important;
 }
 
-.btn-connect-pill:hover {
-  background-color: #c86a1f !important;
-}
-
-.btn-connect-pill:disabled {
-  background-color: #9ca3af !important;
-  color: white !important;
-}
+.btn-connect-pill:hover { background-color: #c86a1f !important; }
+.btn-connect-pill:disabled { background-color: #9ca3af !important; color: white !important; }
 
 /* Accept/Decline Buttons */
 .btn-accept {
@@ -49,9 +43,7 @@
   font-size: 0.75rem !important;
 }
 
-.btn-accept:hover {
-  background-color: #16a34a !important;
-}
+.btn-accept:hover { background-color: #16a34a !important; }
 
 .btn-decline {
   border: 1px solid #ef4444 !important;
@@ -93,7 +85,7 @@
   margin-top: 8px !important;
 }
 
-/* Light Grey Match Block */
+/* Match Data Block */
 .match-data-block {
   background: #f3f4f6;
   color: #374151;
@@ -117,8 +109,33 @@
   line-height: 1;
 }
 
-/* Elevator Pitch Footer */
 .profile-intro {
   padding: 0 16px 16px 16px;
   text-align: center;
+}
+
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .match-avatar-huge {
+    width: 110px !important;
+    height: 110px !important;
+    font-size: 2rem !important;
+  }
+
+  .profile-top-section {
+    padding: 40px 16px 12px 16px;
+  }
+
+  .match-data-block {
+    margin: 0 10px 12px 10px;
+    padding: 12px;
+  }
+
+  .score-large-orange {
+    font-size: 22px;
+  }
+
+  .profile-name-centered {
+    font-size: 1.1rem !important;
+  }
 }
