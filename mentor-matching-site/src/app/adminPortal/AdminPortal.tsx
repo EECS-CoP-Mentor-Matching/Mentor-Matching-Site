@@ -57,23 +57,24 @@ function AdminPortal(props: AdminPortalProps) {
       isTypeRequired, setIsTypeRequired,
       isAttachmentAllowed, setIsAttachmentAllowed
     }}>
-      <PortalNavigationBar 
-        selected={page} 
-        onNavChange={setPage} 
-        navItems={navUtilities.navItemsFromEnum(Pages)} 
-      />
-      
-      {page === Pages.manageUsers && <ManageUsers />}
-      {page === Pages.userFeedback && (
-        <div className="feedback-portal">
-          <FeedbackAdminPortal />
-        </div>
-      )}
-      {/* {page === Pages.viewReports && <ViewReports />} */}
-      {page === Pages.settings && <Settings />}
-      {page === Pages.testing && <TestingPanel />}
-      {page === Pages.sendEmail && <SendEmailForm />}
-       
+      <div className="portal-container">
+        <PortalNavigationBar 
+          selected={page} 
+          onNavChange={setPage} 
+          navItems={navUtilities.navItemsFromEnum(Pages)} 
+        />
+        
+        {page === Pages.manageUsers && <ManageUsers />}
+        {page === Pages.userFeedback && (
+          <div className="feedback-portal">
+            <FeedbackAdminPortal />
+          </div>
+        )}
+        {/* {page === Pages.viewReports && <ViewReports />} */}
+        {page === Pages.settings && <Settings />}
+        {page === Pages.testing && <TestingPanel />}
+        {page === Pages.sendEmail && <SendEmailForm />}
+      </div>
     </FeedbackSettingsContext.Provider>
     
   );

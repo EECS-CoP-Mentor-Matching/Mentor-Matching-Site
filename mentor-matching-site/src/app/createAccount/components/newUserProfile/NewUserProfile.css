@@ -1,6 +1,4 @@
 /* ── New User Profile Page ─────────────────────────────── */
-/* Mirrors UserProfile.css card style for visual consistency */
-
 .new-user-profile-page {
   min-height: 100vh;
   background: #fff;
@@ -47,9 +45,7 @@
   box-shadow: none !important;
 }
 
-.new-profile-submit-btn:hover {
-  opacity: 0.88;
-}
+.new-profile-submit-btn:hover { opacity: 0.88; }
 
 /* ── Section Card ──────────────────────────────────────── */
 .new-profile-section-card {
@@ -114,18 +110,16 @@
   box-sizing: border-box;
 }
 
-/* Allow side-by-side name fields */
 .new-profile-section-body .MuiFormGroup-root[style*="flex-direction: row"] .MuiFormControl-root:not(:only-child) {
   width: auto;
   flex: 1;
 }
 
-/* Orange underline on focused fields */
 .new-profile-section-body .MuiInput-underline.Mui-focused::after {
   border-bottom-color: #D73F09 !important;
 }
 
-/* ── Centered field wrapper with external label ────────── */
+/* ── Centered field wrapper ────────────────────────────── */
 .new-profile-field-wrapper {
   display: flex;
   flex-direction: column;
@@ -148,7 +142,6 @@
   max-width: 400px;
 }
 
-/* Force dropdowns and their inner MUI elements to respect the wrapper width */
 .new-profile-field-wrapper .MuiFormControl-root,
 .new-profile-field-wrapper .MuiAutocomplete-root,
 .new-profile-field-wrapper .MuiInputBase-root,
@@ -156,4 +149,51 @@
 .new-profile-field-wrapper .MuiOutlinedInput-root {
   width: 100% !important;
   max-width: 400px !important;
+}
+
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .new-user-profile-page {
+    padding: 0 0.75rem 3rem;
+  }
+
+  .new-profile-action-bar {
+    padding: 10px 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .new-profile-action-bar h2 {
+    font-size: 0.9rem;
+  }
+
+  .new-profile-section-header {
+    padding: 12px 16px;
+  }
+
+  .new-profile-section-body {
+    padding: 16px;
+  }
+
+  /* Stack side-by-side inputs vertically */
+  .new-profile-section-body .MuiFormGroup-root[style*="flex-direction: row"] {
+    flex-direction: column !important;
+  }
+
+  .new-profile-section-body .MuiFormGroup-root[style*="flex-direction: row"] .MuiFormControl-root:not(:only-child) {
+    width: 100%;
+    flex: unset;
+  }
+
+  .new-profile-field-wrapper > *,
+  .new-profile-field-label {
+    max-width: 100%;
+  }
+
+  .new-profile-field-wrapper .MuiFormControl-root,
+  .new-profile-field-wrapper .MuiAutocomplete-root,
+  .new-profile-field-wrapper .MuiInputBase-root,
+  .new-profile-field-wrapper .MuiSelect-root,
+  .new-profile-field-wrapper .MuiOutlinedInput-root {
+    max-width: 100% !important;
+  }
 }

@@ -1,10 +1,10 @@
-
 .mentor-portal {
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 10px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .mentor-portal-centered {
@@ -13,4 +13,11 @@
   justify-content: center;
   align-items: center;
   margin: 10px;
+}
+
+@media (max-width: 480px) {
+  .mentor-portal,
+  .mentor-portal-centered {
+    margin: 6px;
+  }
 }

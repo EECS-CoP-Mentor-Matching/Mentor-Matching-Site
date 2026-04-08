@@ -1,8 +1,16 @@
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure it stays at least full screen */
+  min-height: 100vh;
   text-align: center;
+}
+
+/* Shared wrapper used by all portal pages (mentor, mentee, admin).
+   Prevents inner content from expanding the page width and cutting off TopNav. */
+.portal-container {
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .App-logo {
