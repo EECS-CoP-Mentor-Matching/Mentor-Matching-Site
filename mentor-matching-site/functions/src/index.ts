@@ -82,8 +82,7 @@ export const deleteUserAccount = onCall(async (request) => {
     throw new Error("Caller profile not found.");
   }
 
-  const callerRole = callerProfile.data()?.preferences?.role;
-  if (callerRole !== "Admin") {
+  if (request.auth.token.admin !== true) {
     throw new Error("This function can be run by authorized Mentor Match Admins only.");
   }
 
