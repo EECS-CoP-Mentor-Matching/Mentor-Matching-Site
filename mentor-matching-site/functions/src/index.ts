@@ -39,10 +39,10 @@ export const approvePendingUser = onCall(async (request) => {
 });
 
 // Function for granting a user Firebase admin privileges.
-// Checks tha user sending request is admin, and sets new_admin_uid to admin
+// Checks that user sending request is admin, and sets new_admin_uid to admin
 export const setAdminPrivileges = onCall(async (request) => {
   const uid = request.data.uid;
-  const new_admin_uid = request.data.new_admin_uid;
+  const admin_uid = request.data.new_admin_uid;
 
   if (!request.auth) {
     throw new Error("You are not signed in.  Please sign in first.");
@@ -56,11 +56,36 @@ export const setAdminPrivileges = onCall(async (request) => {
     throw new Error("User ID (UID) not provided.");
   }
 
-  if (!new_admin_uid) {
+  if (!admin_uid) {
     throw new Error("New Admin User ID (UID) not provided.");
   }
 
-  await adminFunctions.auth().setCustomUserClaims(new_admin_uid, { admin: true });
+  await adminFunctions.auth().setCustomUserClaims(admin_uid, { admin: true });
+  return { success: true };
+});
+
+// Function for removing a user Firebase admin privileges.
+export const removeAdminPrivileges = onCall(async (request) => {
+  const uid = request.data.uid;
+  const admin_uid = request.data.new_admin_uid;
+
+  if (!request.auth) {
+    throw new Error("You are not signed in.  Please sign in first.");
+  }
+
+  if (request.auth.token.admin !== true) {
+    throw new Error("This function can be run by authorized Mentor Match Admins only.");
+  }
+
+  if (!uid) {
+    throw new Error("User ID (UID) not provided.");
+  }
+
+  if (!admin_uid) {
+    throw new Error("Admin User ID (UID) not provided.");
+  }
+
+  await adminFunctions.auth().setCustomUserClaims(admin_uid, { admin: false });
   return { success: true };
 });
 
