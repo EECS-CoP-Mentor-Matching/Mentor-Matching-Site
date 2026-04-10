@@ -95,6 +95,9 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
       setOpenAdminDialog(true);
       return;
     }
+
+    // Otherwise commit role change (no change in admin privileges)
+    commitRoleChange(newValue);
   };
 
   const handleConfirmAdmin = () => {
