@@ -42,7 +42,7 @@ export const approvePendingUser = onCall(async (request) => {
 // Checks that user sending request is admin, and sets new_admin_uid to admin
 export const setAdminPrivileges = onCall(async (request) => {
   const uid = request.data.uid;
-  const admin_uid = request.data.new_admin_uid;
+  const admin_uid = request.data.admin_uid;
 
   if (!request.auth) {
     throw new Error("You are not signed in.  Please sign in first.");
@@ -67,7 +67,7 @@ export const setAdminPrivileges = onCall(async (request) => {
 // Function for removing a user Firebase admin privileges.
 export const removeAdminPrivileges = onCall(async (request) => {
   const uid = request.data.uid;
-  const admin_uid = request.data.new_admin_uid;
+  const admin_uid = request.data.admin_uid;
 
   if (!request.auth) {
     throw new Error("You are not signed in.  Please sign in first.");
@@ -85,7 +85,10 @@ export const removeAdminPrivileges = onCall(async (request) => {
     throw new Error("Admin User ID (UID) not provided.");
   }
 
-  await adminFunctions.auth().setCustomUserClaims(admin_uid, { admin: false });
+  const user = await adminFunctions.auth().getUser(admin_uid);
+  const existingClaims = user.customClaims || {};
+  const { admin, ...claimsWithoutAdmin } = existingClaims;
+  await adminFunctions.auth().setCustomUserClaims(admin_uid, claimsWithoutAdmin);
   return { success: true };
 });
 
