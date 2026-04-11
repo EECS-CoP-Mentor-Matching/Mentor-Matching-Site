@@ -17,7 +17,8 @@ interface TextInputControlProps {
 
 function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValidation, label, value, readonly, widthMulti, sensitive, editColor, style }: TextInputControlProps) {
   const controlStyle = {
-    width: `${widthMulti === undefined ? 10 : widthMulti * 100}rem`,
+    width: '100%',
+    maxWidth: `${widthMulti === undefined ? 10 : widthMulti * 100}rem`,
     borderBottomColor: editColor !== undefined ? editColor : ""
   }
 
@@ -76,7 +77,7 @@ function TextInputControl({ onInput, onInputValidation, onSubmit, onSubmitValida
   }
 
   return (
-    <FormControl className="form-control" sx={{ mb: 2 }}>
+    <FormControl className="form-control" sx={{ mb: 2, width: "100%" }}>
       {label && (
         <Box component="label" sx={{ 
           display: 'block',

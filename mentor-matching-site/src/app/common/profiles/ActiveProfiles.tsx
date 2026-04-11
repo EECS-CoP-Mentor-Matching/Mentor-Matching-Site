@@ -104,25 +104,9 @@ function ActiveProfiles({ userType, onCreateProfile, backToPage }: ActiveProfile
                 <LoadingMessage loading={loadingProfiles} message="Loading profiles..." />
 
                 <Box display='flex' flexDirection='column' gap={2}>
-                    {/* Create Profile Button */}
-                    {profiles.length > 0 && (
-                        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                            <Button 
-                                variant="contained" 
-                                startIcon={<AddIcon />}
-                                onClick={onCreateProfile}
-                                sx={{ 
-                                    backgroundColor: '#D73F09',
-                                    '&:hover': { backgroundColor: '#181716' }
-                                }}
-                            >
-                                Create New Profile
-                            </Button>
-                        </Box>
-                    )}
-
-                    <Box display='flex' gap={5}>
-                        <Box sx={{ flex: 1 }}>
+ 
+                    <Box display='flex' gap={5} justifyContent='center'>
+                        <Box sx={{ flex: 1, maxWidth: { xs: '100%', sm: '720px', md: '800px' } }}>
                             {profiles.map((profile, index) => (
                                 <Card key={profile.docId} sx={{ mb: 3, border: '1px solid #e0e0e0' }}>
                                     <CardContent>
@@ -318,6 +302,22 @@ function ActiveProfiles({ userType, onCreateProfile, backToPage }: ActiveProfile
                             />
                         )}
                     </Box>
+                                       {/* Create Profile Button */}
+                    {profiles.length > 0 && (
+                        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+                            <Button 
+                                variant="contained" 
+                                startIcon={<AddIcon />}
+                                onClick={onCreateProfile}
+                                sx={{ 
+                                    backgroundColor: '#D73F09',
+                                    '&:hover': { backgroundColor: '#181716' }
+                                }}
+                            >
+                                Create New Profile
+                            </Button>
+                        </Box>
+                    )}
                 </Box>
             </ContentContainer>
         </>

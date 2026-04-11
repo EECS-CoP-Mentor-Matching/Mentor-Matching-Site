@@ -2,8 +2,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 120px); /* subtract TopNav height so it doesn't push layout */
   background: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .login-container {
@@ -11,6 +15,8 @@
   flex-direction: column;
   align-items: center;
   gap: 30px;
+  width: 100%;
+  max-width: 500px;
 }
 
 .intro-heading {
@@ -45,6 +51,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .login .form-group .MuiFormLabel-root {
@@ -82,4 +90,29 @@
   flex-direction: column;
   gap: 10px;
   width: 100%;
+}
+
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .login {
+    align-items: flex-start;
+    padding: 24px 16px;
+  }
+
+  .login .form-group {
+    min-width: unset;
+    padding: 24px 16px;
+  }
+
+  .osu-logo {
+    width: 90px;
+  }
+
+  .welcome-text h2 {
+    font-size: 1rem;
+  }
+
+  .login .form-group .MuiFormLabel-root {
+    font-size: 1.2rem;
+  }
 }

@@ -4,9 +4,10 @@
     justify-content: center;
     align-items: center;
     margin: 10px;
-  }
+    width: 100%;
+    box-sizing: border-box;
+}
 
-/* ── Edit User Profile input containment ───────────────── */
 .manage-user-profile input,
 .manage-user-profile .MuiFormControl-root,
 .manage-user-profile .MuiInputBase-root {
@@ -18,4 +19,19 @@
 .manage-user-profile .MuiFormGroup-root[style*="flex-direction: row"] .MuiFormControl-root:not(:only-child) {
   width: auto;
   flex: 1;
+}
+
+@media (max-width: 600px) {
+  .admin-portal {
+    margin: 6px;
+  }
+
+  .manage-user-profile .MuiFormGroup-root[style*="flex-direction: row"] {
+    flex-direction: column !important;
+  }
+
+  .manage-user-profile .MuiFormGroup-root[style*="flex-direction: row"] .MuiFormControl-root:not(:only-child) {
+    width: 100%;
+    flex: unset;
+  }
 }
