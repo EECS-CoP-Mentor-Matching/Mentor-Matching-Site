@@ -41,7 +41,6 @@ export const approvePendingUser = onCall(async (request) => {
 // Function for granting a user Firebase admin privileges.
 // Checks that user sending request is admin, and sets new_admin_uid to admin
 export const setAdminPrivileges = onCall(async (request) => {
-  const uid = request.data.uid;
   const admin_uid = request.data.admin_uid;
 
   if (!request.auth) {
@@ -52,17 +51,13 @@ export const setAdminPrivileges = onCall(async (request) => {
     throw new Error("This function can be run by authorized Mentor Match Admins only.");
   }
 
-  if (!uid) {
-    throw new Error("User ID (UID) not provided.");
-  }
-
   if (!admin_uid) {
     throw new Error("New Admin User ID (UID) not provided.");
   }
 
-  const user = await adminFunctions.auth().getUser(uid);
+  const user = await adminFunctions.auth().getUser(admin_uid);
   const existingClaims = user.customClaims || {};
-  await adminFunctions.auth().setCustomUserClaims(uid, { 
+  await adminFunctions.auth().setCustomUserClaims(admin_uid, { 
     ...existingClaims, 
     admin: true 
   });
@@ -71,7 +66,6 @@ export const setAdminPrivileges = onCall(async (request) => {
 
 // Function for removing a user Firebase admin privileges.
 export const removeAdminPrivileges = onCall(async (request) => {
-  const uid = request.data.uid;
   const admin_uid = request.data.admin_uid;
 
   if (!request.auth) {
@@ -80,10 +74,6 @@ export const removeAdminPrivileges = onCall(async (request) => {
 
   if (request.auth.token.admin !== true) {
     throw new Error("This function can be run by authorized Mentor Match Admins only.");
-  }
-
-  if (!uid) {
-    throw new Error("User ID (UID) not provided.");
   }
 
   if (!admin_uid) {

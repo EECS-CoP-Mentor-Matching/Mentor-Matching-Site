@@ -62,13 +62,13 @@ function ManageUserProfile() {
                 if(initialRole !== currentRole) {
                     // non-admin -> admin
                     if(currentRole === AdminMatchRole.admin) {
-                        await setAdminPrivileges({uid: userID, admin_uid: userID});
+                        await setAdminPrivileges({admin_uid: userID});
                         console.log("Admin privileges granted");
                     }
                     // admin -> non-admin
                     else if(initialRole === AdminMatchRole.admin) {
                         console.log("Admin privileges removal is being called");
-                        await removeAdminPrivileges({uid: userID, admin_uid: userID});
+                        await removeAdminPrivileges({admin_uid: userID});
                         console.log("Admin privileges removed");
                     }
                 }
