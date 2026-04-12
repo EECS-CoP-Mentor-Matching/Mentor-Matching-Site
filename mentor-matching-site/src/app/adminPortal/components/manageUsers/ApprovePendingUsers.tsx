@@ -31,14 +31,6 @@ function ApprovePendingUsers()
         }
     };
 
-    useEffect(() => {
-        async function adminSetup() { // Fetches a list of pending users and also sets the account as admin:
-            await fetchPendingUsers();
-            await setAdminPrivileges({uid: currentUserId});
-        }
-        adminSetup();
-    }, [currentUserId]);
-
     async function handleApproveUser(uid: string) {
         // Function to handle the click for the approe button.  Takes the user's ID and marks them as approved in Firebase.
         try {
