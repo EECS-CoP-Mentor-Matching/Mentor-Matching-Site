@@ -60,7 +60,12 @@ export const setAdminPrivileges = onCall(async (request) => {
     throw new Error("New Admin User ID (UID) not provided.");
   }
 
-  await adminFunctions.auth().setCustomUserClaims(admin_uid, { admin: true });
+  const user = await adminFunctions.auth().getUser(uid);
+  const existingClaims = user.customClaims || {};
+  await adminFunctions.auth().setCustomUserClaims(uid, { 
+    ...existingClaims, 
+    admin: true 
+  });
   return { success: true };
 });
 
