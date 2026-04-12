@@ -1,6 +1,10 @@
+import React, { useState } from "react";
 import FormGroupRows from "../forms/layout/FormGroupRows";
 import FormGroupCols from "../forms/layout/FormGroupCols";
-import { FormControl, FormLabel, InputLabel, MenuItem, Select } from "@mui/material";
+import { 
+  FormControl, FormLabel, InputLabel, MenuItem, Select, 
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
+} from "@mui/material";
 import { UserProfile, HOURS_PER_WEEK_OPTIONS } from "../../../types/userProfile";
 import TextInputControl from "../forms/textInputs/TextInputControl";
 import { useAppSelector } from "../../../redux/hooks";
@@ -23,6 +27,11 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
   // Check if the LOGGED-IN user is an Admin
   const currentLoggedInUser = useAppSelector((state) => state.userProfile.userProfile);
   const isLoggedInUserAdmin = currentLoggedInUser?.preferences?.role === AdminMatchRole.admin;
+
+  // New state for dialog options when updating user's role
+  const [dialogConfig, setDialogConfig] = useState({ title: "", message: "" });
+  const [openAdminDialog, setOpenAdminDialog] = useState(false);
+  const [pendingRole, setPendingRole] = useState<string | null>(null);
 
   // Regular users: Mentee, Mentor, Both (no Admin)
   // Admins can also assign the Admin role
@@ -52,19 +61,79 @@ function UpdatePersonalInformation({ showEdit, showEditStyle, userProfile, onCha
       }
     );
 
-  const updateRoleField = (value: string) =>
-    onChange(
-      {
-        ...userProfile,
-        preferences: {
-          ...userPreferences,
-          role: value as any
-        }
+  const commitRoleChange = (role: string) => {
+    onChange({
+      ...userProfile,
+      preferences: {
+        ...userPreferences,
+        role: role as any
       }
-    );
+    });
+  };
+
+  const updateRoleField = (newValue: string) => {
+    const currentRole = userPreferences?.role;
+
+    // Handle giving a user admin role (admin -> non-admin)
+    if (newValue === AdminMatchRole.admin && currentRole !== AdminMatchRole.admin) {
+      setDialogConfig({
+        title: "Grant Admin Privileges?",
+        message: "Are you sure you want to grant admin privileges? This user will gain full access to system settings."
+      });
+      setPendingRole(newValue);
+      setOpenAdminDialog(true);
+      return;
+    }
+
+    // Handle stripping admin role from user (non-admin -> admin)
+    if (currentRole === AdminMatchRole.admin && newValue !== AdminMatchRole.admin) {
+      setDialogConfig({
+        title: "Remove Admin Privileges?",
+        message: `Are you sure you want to remove admin access? This user will be restricted to regular user permissions.`
+      });
+      setPendingRole(newValue);
+      setOpenAdminDialog(true);
+      return;
+    }
+
+    // Otherwise commit role change (no change in admin privileges)
+    commitRoleChange(newValue);
+  };
+
+  const handleConfirmAdmin = () => {
+    if (pendingRole) {
+      commitRoleChange(pendingRole);
+    }
+    setOpenAdminDialog(false);
+    setPendingRole(null);
+  };
+
+  const handleCancelAdmin = () => {
+    setOpenAdminDialog(false);
+    setPendingRole(null);
+  };
 
   return (
-    <>{personalInformation !== undefined &&
+    <>
+      {/* Role Confirmation Pop-up Dialog */}
+      <Dialog open={openAdminDialog} onClose={handleCancelAdmin}>
+        <DialogTitle>{dialogConfig.title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {dialogConfig.message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelAdmin} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmAdmin} color="error" variant="contained" autoFocus>
+            Confirm Change
+          </Button>
+        </DialogActions>
+      </Dialog>
+    
+      {personalInformation !== undefined &&
       <FormGroupCols>
         <FormLabel>Personal Information</FormLabel>
         <FormGroupRows>

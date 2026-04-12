@@ -39,10 +39,51 @@ export const approvePendingUser = onCall(async (request) => {
 });
 
 // Function for granting a user Firebase admin privileges.
-// TODO: we will want to set this up as part of making a user an admin.
+// Checks that user sending request is admin, and sets new_admin_uid to admin
 export const setAdminPrivileges = onCall(async (request) => {
-  const uid = request.data.uid;
-  await adminFunctions.auth().setCustomUserClaims(uid, { admin: true });
+  const admin_uid = request.data.admin_uid;
+
+  if (!request.auth) {
+    throw new Error("You are not signed in.  Please sign in first.");
+  }
+
+  if (request.auth.token.admin !== true) {
+    throw new Error("This function can be run by authorized Mentor Match Admins only.");
+  }
+
+  if (!admin_uid) {
+    throw new Error("New Admin User ID (UID) not provided.");
+  }
+
+  const user = await adminFunctions.auth().getUser(admin_uid);
+  const existingClaims = user.customClaims || {};
+  await adminFunctions.auth().setCustomUserClaims(admin_uid, { 
+    ...existingClaims, 
+    admin: true 
+  });
+  return { success: true };
+});
+
+// Function for removing a user Firebase admin privileges.
+export const removeAdminPrivileges = onCall(async (request) => {
+  const admin_uid = request.data.admin_uid;
+
+  if (!request.auth) {
+    throw new Error("You are not signed in.  Please sign in first.");
+  }
+
+  if (request.auth.token.admin !== true) {
+    throw new Error("This function can be run by authorized Mentor Match Admins only.");
+  }
+
+  if (!admin_uid) {
+    throw new Error("Admin User ID (UID) not provided.");
+  }
+
+  const user = await adminFunctions.auth().getUser(admin_uid);
+  const existingClaims = user.customClaims || {};
+  const { admin, ...claimsWithoutAdmin } = existingClaims;
+  await adminFunctions.auth().setCustomUserClaims(admin_uid, claimsWithoutAdmin);
   return { success: true };
 });
 
@@ -64,8 +105,7 @@ export const deleteUserAccount = onCall(async (request) => {
     throw new Error("Caller profile not found.");
   }
 
-  const callerRole = callerProfile.data()?.preferences?.role;
-  if (callerRole !== "Admin") {
+  if (request.auth.token.admin !== true) {
     throw new Error("This function can be run by authorized Mentor Match Admins only.");
   }
 

@@ -12,6 +12,13 @@ import UpdatePersonalInformation from '../../../common/manageUsers/UpdatePersona
 import UpdateUserContactInformation from '../../../common/manageUsers/UpdateUserContactInformation';
 import Messages from '../../../common/messaging/Messages';
 import '../../AdminPortal.css';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { MatchRole, AdminMatchRole } from "../../../../types/matchProfile";
+
+
+const adminFunctions = getFunctions();
+const setAdminPrivileges = httpsCallable(adminFunctions, 'setAdminPrivileges');
+const removeAdminPrivileges = httpsCallable(adminFunctions, 'removeAdminPrivileges');
 
 
 function ManageUserProfile() {
@@ -25,6 +32,8 @@ function ManageUserProfile() {
     const [showEdit, setShowEdit] = useState(false);
     // State to store the profile details that we are planning to edit:
     const [profileDetails, setProfileDetails] = useState<UserProfile | null>(null);
+    // track the initial role to detect changes on save
+    const [initialRole, setInitialRole] = useState<string | null>(null);
     // State to manage showing the messages popout
     const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
     const handleMessagesClick = (event: React.MouseEvent<HTMLButtonElement>) => {setAnchorElement(event.currentTarget)};
@@ -39,19 +48,46 @@ function ManageUserProfile() {
             {
                 const profile = await userService.getUserProfile(userID);
                 setProfileDetails(profile);
+                setInitialRole(profile?.preferences?.role || null); // Store original role
             }
         };
         getUserProfile();
     }, [userID]); // Rerun this if the userID changes-- which means the URL parameter changed.
 
     const saveChanges = async () => {
-        if (profileDetails) // Check to ensure that thte profile has been pulled in before we continue
-        {
-            await userService.updateUserProfile(profileDetails.UID, profileDetails);
-            setShowEdit(false);
-        }
-    }
+        if(profileDetails && userID) {
+            try {
+                const currentRole = profileDetails.preferences?.role;
+                // Handle admin privilege changes in Firebase Auth
+                if(initialRole !== currentRole) {
+                    // non-admin -> admin
+                    if(currentRole === AdminMatchRole.admin) {
+                        await setAdminPrivileges({admin_uid: userID});
+                        console.log("Admin privileges granted");
+                    }
+                    // admin -> non-admin
+                    else if(initialRole === AdminMatchRole.admin) {
+                        console.log("Admin privileges removal is being called");
+                        await removeAdminPrivileges({admin_uid: userID});
+                        console.log("Admin privileges removed");
+                    }
+                }
 
+                // save the rest of the profile data to Firestore
+                await userService.updateUserProfile(profileDetails.UID, profileDetails);
+
+                // update initialRole so subsequent saves don't retrigger the function
+                setInitialRole(currentRole);
+                setShowEdit(false);
+                alert("Profile updated successfully!");
+                }
+                catch (error) {
+                    console.error("Error updating profile:", error);
+                    alert("Failed to update roles. Do you have admin permissions?");
+                }
+        }
+    };
+        
     const dataIsLoading = () => {
     if (profileDetails === null) {
       return (<>Data is loading...</>);
