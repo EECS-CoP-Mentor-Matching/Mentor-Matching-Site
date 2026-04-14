@@ -1,0 +1,184 @@
+/*
+User Creation Testing Suite
+* Tests both account creation and updates.  Also handles related tests such as email verification.
+* All tests can be run by executing 'npm test' within the main directory.
+*/
+
+// Create mock database calls to test our functions in an isolated environment (Does NOT affect the real database):
+jest.mock('firebase/firestore', () => ({
+  collection:   jest.fn(),
+  getDocs:      jest.fn(),
+  doc:          jest.fn(),
+  query:        jest.fn(),
+  where:        jest.fn(),
+  setDoc:       jest.fn(),
+  updateDoc:    jest.fn(),
+  deleteDoc:    jest.fn(),
+  getFirestore: jest.fn(),
+}));
+
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(),
+}));
+
+jest.mock('../firebaseConfig', () => ({
+  db:  {},
+  app: {},
+}));
+
+// Set up mock databases to be used in our tests (also will NOT touch the real database)
+jest.mock('../dal/mentorDb', () => ({
+  default: {
+    searchMentorProfilesByUserAsync: jest.fn().mockResolvedValue([]),
+    deleteMentorProfileAsync:        jest.fn().mockResolvedValue(undefined),
+  }
+}));
+jest.mock('../dal/menteeDb', () => ({
+  default: {
+    searchMenteeProfilesByUserAsync: jest.fn().mockResolvedValue([]),
+    deleteMenteeProfileByIdAsync:    jest.fn().mockResolvedValue(undefined),
+  }
+}));
+
+jest.mock('../dal/commonDb', () => ({
+  queryMany: jest.fn(),
+}));
+
+
+// Import the needed functions that we are looking to test:
+import {
+  collection, getDocs, doc, query, where,
+  setDoc, updateDoc, deleteDoc,
+} from 'firebase/firestore';
+import { queryMany } from '../dal/commonDb';
+import userDb from '../dal/userDb';
+import userService from '../service/userService';
+import { initUserProfile, UserProfile } from '../types/userProfile';
+
+// Test user account:
+
+const mockUser = (overrides = {}) => ({
+  uid:           'test-uid-123',
+  email:         'beaver@oregonstate.edu',
+  emailVerified: true,
+  reload:        jest.fn(),
+  ...overrides,
+});
+
+const mockUserProfile = (): UserProfile => ({
+  ...initUserProfile(),
+  UID: 'test-uid-123',
+  contact: {
+    email:       'beaver@oregonstate.edu',
+    displayName: 'Test Beaver',
+    pronouns:    'they/them',
+    timeZone:    'America/Los_Angeles',
+    userBio: ""
+  },
+  personal: {
+    firstName:         'Test',
+    lastName:          'Beaver',
+    middleName:        'the',
+    credentials:       '',
+    currentProfession: '',
+    collegeYear:       '',
+    degreeProgram:     '',
+  },
+  availability:    { hoursPerWeek: '5' },
+  preferences:     { role: 'Mentee' },
+  accountSettings: {
+    userStatus:          'active',
+    menteePortalEnabled: true,
+    mentorPortalEnabled: false,
+  },
+  matchHistory:      [],
+  profilePictureUrl: '',
+});
+
+// ─────────────────────────────────────────────────────────────
+// 1. userDb — createNewUserAsync
+// ─────────────────────────────────────────────────────────────
+describe('userDb.createNewUserAsync', () => {
+  // Reset mock databases in between tests so that they don't interfere with each other:
+  beforeEach(() => jest.clearAllMocks());
+
+  it('calls setDoc with the correct collection and uid', async () => {
+    const mockDocRef = {};
+    (doc as jest.Mock).mockReturnValue(mockDocRef);
+    (setDoc as jest.Mock).mockResolvedValue(undefined);
+
+    const result = await userDb.createNewUserAsync(mockUser() as any, mockUserProfile());
+
+    expect(setDoc).toHaveBeenCalledTimes(1);
+    expect(setDoc).toHaveBeenCalledWith(mockDocRef, expect.objectContaining({
+      UID: 'test-uid-123',
+    }));
+    expect(result).toBe(true);
+  });
+
+  it('always sets accountSettings.userStatus to "active"', async () => {
+    (doc as jest.Mock).mockReturnValue({});
+    (setDoc as jest.Mock).mockResolvedValue(undefined);
+
+    const profile = mockUserProfile();
+    (profile.accountSettings as any).userStatus = 'pending'; // Forcefully change from 'active' status
+    await userDb.createNewUserAsync(mockUser() as any, profile);
+
+    const savedProfile = (setDoc as jest.Mock).mock.calls[0][1] as UserProfile;
+    expect(savedProfile.accountSettings.userStatus).toBe('active'); // Tests that the user profile is switched back to 'active'
+  });
+
+  it('initialises matchHistory as an empty array', async () => {
+    (doc as jest.Mock).mockReturnValue({});
+    (setDoc as jest.Mock).mockResolvedValue(undefined);
+
+    await userDb.createNewUserAsync(mockUser() as any, mockUserProfile());
+
+    const savedProfile = (setDoc as jest.Mock).mock.calls[0][1] as UserProfile;
+    expect(savedProfile.matchHistory).toEqual([]);
+  });
+
+  it('returns false and logs an error when setDoc throws', async () => {
+    (doc as jest.Mock).mockReturnValue({});
+    (setDoc as jest.Mock).mockRejectedValue(new Error('Firestore unavailable'));
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    const result = await userDb.createNewUserAsync(mockUser() as any, mockUserProfile());
+
+    expect(result).toBe(false);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Error creating new user:',
+      expect.any(Error)
+    );
+    consoleSpy.mockRestore();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 2. userDb — userExistsAsync
+// ─────────────────────────────────────────────────────────────
+describe('userDb.userExistsAsync', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('returns true when a matching user is found', async () => {
+    (where as jest.Mock).mockReturnValue({});
+    (query as jest.Mock).mockReturnValue({});
+    (collection as jest.Mock).mockReturnValue({});
+    (getDocs as jest.Mock).mockResolvedValue({
+      docs: [{ data: () => mockUserProfile() }],
+    });
+
+    const result = await userDb.userExistsAsync('beaver@oregonstate.edu');
+    expect(result).toBe(true);
+  });
+
+  it('returns false when no matching user is found', async () => {
+    (where as jest.Mock).mockReturnValue({});
+    (query as jest.Mock).mockReturnValue({});
+    (collection as jest.Mock).mockReturnValue({});
+    (getDocs as jest.Mock).mockResolvedValue({ docs: [] });
+
+    const result = await userDb.userExistsAsync('non-existant@oregonstate.edu');
+    expect(result).toBe(false);
+  });
+});
