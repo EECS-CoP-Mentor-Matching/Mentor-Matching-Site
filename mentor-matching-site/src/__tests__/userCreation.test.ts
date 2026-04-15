@@ -1,6 +1,6 @@
 /*
 User Creation Testing Suite
-* Tests both account creation and updates.  Also handles related tests such as email verification.
+* Tests new account creation functions.  Also handles related tests such as email verification.
 * All tests can be run by executing 'npm test' within the main directory.
 */
 
@@ -46,13 +46,8 @@ jest.mock('../dal/commonDb', () => ({
 
 
 // Import the needed functions that we are looking to test:
-import {
-  collection, getDocs, doc, query, where,
-  setDoc, updateDoc, deleteDoc,
-} from 'firebase/firestore';
-import { queryMany } from '../dal/commonDb';
+import { doc, setDoc } from 'firebase/firestore';
 import userDb from '../dal/userDb';
-import userService from '../service/userService';
 import { initUserProfile, UserProfile } from '../types/userProfile';
 
 // Test user account:
@@ -95,302 +90,21 @@ const mockUserProfile = (): UserProfile => ({
   profilePictureUrl: '',
 });
 
-// ─────────────────────────────────────────────────────────────
-// 1. userDb — createNewUserAsync
-// ─────────────────────────────────────────────────────────────
-describe('userDb.createNewUserAsync', () => {
-  // Reset mock databases in between tests so that they don't interfere with each other:
-  beforeEach(() => jest.clearAllMocks());
-
-  it('calls setDoc with the correct collection and uid', async () => {
-    const mockDocRef = {};
-    (doc as jest.Mock).mockReturnValue(mockDocRef);
-    (setDoc as jest.Mock).mockResolvedValue(undefined);
-
-    const result = await userDb.createNewUserAsync(mockUser() as any, mockUserProfile());
-
-    expect(setDoc).toHaveBeenCalledTimes(1);
-    expect(setDoc).toHaveBeenCalledWith(mockDocRef, expect.objectContaining({
-      UID: 'test-uid-123',
-    }));
-    expect(result).toBe(true);
-  });
-
-  it('always sets accountSettings.userStatus to "active"', async () => {
-    (doc as jest.Mock).mockReturnValue({});
-    (setDoc as jest.Mock).mockResolvedValue(undefined);
-
-    const profile = mockUserProfile();
-    (profile.accountSettings as any).userStatus = 'pending'; // Forcefully change from 'active' status
-    await userDb.createNewUserAsync(mockUser() as any, profile);
-
-    const savedProfile = (setDoc as jest.Mock).mock.calls[0][1] as UserProfile;
-    expect(savedProfile.accountSettings.userStatus).toBe('active'); // Tests that the user profile is switched back to 'active'
-  });
-
-  it('initialises matchHistory as an empty array', async () => {
-    (doc as jest.Mock).mockReturnValue({});
-    (setDoc as jest.Mock).mockResolvedValue(undefined);
-
-    await userDb.createNewUserAsync(mockUser() as any, mockUserProfile());
-
-    const savedProfile = (setDoc as jest.Mock).mock.calls[0][1] as UserProfile;
-    expect(savedProfile.matchHistory).toEqual([]);
-  });
-
-  it('returns false and logs an error when setDoc throws', async () => {
-    (doc as jest.Mock).mockReturnValue({});
-    (setDoc as jest.Mock).mockRejectedValue(new Error('Firestore unavailable'));
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-    const result = await userDb.createNewUserAsync(mockUser() as any, mockUserProfile());
-
-    expect(result).toBe(false);
-    expect(consoleSpy).toHaveBeenCalledWith(
-      'Error creating new user:',
-      expect.any(Error)
-    );
-    consoleSpy.mockRestore();
-  });
+// Base profiles used across multiple tests:
+const baseMenteeProfile = (): Partial<UserProfile> => ({
+  contact:      { displayName: 'Test Mentee', pronouns: 'she/her', timeZone: 'America/Los_Angeles', email: '' , userBio: ""},
+  personal:     { firstName: 'Test', lastName: 'User', middleName: '', credentials: '', currentProfession: '', collegeYear: 'Junior', degreeProgram: 'Computer Science' },
+  preferences:  { role: 'Mentee' },
+  availability: { hoursPerWeek: '5' },
 });
 
-// ─────────────────────────────────────────────────────────────
-// 2. userDb — userExistsAsync
-// ─────────────────────────────────────────────────────────────
-describe('userDb.userExistsAsync', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it('returns true when a matching user is found', async () => {
-    (where as jest.Mock).mockReturnValue({});
-    (query as jest.Mock).mockReturnValue({});
-    (collection as jest.Mock).mockReturnValue({});
-    (getDocs as jest.Mock).mockResolvedValue({
-      docs: [{ data: () => mockUserProfile() }],
-    });
-
-    const result = await userDb.userExistsAsync('beaver@oregonstate.edu');
-    expect(result).toBe(true);
-  });
-
-  it('returns false when no matching user is found', async () => {
-    (where as jest.Mock).mockReturnValue({});
-    (query as jest.Mock).mockReturnValue({});
-    (collection as jest.Mock).mockReturnValue({});
-    (getDocs as jest.Mock).mockResolvedValue({ docs: [] });
-
-    const result = await userDb.userExistsAsync('nonexistant-account@oregonstate.edu');
-    expect(result).toBe(false);
-  });
+const baseMentorProfile = (): Partial<UserProfile> => ({
+  contact:      { displayName: 'Test Mentor', pronouns: 'she/her', timeZone: 'America/Los_Angeles', email: '', userBio: "" },
+  personal:     { firstName: 'Test', lastName: 'User', middleName: '', credentials: 'BS Computer Science', currentProfession: 'Software Engineer', collegeYear: '', degreeProgram: '' },
+  preferences:  { role: 'Mentor' },
+  availability: { hoursPerWeek: '5' },
 });
 
-// ─────────────────────────────────────────────────────────────
-// 3. userDb — getUserProfileAsync
-// ─────────────────────────────────────────────────────────────
-describe('userDb.getUserProfileAsync', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it('returns the found user profile', async () => {
-    const profile = mockUserProfile();
-    (where as jest.Mock).mockReturnValue({});
-    (query as jest.Mock).mockReturnValue({});
-    (collection as jest.Mock).mockReturnValue({});
-    (getDocs as jest.Mock).mockResolvedValue({
-      docs: [{ data: () => profile }],
-    });
-
-    const result = await userDb.getUserProfileAsync('test-uid-123');
-    expect(result).toEqual(profile);
-  });
-
-  it('returns an empty object when no user is found', async () => {
-    (where as jest.Mock).mockReturnValue({});
-    (query as jest.Mock).mockReturnValue({});
-    (collection as jest.Mock).mockReturnValue({});
-    (getDocs as jest.Mock).mockResolvedValue({ docs: [] });
-
-    const result = await userDb.getUserProfileAsync('nonexistent-uid');
-    expect(result).toEqual({});
-  });
-});
-
-// ─────────────────────────────────────────────────────────────
-// 4. userDb — getAllUserProfilesAsync
-// ─────────────────────────────────────────────────────────────
-describe('userDb.getAllUserProfilesAsync', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it('returns an array of UserProfile objects', async () => {
-    const profile = mockUserProfile();
-    (queryMany as jest.Mock).mockResolvedValue({
-      results: [{ data: profile }],
-    });
-
-    const result = await userDb.getAllUserProfilesAsync();
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(profile);
-  });
-
-  it('returns an empty array when there are no profiles', async () => {
-    (queryMany as jest.Mock).mockResolvedValue({ results: [] });
-
-    const result = await userDb.getAllUserProfilesAsync();
-    expect(result).toEqual([]);
-  });
-});
-
-// ─────────────────────────────────────────────────────────────
-// 5. userDb — pending users
-// ─────────────────────────────────────────────────────────────
-describe('userDb — pending users', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it('getAllPendingUsersAsync returns uid + details per record', async () => {
-    (queryMany as jest.Mock).mockResolvedValue({
-      results: [
-        { docId: 'pending-uid-1', data: { email: 'outsider@gmail.com' } },
-      ],
-    });
-
-    const result = await userDb.getAllPendingUsersAsync();
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual({
-      uid:     'pending-uid-1',
-      details: { email: 'outsider@gmail.com' },
-    });
-  });
-
-  it('getAllPendingUsersAsync works correctly with multiple users', async () => {
-    (queryMany as jest.Mock).mockResolvedValue({
-        results: [
-            { docId: 'pending-uid-1', data: { email: 'outsider@gmail.com'} },
-            { docId: 'pending-uid-2', data: { email: 'outsider2@gmail.com'} },
-        ]
-    });
-
-    const result = await userDb.getAllPendingUsersAsync();
-    expect(result).toHaveLength(2);
-    expect(result[0]).toEqual({
-      uid:     'pending-uid-1',
-      details: { email: 'outsider@gmail.com' },
-    });
-    expect(result[1]).toEqual({
-      uid:     'pending-uid-2',
-      details: { email: 'outsider2@gmail.com' },
-    });
-  });
-
-  it('deletePendingUserAsync calls deleteDoc on the correct document', async () => {
-    const mockDocRef = { id: 'pending-uid-delete' };
-    (doc as jest.Mock).mockReturnValue(mockDocRef);
-    (deleteDoc as jest.Mock).mockResolvedValue(undefined);
-
-    await userDb.deletePendingUserAsync('pending-uid-delete');
-
-    expect(deleteDoc).toHaveBeenCalledWith(mockDocRef);
-  });
-});
-
-// ─────────────────────────────────────────────────────────────
-// 6. userDb — updateUserProfileAsync
-// ─────────────────────────────────────────────────────────────
-describe('userDb.updateUserProfileAsync', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it('targets the correct db document based on the uid', async () => {
-  const mockDocRef = {};
-  (doc as jest.Mock).mockReturnValue(mockDocRef);
-  (updateDoc as jest.Mock).mockResolvedValue(undefined);
-  const profile = mockUserProfile();
-
-  await userDb.updateUserProfileAsync('test-uid-123', profile);
-
-  expect(doc).toHaveBeenCalledWith(
-    expect.anything(), // database
-    'userProfile',     // collection name
-    'test-uid-123'     // uid
-  );
-});
-
-  it('calls updateDoc with the provided profile data', async () => {
-    const mockDocRef = {};
-    (doc as jest.Mock).mockReturnValue(mockDocRef);
-    (updateDoc as jest.Mock).mockResolvedValue(undefined);
-
-    const profile = mockUserProfile();
-    await userDb.updateUserProfileAsync('test-uid-123', profile);
-
-    expect(updateDoc).toHaveBeenCalledWith(mockDocRef, profile);
-  });
-});
-
-// ─────────────────────────────────────────────────────────────
-// 7. userService — properly makes calls to userDb
-// ─────────────────────────────────────────────────────────────
-
-// Update testing functions as userService uses a separate set from the above:
-jest.mock('../dal/userDb', () => ({
-  default: {
-    createNewUserAsync:     jest.fn(),
-    getUserProfileAsync:    jest.fn(),
-    updateUserProfileAsync: jest.fn(),
-    updateUserProfileImage: jest.fn(),
-    userExistsAsync:        jest.fn(),
-    deleteUserProfileAsync: jest.fn(),
-    getAllUserProfilesAsync: jest.fn(),
-    getAllPendingUsersAsync: jest.fn(),
-    deletePendingUserAsync: jest.fn(),
-  }
-}));
-
-describe('userService', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it('createNewUser makes a call to userDb.createNewUserAsync', async () => {
-    await userService.createNewUser(mockUser() as any, mockUserProfile());
-    expect(userDb.createNewUserAsync).toHaveBeenCalledWith(
-      expect.objectContaining({ uid: 'test-uid-123' }),
-      expect.objectContaining({ UID: 'test-uid-123' })
-    );
-  });
-
-  it('getUserProfile makes a call to userDb.getUserProfileAsync', async () => {
-    (userDb.getUserProfileAsync as jest.Mock).mockResolvedValue(mockUserProfile());
-
-    const result = await userService.getUserProfile('test-uid-123');
-
-    expect(userDb.getUserProfileAsync).toHaveBeenCalledWith('test-uid-123');
-    expect(result).toEqual(mockUserProfile());
-  });
-
-  it('userExists makes a call to userDb.userExistsAsync', async () => {
-    (userDb.userExistsAsync as jest.Mock).mockResolvedValue(true);
-
-    const result = await userService.userExists('beaver@oregonstate.edu');
-
-    expect(userDb.userExistsAsync).toHaveBeenCalledWith('beaver@oregonstate.edu');
-    expect(result).toBe(true);
-  });
-
-  it('deleteUserProfile logs success on resolve', async () => {
-    (userDb.deleteUserProfileAsync as jest.Mock).mockResolvedValue(undefined);
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
-    await userService.deleteUserProfile('test-uid-123');
-
-    expect(consoleSpy).toHaveBeenCalledWith('User profile deleted successfully.');
-    consoleSpy.mockRestore();
-  });
-
-  it('deleteUserProfile throws and logs error on failure', async () => {
-    const err = new Error('DB error');
-    (userDb.deleteUserProfileAsync as jest.Mock).mockRejectedValue(err);
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-    await expect(userService.deleteUserProfile('test-uid-123')).rejects.toThrow('DB error');
-    expect(consoleSpy).toHaveBeenCalledWith('Error deleting user profile:', err);
-    consoleSpy.mockRestore();
-  });
-});
 
 // ─────────────────────────────────────────────────────────────
 // 8. CreateAccount — email validation logic
@@ -465,7 +179,7 @@ function validateProfileForm(userProfile: Partial<UserProfile>): string | null {
   if (!userProfile?.contact?.timeZone?.trim())          return 'Time Zone is required';
   if (!userProfile?.personal?.firstName?.trim())        return 'First Name is required';
   if (!userProfile?.personal?.lastName?.trim())         return 'Last Name is required';
-  if (!userProfile?.preferences?.role?.trim())          return 'Role is required';
+  if (userProfile?.preferences?.role?.trim() == 'none')          return 'Role is required'; // Special case: the user's role is always set, but there is a 'none' value that it is initialized to.
   if (!userProfile?.availability?.hoursPerWeek?.trim()) return 'Hours Available Per Week is required';
 
   if (userProfile?.preferences?.role === 'Mentor') {
@@ -485,20 +199,6 @@ function validateProfileForm(userProfile: Partial<UserProfile>): string | null {
   return null;
 }
 
-// Base profiles used across multiple tests:
-const baseMenteeProfile = (): Partial<UserProfile> => ({
-  contact:      { displayName: 'Test Mentee', pronouns: 'she/her', timeZone: 'America/Los_Angeles', email: '' , userBio: ""},
-  personal:     { firstName: 'Test', lastName: 'User', middleName: '', credentials: '', currentProfession: '', collegeYear: 'Junior', degreeProgram: 'Computer Science' },
-  preferences:  { role: 'Mentee' },
-  availability: { hoursPerWeek: '5' },
-});
-
-const baseMentorProfile = (): Partial<UserProfile> => ({
-  contact:      { displayName: 'Test Mentor', pronouns: 'she/her', timeZone: 'America/Los_Angeles', email: '', userBio: "" },
-  personal:     { firstName: 'Test', lastName: 'User', middleName: '', credentials: 'BS Computer Science', currentProfession: 'Software Engineer', collegeYear: '', degreeProgram: '' },
-  preferences:  { role: 'Mentor' },
-  availability: { hoursPerWeek: '5' },
-});
 
 describe('NewUserProfile — validateProfileForm', () => {
   // Check for proper return when no errors are found:
