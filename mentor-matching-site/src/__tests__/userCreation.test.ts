@@ -178,7 +178,148 @@ describe('userDb.userExistsAsync', () => {
     (collection as jest.Mock).mockReturnValue({});
     (getDocs as jest.Mock).mockResolvedValue({ docs: [] });
 
-    const result = await userDb.userExistsAsync('non-existant@oregonstate.edu');
+    const result = await userDb.userExistsAsync('nonexistant-account@oregonstate.edu');
     expect(result).toBe(false);
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// 3. userDb — getUserProfileAsync
+// ─────────────────────────────────────────────────────────────
+describe('userDb.getUserProfileAsync', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('returns the found user profile', async () => {
+    const profile = mockUserProfile();
+    (where as jest.Mock).mockReturnValue({});
+    (query as jest.Mock).mockReturnValue({});
+    (collection as jest.Mock).mockReturnValue({});
+    (getDocs as jest.Mock).mockResolvedValue({
+      docs: [{ data: () => profile }],
+    });
+
+    const result = await userDb.getUserProfileAsync('test-uid-123');
+    expect(result).toEqual(profile);
+  });
+
+  it('returns an empty object when no user is found', async () => {
+    (where as jest.Mock).mockReturnValue({});
+    (query as jest.Mock).mockReturnValue({});
+    (collection as jest.Mock).mockReturnValue({});
+    (getDocs as jest.Mock).mockResolvedValue({ docs: [] });
+
+    const result = await userDb.getUserProfileAsync('nonexistent-uid');
+    expect(result).toEqual({});
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 4. userDb — getAllUserProfilesAsync
+// ─────────────────────────────────────────────────────────────
+describe('userDb.getAllUserProfilesAsync', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('returns an array of UserProfile objects', async () => {
+    const profile = mockUserProfile();
+    (queryMany as jest.Mock).mockResolvedValue({
+      results: [{ data: profile }],
+    });
+
+    const result = await userDb.getAllUserProfilesAsync();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(profile);
+  });
+
+  it('returns an empty array when there are no profiles', async () => {
+    (queryMany as jest.Mock).mockResolvedValue({ results: [] });
+
+    const result = await userDb.getAllUserProfilesAsync();
+    expect(result).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 5. userDb — pending users
+// ─────────────────────────────────────────────────────────────
+describe('userDb — pending users', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('getAllPendingUsersAsync returns uid + details per record', async () => {
+    (queryMany as jest.Mock).mockResolvedValue({
+      results: [
+        { docId: 'pending-uid-1', data: { email: 'outsider@gmail.com' } },
+      ],
+    });
+
+    const result = await userDb.getAllPendingUsersAsync();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      uid:     'pending-uid-1',
+      details: { email: 'outsider@gmail.com' },
+    });
+  });
+
+  it('getAllPendingUsersAsync works correctly with multiple users', async () => {
+    (queryMany as jest.Mock).mockResolvedValue({
+        results: [
+            { docId: 'pending-uid-1', data: { email: 'outsider@gmail.com'} },
+            { docId: 'pending-uid-2', data: { email: 'outsider2@gmail.com'} },
+        ]
+    });
+
+    const result = await userDb.getAllPendingUsersAsync();
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({
+      uid:     'pending-uid-1',
+      details: { email: 'outsider@gmail.com' },
+    });
+    expect(result[1]).toEqual({
+      uid:     'pending-uid-2',
+      details: { email: 'outsider2@gmail.com' },
+    });
+  });
+
+  it('deletePendingUserAsync calls deleteDoc on the correct document', async () => {
+    const mockDocRef = { id: 'pending-uid-delete' };
+    (doc as jest.Mock).mockReturnValue(mockDocRef);
+    (deleteDoc as jest.Mock).mockResolvedValue(undefined);
+
+    await userDb.deletePendingUserAsync('pending-uid-delete');
+
+    expect(deleteDoc).toHaveBeenCalledWith(mockDocRef);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 6. userDb — updateUserProfileAsync
+// ─────────────────────────────────────────────────────────────
+describe('userDb.updateUserProfileAsync', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('targets the correct db document based on the uid', async () => {
+  const mockDocRef = {};
+  (doc as jest.Mock).mockReturnValue(mockDocRef);
+  (updateDoc as jest.Mock).mockResolvedValue(undefined);
+  const profile = mockUserProfile();
+
+  await userDb.updateUserProfileAsync('test-uid-123', profile);
+
+  expect(doc).toHaveBeenCalledWith(
+    expect.anything(), // database
+    'userProfile',     // collection name
+    'test-uid-123'     // uid
+  );
+});
+
+  it('calls updateDoc with the provided profile data', async () => {
+    const mockDocRef = {};
+    (doc as jest.Mock).mockReturnValue(mockDocRef);
+    (updateDoc as jest.Mock).mockResolvedValue(undefined);
+
+    const profile = mockUserProfile();
+    await userDb.updateUserProfileAsync('test-uid-123', profile);
+
+    expect(updateDoc).toHaveBeenCalledWith(mockDocRef, profile);
+  });
+});
+
