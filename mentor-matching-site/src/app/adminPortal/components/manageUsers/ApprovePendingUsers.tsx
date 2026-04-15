@@ -21,6 +21,7 @@ function ApprovePendingUsers()
 
     const [pendingUserList, setPendingUserList] = useState<any[]>([]);
 
+    // Function to get the current list of pending users from the database:
     const fetchPendingUsers = async () => {
         try {
             const userList = await userService.getAllPendingUsers();
@@ -30,6 +31,14 @@ function ApprovePendingUsers()
             console.error("An error occurred fetching pending user list.")
         }
     };
+
+    // Initial fetch of pending users from the database:
+    useEffect(() => {
+        async function getPendingUsers() {
+            await fetchPendingUsers();
+        }
+        getPendingUsers();
+    }, []);
 
     async function handleApproveUser(uid: string) {
         // Function to handle the click for the approe button.  Takes the user's ID and marks them as approved in Firebase.
