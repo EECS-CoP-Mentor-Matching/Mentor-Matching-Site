@@ -11,6 +11,7 @@ import { updateProfile } from "../../redux/reducers/userProfileReducer";
 import AuthenticatedView from '../common/auth/AuthenticatedView';
 import UnauthenticatedView from '../common/auth/UnauthenticatedView';
 import { UserProfile } from '../../types/userProfile';
+import { isValidEmail } from '../common/forms/validation';
 
 // Minimal inline SVG icons — no extra dependency needed
 const IconPerson = () => (
@@ -37,6 +38,7 @@ function UpdateUserProfile() {
   const [showEdit, setShowEdit] = useState(false);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const selector = useAppSelector;
   const userProfileState = selector(state => state.userProfile.userProfile);
@@ -59,6 +61,16 @@ function UpdateUserProfile() {
 
   const saveChanges = async () => {
     if (profileDetails) {
+      // Validate contact email before saving
+      if (!profileDetails.contact?.email?.trim()) {
+        setSaveError('Contact email is required.');
+        return;
+      }
+      if (!isValidEmail(profileDetails.contact?.email)) {
+        setSaveError('Please enter a valid email address.');
+        return;
+      }
+      setSaveError(null);
       await userService.updateUserProfile(profileDetails.UID, profileDetails);
       dispatch(updateProfile(profileDetails));
       setShowEdit(false);
@@ -106,6 +118,13 @@ function UpdateUserProfile() {
               : <Button className="profile-save-btn" onClick={saveChanges}>Save Changes</Button>
             }
           </div>
+
+          {/* ── Save error message ── */}
+          {saveError && (
+            <p style={{ color: '#d32f2f', textAlign: 'center', margin: '0.5rem 0' }}>
+              {saveError}
+            </p>
+          )}
 
           {profileDetails === null ? (
             <p className="profile-loading">Loading your profile…</p>

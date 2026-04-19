@@ -5,6 +5,7 @@ import TextDisplay from "../forms/textInputs/TextDisplay";
 import SelectTimeZone from "./SelectTimezone";
 import { UserProfile } from "../../../types/userProfile";
 import TextInputControl from "../forms/textInputs/TextInputControl";
+import { isValidEmail } from "./../forms/validation";
 
 interface UpdateUserContactInformationProps {
   showEdit: boolean,
@@ -27,15 +28,30 @@ function UpdateUserContactInformation({ showEdit, showEditStyle, userProfile, on
       }
     );
 
+  const emailIsInvalid = showEdit &&
+    contactInformation.email?.trim() !== '' &&
+    !isValidEmail(contactInformation.email);
+
   return (
     <>{contactInformation !== undefined &&
       <FormGroupCols>
         <FormLabel>Contact Information</FormLabel>
         <FormGroupRows>
-          <TextDisplay label="Email" widthMulti={.15}>
-            {contactInformation.email}
-          </TextDisplay>
+          <TextInputControl
+            value={contactInformation.email}
+            label="Contact Email"
+            readonly={!showEdit}
+            onInput={(value) => updateContactField("email", value)}
+            widthMulti={.15}
+          />
         </FormGroupRows>
+        {showEdit && (
+          <p style={{ fontSize: '0.75rem', color: emailIsInvalid ? '#d32f2f' : '#666', margin: '-8px 0 8px 0' }}>
+            {emailIsInvalid
+              ? 'Please enter a valid email address.'
+              : 'This email is shared with your matches and used by admins to contact you. It can differ from your login email.'}
+          </p>
+        )}
         <FormGroupRows>
           <TextInputControl value={contactInformation.displayName} label="Display Name" readonly={!showEdit} onInput={(value) => updateContactField("displayName", value)} widthMulti={.15} />
         </FormGroupRows>
