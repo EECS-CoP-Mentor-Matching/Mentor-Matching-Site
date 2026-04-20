@@ -20,7 +20,7 @@ import FeedbackPortal from './feedbackPortal/FeedbackPortal';
 import UserServiceAgreement from './footer/userServiceAgreement/userServiceAgreement';
 import { useEffect, useState } from 'react';
 import { updateProfile } from '../redux/reducers/userProfileReducer';
-import { useAppDispatch, useAppSelector } from '../redux/hooks'; // Added useAppSelector
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import authService from '../service/authService';
 import userService from '../service/userService';
 import DocuSignButton from './createAccount/components/DocuSign/DocuSignButton';
@@ -29,9 +29,9 @@ import NewUserProfile from "./createAccount/components/newUserProfile/NewUserPro
 import { UserProfile } from "../types/userProfile";
 import SendMessageForm from './common/messaging/SendMessageForm';
 import { Box, CircularProgress, Typography, Fade } from '@mui/material';
-import { AdminMatchRole, MatchRole } from '../types/matchProfile'; // Import your roles
-import TestMatchDbComponent from './common/forms/TestMatchDbComponent'; // Test component
-import TestMatchingComponent from './common/forms/TestMatchingComponent'; // Matching test
+import { AdminMatchRole, MatchRole } from '../types/matchProfile';
+import TestMatchDbComponent from './common/forms/TestMatchDbComponent';
+import TestMatchingComponent from './common/forms/TestMatchingComponent';
 import ApprovePendingUsers from './adminPortal/components/manageUsers/ApprovePendingUsers';
 
 // --- PROTECTED ROUTE COMPONENT ---
@@ -44,16 +44,13 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const userProfile = useAppSelector((state) => state.userProfile.userProfile);
   const userRole = userProfile?.preferences?.role;
 
-  // If no profile, user isn't logged in or loaded yet
   if (!userProfile) {
     return <Navigate to="/login" replace />;
   }
 
-  // Check if current role is in the list of allowed roles for this route
   const isAuthorized = allowedRoles.includes(userRole as AdminMatchRole);
 
   if (!isAuthorized) {
-    // Redirect logic if they try to access a portal they don't belong in
     if (userRole === AdminMatchRole.admin) return <Navigate to="/admin-portal" replace />;
     if (userRole === AdminMatchRole.mentor) return <Navigate to="/mentor-portal" replace />;
     if (userRole === AdminMatchRole.mentee) return <Navigate to="/mentee-portal" replace />;
@@ -105,7 +102,7 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={theme} >
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
         <div className="App">
@@ -140,8 +137,7 @@ function App() {
                 <ProtectedRoute allowedRoles={[AdminMatchRole.admin]}>
                   <ApprovePendingUsers />
                 </ProtectedRoute>
-              }
-              />
+              } />
               <Route path="/test-db" element={
                 <ProtectedRoute allowedRoles={[AdminMatchRole.admin]}>
                   <TestMatchDbComponent />
@@ -153,7 +149,7 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              {/* Protected Mentee Routes (Includes 'Both') */}
+              {/* Protected Mentee Routes */}
               <Route path="/mentee-portal" element={
                 <ProtectedRoute allowedRoles={[AdminMatchRole.mentee, AdminMatchRole.both]}>
                   <MenteePortal />
@@ -165,15 +161,20 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              {/* Protected Mentor Routes (Includes 'Both') */}
+              {/* Protected Mentor Routes */}
               <Route path="/mentor-portal" element={
                 <ProtectedRoute allowedRoles={[AdminMatchRole.mentor, AdminMatchRole.both]}>
                   <MentorPortal />
                 </ProtectedRoute>
               } />
 
-              {/* General Feedback */}
-              <Route path="/feedback-portal" element={<FeedbackPortal />} />
+              {/* Protected Feedback Route — Mentor, Mentee, and Both only */}
+              <Route path="/feedback-portal" element={
+                <ProtectedRoute allowedRoles={[AdminMatchRole.mentor, AdminMatchRole.mentee, AdminMatchRole.both]}>
+                  <FeedbackPortal />
+                </ProtectedRoute>
+              } />
+
             </Routes>
           </div>
           <Footer />
