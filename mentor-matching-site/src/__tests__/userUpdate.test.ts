@@ -47,6 +47,8 @@ import authService from '../service/authService';
 import { deleteUser, getAuth } from 'firebase/auth';
 import { UserProfile } from '../types/userProfile';
 import { initUserProfile } from '../types/userProfile';
+import { isValidEmail } from '../app/common/forms/validation';
+
 
 // Create a mock user profile for our tests:
 const mockUser = (overrides = {}) => ({
@@ -421,5 +423,110 @@ describe('UpdatePersonalInformation — role change logic', () => {
 
   it('does not trigger admin dialog when admin stays admin', () => {
     expect(shouldShowAdminDialog('Admin', 'Admin')).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 7. UpdateUserContactInformation — updateContactField logic
+//    Please ensure that this mirrors the function in UpdateUserContactInformation.tsx
+// ─────────────────────────────────────────────────────────────
+
+function updateContactField(
+  userProfile: UserProfile,
+  field: keyof UserProfile['contact'],
+  value: string
+): UserProfile {
+  return {
+    ...userProfile,
+    contact: {
+      ...userProfile.contact,
+      [field]: value,
+    }
+  };
+}
+
+describe('UpdateUserContactInformation — updateContactField', () => {
+  it('updates displayName without affecting other contact fields', () => {
+    const profile = mockUserProfile();
+    const result = updateContactField(profile, 'displayName', 'Benny Beaver');
+
+    expect(result.contact.displayName).toBe('Benny Beaver');
+    expect(result.contact.email).toBe(profile.contact.email);
+    expect(result.contact.pronouns).toBe(profile.contact.pronouns);
+    expect(result.contact.timeZone).toBe(profile.contact.timeZone);
+  });
+
+  it('updates pronouns without affecting other contact fields', () => {
+    const profile = mockUserProfile();
+    const result = updateContactField(profile, 'pronouns', 'he/him');
+
+    expect(result.contact.pronouns).toBe('he/him');
+    expect(result.contact.displayName).toBe(profile.contact.displayName);
+  });
+
+  it('updates timeZone without affecting other contact fields', () => {
+    const profile = mockUserProfile();
+    const result = updateContactField(profile, 'timeZone', 'America/New_York');
+
+    expect(result.contact.timeZone).toBe('America/New_York');
+    expect(result.contact.displayName).toBe(profile.contact.displayName);
+  });
+
+it('updates email via updateContactField', () => {
+  const profile = mockUserProfile();
+  const result = updateContactField(profile, 'email', 'newcontact@oregonstate.edu');
+
+  expect(result.contact.email).toBe('newcontact@oregonstate.edu');
+  expect(result.contact.displayName).toBe(profile.contact.displayName);
+});
+
+it('emailIsInvalid is true when editing and email is malformed', () => {
+  const showEdit = true;
+  const email = 'notanemail';
+  const emailIsInvalid = showEdit && email.trim() !== '' && !isValidEmail(email);
+
+  expect(emailIsInvalid).toBe(true);
+});
+
+it('emailIsInvalid is false when email is valid', () => {
+  const showEdit = true;
+  const email = 'beaver@oregonstate.edu';
+  const emailIsInvalid = showEdit && email.trim() !== '' && !isValidEmail(email);
+
+  expect(emailIsInvalid).toBe(false);
+});
+
+it('emailIsInvalid is false when not in edit mode regardless of email value', () => {
+  const showEdit = false;
+  const email = 'notanemail';
+  const emailIsInvalid = showEdit && !isValidEmail(email);
+
+  expect(emailIsInvalid).toBe(false);
+});
+
+it('emailIsInvalid is false when email is empty', () => {
+  const showEdit = true;
+  const email = '';
+  const emailIsInvalid = showEdit && email.trim() !== '' && !isValidEmail(email);
+
+  expect(emailIsInvalid).toBe(false);
+});
+
+  it('does not mutate the original profile object', () => {
+    const profile = mockUserProfile();
+    const originalDisplayName = profile.contact.displayName;
+    updateContactField(profile, 'displayName', 'Changed');
+
+    expect(profile.contact.displayName).toBe(originalDisplayName);
+  });
+
+  it('preserves all non-contact fields when updating a contact field', () => {
+    const profile = mockUserProfile();
+    const result = updateContactField(profile, 'displayName', 'Test Beaver');
+
+    expect(result.personal).toEqual(profile.personal);
+    expect(result.availability).toEqual(profile.availability);
+    expect(result.preferences).toEqual(profile.preferences);
+    expect(result.accountSettings).toEqual(profile.accountSettings);
   });
 });
