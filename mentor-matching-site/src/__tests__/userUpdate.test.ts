@@ -310,3 +310,116 @@ describe('UpdatePersonalInformation — updateNameField', () => {
     expect(result.accountSettings).toEqual(profile.accountSettings);
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// 5. UpdatePersonalInformation — updateAvailabilityField logic
+//    Please ensure that this function matches the one in UpdatePersonalInformation.tsx
+// ─────────────────────────────────────────────────────────────
+
+function updateAvailabilityField(
+  userProfile: UserProfile,
+  field: keyof UserProfile['availability'],
+  value: string
+): UserProfile {
+  return {
+    ...userProfile,
+    availability: {
+      ...userProfile.availability,
+      [field]: value,
+    }
+  };
+}
+
+describe('UpdatePersonalInformation — updateAvailabilityField', () => {
+  it('updates hoursPerWeek correctly', () => {
+    const profile = mockUserProfile();
+    const result = updateAvailabilityField(profile, 'hoursPerWeek', '10');
+
+    expect(result.availability.hoursPerWeek).toBe('10');
+  });
+
+  it('does not affect personal or contact fields when updating availability', () => {
+    const profile = mockUserProfile();
+    const result = updateAvailabilityField(profile, 'hoursPerWeek', '10');
+
+    expect(result.personal).toEqual(profile.personal);
+    expect(result.contact).toEqual(profile.contact);
+  });
+
+  it('does not mutate the original profile object', () => {
+    const profile = mockUserProfile();
+    const originalHours = profile.availability.hoursPerWeek;
+    updateAvailabilityField(profile, 'hoursPerWeek', '20');
+
+    expect(profile.availability.hoursPerWeek).toBe(originalHours);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 6. UpdatePersonalInformation — role change logic
+//    Please ensure that this function matches the one in UpdatePersonalInformation.tsx
+// ─────────────────────────────────────────────────────────────
+
+function commitRoleChange(userProfile: UserProfile, role: string): UserProfile {
+  return {
+    ...userProfile,
+    preferences: {
+      ...userProfile.preferences,
+      role: role as any,
+    }
+  };
+}
+
+// Simulate the environment for displaying the admin dialog confirmation messages (Promoting/demoting an admin account):
+function shouldShowAdminDialog(currentRole: string, newRole: string): boolean {
+  const isGrantingAdmin  = newRole === 'Admin' && currentRole !== 'Admin';
+  const isRevokingAdmin  = currentRole === 'Admin' && newRole !== 'Admin';
+  return isGrantingAdmin || isRevokingAdmin;
+}
+
+describe('UpdatePersonalInformation — role change logic', () => {
+  it('commitRoleChange updates the role correctly', () => {
+    const profile = mockUserProfile();
+    const result = commitRoleChange(profile, 'Mentee');
+
+    expect(result.preferences.role).toBe('Mentee');
+  });
+
+  it('commitRoleChange does not affect other fields', () => {
+    const profile = mockUserProfile();
+    const result = commitRoleChange(profile, 'Mentee');
+
+    expect(result.personal).toEqual(profile.personal);
+    expect(result.contact).toEqual(profile.contact);
+    expect(result.availability).toEqual(profile.availability);
+  });
+
+  it('does not mutate the original profile when committing a role change', () => {
+    const profile = mockUserProfile();
+    const originalRole = profile.preferences.role;
+    commitRoleChange(profile, 'Mentee');
+
+    expect(profile.preferences.role).toBe(originalRole);
+  });
+
+  // Admin dialog trigger tests
+  it('triggers admin dialog when granting admin to a non-admin user', () => {
+    expect(shouldShowAdminDialog('Mentor', 'Admin')).toBe(true);
+  });
+
+  it('triggers admin dialog when revoking admin from an admin user', () => {
+    expect(shouldShowAdminDialog('Admin', 'Mentor')).toBe(true);
+  });
+
+  it('does not trigger admin dialog for non-admin role changes', () => {
+    expect(shouldShowAdminDialog('Mentor', 'Mentee')).toBe(false);
+  });
+
+  it('does not trigger admin dialog when role stays the same', () => {
+    expect(shouldShowAdminDialog('Mentor', 'Mentor')).toBe(false);
+  });
+
+  it('does not trigger admin dialog when admin stays admin', () => {
+    expect(shouldShowAdminDialog('Admin', 'Admin')).toBe(false);
+  });
+});
