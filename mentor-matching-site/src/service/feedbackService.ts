@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, serverTimestamp, query, where } from "firebase/firestore";
 
 import { db, storage } from "../firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -34,19 +34,15 @@ async function copyProfileImageForReview(
   feedbackId: string
 ): Promise<string> {
   try {
-    // Fetch the image as a blob
     const response = await fetch(sourceUrl);
     if (!response.ok) throw new Error('Failed to fetch profile image');
     const blob = await response.blob();
-
-    // Upload to a permanent location tied to the feedback entry
     const storageRef = ref(storage, `publicReviews/${feedbackId}/profileImage`);
     await uploadBytes(storageRef, blob);
     const permanentUrl = await getDownloadURL(storageRef);
     return permanentUrl;
   } catch (error) {
     console.error('Error copying profile image for review:', error);
-    // Return the original URL as fallback if copy fails
     return sourceUrl;
   }
 }
@@ -72,13 +68,10 @@ async function submitFeedback(
 
     feedbackData.timestamp = serverTimestamp();
 
-    // Add the document first to get an ID
     const docRef = await addDoc(collection(db, "feedback"), feedbackData);
 
-    // If a profile image needs to be copied, do it now using the doc ID
     if (profileImageUrl && feedbackData.includeProfilePicture) {
       const permanentUrl = await copyProfileImageForReview(profileImageUrl, docRef.id);
-      // Update the document with the permanent picture URL
       await updateDoc(docRef, { snapshotPictureUrl: permanentUrl });
     }
 
@@ -106,18 +99,20 @@ async function fetchFeedbackEntries(): Promise<FeedbackResponse> {
 
 async function fetchApprovedReviews(): Promise<FeedbackData[]> {
   try {
-    const querySnapshot = await getDocs(collection(db, "feedback"));
+    // Use Firestore query with where clauses so unauthenticated users
+    // can read only approved public reviews — matches our Firestore security rules
+    const approvedQuery = query(
+      collection(db, "feedback"),
+      where("postedOnHomePage", "==", true),
+      where("publicConsent", "==", true),
+      where("feedbackType", "==", "Positive Review")
+    );
+    const querySnapshot = await getDocs(approvedQuery);
     const approved: FeedbackData[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data() as FeedbackData;
       data.id = doc.id;
-      if (
-        data.feedbackType === 'Positive Review' &&
-        data.publicConsent === true &&
-        data.postedOnHomePage === true
-      ) {
-        approved.push(data);
-      }
+      approved.push(data);
     });
     return approved;
   } catch (error) {
