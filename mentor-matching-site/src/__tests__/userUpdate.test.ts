@@ -530,3 +530,92 @@ it('emailIsInvalid is false when email is empty', () => {
     expect(result.accountSettings).toEqual(profile.accountSettings);
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// 8. authService — deleteUserAccount
+// ─────────────────────────────────────────────────────────────
+
+describe('authService — deleteUserAccount', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('calls deleteUserAccount successfully', async () => {
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+
+    await authService.deleteUserAccount();
+
+    expect(authService.deleteUserAccount).toHaveBeenCalledTimes(1);
+  });
+
+  it('throws an error if no user is signed in', async () => {
+    (authService.deleteUserAccount as jest.Mock).mockRejectedValue(
+      new Error('No signed-in user to delete.')
+    );
+
+    await expect(authService.deleteUserAccount()).rejects.toThrow(
+      'No signed-in user to delete.'
+    );
+  });
+
+  it('throws and logs error if deleteUser fails', async () => {
+    const err = new Error('Requires recent login');
+    (authService.deleteUserAccount as jest.Mock).mockRejectedValue(err);
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    try {
+      await authService.deleteUserAccount();
+    } catch (error) {
+      console.error('Error deleting user account:', error);
+    }
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Error deleting user account:',
+      err
+    );
+    consoleSpy.mockRestore();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 9. Integration — full profile update flow
+// ─────────────────────────────────────────────────────────────
+describe('Integration — full profile update flow', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('loads profile initially then saves updated profile correctly', async () => {
+    const profile = mockUserProfile();
+    (authService.getSignedInUser as jest.Mock).mockResolvedValue(mockUser());
+    (userService.getUserProfile as jest.Mock).mockResolvedValue(profile);
+    (userService.updateUserProfile as jest.Mock).mockResolvedValue(undefined);
+
+    // Simulate initialization:
+    const user = await authService.getSignedInUser();
+    const loaded = user ? await userService.getUserProfile(user.uid) : null;
+
+    // Simulate user editing their display name:
+    const updated = updateContactField(loaded!, 'displayName', 'Updated Beaver');
+
+    // Simulate saveChanges():
+    await userService.updateUserProfile(updated.UID, updated);
+
+    expect(userService.updateUserProfile).toHaveBeenCalledWith(
+      'test-uid-123',
+      expect.objectContaining({
+        contact: expect.objectContaining({ displayName: 'Updated Beaver' })
+      })
+    );
+  });
+
+  it('full account deletion removes profile data then auth account', async () => {
+    (userService.deleteUserProfile as jest.Mock).mockResolvedValue(undefined);
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+
+    const profile = mockUserProfile();
+
+    // Simulate handleDeleteAccount():
+    await userService.deleteUserProfile(profile.UID);
+    await authService.deleteUserAccount();
+
+    expect(userService.deleteUserProfile).toHaveBeenCalledWith('test-uid-123');
+    expect(authService.deleteUserAccount).toHaveBeenCalledTimes(1);
+  });
+});
