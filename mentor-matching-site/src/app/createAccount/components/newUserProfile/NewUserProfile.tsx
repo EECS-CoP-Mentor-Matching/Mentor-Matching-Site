@@ -16,7 +16,7 @@ import {
   updateRole, updateHoursPerWeek, updateCredentials,
   updateCurrentProfession, updateCollegeYear,
   updatePersonalDegreeProgram, updateDisplayName,
-  updatePronouns, updateTimeZone
+  updatePronouns, updateTimeZone, updateEmail
 } from "../../../../redux/reducers/userProfileReducer";
 import SelectHoursPerWeek from "../../../userProfileCommon/dropdowns/SelectHoursPerWeek";
 import SelectRole from "../../../userProfileCommon/dropdowns/SelectRole";
@@ -26,6 +26,7 @@ import SelectTimeZone from "../../../userProfileCommon/dropdowns/SelectTimeZone"
 import SelectDegreeProgram from "../../../userProfileCommon/dropdowns/SelectDegreeProgram";
 import FormGroupRows from "../../../common/forms/layout/FormGroupRows";
 import FormGroupCols from "../../../common/forms/layout/FormGroupCols";
+import { isValidEmail } from "../../../common/forms/validation";
 import "./NewUserProfile.css";
 
 enum FormStep {
@@ -64,8 +65,13 @@ function NewUserProfile() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    function loadProfile() {
+    async function loadProfile() {
       const userProfile: UserProfile = initUserProfile();
+      // Pre-fill contact email with their login email as a convenient default
+      const user = await authService.getSignedInUser();
+      if (user?.email) {
+        userProfile.contact.email = user.email;
+      }
       dispatch(updateProfile(userProfile));
     }
     loadProfile();
@@ -128,6 +134,10 @@ function NewUserProfile() {
       return 'Pronouns are required';
     if (!userProfile?.contact?.timeZone?.trim())
       return 'Time Zone is required';
+    if (!userProfile?.contact?.email?.trim())
+      return 'Contact email is required';
+    if (!isValidEmail(userProfile?.contact?.email))
+      return 'Please enter a valid email address';
 
     // Personal validation
     if (!userProfile?.personal?.firstName?.trim())
@@ -254,6 +264,17 @@ function NewUserProfile() {
         </div>
         <div className="new-profile-section-body">
           <FormGroupCols>
+            <div className="new-profile-field-wrapper">
+              <span className="new-profile-field-label">Contact Email *</span>
+              <TextInputControlRedux
+                value={contactInformation.email}
+                onInputDispatch={updateEmail}
+              />
+              <span style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>
+                Pre-filled from your login email. You can change this to any email —
+                it will be shared with your matches and used by admins to contact you.
+              </span>
+            </div>
             <div className="new-profile-field-wrapper">
               <span className="new-profile-field-label">Display Name *</span>
               <TextInputControlRedux

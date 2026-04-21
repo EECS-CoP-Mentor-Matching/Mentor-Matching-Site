@@ -14,6 +14,7 @@ import Messages from '../../../common/messaging/Messages';
 import '../../AdminPortal.css';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { MatchRole, AdminMatchRole } from "../../../../types/matchProfile";
+import { isValidEmail } from '../../../common/forms/validation';
 
 
 const adminFunctions = getFunctions();
@@ -34,6 +35,8 @@ function ManageUserProfile() {
     const [profileDetails, setProfileDetails] = useState<UserProfile | null>(null);
     // track the initial role to detect changes on save
     const [initialRole, setInitialRole] = useState<string | null>(null);
+    // Error message state for save validation
+    const [saveError, setSaveError] = useState<string | null>(null);
     // State to manage showing the messages popout
     const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
     const handleMessagesClick = (event: React.MouseEvent<HTMLButtonElement>) => {setAnchorElement(event.currentTarget)};
@@ -56,6 +59,18 @@ function ManageUserProfile() {
 
     const saveChanges = async () => {
         if(profileDetails && userID) {
+
+            // Validate contact email before saving
+            if (!profileDetails.contact?.email?.trim()) {
+                setSaveError('Contact email is required.');
+                return;
+            }
+            if (!isValidEmail(profileDetails.contact?.email)) {
+                setSaveError('Please enter a valid email address.');
+                return;
+            }
+            setSaveError(null);
+
             try {
                 const currentRole = profileDetails.preferences?.role;
                 // Handle admin privilege changes in Firebase Auth
@@ -141,6 +156,14 @@ function ManageUserProfile() {
                       }
                     </div>
                   </div>
+
+                  {/* Save error message */}
+                  {saveError && (
+                    <p style={{ color: '#d32f2f', textAlign: 'center', margin: '0.5rem 0' }}>
+                      {saveError}
+                    </p>
+                  )}
+
                   <Menu
                     open={(Boolean(anchorElement))}
                     anchorEl={anchorElement}
