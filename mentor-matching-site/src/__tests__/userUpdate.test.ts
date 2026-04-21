@@ -234,3 +234,79 @@ describe('UpdateUserProfile — handleDeleteAccount', () => {
     consoleSpy.mockRestore();
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// 4. UpdatePersonalInformation — updateNameField logic
+//    Please ensure that this function matches the one in UpdatePersonalInformation.tsx
+// ─────────────────────────────────────────────────────────────
+
+
+function updateNameField(
+  userProfile: UserProfile,
+  field: keyof UserProfile['personal'],
+  value: string
+): UserProfile {
+  return {
+    ...userProfile,
+    personal: {
+      ...userProfile.personal,
+      [field]: value,
+    }
+  };
+}
+
+describe('UpdatePersonalInformation — updateNameField', () => {
+  it('updates firstName without affecting other personal fields', () => {
+    const profile = mockUserProfile();
+    const result = updateNameField(profile, 'firstName', 'NewFirst');
+
+    expect(result.personal.firstName).toBe('NewFirst');
+    expect(result.personal.lastName).toBe(profile.personal.lastName);
+    expect(result.personal.middleName).toBe(profile.personal.middleName);
+  });
+
+  it('updates lastName without affecting other personal fields', () => {
+    const profile = mockUserProfile();
+    const result = updateNameField(profile, 'lastName', 'NewLast');
+
+    expect(result.personal.lastName).toBe('NewLast');
+    expect(result.personal.firstName).toBe(profile.personal.firstName);
+    expect(result.personal.middleName).toBe(profile.personal.middleName);
+  });
+
+  it('updates credentials without affecting name fields', () => {
+    const profile = mockUserProfile();
+    const result = updateNameField(profile, 'credentials', 'PhD');
+
+    expect(result.personal.credentials).toBe('PhD');
+    expect(result.personal.firstName).toBe(profile.personal.firstName);
+    expect(result.personal.lastName).toBe(profile.personal.lastName);
+    expect(result.personal.middleName).toBe(profile.personal.middleName);
+  });
+
+  it('updates currentProfession without affecting other fields', () => {
+    const profile = mockUserProfile();
+    const result = updateNameField(profile, 'currentProfession', 'Data Scientist');
+
+    expect(result.personal.currentProfession).toBe('Data Scientist');
+    expect(result.personal.credentials).toBe(profile.personal.credentials);
+  });
+
+  it('does not mutate the original profile object', () => {
+    const profile = mockUserProfile();
+    const originalFirstName = profile.personal.firstName;
+    updateNameField(profile, 'firstName', 'Changed');
+
+    expect(profile.personal.firstName).toBe(originalFirstName);
+  });
+
+  it('preserves all non-personal fields when updating a personal field', () => {
+    const profile = mockUserProfile();
+    const result = updateNameField(profile, 'firstName', 'NewName');
+
+    expect(result.contact).toEqual(profile.contact);
+    expect(result.availability).toEqual(profile.availability);
+    expect(result.preferences).toEqual(profile.preferences);
+    expect(result.accountSettings).toEqual(profile.accountSettings);
+  });
+});
