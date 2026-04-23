@@ -21,7 +21,7 @@ const Home: React.FC = () => {
             }
             setLoadingReviews(false);
         };
-        loadReviews();
+        loadReviews(); // ← ADD THIS LINE
     }, []);
 
     // Show two cards at a time, cycle through pairs
