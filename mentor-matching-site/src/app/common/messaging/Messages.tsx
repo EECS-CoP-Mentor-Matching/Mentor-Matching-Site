@@ -76,16 +76,10 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
       </Dialog>
     );
 
-  // Function for searching for a message:
-  function searchButtonHandler(e: React.FormEvent) {
-    e.preventDefault();
-    alert(searchTerms);
-  }
-
+  // Function to set and update the search terms:
   function changeSearchHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setSearchTerms(e.target.value as string)
   }
-
 
   // Get messages addressed to this user
   useEffect(() => {
@@ -124,7 +118,6 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
             value={searchTerms || ""}
             onChange={changeSearchHandler}
           />
-          <Button type="button" variant="contained" onClick={searchButtonHandler}>Search</Button>
           <List>
             {messagesInbound.map((message, index) => (
               <span>
