@@ -79,7 +79,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   // Function for searching for a message:
   function searchButtonHandler(e: React.FormEvent) {
     e.preventDefault();
-    alert("Button clicked!");
+    alert(searchTerms);
   }
 
   function changeSearchHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -128,11 +128,16 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
           <List>
             {messagesInbound.map((message, index) => (
               <span>
-                <IconButton style={{float:"right"}} onClick={() => handleOpenDeleteDialog(message.docId)}>
-                  <DeleteIcon />
-                </IconButton>
-                <ViewMessage message={message} index={index} messagesLength={messagesInbound.length}/>
-              </span>
+                {/* Check for search terms: if none, or if the message matches them, display the message: */}
+                {(!searchTerms || message.data.message.indexOf(searchTerms) != -1) && 
+                <>
+                  <IconButton style={{float:"right"}} onClick={() => handleOpenDeleteDialog(message.docId)}>
+                    <DeleteIcon />
+                  </IconButton>
+                  <ViewMessage message={message} index={index} messagesLength={messagesInbound.length}/>
+                </>
+                }
+              </span>     
             ))}
             
           </List>
