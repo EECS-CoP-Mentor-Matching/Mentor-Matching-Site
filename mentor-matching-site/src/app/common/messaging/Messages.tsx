@@ -23,6 +23,8 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   // Track if we should show the delete dialog below or not:
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
+  // State variable for user's search terms
+  const [searchTerms, setSearchTerms] = useState<string | null>(null);
 
   // Function to open the delete dialog
   const handleOpenDeleteDialog = (messageId: string) => {
@@ -51,7 +53,6 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
     handleCloseDeleteDialog();
   }
 
-
   // Function to display a confirmation dialog before deleting a message:
   const deleteMessageDialog = (
       <Dialog
@@ -74,6 +75,17 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
         </DialogActions>
       </Dialog>
     );
+
+  // Function for searching for a message:
+  function searchButtonHandler(e: React.FormEvent) {
+    e.preventDefault();
+    alert("Button clicked!");
+  }
+
+  function changeSearchHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setSearchTerms(e.target.value as string)
+  }
+
 
   // Get messages addressed to this user
   useEffect(() => {
@@ -109,8 +121,10 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
             id="searchFilter"
             label="Search Messages"
             name="searchFilter"
+            value={searchTerms || ""}
+            onChange={changeSearchHandler}
           />
-          <Button type="button" variant="contained">Search</Button>
+          <Button type="button" variant="contained" onClick={searchButtonHandler}>Search</Button>
           <List>
             {messagesInbound.map((message, index) => (
               <span>
