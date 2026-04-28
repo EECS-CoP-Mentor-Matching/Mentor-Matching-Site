@@ -167,10 +167,22 @@ function ManageUserProfile() {
                   <Menu
                     open={(Boolean(anchorElement))}
                     anchorEl={anchorElement}
+                    anchorOrigin={{vertical: "bottom", horizontal: "center"}}
+                    transformOrigin={{vertical: "top", horizontal: "center"}}
+                    PaperProps={{
+                      sx: {
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "1rem",
+                      }
+                    }}
                     onClose={handleMessagesClose}
                   >
                     {profileDetails &&
-                      <Messages userProfile={profileDetails} adminView={true} />
+                      <div style={{display: "flex", flexDirection: "column", alignItems: "center", width: "100%"}}>
+                        <Messages userProfile={profileDetails} adminView={true} />
+                      </div>
                     }
                   </Menu>
                   {dataIsLoading()}

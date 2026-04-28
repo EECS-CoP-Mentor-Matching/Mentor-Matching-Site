@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ContentContainer from "../ContentContainer";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Paper, TextField } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { messagingService } from "../../../service/messagingService";
 import { useAppSelector } from "../../../redux/hooks";
@@ -23,6 +23,8 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   // Track if we should show the delete dialog below or not:
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
+  // State variable for user's search terms
+  const [searchTerms, setSearchTerms] = useState<string | null>(null);
 
   // Function to open the delete dialog
   const handleOpenDeleteDialog = (messageId: string) => {
@@ -51,7 +53,6 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
     handleCloseDeleteDialog();
   }
 
-
   // Function to display a confirmation dialog before deleting a message:
   const deleteMessageDialog = (
       <Dialog
@@ -74,6 +75,11 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
         </DialogActions>
       </Dialog>
     );
+
+  // Function to set and update the search terms:
+  function changeSearchHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setSearchTerms(e.target.value as string)
+  }
 
   // Get messages addressed to this user
   useEffect(() => {
@@ -105,14 +111,26 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
       <Box sx={{ maxWidth: { xs: '100%', sm: '720px', md: '800px' }, margin: '0 auto', width: '100%' }}>
       {messagesInbound.length > 0 &&
         <Box>
+          <TextField 
+            id="searchFilter"
+            label="Search Messages"
+            name="searchFilter"
+            value={searchTerms || ""}
+            onChange={changeSearchHandler}
+          />
           <List>
             {messagesInbound.map((message, index) => (
               <span>
-                <IconButton style={{float:"right"}} onClick={() => handleOpenDeleteDialog(message.docId)}>
-                  <DeleteIcon />
-                </IconButton>
-                <ViewMessage message={message} index={index} messagesLength={messagesInbound.length}/>
-              </span>
+                {/* Check for search terms: if none, or if the message matches them, display the message: */}
+                {(!searchTerms || message.data.message.indexOf(searchTerms) != -1) && 
+                <>
+                  <IconButton style={{float:"right"}} onClick={() => handleOpenDeleteDialog(message.docId)}>
+                    <DeleteIcon />
+                  </IconButton>
+                  <ViewMessage message={message} index={index} messagesLength={messagesInbound.length}/>
+                </>
+                }
+              </span>     
             ))}
             
           </List>
@@ -120,7 +138,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
       }
       {messagesInbound.length === 0 &&
         <Box>
-          <div>No messages received...</div>
+          <div>No messages...</div>
         </Box>
       }
       {!adminView &&

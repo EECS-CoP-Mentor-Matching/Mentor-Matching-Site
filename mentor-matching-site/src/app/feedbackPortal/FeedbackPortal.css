@@ -3,9 +3,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 10px;
+    margin: 10px auto;
     width: 100%;
+    max-width: 860px;
     box-sizing: border-box;
+    padding: 0 20px;
 }
 
 .feedback-text {
