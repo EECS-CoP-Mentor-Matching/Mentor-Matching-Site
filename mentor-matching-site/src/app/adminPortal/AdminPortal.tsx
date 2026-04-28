@@ -14,8 +14,6 @@ import { getSettings } from '../../service/settingsService';
 
 export enum Pages {
   manageUsers = "Manage Users",
-  viewReports = "View Reports",
-  settings = "Settings",
   userFeedback = "User Feedback",
   testing = "Testing",
   sendEmail = "Send Email"
@@ -71,7 +69,7 @@ function AdminPortal(props: AdminPortalProps) {
           </div>
         )}
         {/* {page === Pages.viewReports && <ViewReports />} */}
-        {page === Pages.settings && <Settings />}
+        {/* {page === Pages.settings && <Settings />} */}
         {page === Pages.testing && <TestingPanel />}
         {page === Pages.sendEmail && <SendEmailForm />}
       </div>
