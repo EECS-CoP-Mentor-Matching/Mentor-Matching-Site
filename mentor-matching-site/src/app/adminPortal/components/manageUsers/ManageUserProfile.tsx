@@ -171,9 +171,9 @@ function ManageUserProfile() {
                     transformOrigin={{vertical: "top", horizontal: "center"}}
                     PaperProps={{
                       sx: {
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                         padding: "1rem",
                       }
                     }}
