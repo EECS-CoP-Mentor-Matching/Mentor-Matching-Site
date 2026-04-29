@@ -182,6 +182,24 @@ async function getMatchesByStatusAsync(
 }
 
 /**
+ * Get all matches/mentorships
+ */
+async function getAllMatchesAsync(): Promise<Match[]> {
+  const querySnap = await getDocs(collection(db, collectionName));
+  const matches: Match[] = [];
+ 
+  querySnap.forEach(doc => {
+    matches.push(doc.data() as Match);
+  });
+ 
+  return matches.sort((a, b) => {
+    const dateA = a.matchedAt?.toDate?.() || new Date(a.matchedAt);
+    const dateB = b.matchedAt?.toDate?.() || new Date(b.matchedAt);
+    return dateB.getTime() - dateA.getTime();
+  });
+}
+
+/**
  * Add notes to a match
  */
 async function addMatchNotesAsync(matchId: string, notes: string): Promise<void> {
@@ -197,6 +215,7 @@ const matchDb = {
   updateMatchStatusAsync,
   getActiveMentorMatchesAsync,
   getMatchesByStatusAsync,
+  getAllMatchesAsync,
   addMatchNotesAsync
 };
 
