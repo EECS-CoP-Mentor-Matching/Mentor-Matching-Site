@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ContentContainer from "../ContentContainer";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Paper, TextField } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControlLabel, IconButton, List, ListItem, ListItemText, Paper, TextField } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { messagingService } from "../../../service/messagingService";
 import { useAppSelector } from "../../../redux/hooks";
@@ -111,14 +111,18 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
       <Box sx={{ maxWidth: { xs: '100%', sm: '720px', md: '800px' }, margin: '0 auto', width: '100%' }}>
       {messagesInbound.length > 0 &&
         <Box>
-          <TextField 
-            type="search"
-            id="searchFilter"
-            label="Search Messages"
-            name="searchFilter"
-            value={searchTerms || ""}
-            onChange={changeSearchHandler}
-          />
+          <div>
+            <TextField 
+              type="search"
+              id="searchFilter"
+              label="Search Messages"
+              name="searchFilter"
+              value={searchTerms || ""}
+              onChange={changeSearchHandler}
+            />
+          </div>
+          <FormControlLabel control={<Checkbox defaultChecked />} label="Sender's Name" />
+          <FormControlLabel control={<Checkbox defaultChecked />} label="Message Contents" />
           <List>
             {messagesInbound.map((message, index) => (
               <span>
