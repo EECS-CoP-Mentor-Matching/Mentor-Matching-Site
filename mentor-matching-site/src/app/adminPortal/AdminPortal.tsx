@@ -6,7 +6,7 @@ import navUtilities from '../common/navigation/navUtilities';
 import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/FeedbackAdminPortal';
 import ManageUsers from '../adminPortal/components/manageUsers/ManageUsers';
 import ManageMentorships from './components/manageMentorships/ManageMentorships';
-import Settings from './components/settings/Settings';
+import Settings from '../survey/Survey';
 import TestingPanel from './components/testing/TestingPanel';
 import SendEmailForm from './components/sendEmail/SendEmailForm';
 
