@@ -23,8 +23,10 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   // Track if we should show the delete dialog below or not:
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
-  // State variable for user's search terms
+  // State variables for user's search terms and options
   const [searchTerms, setSearchTerms] = useState<string | null>(null);
+  const [searchBySenderName, setSearchBySenderName] = useState(true);
+  const [searchByMessageContents, setSearchByMessageContents] = useState(true);
 
   // Function to open the delete dialog
   const handleOpenDeleteDialog = (messageId: string) => {
@@ -121,13 +123,18 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
               onChange={changeSearchHandler}
             />
           </div>
-          <FormControlLabel control={<Checkbox defaultChecked />} label="Sender's Name" />
-          <FormControlLabel control={<Checkbox defaultChecked />} label="Message Contents" />
+          {/*Create textboxes with an onClick function that simply switches its state*/}
+          <FormControlLabel control={<Checkbox checked={searchBySenderName} onClick={() => setSearchBySenderName(!searchBySenderName)} size="small" />} label="Sender's Name" />
+          <FormControlLabel control={<Checkbox checked={searchByMessageContents} size="small" onClick={() => setSearchByMessageContents(!searchByMessageContents)} />} label="Message Contents" />
           <List>
             {messagesInbound.map((message, index) => (
               <span>
                 {/* Check for search terms: if none, or if the message matches them, display the message: */}
-                {(!searchTerms || message.data.message.indexOf(searchTerms) != -1 || message.data.senderDisplayName.indexOf(searchTerms) != -1) && 
+                { (!searchTerms || // If there are no search terms, immediately show the message (user is not attempting to search)
+                  (searchBySenderName && message.data.senderDisplayName.indexOf(searchTerms) != -1) || // If the search by name box is selected and we have a match, display the message
+                  (searchByMessageContents && message.data.message.indexOf(searchTerms) != -1) // If the search by contents box is checked and we have a match, display the message
+                )
+                && 
                 <>
                   <IconButton style={{float:"right"}} onClick={() => handleOpenDeleteDialog(message.docId)}>
                     <DeleteIcon />
