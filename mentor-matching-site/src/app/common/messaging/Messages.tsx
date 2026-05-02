@@ -112,6 +112,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
       {messagesInbound.length > 0 &&
         <Box>
           <TextField 
+            type="search"
             id="searchFilter"
             label="Search Messages"
             name="searchFilter"
