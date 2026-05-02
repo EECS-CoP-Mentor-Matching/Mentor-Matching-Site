@@ -123,7 +123,7 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
             {messagesInbound.map((message, index) => (
               <span>
                 {/* Check for search terms: if none, or if the message matches them, display the message: */}
-                {(!searchTerms || message.data.message.indexOf(searchTerms) != -1) && 
+                {(!searchTerms || message.data.message.indexOf(searchTerms) != -1 || message.data.senderDisplayName.indexOf(searchTerms) != -1) && 
                 <>
                   <IconButton style={{float:"right"}} onClick={() => handleOpenDeleteDialog(message.docId)}>
                     <DeleteIcon />
