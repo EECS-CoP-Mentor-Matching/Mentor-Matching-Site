@@ -10,7 +10,7 @@ import Settings from './components/settings/Settings';
 import TestingPanel from './components/testing/TestingPanel';
 import SendEmailForm from './components/sendEmail/SendEmailForm';
 
-import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
+import { FeedbackSettingsContext } from './components/FeedbackAdminPortal/submitFeedback/FeedbackSettingsContext';
 import { getSettings } from '../../service/settingsService';
 
 export enum Pages {
