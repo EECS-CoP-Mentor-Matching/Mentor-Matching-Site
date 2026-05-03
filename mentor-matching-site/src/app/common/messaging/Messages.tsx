@@ -131,8 +131,8 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
               <span>
                 {/* Check for search terms: if none, or if the message matches them, display the message: */}
                 { (!searchTerms || // If there are no search terms, immediately show the message (user is not attempting to search)
-                  (searchBySenderName && message.data.senderDisplayName.indexOf(searchTerms) != -1) || // If the search by name box is selected and we have a match, display the message
-                  (searchByMessageContents && message.data.message.indexOf(searchTerms) != -1) // If the search by contents box is checked and we have a match, display the message
+                  (searchBySenderName && message.data.senderDisplayName.toUpperCase().indexOf(searchTerms.toUpperCase()) != -1) || // If the search by name box is selected and we have a match, display the message
+                  (searchByMessageContents && message.data.message.toUpperCase().indexOf(searchTerms.toUpperCase()) != -1) // If the search by contents box is checked and we have a match, display the message
                 )
                 && 
                 <>
