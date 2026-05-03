@@ -80,6 +80,10 @@ export const removeAdminPrivileges = onCall(async (request) => {
     throw new Error("Admin User ID (UID) not provided.");
   }
 
+  if (request.auth.uid == admin_uid) {
+    throw new Error("Admin may not remove their own admin Privileges.");
+  }
+
   const user = await adminFunctions.auth().getUser(admin_uid);
   const existingClaims = user.customClaims || {};
   const { admin, ...claimsWithoutAdmin } = existingClaims;

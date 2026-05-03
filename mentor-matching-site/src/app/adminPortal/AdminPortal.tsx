@@ -5,17 +5,16 @@ import PortalNavigationBar from '../common/navigation/PortalNavigationBar';
 import navUtilities from '../common/navigation/navUtilities';
 import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/FeedbackAdminPortal';
 import ManageUsers from '../adminPortal/components/manageUsers/ManageUsers';
-import Settings from './components/settings/Settings';
+import ManageMentorships from './components/manageMentorships/ManageMentorships';
 import TestingPanel from './components/testing/TestingPanel';
 import SendEmailForm from './components/sendEmail/SendEmailForm';
 
-import { FeedbackSettingsContext } from '../adminPortal/components/FeedbackSettings/FeedbackSettingsContext';
+import { FeedbackSettingsContext } from './components/FeedbackAdminPortal/FeedbackSettingsContext';
 import { getSettings } from '../../service/settingsService';
 
 export enum Pages {
   manageUsers = "Manage Users",
-  viewReports = "View Reports",
-  settings = "Settings",
+  manageMentorships = "Manage Mentorships",
   userFeedback = "User Feedback",
   testing = "Testing",
   sendEmail = "Send Email"
@@ -65,13 +64,12 @@ function AdminPortal(props: AdminPortalProps) {
         />
         
         {page === Pages.manageUsers && <ManageUsers />}
+        {page === Pages.manageMentorships && <ManageMentorships />}
         {page === Pages.userFeedback && (
           <div className="feedback-portal">
             <FeedbackAdminPortal />
           </div>
         )}
-        {/* {page === Pages.viewReports && <ViewReports />} */}
-        {page === Pages.settings && <Settings />}
         {page === Pages.testing && <TestingPanel />}
         {page === Pages.sendEmail && <SendEmailForm />}
       </div>
