@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ContentContainer from "../ContentContainer";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Paper, TextField } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControlLabel, IconButton, List, ListItem, ListItemText, Paper, TextField } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { messagingService } from "../../../service/messagingService";
 import { useAppSelector } from "../../../redux/hooks";
@@ -23,8 +23,10 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
   // Track if we should show the delete dialog below or not:
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
-  // State variable for user's search terms
+  // State variables for user's search terms and options
   const [searchTerms, setSearchTerms] = useState<string | null>(null);
+  const [searchBySenderName, setSearchBySenderName] = useState(true);
+  const [searchByMessageContents, setSearchByMessageContents] = useState(true);
 
   // Function to open the delete dialog
   const handleOpenDeleteDialog = (messageId: string) => {
@@ -111,18 +113,28 @@ function Messages({ /*backToPage,*/ userProfile, adminView }: MessagesProps) {
       <Box sx={{ maxWidth: { xs: '100%', sm: '720px', md: '800px' }, margin: '0 auto', width: '100%' }}>
       {messagesInbound.length > 0 &&
         <Box>
-          <TextField 
-            id="searchFilter"
-            label="Search Messages"
-            name="searchFilter"
-            value={searchTerms || ""}
-            onChange={changeSearchHandler}
-          />
+          <div>
+            <TextField 
+              type="search"
+              id="searchFilter"
+              label="Search Messages"
+              name="searchFilter"
+              value={searchTerms || ""}
+              onChange={changeSearchHandler}
+            />
+          </div>
+          {/*Create textboxes with an onClick function that simply switches its state*/}
+          <FormControlLabel control={<Checkbox checked={searchBySenderName} onClick={() => setSearchBySenderName(!searchBySenderName)} size="small" />} label="Sender's Name" />
+          <FormControlLabel control={<Checkbox checked={searchByMessageContents} size="small" onClick={() => setSearchByMessageContents(!searchByMessageContents)} />} label="Message Contents" />
           <List>
             {messagesInbound.map((message, index) => (
               <span>
                 {/* Check for search terms: if none, or if the message matches them, display the message: */}
-                {(!searchTerms || message.data.message.indexOf(searchTerms) != -1) && 
+                { (!searchTerms || // If there are no search terms, immediately show the message (user is not attempting to search)
+                  (searchBySenderName && message.data.senderDisplayName.toUpperCase().indexOf(searchTerms.toUpperCase()) != -1) || // If the search by name box is selected and we have a match, display the message
+                  (searchByMessageContents && message.data.message.toUpperCase().indexOf(searchTerms.toUpperCase()) != -1) // If the search by contents box is checked and we have a match, display the message
+                )
+                && 
                 <>
                   <IconButton style={{float:"right"}} onClick={() => handleOpenDeleteDialog(message.docId)}>
                     <DeleteIcon />
