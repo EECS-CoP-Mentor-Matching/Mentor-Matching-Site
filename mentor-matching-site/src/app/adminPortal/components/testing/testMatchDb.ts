@@ -13,8 +13,8 @@
  * 3. Check Firestore console to see the data
  */
 
-import matchDb from '../matchDb';
-import { Match } from '../../types/matchProfile';
+import matchDb from '../../../../dal/matchDb';
+import { Match } from '../../../../types/matchProfile';
 
 /**
  * Test 1: Create a match
