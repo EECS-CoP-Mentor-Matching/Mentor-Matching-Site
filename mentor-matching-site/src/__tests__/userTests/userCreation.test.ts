@@ -21,34 +21,34 @@ jest.mock('firebase/auth', () => ({
   getAuth: jest.fn(),
 }));
 
-jest.mock('../firebaseConfig', () => ({
+jest.mock('../../firebaseConfig', () => ({
   db:  {},
   app: {},
 }));
 
 // Set up mock databases to be used in our tests (also will NOT touch the real database)
-jest.mock('../dal/mentorDb', () => ({
+jest.mock('../../dal/mentorDb', () => ({
   default: {
     searchMentorProfilesByUserAsync: jest.fn().mockResolvedValue([]),
     deleteMentorProfileAsync:        jest.fn().mockResolvedValue(undefined),
   }
 }));
-jest.mock('../dal/menteeDb', () => ({
+jest.mock('../../dal/menteeDb', () => ({
   default: {
     searchMenteeProfilesByUserAsync: jest.fn().mockResolvedValue([]),
     deleteMenteeProfileByIdAsync:    jest.fn().mockResolvedValue(undefined),
   }
 }));
 
-jest.mock('../dal/commonDb', () => ({
+jest.mock('../../dal/commonDb', () => ({
   queryMany: jest.fn(),
 }));
 
 
 // Import the needed functions that we are looking to test:
 import { doc, setDoc } from 'firebase/firestore';
-import userDb from '../dal/userDb';
-import { initUserProfile, UserProfile } from '../types/userProfile';
+import userDb from '../../dal/userDb';
+import { initUserProfile, UserProfile } from '../../types/userProfile';
 
 // Test user account:
 

@@ -5,7 +5,7 @@ User Update Testing Suite
 */
 
 // Create a mock version of the userService functions and our firestore/database tools:
-jest.mock('../service/userService', () => {
+jest.mock('../../service/userService', () => {
   const mockUserService = {
     getUserProfile:    jest.fn(),
     updateUserProfile: jest.fn(),
@@ -18,7 +18,7 @@ jest.mock('../service/userService', () => {
   };
 });
 
-jest.mock('../service/authService', () => {
+jest.mock('../../service/authService', () => {
   const mockAuthService = {
     getSignedInUser:   jest.fn(),
     deleteUserAccount: jest.fn(),
@@ -35,19 +35,19 @@ jest.mock('firebase/auth', () => ({
   deleteUser: jest.fn(),
 }));
 
-jest.mock('../firebaseConfig', () => ({
+jest.mock('../../firebaseConfig', () => ({
   db:  {},
   app: {},
 }));
 
 // Import the functions that we are looking to test:
 
-import userService from '../service/userService';
-import authService from '../service/authService';
+import userService from '../../service/userService';
+import authService from '../../service/authService';
 import { deleteUser, getAuth } from 'firebase/auth';
-import { UserProfile } from '../types/userProfile';
-import { initUserProfile } from '../types/userProfile';
-import { isValidEmail } from '../app/common/forms/validation';
+import { UserProfile } from '../../types/userProfile';
+import { initUserProfile } from '../../types/userProfile';
+import { isValidEmail } from '../../app/common/forms/validation';
 
 
 // Create a mock user profile for our tests:
