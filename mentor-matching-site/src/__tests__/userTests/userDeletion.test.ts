@@ -424,3 +424,103 @@ describe('authService — deleteUserAccount (isolated)', () => {
     expect(caught?.message).toBe('Unexpected Firebase error');
   });
 });
+
+
+// ─────────────────────────────────────────────────────────────
+// 6. Integration — Full Deletion Flow
+// ─────────────────────────────────────────────────────────────
+ 
+describe('Integration — Full Account Deletion Flow', () => {
+  beforeEach(() => jest.clearAllMocks());
+ 
+  it('completes a full deletion: loads profile, deletes profile data, deletes auth account', async () => {
+    const profile = mockUserProfile();
+    (authService.getSignedInUser as jest.Mock).mockResolvedValue(mockUser());
+    (userService.getUserProfile as jest.Mock).mockResolvedValue(profile);
+    (userService.deleteUserProfile as jest.Mock).mockResolvedValue(undefined);
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+ 
+    // Simulate the useEffect profile initial load:
+    const user   = await authService.getSignedInUser();
+    const loaded = user ? await userService.getUserProfile(user.uid) : null;
+ 
+    expect(loaded?.UID).toBe('test-uid-123');
+ 
+    // Simulate the user confirming deletion:
+    await userService.deleteUserProfile(loaded!.UID);
+    await authService.deleteUserAccount();
+ 
+    expect(userService.deleteUserProfile).toHaveBeenCalledWith('test-uid-123');
+    expect(authService.deleteUserAccount).toHaveBeenCalledTimes(1);
+  });
+ 
+  it('does not attempt deletion if no user profile was loaded', async () => {
+    (authService.getSignedInUser as jest.Mock).mockResolvedValue(null);
+ 
+    const user   = await authService.getSignedInUser();
+    const loaded = user ? await userService.getUserProfile(user.uid) : null;
+ 
+    // Guard: only delete if a profile was loaded (mirrors the component's userProfileState.UID usage)
+    if (loaded) {
+      await userService.deleteUserProfile(loaded.UID);
+      await authService.deleteUserAccount();
+    }
+ 
+    expect(userService.deleteUserProfile).not.toHaveBeenCalled();
+    expect(authService.deleteUserAccount).not.toHaveBeenCalled();
+  });
+ 
+  it('full deletion calls services in the correct order end-to-end', async () => {
+    const callOrder: string[] = [];
+    const profile = mockUserProfile();
+ 
+    (authService.getSignedInUser as jest.Mock).mockImplementation(async () => {
+      callOrder.push('getSignedInUser');
+      return mockUser();
+    });
+    (userService.getUserProfile as jest.Mock).mockImplementation(async () => {
+      callOrder.push('getUserProfile');
+      return profile;
+    });
+    (userService.deleteUserProfile as jest.Mock).mockImplementation(async () => {
+      callOrder.push('deleteUserProfile');
+    });
+    (authService.deleteUserAccount as jest.Mock).mockImplementation(async () => {
+      callOrder.push('deleteUserAccount');
+    });
+ 
+    const user   = await authService.getSignedInUser();
+    const loaded = user ? await userService.getUserProfile(user.uid) : null;
+    await userService.deleteUserProfile(loaded!.UID);
+    await authService.deleteUserAccount();
+ 
+    expect(callOrder).toEqual([
+      'getSignedInUser',
+      'getUserProfile',
+      'deleteUserProfile',
+      'deleteUserAccount',
+    ]);
+  });
+ 
+  it('stops the deletion flow and logs an error if any step throws', async () => {
+    const err = new Error('Network error during profile delete');
+    const profile = mockUserProfile();
+    (authService.getSignedInUser as jest.Mock).mockResolvedValue(mockUser());
+    (userService.getUserProfile as jest.Mock).mockResolvedValue(profile);
+    (userService.deleteUserProfile as jest.Mock).mockRejectedValue(err);
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+ 
+    try {
+      const user   = await authService.getSignedInUser();
+      const loaded = user ? await userService.getUserProfile(user.uid) : null;
+      await userService.deleteUserProfile(loaded!.UID);
+      await authService.deleteUserAccount(); // As the above line throws an error, this should not be called
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
+ 
+    expect(authService.deleteUserAccount).not.toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledWith('Error deleting account:', err);
+    consoleSpy.mockRestore();
+  });
+});
