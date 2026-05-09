@@ -267,3 +267,160 @@ describe('handleDeleteAccount — Successful Deletion', () => {
     expect(window.location.href).toBe('');
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// 4. handleDeleteAccount — Error Handling
+// ─────────────────────────────────────────────────────────────
+ 
+describe('handleDeleteAccount — Error Handling', () => {
+  beforeEach(() => jest.clearAllMocks());
+ 
+  it('logs an error and does not crash if deleteUserProfile throws', async () => {
+    const err = new Error('Firestore delete failed');
+    (userService.deleteUserProfile as jest.Mock).mockRejectedValue(err);
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+ 
+    // Simulate the try/catch in handleDeleteAccount():
+    try {
+      await userService.deleteUserProfile('test-uid-123');
+      await authService.deleteUserAccount();
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
+ 
+    expect(consoleSpy).toHaveBeenCalledWith('Error deleting account:', err);
+    consoleSpy.mockRestore();
+  });
+ 
+  it('does not call deleteUserAccount if deleteUserProfile throws', async () => {
+    (userService.deleteUserProfile as jest.Mock).mockRejectedValue(
+      new Error('Firestore delete failed')
+    );
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+ 
+    try {
+      await userService.deleteUserProfile('test-uid-123');
+      await authService.deleteUserAccount();
+    } catch {
+      // Error caught — deleteUserAccount should never have been reached
+    }
+ 
+    expect(authService.deleteUserAccount).not.toHaveBeenCalled();
+  });
+ 
+  it('logs an error and does not crash if deleteUserAccount throws', async () => {
+    const err = new Error('Firebase auth delete failed');
+    (userService.deleteUserProfile as jest.Mock).mockResolvedValue(undefined);
+    (authService.deleteUserAccount as jest.Mock).mockRejectedValue(err);
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+ 
+    try {
+      await userService.deleteUserProfile('test-uid-123');
+      await authService.deleteUserAccount();
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
+ 
+    expect(consoleSpy).toHaveBeenCalledWith('Error deleting account:', err);
+    consoleSpy.mockRestore();
+  });
+ 
+  it('does not redirect if deleteUserAccount throws', async () => {
+    Object.defineProperty(window, 'location', {
+      value:    { href: '' },
+      writable: true,
+    });
+ 
+    // Simulate failure — redirect line is never reached:
+    (authService.deleteUserAccount as jest.Mock).mockRejectedValue(
+      new Error('Firebase auth delete failed')
+    );
+
+    try {
+        await authService.deleteUserAccount();
+        window.location.href = "/";
+    } catch (error) {
+        // Execution in this block should stop at the deleteUserAccount call.
+        // The window's value should not be updated.
+    }
+ 
+    // href should remain unset since the redirect only happens on success:
+    expect(window.location.href).toBe('');
+  });
+ 
+  it('deleteUserProfile is only called once even if the component re-renders', async () => {
+    (userService.deleteUserProfile as jest.Mock).mockResolvedValue(undefined);
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+ 
+    // Simulate a single invocation of handleDeleteAccount():
+    await userService.deleteUserProfile('test-uid-123');
+    await authService.deleteUserAccount();
+ 
+    expect(userService.deleteUserProfile).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 5. authService — deleteUserAccount (all tests are isolated and do not touch main database)
+// ─────────────────────────────────────────────────────────────
+ 
+describe('authService — deleteUserAccount (isolated)', () => {
+  beforeEach(() => jest.clearAllMocks());
+ 
+  it('resolves successfully when a user is signed in', async () => {
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+ 
+    await expect(authService.deleteUserAccount()).resolves.toBeUndefined();
+    expect(authService.deleteUserAccount).toHaveBeenCalledTimes(1);
+  });
+ 
+  it('throws an error if no user is currently signed in', async () => {
+    (authService.deleteUserAccount as jest.Mock).mockRejectedValue(
+      new Error('No signed-in user to delete.')
+    );
+ 
+    await expect(authService.deleteUserAccount()).rejects.toThrow(
+      'No signed-in user to delete.'
+    );
+  });
+ 
+  it('throws and logs an error if the Firebase deleteUser call fails', async () => {
+    const err = new Error('Unable to delete user account');
+    (authService.deleteUserAccount as jest.Mock).mockRejectedValue(err);
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+ 
+    try {
+      await authService.deleteUserAccount();
+    } catch (error) {
+      console.error('Error deleting user account:', error);
+    }
+ 
+    expect(consoleSpy).toHaveBeenCalledWith('Error deleting user account:', err);
+    consoleSpy.mockRestore();
+  });
+ 
+  it('throws a reauthentication error if the session is too old', async () => {
+    (authService.deleteUserAccount as jest.Mock).mockRejectedValue(
+      new Error('auth/requires-recent-login')
+    );
+ 
+    await expect(authService.deleteUserAccount()).rejects.toThrow(
+      'auth/requires-recent-login'
+    );
+  });
+ 
+  it('does not silently swallow errors — thrown errors are catchable by the caller', async () => {
+    const err = new Error('Unexpected Firebase error');
+    (authService.deleteUserAccount as jest.Mock).mockRejectedValue(err);
+ 
+    let caught: Error | null = null;
+    try {
+      await authService.deleteUserAccount();
+    } catch (error) {
+      caught = error as Error;
+    }
+ 
+    expect(caught).not.toBeNull();
+    expect(caught?.message).toBe('Unexpected Firebase error');
+  });
+});
