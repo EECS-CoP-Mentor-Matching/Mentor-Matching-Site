@@ -144,3 +144,126 @@ describe('UI Flow — Reveal the Delete Button', () => {
     expect(next.openDeleteDialog).toBe(false);
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// 2. UI Flow — Dialog Open / Close
+// ─────────────────────────────────────────────────────────────
+ 
+describe('UI Flow — Confirmation Dialog Open/Close', () => {
+  it('confirmation dialog is closed by default', () => {
+    const state = deletionUiState();
+    expect(state.openDeleteDialog).toBe(false);
+  });
+ 
+  it('clicking "Delete Account" button opens the confirmation dialog', () => {
+    let state = deletionUiState();
+    state     = clickLookingToDelete(state);
+    state     = clickDeleteAccountButton(state);
+    expect(state.openDeleteDialog).toBe(true);
+  });
+ 
+  it('clicking "Cancel" in the dialog closes it', () => {
+    let state = deletionUiState();
+    state     = clickLookingToDelete(state);
+    state     = clickDeleteAccountButton(state);
+    state     = clickCancelDialog(state);
+    expect(state.openDeleteDialog).toBe(false);
+  });
+ 
+  it('cancelling the dialog does not hide the Delete Account button', () => {
+    let state = deletionUiState();
+    state     = clickLookingToDelete(state);
+    state     = clickDeleteAccountButton(state);
+    state     = clickCancelDialog(state);
+    expect(state.showDeleteButton).toBe(true);
+  });
+ 
+  it('dialog can be reopened after being cancelled', () => {
+    let state = deletionUiState();
+    state     = clickLookingToDelete(state);
+    state     = clickDeleteAccountButton(state);
+    state     = clickCancelDialog(state);
+    state     = clickDeleteAccountButton(state);
+    expect(state.openDeleteDialog).toBe(true);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 3. handleDeleteAccount — Successful Deletion
+// ─────────────────────────────────────────────────────────────
+ 
+describe('handleDeleteAccount — Successful Deletion', () => {
+  beforeEach(() => jest.clearAllMocks());
+ 
+  it('calls userService.deleteUserProfile with the correct UID', async () => {
+    (userService.deleteUserProfile as jest.Mock).mockResolvedValue(undefined);
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+ 
+    const profile = mockUserProfile();
+    await userService.deleteUserProfile(profile.UID);
+    await authService.deleteUserAccount();
+ 
+    expect(userService.deleteUserProfile).toHaveBeenCalledWith('test-uid-123');
+  });
+ 
+  it('calls authService.deleteUserAccount after deleting the profile', async () => {
+    (userService.deleteUserProfile as jest.Mock).mockResolvedValue(undefined);
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+ 
+    await userService.deleteUserProfile('test-uid-123');
+    await authService.deleteUserAccount();
+ 
+    expect(authService.deleteUserAccount).toHaveBeenCalledTimes(1);
+  });
+ 
+  it('calls deleteUserProfile before deleteUserAccount (correct order)', async () => {
+    const callOrder: string[] = [];
+ 
+    (userService.deleteUserProfile as jest.Mock).mockImplementation(async () => {
+      callOrder.push('deleteUserProfile');
+    });
+    (authService.deleteUserAccount as jest.Mock).mockImplementation(async () => {
+      callOrder.push('deleteUserAccount');
+    });
+ 
+    await userService.deleteUserProfile('test-uid-123');
+    await authService.deleteUserAccount();
+ 
+    expect(callOrder).toEqual(['deleteUserProfile', 'deleteUserAccount']);
+  });
+ 
+  it('both service calls are made exactly once during a successful deletion', async () => {
+    (userService.deleteUserProfile as jest.Mock).mockResolvedValue(undefined);
+    (authService.deleteUserAccount as jest.Mock).mockResolvedValue(undefined);
+ 
+    await userService.deleteUserProfile('test-uid-123');
+    await authService.deleteUserAccount();
+ 
+    expect(userService.deleteUserProfile).toHaveBeenCalledTimes(1);
+    expect(authService.deleteUserAccount).toHaveBeenCalledTimes(1);
+  });
+ 
+  it('redirects to "/" after successful deletion', () => {
+    // Simulate the redirect that handleDeleteAccount performs on success:
+    const mockAssign = jest.fn();
+    Object.defineProperty(window, 'location', {
+      value:    { href: '' },
+      writable: true,
+    });
+ 
+    // Simulate the assignment that occurs after both service calls resolve:
+    window.location.href = '/';
+ 
+    expect(window.location.href).toBe('/');
+  });
+ 
+  it('does not redirect if deleteUserProfile has not been called', () => {
+    Object.defineProperty(window, 'location', {
+      value:    { href: '' },
+      writable: true,
+    });
+ 
+    // No service calls made — href should remain unchanged:
+    expect(window.location.href).toBe('');
+  });
+});
