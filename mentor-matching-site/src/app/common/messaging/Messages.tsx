@@ -56,6 +56,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import ReplyIcon from '@mui/icons-material/Reply';
 import { Timestamp } from 'firebase/firestore';
 
 import { messagingService } from '../../../service/messagingService';
@@ -129,6 +130,7 @@ function Messages({ userProfile, adminView }: MessagesProps) {
   const [error, setError]           = useState('');
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [replying, setReplying]     = useState(false);
+  const [avatarCache, setAvatarCache] = useState<Record<string, string>>({});
 
   /* compose */
   const [composeOpen, setComposeOpen]       = useState(false);
@@ -150,6 +152,20 @@ function Messages({ userProfile, adminView }: MessagesProps) {
       ]);
       setInbound(inboundMsgs);
       setSent(sentMsgs);
+
+      // Build avatar cache: fetch profile image for each unique sender, silently ignore failures
+      const allMsgs = [...inboundMsgs, ...sentMsgs];
+      const uniqueSenderUIDs = [...new Set(allMsgs.map((m) => m.data.senderUID).filter(Boolean))];
+      const cache: Record<string, string> = {};
+      await Promise.all(
+        uniqueSenderUIDs.map(async (uid) => {
+          try {
+            const profile = await userService.getUserProfile(uid);
+            if (profile?.imageUrl) cache[uid] = profile.imageUrl;
+          } catch { /* no avatar available, initials fallback will show */ }
+        })
+      );
+      setAvatarCache(cache);
     } catch {
       setError('Could not load messages. Please refresh and try again.');
     } finally {
@@ -365,7 +381,10 @@ function Messages({ userProfile, adminView }: MessagesProps) {
                 }}
               >
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: isSelected ? OSU_ORANGE : '#757575', width: 38, height: 38, fontSize: '0.85rem' }}>
+                  <Avatar
+                    src={avatarCache[msg.data.senderUID]}
+                    sx={{ bgcolor: isSelected ? OSU_ORANGE : '#757575', width: 38, height: 38, fontSize: '0.85rem' }}
+                  >
                     {initials(msg.data.senderDisplayName)}
                   </Avatar>
                 </ListItemAvatar>
@@ -423,18 +442,30 @@ function Messages({ userProfile, adminView }: MessagesProps) {
               <Typography variant="caption" color="text.secondary">{fullDate(selected.data.sentOn)}</Typography>
             </Box>
             {!adminView && folder === 'inbox' && (
-              <Tooltip title="Delete">
-                <IconButton size="small" onClick={() => setDeleteTarget(selected.docId)} sx={{ '&:hover': { color: 'error.main' } }}>
-                  <DeleteOutlineIcon />
-                </IconButton>
-              </Tooltip>
+              <>
+                <Tooltip title="Reply">
+                  <IconButton size="small" onClick={() => {
+                    setComposeRecipient(selected.data.senderUID);
+                    const date = fullDate(selected.data.sentOn);
+                    setComposeBody(`\n\n— On ${date}, ${selected.data.senderDisplayName} wrote:\n> ${selected.data.message.split('\n').join('\n> ')}`);
+                    setComposeOpen(true);
+                  }} sx={{ '&:hover': { color: OSU_ORANGE } }}>
+                    <ReplyIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton size="small" onClick={() => setDeleteTarget(selected.docId)} sx={{ '&:hover': { color: 'error.main' } }}>
+                    <DeleteOutlineIcon />
+                  </IconButton>
+                </Tooltip>
+              </>
             )}
           </Box>
 
           {/* meta */}
           <Box sx={{ px: 3, py: 1.5, display: 'flex', gap: 1, flexWrap: 'wrap', borderBottom: `1px solid ${BORDER_COLOR}` }}>
             <Chip
-              avatar={<Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', bgcolor: '#888' }}>{initials(selected.data.senderDisplayName)}</Avatar>}
+              avatar={<Avatar src={avatarCache[selected.data.senderUID]} sx={{ width: 20, height: 20, fontSize: '0.65rem', bgcolor: '#888' }}>{initials(selected.data.senderDisplayName)}</Avatar>}
               label={`From: ${selected.data.senderDisplayName}`}
               size="small" variant="outlined"
             />
@@ -528,7 +559,7 @@ function Messages({ userProfile, adminView }: MessagesProps) {
       </Dialog>
 
       {/* ── Compose dialog ── */}
-      <Dialog open={composeOpen} onClose={closeCompose} fullWidth maxWidth="sm">
+      <Dialog open={composeOpen} onClose={closeCompose} fullWidth maxWidth="md">
         <DialogTitle sx={{ fontWeight: 700 }}>New Message</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '8px !important' }}>
           {composeSent ? (
@@ -552,9 +583,10 @@ function Messages({ userProfile, adminView }: MessagesProps) {
               </FormControl>
 
               <TextField
-                label="Message" multiline minRows={6} fullWidth size="small"
+                label="Message" multiline minRows={10} fullWidth size="small"
                 value={composeBody}
                 onChange={(e) => setComposeBody(e.target.value)}
+                sx={{ maxWidth: '100%', width: '100%', '& .MuiInputBase-root': { width: '100%' }, '& .MuiInputBase-input': { resize: 'vertical', overflow: 'auto', minHeight: '160px' } }}
               />
               {composeError && <Alert severity="error">{composeError}</Alert>}
             </>
