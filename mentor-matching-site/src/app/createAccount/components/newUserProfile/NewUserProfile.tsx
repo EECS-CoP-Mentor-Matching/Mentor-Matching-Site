@@ -1,4 +1,5 @@
 import authService from "../../../../service/authService";
+import { getAuth } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { refreshNavigate } from "../../../common/auth/refreshNavigate";
@@ -49,7 +50,10 @@ const IconPerson = () => (
 );
 
 function NewUserProfile() {
-  const [currentStep, setCurrentStep] = useState(FormStep.VerifyEmail);
+  const [currentStep, setCurrentStep] = useState(
+    // Skip the verify email step if the user is already verified
+    getAuth().currentUser?.emailVerified ? FormStep.ProfileForm : FormStep.VerifyEmail
+  );
   const [userHasAgreed, updateUserHasAgreed] = useState(false);
   const [errorState, setErrorState] = useState({ errorMessage: '', isError: false } as ErrorState);
   const [createAccountLoading, setCreateAccountLoading] = useState(false);
