@@ -177,6 +177,12 @@ function AdminMessages() {
     }
   }, []);
 
+  /* ── load admin own messages on mount ── */
+  useEffect(() => {
+    if (!adminProfile?.UID) return;
+    loadMessages(adminProfile as UserProfile);
+  }, [adminProfile.UID, loadMessages]);
+
   const handleUserSelect = (e: SelectChangeEvent<string>) => {
     const uid = e.target.value;
     const found = allUsers.find((u) => u.UID === uid) ?? null;
@@ -199,11 +205,11 @@ function AdminMessages() {
 
   /* ── delete ── */
   const handleDelete = async () => {
-    if (!deleteTarget || !viewingUser) return;
+    if (!deleteTarget) return;
     await messagingService.deleteMessage(deleteTarget);
     if (selected?.docId === deleteTarget) setSelected(null);
     setDeleteTarget(null);
-    await loadMessages(viewingUser);
+    await loadMessages(viewingUser ?? adminProfile as UserProfile);
   };
 
   /* ── compose send ── */
@@ -400,11 +406,11 @@ function AdminMessages() {
         </Box>
       )}
 
-      {!loading && !viewingUser && (
+      {!loading && !viewingUser && filtered.length === 0 && (
         <Box sx={{ textAlign: 'center', pt: 6, px: 3 }}>
-          <PersonIcon sx={{ fontSize: 48, opacity: 0.15, mb: 1 }} />
+          <InboxIcon sx={{ fontSize: 48, opacity: 0.15, mb: 1 }} />
           <Typography variant="body2" color="text.secondary">
-            Select a user in the sidebar to view their messages.
+            {section === 'inbox' ? 'Your inbox is empty.' : 'No sent messages.'}
           </Typography>
         </Box>
       )}
