@@ -30,8 +30,8 @@ import { UserProfile } from "../types/userProfile";
 import SendMessageForm from './common/messaging/SendMessageForm';
 import { Box, CircularProgress, Typography, Fade } from '@mui/material';
 import { AdminMatchRole, MatchRole } from '../types/matchProfile';
-import TestMatchDbComponent from './common/forms/TestMatchDbComponent';
-import TestMatchingComponent from './common/forms/TestMatchingComponent';
+import TestMatchDbComponent from './adminPortal/components/testing/TestMatchDbComponent';
+import TestMatchingComponent from './adminPortal/components/testing/TestMatchingComponent';
 import ApprovePendingUsers from './adminPortal/components/manageUsers/ApprovePendingUsers';
 
 // --- PROTECTED ROUTE COMPONENT ---

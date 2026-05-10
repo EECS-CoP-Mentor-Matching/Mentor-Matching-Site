@@ -11,7 +11,7 @@
  */
 
 import React, { useState } from 'react';
-import testMatchDb from '../../../dal/__tests__/testMatchDb';
+import testMatchDb from './testMatchDb';
 
 const TestMatchDbComponent: React.FC = () => {
   const [output, setOutput] = useState<string[]>([]);
