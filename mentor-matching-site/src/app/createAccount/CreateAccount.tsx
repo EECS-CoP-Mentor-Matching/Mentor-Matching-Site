@@ -91,12 +91,8 @@ function CreateAccount() {
         createdAt: serverTimestamp()
       });
 
-      setError({
-        isError: true,
-        errorMessage: "Your account has been created and is pending approval by the Mentor Match staff."
-      });
-
-      // Stop processing for these accounts here.  They will need to be approved manually before they can create a profile.
+      // Redirect to verify-email with a flag so the page shows pending approval messaging
+      navigate("/verify-email?pending=true");
       return;
     }
 
