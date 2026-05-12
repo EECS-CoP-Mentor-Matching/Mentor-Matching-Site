@@ -7,7 +7,7 @@ import FeedbackAdminPortal from '../adminPortal/components/FeedbackAdminPortal/F
 import ManageUsers from '../adminPortal/components/manageUsers/ManageUsers';
 import ManageMentorships from './components/manageMentorships/ManageMentorships';
 import TestingPanel from './components/testing/TestingPanel';
-import SendEmailForm from './components/sendEmail/SendEmailForm';
+import AdminMessages from './components/adminMessages/AdminMessages';
 
 import { FeedbackSettingsContext } from './components/FeedbackAdminPortal/FeedbackSettingsContext';
 import { getSettings } from '../../service/settingsService';
@@ -17,7 +17,7 @@ export enum Pages {
   manageMentorships = "Manage Mentorships",
   userFeedback = "User Feedback",
   testing = "Testing",
-  sendEmail = "Send Email"
+  messages = "Messages"
 }
 
 interface AdminPortalProps {}
@@ -71,7 +71,7 @@ function AdminPortal(props: AdminPortalProps) {
           </div>
         )}
         {page === Pages.testing && <TestingPanel />}
-        {page === Pages.sendEmail && <SendEmailForm />}
+        {page === Pages.messages && <AdminMessages />}
       </div>
     </FeedbackSettingsContext.Provider>
     
