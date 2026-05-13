@@ -34,6 +34,14 @@ service cloud.firestore {
       allow read: if isVerifiedUser();
     }
 
+    match /menteeProfile/{uid} {
+      allow read, write: if isVerifiedUser(); 
+    }
+
+    match /mentorProfile/{uid} {
+      allow read, write: if IsVerifiedUser();
+    }
+
     // messages: scoped per-field to prevent impersonation and limit visibility
     match /messages/{messageId} {
       // Only the real authenticated sender can create — senderUID must match auth UID
