@@ -34,6 +34,13 @@ import TestMatchDbComponent from './adminPortal/components/testing/TestMatchDbCo
 import TestMatchingComponent from './adminPortal/components/testing/TestMatchingComponent';
 import ApprovePendingUsers from './adminPortal/components/manageUsers/ApprovePendingUsers';
 
+// For product demonstrations (such as a school expo),
+// allow certain components to run in "demo mode."
+// This mode should only be used for demonstrations of the site,
+// and normally should not be used in production.
+
+const demoMode: boolean = true;
+
 // --- PROTECTED ROUTE COMPONENT ---
 interface ProtectedRouteProps {
   children: JSX.Element;
@@ -114,7 +121,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/create-account" element={<CreateAccount />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
-              <Route path="/new-profile" element={<NewUserProfile />} />
+              <Route path="/new-profile" element={<NewUserProfile demoMode={demoMode}/>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/user-service-agreement" element={<UserServiceAgreement />} />
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
