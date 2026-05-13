@@ -19,7 +19,7 @@ import WeightSelector from "../../common/forms/WeightSelector";
 import ContentContainer from "../../common/ContentContainer";
 import { mentorService } from "../../../service/mentorService";
 import ErrorMessage, { ErrorState, parseError, resetError } from "../../common/forms/ErrorMessage";
-import { MatchProfile, initUserWeights, UserWeights } from "../../../types/matchProfile";
+import { MatchProfile, initUserWeights, UserWeights, Match } from "../../../types/matchProfile";
 import authService from "../../../service/authService";
 import LoadingMessage from "../../common/forms/modals/LoadingMessage";
 import { 
@@ -29,12 +29,15 @@ import {
   LANGUAGES,
   RACIAL_IDENTITIES
 } from "../../../config/matchingConfig";
+import matchDbService from "../../../service/matchDbService";
+//import Match from "../../../service/matchDbService";
 
 interface CreateMentorProfileProps {
   backToPage?: () => void;
+  props: any;
 }
 
-function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
+function CreateMentorProfile({ backToPage, props }: CreateMentorProfileProps) {
   const [errorState, setErrorState] = useState<ErrorState>({ isError: false, errorMessage: '' });
   const [loading, setLoading] = useState(false);
 
@@ -113,7 +116,42 @@ function CreateMentorProfile({ backToPage }: CreateMentorProfileProps) {
         newProfile.otherLanguage = otherLanguage;
       }
       
-      await mentorService.createMentorProfile(newProfile);
+      const mentorID = await mentorService.createMentorProfile(newProfile);
+
+      // DEMO: Force at least one match request for this mentor
+      if (props.demoMode) {
+        const demoMatch: Match = {
+          menteeId: "DemoMentee1",
+          mentorId:  uid,
+          menteeProfileId: "DemoMenteeProfile1",
+          mentorProfileId: mentorID.id || "",
+
+          matchedAt: 0,
+          matchPercentage: 100,
+
+          matchDetails: {
+            technicalInterestsScore: 100,
+            lifeExperiencesScore: 100,
+            languagesScore: 100,
+            menteeWeights: {
+              technicalInterests: 5,
+              lifeExperiences: 5,
+              languages: 5
+            },
+            mentorWeights: {
+              technicalInterests: 5,
+              lifeExperiences: 5,
+              languages: 5
+            }
+          },
+
+          status: "pending",
+          initiatedBy: "mentee"
+        };
+
+        await matchDbService.createMatch(demoMatch);
+
+      }
       
       if (!errorState.isError && backToPage) {
         backToPage();

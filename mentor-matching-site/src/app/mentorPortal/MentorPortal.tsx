@@ -19,7 +19,12 @@ export enum Pages {
   mentorMessages = "Messages"
 }
 
-function MentorPortal() {
+// If props.demoMode is true, runs in a special mode that forces mentors to have a mentee matched.
+// This is for demonstration purposes only, and
+// should not normally be run in production!
+
+function MentorPortal(props: any) {
+  console.log(props.demoMode);
   const [selectedPage, setSelectedPage] = useState<string>(Pages.activeProfiles.toString());
   const [showCreateProfile, setShowCreateProfile] = useState(false);
 
@@ -72,7 +77,7 @@ function MentorPortal() {
               {/* Create Profile - shown within Active Profiles tab when button clicked */}
               {selectedPage === Pages.activeProfiles.toString() && showCreateProfile && (
                 <div className="mentor-portal-centered">
-                  <CreateMentorProfile backToPage={backToActive} />
+                  <CreateMentorProfile props={props.demoMode} backToPage={backToActive} />
                 </div>
               )}
 

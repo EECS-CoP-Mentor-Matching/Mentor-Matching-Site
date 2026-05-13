@@ -121,7 +121,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/create-account" element={<CreateAccount />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
-              <Route path="/new-profile" element={<NewUserProfile demoMode={demoMode}/>} />
+              <Route path="/new-profile" element={<NewUserProfile/>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/user-service-agreement" element={<UserServiceAgreement />} />
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
@@ -171,7 +171,7 @@ function App() {
               {/* Protected Mentor Routes */}
               <Route path="/mentor-portal" element={
                 <ProtectedRoute allowedRoles={[AdminMatchRole.mentor, AdminMatchRole.both]}>
-                  <MentorPortal />
+                  <MentorPortal demoMode={demoMode}/>
                 </ProtectedRoute>
               } />
 

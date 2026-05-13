@@ -29,6 +29,8 @@ import FormGroupRows from "../../../common/forms/layout/FormGroupRows";
 import FormGroupCols from "../../../common/forms/layout/FormGroupCols";
 import { isValidEmail } from "../../../common/forms/validation";
 import "./NewUserProfile.css";
+import { Match } from "../../../../types/matchProfile";
+
 
 enum FormStep {
   VerifyEmail,
@@ -49,11 +51,7 @@ const IconPerson = () => (
   </svg>
 );
 
-// If props.demoMode is true, runs in a special mode that forces mentors to have a mentee matched.
-// This is for demonstration purposes only, and
-// should not normally be run in production!
-function NewUserProfile(props: any) {
-  console.log(props.demoMode);
+function NewUserProfile() {
   const [currentStep, setCurrentStep] = useState(
     // Skip the verify email step if the user is already verified
     getAuth().currentUser?.emailVerified ? FormStep.ProfileForm : FormStep.VerifyEmail
@@ -211,7 +209,6 @@ function NewUserProfile(props: any) {
       const user = await authService.getSignedInUser();
       if (user) {
         await userService.createNewUser(user, userProfile);
-        // DEMO: Check if user is a mentor and force a match
         setTimeout(() => {
           refreshNavigate('/');
           setCreateAccountLoading(false);
