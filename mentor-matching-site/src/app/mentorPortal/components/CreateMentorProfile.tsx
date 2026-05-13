@@ -34,10 +34,10 @@ import matchDbService from "../../../service/matchDbService";
 
 interface CreateMentorProfileProps {
   backToPage?: () => void;
-  props: any;
+  demoMode: any;
 }
 
-function CreateMentorProfile({ backToPage, props }: CreateMentorProfileProps) {
+function CreateMentorProfile({ backToPage, demoMode }: CreateMentorProfileProps) {
   const [errorState, setErrorState] = useState<ErrorState>({ isError: false, errorMessage: '' });
   const [loading, setLoading] = useState(false);
 
@@ -119,7 +119,7 @@ function CreateMentorProfile({ backToPage, props }: CreateMentorProfileProps) {
       const mentorID = await mentorService.createMentorProfile(newProfile);
 
       // DEMO: Force at least one match request for this mentor
-      if (props.demoMode) {
+      if (demoMode) {
         const demoMatch: Match = {
           menteeId: "DemoMentee1",
           mentorId:  uid,
@@ -149,7 +149,8 @@ function CreateMentorProfile({ backToPage, props }: CreateMentorProfileProps) {
           initiatedBy: "mentee"
         };
 
-        await matchDbService.createMatch(demoMatch);
+       // Create the demo match:
+       await matchDbService.createMatch(demoMatch);
 
       }
       

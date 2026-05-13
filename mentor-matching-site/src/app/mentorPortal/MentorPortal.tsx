@@ -24,7 +24,6 @@ export enum Pages {
 // should not normally be run in production!
 
 function MentorPortal(props: any) {
-  console.log(props.demoMode);
   const [selectedPage, setSelectedPage] = useState<string>(Pages.activeProfiles.toString());
   const [showCreateProfile, setShowCreateProfile] = useState(false);
 
@@ -77,7 +76,7 @@ function MentorPortal(props: any) {
               {/* Create Profile - shown within Active Profiles tab when button clicked */}
               {selectedPage === Pages.activeProfiles.toString() && showCreateProfile && (
                 <div className="mentor-portal-centered">
-                  <CreateMentorProfile props={props.demoMode} backToPage={backToActive} />
+                  <CreateMentorProfile demoMode={props.demoMode} backToPage={backToActive} />
                 </div>
               )}
 
