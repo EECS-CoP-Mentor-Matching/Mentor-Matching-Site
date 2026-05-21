@@ -11,8 +11,8 @@
  * 2. Import and use in a component or run in browser console
  */
 
-import matchingService from '../../service/matchingService';
-import { MatchProfile } from '../../types/matchProfile';
+import matchingService from '../../../../service/matchingService';
+import { MatchProfile } from '../../../../types/matchProfile';
 
 /**
  * Create sample mentee profiles for testing
@@ -102,7 +102,7 @@ const sampleMentors: MatchProfile[] = [
       languages: 3
     },
     introduction: 'Senior ML Engineer at tech company',
-    areasOfExpertise: ['Machine Learning', 'Career Development', 'Interview Prep'],
+    areasOfExpertise: 'Machine Learning, Career Development, Interview Prep',
     isActive: true,
     maxMatches: 5,
     currentMatchCount: 1
@@ -124,7 +124,7 @@ const sampleMentors: MatchProfile[] = [
       languages: 2
     },
     introduction: 'Full-stack developer, passionate about mentorship',
-    areasOfExpertise: ['Web Development', 'Work-Life Balance', 'Career Transitions'],
+    areasOfExpertise: 'Web Development, Work-Life Balance, Career Transitions',
     isActive: true,
     maxMatches: 3,
     currentMatchCount: 0
@@ -146,7 +146,7 @@ const sampleMentors: MatchProfile[] = [
       languages: 2
     },
     introduction: 'Security architect with 10+ years experience',
-    areasOfExpertise: ['Cybersecurity', 'Career Development'],
+    areasOfExpertise: 'Cybersecurity, Career Development',
     isActive: true,
     maxMatches: 4,
     currentMatchCount: 0

@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import testMatchingService from '../../../dal/__tests__/testMatchingService';
+import testMatchingService from './testMatchingService';
 
 const TestMatchingComponent: React.FC = () => {
   const [output, setOutput] = useState<string[]>([]);

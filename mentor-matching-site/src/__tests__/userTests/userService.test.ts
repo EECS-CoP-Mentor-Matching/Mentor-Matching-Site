@@ -5,7 +5,7 @@ User ServiceTesting Suite
 */
 
 // Create mock versions of the userDB functions that userService relies on:
-jest.mock('../dal/userDb', () => {
+jest.mock('../../dal/userDb', () => {
   const mockUserDb = {
     createNewUserAsync:     jest.fn(),
     getUserProfileAsync:    jest.fn(),
@@ -26,9 +26,9 @@ jest.mock('../dal/userDb', () => {
 
 
 // Import the needed functions that we are looking to test:
-import userDb from '../dal/userDb';
-import userService from '../service/userService';
-import { initUserProfile, UserProfile } from '../types/userProfile';
+import userDb from '../../dal/userDb';
+import userService from '../../service/userService';
+import { initUserProfile, UserProfile } from '../../types/userProfile';
 
 // Create a mock user profile for testing:
 const mockUser = (overrides = {}) => ({
