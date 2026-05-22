@@ -1,21 +1,108 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
 import { onCall } from "firebase-functions/v2/https";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import * as adminFunctions from "firebase-admin";
 
 adminFunctions.initializeApp();
 
-// Function for approving a user who does not have an OSU email address:
+const SITE_URL = "https://eecs-cop-mentor-matching-site.web.app";
+
+// ── Helper: send email via Trigger Email extension ──────────────────────────
+async function sendMail(to: string, subject: string, text: string) {
+  await adminFunctions.firestore().collection("mail").add({
+    to,
+    message: { subject, text },
+  });
+}
+
+// ── Helper: get all admin emails ─────────────────────────────────────────────
+async function getAdminEmails(): Promise<string[]> {
+  const snapshot = await adminFunctions.firestore()
+    .collection("userProfile")
+    .where("preferences.role", "==", "Admin")
+    .get();
+  const emails: string[] = [];
+  snapshot.forEach((doc) => {
+    const email = doc.data()?.contact?.email;
+    if (email) emails.push(email);
+  });
+  return emails;
+}
+
+// ── Firestore trigger: notify admins when a non-OSU user requests access ─────
+export const notifyAdminsOnPendingUser = onDocumentCreated(
+  "pendingUsers/{uid}",
+  async (event) => {
+    const data = event.data?.data();
+    if (!data) return;
+
+    const userEmail = data.email ?? "Unknown";
+    const adminEmails = await getAdminEmails();
+
+    await Promise.all(
+      adminEmails.map((adminEmail) =>
+        sendMail(
+          adminEmail,
+          "New Non-OSU Account Request — Mentor Match",
+          `A new non-OSU user has requested access to Mentor Match.\n\nEmail: ${userEmail}\n\nPlease review and approve or deny their request at:\n${SITE_URL}/admin-portal/pending-users\n\nThe EECS Mentor Match Team`
+        )
+      )
+    );
+  }
+);
+
+// ── Pre-authorize a non-OSU user (admin invites them directly) ───────────────
+export const preAuthorizeUser = onCall(async (request) => {
+  if (!request.auth) {
+    throw new Error("You are not signed in. Please sign in first.");
+  }
+  if (request.auth.token.admin !== true) {
+    throw new Error("This function can be run by authorized Mentor Match Admins only.");
+  }
+
+  const email = request.data.email?.trim();
+  if (!email) {
+    throw new Error("Email address not provided.");
+  }
+
+  // Check if a Firebase Auth account already exists for this email
+  let uid: string;
+  try {
+    const existing = await adminFunctions.auth().getUserByEmail(email);
+    uid = existing.uid;
+    // Already exists — just ensure allowed: true is set
+    const existingClaims = existing.customClaims || {};
+    await adminFunctions.auth().setCustomUserClaims(uid, {
+      ...existingClaims,
+      allowed: true,
+      email_verified: true,
+    });
+  } catch (err: any) {
+    if (err.code === "auth/user-not-found") {
+      // Create a new Auth account with no password
+      const newUser = await adminFunctions.auth().createUser({
+        email,
+        emailVerified: true,
+      });
+      uid = newUser.uid;
+      await adminFunctions.auth().setCustomUserClaims(uid, { allowed: true });
+    } else {
+      throw err;
+    }
+  }
+
+  // Generate a password setup link and send it to the user
+  const setupLink = await adminFunctions.auth().generatePasswordResetLink(email);
+
+  await sendMail(
+    email,
+    "You've Been Invited to EECS Mentor Match! 🎉",
+    `Hi there!\n\nYou've been invited to join the EECS Mentor Match platform!\n\nClick the link below to set up your password and get started:\n${setupLink}\n\nOnce you've set your password, you can complete your profile at:\n${SITE_URL}/new-profile\n\nWe're excited to have you!\n\nThe EECS Mentor Match Team`
+  );
+
+  return { success: true, uid };
+});
+
+// ── Approve a pending non-OSU user ───────────────────────────────────────────
 export const approvePendingUser = onCall(async (request) => {
   const userData = request.data;
 
@@ -38,8 +125,7 @@ export const approvePendingUser = onCall(async (request) => {
   return { success: true };
 });
 
-// Function for granting a user Firebase admin privileges.
-// Checks that user sending request is admin, and sets new_admin_uid to admin
+// ── Grant admin privileges ───────────────────────────────────────────────────
 export const setAdminPrivileges = onCall(async (request) => {
   const admin_uid = request.data.admin_uid;
 
@@ -57,14 +143,14 @@ export const setAdminPrivileges = onCall(async (request) => {
 
   const user = await adminFunctions.auth().getUser(admin_uid);
   const existingClaims = user.customClaims || {};
-  await adminFunctions.auth().setCustomUserClaims(admin_uid, { 
-    ...existingClaims, 
-    admin: true 
+  await adminFunctions.auth().setCustomUserClaims(admin_uid, {
+    ...existingClaims,
+    admin: true,
   });
   return { success: true };
 });
 
-// Function for removing a user Firebase admin privileges.
+// ── Remove admin privileges ──────────────────────────────────────────────────
 export const removeAdminPrivileges = onCall(async (request) => {
   const admin_uid = request.data.admin_uid;
 
@@ -91,16 +177,12 @@ export const removeAdminPrivileges = onCall(async (request) => {
   return { success: true };
 });
 
-// Function for deleting a user's Firebase Authentication record.
-// Can only be called by an authenticated admin.
-// Deletes the auth record for the target UID — the Firestore profile
-// should be deleted separately via userService.deleteUserProfile().
+// ── Delete a user's Firebase Auth record ─────────────────────────────────────
 export const deleteUserAccount = onCall(async (request) => {
   if (!request.auth) {
     throw new Error("You are not signed in.  Please sign in first.");
   }
 
-  // Verify the calling user is an admin by checking their Firestore role
   const callerProfile = await adminFunctions.firestore()
     .doc(`userProfile/${request.auth.uid}`)
     .get();
