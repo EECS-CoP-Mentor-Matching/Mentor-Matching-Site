@@ -13,6 +13,7 @@ import { UserProfile } from "../../types/userProfile";
 import { useAppDispatch } from "../../redux/hooks";
 import { updateProfile } from "../../redux/reducers/userProfileReducer";
 
+
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -53,6 +54,19 @@ function Login() {
     }
     catch (error) {
       console.error("Login failed", error);
+      // Check token claims — if emailVerified but no allowed claim, they are pending approval
+      try {
+        const signedInUser = await authService.getSignedInUser();
+        if (signedInUser && signedInUser.email === email && signedInUser.emailVerified) {
+          const token = await signedInUser.getIdTokenResult(true);
+          if (!token.claims.allowed && !token.claims.admin) {
+            setErrorState({ errorMessage: "Your account is pending admin approval. You will receive an email once approved.", isError: true });
+            return;
+          }
+        }
+      } catch {
+        // ignore
+      }
       setErrorState({ errorMessage: "Username or password was invalid", isError: true });
     }
   }

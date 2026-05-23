@@ -90,13 +90,14 @@ export const preAuthorizeUser = onCall(async (request) => {
     }
   }
 
-  // Generate a password setup link and send it to the user
+  // Generate both a password setup link and an email verification link
   const setupLink = await adminFunctions.auth().generatePasswordResetLink(email);
+  const verifyLink = await adminFunctions.auth().generateEmailVerificationLink(email);
 
   await sendMail(
     email,
     "You've Been Invited to EECS Mentor Match! 🎉",
-    `Hi there!\n\nYou've been invited to join the EECS Mentor Match platform!\n\nClick the link below to set up your password and get started:\n${setupLink}\n\nOnce you've set your password, you can complete your profile at:\n${SITE_URL}/new-profile\n\nWe're excited to have you!\n\nThe EECS Mentor Match Team`
+    `Hi there!\n\nYou've been invited to join the EECS Mentor Match platform!\n\nPlease complete the following steps to get started:\n\nStep 1 - Verify your email address:\n${verifyLink}\n\nStep 2 - Set up your password:\n${setupLink}\n\nOnce both steps are complete, log in at:\n${SITE_URL}/login\n\nWe're excited to have you!\n\nThe EECS Mentor Match Team`
   );
 
   return { success: true, uid };
