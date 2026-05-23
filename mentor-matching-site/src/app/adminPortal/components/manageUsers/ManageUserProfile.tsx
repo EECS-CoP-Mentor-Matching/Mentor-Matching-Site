@@ -13,6 +13,7 @@ import UpdateUserContactInformation from '../../../common/manageUsers/UpdateUser
 import Messages from '../../../common/messaging/Messages';
 import '../../AdminPortal.css';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import authService from '../../../../service/authService';
 import { MatchRole, AdminMatchRole } from "../../../../types/matchProfile";
 import { isValidEmail } from '../../../common/forms/validation';
 
@@ -39,6 +40,19 @@ function ManageUserProfile() {
     const [saveError, setSaveError] = useState<string | null>(null);
     // State to manage showing the messages popout
     const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
+    const [resetSent, setResetSent] = useState(false);
+
+    const handleSendPasswordReset = async () => {
+        if (!profileDetails?.contact?.email) return;
+        try {
+            await authService.resetPassword(profileDetails.contact.email);
+            setResetSent(true);
+            setTimeout(() => setResetSent(false), 4000);
+        } catch (error) {
+            console.error("Error sending password reset:", error);
+            alert("Failed to send password reset email. Please try again.");
+        }
+    };
     const handleMessagesClick = (event: React.MouseEvent<HTMLButtonElement>) => {setAnchorElement(event.currentTarget)};
     const handleMessagesClose = () => {setAnchorElement(null)};
     const showEditStyle = {
@@ -150,6 +164,13 @@ function ManageUserProfile() {
                     <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Edit User Profile</h2>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                       <Button onClick={handleMessagesClick}>View Messages</Button>
+                      <Button
+                        onClick={handleSendPasswordReset}
+                        color={resetSent ? "success" : "inherit"}
+                        variant={resetSent ? "contained" : "outlined"}
+                      >
+                        {resetSent ? "Reset Email Sent!" : "Send Password Reset"}
+                      </Button>
                       {!showEdit
                         ? <Button onClick={() => setShowEdit(true)}>Edit Profile</Button>
                         : <Button variant="contained" onClick={saveChanges} sx={{ backgroundColor: '#D73F09' }}>Save Profile</Button>

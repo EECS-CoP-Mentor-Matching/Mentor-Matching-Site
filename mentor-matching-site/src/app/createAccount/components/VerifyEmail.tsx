@@ -32,6 +32,7 @@ function VerifyEmail() {
           <FormHeader>To continue, verify your email address</FormHeader>
           <FormLabel>
             You should have received an email from us containing a link to complete verification.
+            Delivery may take a few minutes — please also check your spam or junk folder.
           </FormLabel>
           {isPending ? (
             <>

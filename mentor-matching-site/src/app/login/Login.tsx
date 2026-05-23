@@ -18,6 +18,20 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorState, setErrorState] = useState<ErrorState>(resetError());
+  const [resetSent, setResetSent] = useState(false);
+
+  const handleForgotPassword = async () => {
+    if (!email.trim()) {
+      setErrorState({ errorMessage: "Please enter your email address above first.", isError: true });
+      return;
+    }
+    try {
+      await authService.resetPassword(email.trim());
+      setResetSent(true);
+    } catch (error) {
+      setErrorState({ errorMessage: "Could not send reset email. Please check your email address.", isError: true });
+    }
+  };
   
   const navigate = useNavigate();
   const dispatch = useAppDispatch(); // Initialize Redux dispatch
@@ -90,6 +104,15 @@ function Login() {
             <Button onClick={login} variant="contained">LOGIN</Button>
             <Button onClick={() => navigate("/create-account")}>Create an Account</Button>
           </FormControl>
+          {resetSent ? (
+            <FormLabel style={{ color: 'green', textAlign: 'center', marginTop: '8px' }}>
+              Password reset email sent! Check your inbox.
+            </FormLabel>
+          ) : (
+            <Button onClick={handleForgotPassword} size="small" sx={{ textTransform: 'none', color: '#DC4405' }}>
+              Forgot password?
+            </Button>
+          )}
           <ErrorMessage errorState={errorState} />
         </FormGroup>
       </div>
