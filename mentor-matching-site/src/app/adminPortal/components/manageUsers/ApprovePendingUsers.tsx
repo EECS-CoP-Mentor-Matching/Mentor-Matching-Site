@@ -49,9 +49,20 @@ function ApprovePendingUsers() {
 
       // Refresh the pending users list
       await fetchPendingUsers();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error approving user: ", error);
-      alert("Failed to approve user. Do you have admin permissions?");
+      // If the UID no longer exists in Firebase Auth, clean up the stale document
+      if (error?.code === "functions/not-found" || error?.message?.includes("not found") || error?.message?.includes("USER_NOT_FOUND")) {
+        try {
+          await userService.deletePendingUser(uid);
+          await fetchPendingUsers();
+          alert("This account request is outdated and has been removed. The user may need to register again.");
+        } catch {
+          alert("Failed to clean up outdated request. Please try again.");
+        }
+      } else {
+        alert("Failed to approve user. Please try again.");
+      }
     }
     setProcessing(null);
   }
@@ -76,7 +87,7 @@ function ApprovePendingUsers() {
       await fetchPendingUsers();
     } catch (error) {
       console.error("Error denying user: ", error);
-      alert("Failed to deny user. Do you have admin permissions?");
+      alert("Failed to deny user. Please try again.");
     }
     setProcessing(null);
     setDenyTarget(null);
@@ -102,9 +113,14 @@ function ApprovePendingUsers() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pendingUserList.map((pendingUser) => (
-              <TableRow key={pendingUser.uid}>
-                <TableCell>{pendingUser.details.email}</TableCell>
+            {pendingUserList.map((pendingUser) => {
+              const isDuplicate = pendingUserList.filter(u => u.details.email === pendingUser.details.email).length > 1;
+              return (
+              <TableRow key={pendingUser.uid} sx={{ bgcolor: isDuplicate ? '#fff8e1' : 'inherit' }}>
+                <TableCell>
+                  {pendingUser.details.email}
+                  {isDuplicate && <Chip label="Duplicate" size="small" color="warning" sx={{ ml: 1 }} />}
+                </TableCell>
                 <TableCell>
                   {Timestamp.fromMillis(pendingUser.details.createdAt.seconds * 1000).toDate().toDateString()}
                 </TableCell>
@@ -131,7 +147,8 @@ function ApprovePendingUsers() {
                   </Box>
                 </TableCell>
               </TableRow>
-            ))}
+              );
+            })}
           </TableBody>
         </Table>
       </Box>
