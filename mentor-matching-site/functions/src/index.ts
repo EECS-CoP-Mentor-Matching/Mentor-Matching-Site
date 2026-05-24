@@ -74,14 +74,12 @@ export const preAuthorizeUser = onCall(async (request) => {
     await adminFunctions.auth().setCustomUserClaims(uid, {
       ...existingClaims,
       allowed: true,
-      email_verified: true,
     });
   } catch (err: any) {
     if (err.code === "auth/user-not-found") {
       // Create a new Auth account with no password
       const newUser = await adminFunctions.auth().createUser({
         email,
-        emailVerified: true,
       });
       uid = newUser.uid;
       await adminFunctions.auth().setCustomUserClaims(uid, { allowed: true });
