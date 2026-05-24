@@ -5,11 +5,13 @@ import fakeMentor from './fakeMentorImg.png';
 import fakeMentee from './fakeMenteeImg.png';
 import feedbackService, { FeedbackData } from './../service/feedbackService';
 import { icons } from './../icons/icons';
+import { useAppSelector } from './../redux/hooks';
 
 const Home: React.FC = () => {
     const [approvedReviews, setApprovedReviews] = useState<FeedbackData[]>([]);
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [loadingReviews, setLoadingReviews] = useState(true);
+    const isLoggedIn = useAppSelector(state => !!state.userProfile.userProfile?.UID);
 
     useEffect(() => {
         const loadReviews = async () => {
@@ -53,7 +55,7 @@ const Home: React.FC = () => {
 
             {/* 3. START YOUR JOURNEY SECTION */}
             <section className="call-to-action-section light-grey-bg">
-                <a href="/create-account" className="start-journey-button">Start Your Journey</a>
+                {!isLoggedIn && <a href="/create-account" className="start-journey-button">Start Your Journey</a>}
             </section>
 
             {/* 4. REVIEWS SECTION */}

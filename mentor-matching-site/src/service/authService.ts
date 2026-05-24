@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, sendSignInLinkToEmail, sendEmailVerification, signInWithEmailAndPassword,
-  isSignInWithEmailLink, signInWithEmailLink, setPersistence, browserSessionPersistence, getAuth,
+  isSignInWithEmailLink, signInWithEmailLink, setPersistence, browserSessionPersistence, getAuth, sendPasswordResetEmail,
   User } from "firebase/auth";
 import { app } from "../firebaseConfig";
 import { deleteUser } from "firebase/auth";
@@ -117,9 +117,14 @@ async function refreshToken() {
   }
 }
 
+async function resetPassword(email: string): Promise<void> {
+  await sendPasswordResetEmail(firebaseAuth, email);
+}
+
 const authService = {
   sendEmailSignIn,
   signInSecure,
+  resetPassword,
   refreshToken,
   sendVerifyEmail,
   createUser,

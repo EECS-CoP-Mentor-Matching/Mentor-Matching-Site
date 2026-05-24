@@ -95,11 +95,11 @@ function NewUserProfile() {
                 await user.reload();
                 if (user.emailVerified) {
                   await authService.refreshToken();
-                  refreshNavigate('/');
                   if (intervalTimer.current) {
                     clearInterval(intervalTimer.current);
                     intervalTimer.current = null;
                   }
+                  setCurrentStep(FormStep.ProfileForm);
                 }
               }, 5000);
             }

@@ -7,13 +7,22 @@ import authService from "../../../service/authService";
 function VerifyEmail() {
   const isPending = new URLSearchParams(window.location.search).get("pending") === "true";
   const [emailSent, setEmailSent] = useState(false);
+  const [rateLimited, setRateLimited] = useState(false);
 
   const handleResendEmail = async () => {
-    const user = await authService.getSignedInUser();
-    if (user) {
-      await authService.sendVerifyEmail(user);
+    try {
+      const user = await authService.getSignedInUser();
+      if (user) {
+        await authService.sendVerifyEmail(user);
+      }
+      setEmailSent(true);
+    } catch (error: any) {
+      if (error?.code === "auth/too-many-requests") {
+        setEmailSent(true); // show success-like state
+        // Override with a rate limit message
+        setRateLimited(true);
+      }
     }
-    setEmailSent(true);
   };
 
   return (
@@ -23,6 +32,7 @@ function VerifyEmail() {
           <FormHeader>To continue, verify your email address</FormHeader>
           <FormLabel>
             You should have received an email from us containing a link to complete verification.
+            Delivery may take a few minutes — please also check your spam or junk folder.
           </FormLabel>
           {isPending ? (
             <>
@@ -49,7 +59,7 @@ function VerifyEmail() {
             {!emailSent ? (
               <SubmitButton onClick={handleResendEmail} text="Resend email verification" widthMulti={0.2} />
             ) : (
-              <FormLabel>Email sent!</FormLabel>
+              <FormLabel>{rateLimited ? "Please wait a moment before requesting another email." : "Email sent!"}</FormLabel>
             )}
           </FormControl>
         </FormGroup>

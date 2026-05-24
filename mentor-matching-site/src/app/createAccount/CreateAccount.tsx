@@ -8,6 +8,7 @@ import { updateEmail } from "../../redux/reducers/userProfileReducer";
 import ErrorMessage, { ErrorState } from "../common/forms/ErrorMessage";
 import FormHeader from "../common/forms/layout/FormHeader";
 import authService from "../../service/authService";
+import userService from "../../service/userService";
 import Password from "./components/Password";
 import LoadingMessage from "../common/forms/modals/LoadingMessage";
 import {refreshNavigate} from "../common/auth/refreshNavigate";
@@ -114,8 +115,17 @@ function CreateAccount() {
     const checkUser = async () => {
       const user = await authService.getSignedInUser();
       if (user) {
-        // Redirect if the user is already signed in
-        navigate("/");
+        // If signed in but no profile yet (e.g. invited user), go to new-profile
+        try {
+          const profile = await userService.getUserProfile(user.uid);
+          if (profile && profile.preferences?.role) {
+            navigate("/");
+          } else {
+            navigate("/new-profile");
+          }
+        } catch {
+          navigate("/new-profile");
+        }
       }
     };
     checkUser();
