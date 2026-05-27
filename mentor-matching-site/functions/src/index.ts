@@ -50,6 +50,55 @@ export const notifyAdminsOnPendingUser = onDocumentCreated(
   }
 );
 
+// ── Firestore trigger: create test match for tester mentors ─────────────────
+// Fires when a mentor matching profile is created
+// Only creates a test match if the mentor was invited as a tester (isTester claim)
+const MATCHY_MATCHERSON_UID = "DemoMentee1";
+const MATCHY_MATCHERSON_PROFILE_ID = "IotpXSPnuQzUU1G9j4BX";
+
+export const createTestMatchOnProfileCreated = onDocumentCreated(
+  "mentorProfile/{profileId}",
+  async (event) => {
+    const profileData = event.data?.data();
+    if (!profileData) return;
+
+    const uid = profileData.UID;
+    if (!uid) return;
+
+    // Check if this mentor was invited as a tester (cheap Firestore check, no Auth call)
+    const testerDoc = await adminFunctions.firestore().collection("testUsers").doc(uid).get();
+    if (!testerDoc.exists) return;
+
+    const mentorProfileId = event.params.profileId;
+
+    // Create a match with Matchy Matcherson
+    const matchRef = adminFunctions.firestore().collection("matches").doc();
+    await matchRef.set({
+      matchId: matchRef.id,
+      menteeId: MATCHY_MATCHERSON_UID,
+      mentorId: uid,
+      menteeProfileId: MATCHY_MATCHERSON_PROFILE_ID,
+      mentorProfileId,
+      matchedAt: adminFunctions.firestore.Timestamp.now(),
+      matchPercentage: 75,
+      matchDetails: {
+        technicalInterestsScore: 80,
+        lifeExperiencesScore: 70,
+        languagesScore: 75,
+        menteeWeights: { technicalInterests: 3, lifeExperiences: 3, languages: 3 },
+        mentorWeights: { technicalInterests: 3, lifeExperiences: 3, languages: 3 },
+      },
+      status: "pending",
+      initiatedBy: "system",
+      acceptedAt: null,
+      completedAt: null,
+      declinedAt: null,
+      notes: "Test match created for mentor testing.",
+      isTestMatch: true,
+    });
+  }
+);
+
 // ── Pre-authorize a non-OSU user (admin invites them directly) ───────────────
 export const preAuthorizeUser = onCall(async (request) => {
   if (!request.auth) {
@@ -82,10 +131,17 @@ export const preAuthorizeUser = onCall(async (request) => {
         email,
       });
       uid = newUser.uid;
-      await adminFunctions.auth().setCustomUserClaims(uid, { allowed: true });
+      const claims: any = { allowed: true };
+      if (request.data.isTester === true) claims.isTester = true;
+      await adminFunctions.auth().setCustomUserClaims(uid, claims);
     } else {
       throw err;
     }
+  }
+
+  // Store tester flag in Firestore so trigger can check without Auth call
+  if (request.data.isTester === true) {
+    await adminFunctions.firestore().collection("testUsers").doc(uid).set({ isTester: true });
   }
 
   // Generate both a password setup link and an email verification link

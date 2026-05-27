@@ -4,7 +4,7 @@
  * Provides quick access to test pages for database and matching algorithm
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Box, 
@@ -14,16 +14,46 @@ import {
   Button, 
   Grid,
   Divider,
-  Alert
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField,
+  CircularProgress,
 } from '@mui/material';
 import { 
   Storage as StorageIcon,
   Functions as FunctionsIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
+  PersonAdd as PersonAddIcon,
 } from '@mui/icons-material';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+
+const preAuthorizeUser = httpsCallable(getFunctions(), 'preAuthorizeUser');
 
 const TestingPanel: React.FC = () => {
   const navigate = useNavigate();
+  const [openInvite, setOpenInvite] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviting, setInviting] = useState(false);
+  const [inviteResult, setInviteResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  const handleSendTestInvite = async () => {
+    if (!inviteEmail.trim()) return;
+    setInviting(true);
+    setInviteResult(null);
+    try {
+      await preAuthorizeUser({ email: inviteEmail.trim(), isTester: true });
+      setInviteResult({ success: true, message: `Test invite sent to ${inviteEmail}. Once they complete profile setup, a dummy mentee and match will be created automatically.` });
+      setInviteEmail('');
+    } catch (error: any) {
+      setInviteResult({ success: false, message: error?.message ?? 'Failed to send invite. Please try again.' });
+    } finally {
+      setInviting(false);
+    }
+  };
 
   const testPages = [
     {
@@ -103,6 +133,24 @@ const TestingPanel: React.FC = () => {
 
       <Divider sx={{ marginY: 4 }} />
 
+      {/* Test Mentor Invite */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, color: '#333' }}>
+          Test Mentor Invite
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Send an invite to a mentor tester. Once they complete their profile setup, a dummy mentee and match will be automatically created so they can test the full mentorship experience.
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<PersonAddIcon />}
+          onClick={() => { setOpenInvite(true); setInviteResult(null); setInviteEmail(''); }}
+          sx={{ backgroundColor: '#DC4405', '&:hover': { backgroundColor: '#b83804' } }}
+        >
+          Invite Test Mentor
+        </Button>
+      </Box>
+
       <Box sx={{ backgroundColor: '#f5f5f5', padding: 3, borderRadius: 2 }}>
         <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
           <InfoIcon sx={{ marginRight: 1, color: '#0066cc' }} />
@@ -124,6 +172,45 @@ const TestingPanel: React.FC = () => {
           to ensure everything still works correctly.
         </Typography>
       </Box>
+      {/* Test Mentor Invite Dialog */}
+      <Dialog open={openInvite} onClose={() => setOpenInvite(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Invite Test Mentor</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            Enter the mentor's email address. They will receive the standard invite email.
+            Once they complete their profile setup, a dummy mentee and active match will be
+            created automatically so they can test the mentorship experience.
+          </DialogContentText>
+          {inviteResult && (
+            <Alert severity={inviteResult.success ? 'success' : 'error'} sx={{ mb: 2 }} onClose={() => setInviteResult(null)}>
+              {inviteResult.message}
+            </Alert>
+          )}
+          <TextField
+            label="Email Address"
+            type="email"
+            fullWidth
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSendTestInvite(); }}
+            disabled={inviting}
+            autoFocus
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenInvite(false)}>Close</Button>
+          <Button
+            onClick={handleSendTestInvite}
+            variant="contained"
+            disabled={inviting || !inviteEmail.trim()}
+            startIcon={inviting ? <CircularProgress size={16} color="inherit" /> : <PersonAddIcon />}
+            sx={{ backgroundColor: '#DC4405', '&:hover': { backgroundColor: '#b83804' } }}
+          >
+            {inviting ? 'Sending…' : 'Send Test Invite'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 };
