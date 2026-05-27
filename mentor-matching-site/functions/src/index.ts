@@ -4,7 +4,7 @@ import * as adminFunctions from "firebase-admin";
 
 adminFunctions.initializeApp();
 
-const SITE_URL = "https://eecs-cop-mentor-matching-site.web.app";
+const SITE_URL = "https://eecscopmentormatch.com";
 
 // ── Helper: send email via Trigger Email extension ──────────────────────────
 async function sendMail(to: string, subject: string, text: string) {
