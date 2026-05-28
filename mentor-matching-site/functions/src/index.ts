@@ -181,14 +181,14 @@ export const preAuthorizeUser = onCall(async (request) => {
     await sendMail(
       email,
       "You've Been Invited to Test EECS Mentor Match! 🎉",
-      `Oregon State University\nSchool of Electrical Engineering and Computer Science\nEECS Mentor Match\n─────────────────────────────────────\n\nHi there!\n\nYou've been invited to be a tester of the EECS Mentor Match web application. We'd love your feedback on your experience!\n\nTo get started, please complete these steps in order:\n\n*** IMPORTANT: When setting up your profile, select MENTEE as your role ***\n\nSTEP 1 — Verify your email address:\n${verifyLink}\n\nSTEP 2 — Set up your password:\n${setupLink}\n\nSTEP 3 — Complete your account profile at:\n${SITE_URL}/new-profile\n\nSTEP 4 — Complete your matching profile by filling out the matching survey in your Mentee Portal (look for the Active Profiles tab)\n\nOnce both profiles are complete, look for this in your mentee portal:\n\n🔍 Head to the ACTIVE PROFILES tab — browse available mentors and send a match request to experience the full mentee flow!\n\nOnce you've explored the platform, please share your impressions by filling out our feedback questionnaire in a separate browser tab:\n${SURVEY_LINK}\n\nWe truly appreciate your time and look forward to hearing your thoughts!\n\nThe EECS Mentor Match Team`
+      `Oregon State University\nSchool of Electrical Engineering and Computer Science\nEECS Mentor Match\n─────────────────────────────────────\n\nHi there!\n\nYou've been invited to be a tester of the EECS Mentor Match web application. We'd love your feedback on your experience!\n\nTo get started, please complete these steps in order:\n\n*** IMPORTANT: When setting up your profile, select MENTEE as your role ***\n\nSTEP 1 — Verify your email address:\n${verifyLink}\n\nSTEP 2 — Set up your password:\n${setupLink}\n\nSTEP 3 — Log in and complete your account profile at:\n${SITE_URL}/login\n\nSTEP 4 — Complete your matching profile by filling out the matching survey in your Mentee Portal (look for the Active Profiles tab)\n\nOnce both profiles are complete, look for this in your mentee portal:\n\n🔍 Head to the ACTIVE PROFILES tab — browse available mentors and send a match request to experience the full mentee flow!\n\nOnce you've explored the platform, please share your impressions by filling out our feedback questionnaire in a separate browser tab:\n${SURVEY_LINK}\n\nWe truly appreciate your time and look forward to hearing your thoughts!\n\nThe EECS Mentor Match Team`
     );
   } else if (isTester) {
     // Mentor tester email
     await sendMail(
       email,
       "You've Been Invited to Test EECS Mentor Match! 🎉",
-      `Oregon State University\nSchool of Electrical Engineering and Computer Science\nEECS Mentor Match\n─────────────────────────────────────\n\nHi there!\n\nYou've been invited to be a tester of the EECS Mentor Match web application. We'd love your feedback on your experience!\n\nTo get started, please complete these steps in order:\n\n*** IMPORTANT: When setting up your profile, select MENTOR as your role ***\n\nSTEP 1 — Verify your email address:\n${verifyLink}\n\nSTEP 2 — Set up your password:\n${setupLink}\n\nSTEP 3 — Complete your account profile at:\n${SITE_URL}/new-profile\n\nSTEP 4 — Complete your matching profile by filling out the matching survey in your Mentor Portal (look for the Active Profiles tab)\n\nOnce both profiles are complete, look for this in your mentor portal:\n\n🔍 Check your PENDING REQUESTS tab — a test mentee match will be waiting for you to review! Accept the match to experience the full mentorship flow.\n\nOnce you've explored the platform, please share your impressions by filling out our feedback questionnaire in a separate browser tab:\n${SURVEY_LINK}\n\nWe truly appreciate your time and look forward to hearing your thoughts!\n\nThe EECS Mentor Match Team`
+      `Oregon State University\nSchool of Electrical Engineering and Computer Science\nEECS Mentor Match\n─────────────────────────────────────\n\nHi there!\n\nYou've been invited to be a tester of the EECS Mentor Match web application. We'd love your feedback on your experience!\n\nTo get started, please complete these steps in order:\n\n*** IMPORTANT: When setting up your profile, select MENTOR as your role ***\n\nSTEP 1 — Verify your email address:\n${verifyLink}\n\nSTEP 2 — Set up your password:\n${setupLink}\n\nSTEP 3 — Log in and complete your account profile at:\n${SITE_URL}/login\n\nSTEP 4 — Complete your matching profile by filling out the matching survey in your Mentor Portal (look for the Active Profiles tab)\n\nOnce both profiles are complete, look for this in your mentor portal:\n\n🔍 Check your PENDING REQUESTS tab — a test mentee match will be waiting for you to review! Accept the match to experience the full mentorship flow.\n\nOnce you've explored the platform, please share your impressions by filling out our feedback questionnaire in a separate browser tab:\n${SURVEY_LINK}\n\nWe truly appreciate your time and look forward to hearing your thoughts!\n\nThe EECS Mentor Match Team`
     );
   } else {
     // Regular invite email
@@ -201,6 +201,31 @@ export const preAuthorizeUser = onCall(async (request) => {
 
   return { success: true, uid };
 });
+
+// ── Auto-accept match when test mentee connects with Marty Mentorson ────────
+const MARTY_MENTORSON_UID = "DemoMentor1";
+
+export const autoAcceptTestMenteeMatch = onDocumentCreated(
+  "matches/{matchId}",
+  async (event) => {
+    const matchData = event.data?.data();
+    if (!matchData) return;
+
+    // Only auto-accept matches with Marty Mentorson
+    if (matchData.mentorId !== MARTY_MENTORSON_UID) return;
+
+    // Only auto-accept for test mentees
+    const menteeUID = matchData.menteeId;
+    const testerDoc = await adminFunctions.firestore().collection("testUsers").doc(menteeUID).get();
+    if (!testerDoc.exists) return;
+
+    // Auto-accept the match
+    await event.data?.ref.update({
+      status: "accepted",
+      acceptedAt: adminFunctions.firestore.Timestamp.now(),
+    });
+  }
+);
 
 // ── Remove all tester accounts and their data ────────────────────────────────
 export const removeAllTesters = onCall(async (request) => {
