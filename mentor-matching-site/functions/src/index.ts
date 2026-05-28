@@ -243,9 +243,11 @@ export const removeAllTesters = onCall(async (request) => {
     // Delete userProfile
     await adminFunctions.firestore().doc(`userProfile/${uid}`).delete().catch(() => {});
 
-    // Delete mentorProfile
+    // Delete mentorProfile (but never DemoMentor1 — that's Marty Mentorson!)
     const mentorSnap = await adminFunctions.firestore().collection("mentorProfile").where("UID", "==", uid).get();
-    for (const doc of mentorSnap.docs) await doc.ref.delete();
+    for (const doc of mentorSnap.docs) {
+      if (doc.data().UID !== "DemoMentor1") await doc.ref.delete();
+    }
 
     // Delete menteeProfile (but never DemoMentee1 — that's Matchy Matcherson!)
     const menteeSnap = await adminFunctions.firestore().collection("menteeProfile").where("UID", "==", uid).get();
