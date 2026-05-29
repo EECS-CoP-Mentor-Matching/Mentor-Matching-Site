@@ -321,7 +321,7 @@ const TestingPanel: React.FC = () => {
             This will permanently delete all tester accounts and their associated data including
             profiles, matches, and messages. This action cannot be undone.
             <br /><br />
-            Note: Matchy Matcherson (DemoMentee1) will not be affected.
+            Note: Matchy Matcherson (DemoMentee1) and Marty Mentorson (DemoMentor1) will not be affected.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
