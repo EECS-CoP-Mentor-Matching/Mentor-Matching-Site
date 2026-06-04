@@ -19,7 +19,7 @@ export interface Match {
     mentorWeights: UserWeights;
   };
   status: 'pending' | 'accepted' | 'declined' | 'completed' | 'ended';
-  initiatedBy: 'mentee' | 'mentor';
+  initiatedBy: 'mentee' | 'mentor' | 'system';
   matchedAt: Timestamp;
   acceptedAt?: Timestamp | null;
   declinedAt?: Timestamp | null;

@@ -118,7 +118,7 @@ export interface Match {
   }
   
   // Status
-  status: 'pending' | 'accepted' | 'active' | 'completed' | 'declined' | 'ended'
+  status: 'pending' | 'accepted' | 'declined' | 'completed' | 'ended';
   
   // Who initiated the match
   initiatedBy: 'mentee' | 'mentor' | 'system'

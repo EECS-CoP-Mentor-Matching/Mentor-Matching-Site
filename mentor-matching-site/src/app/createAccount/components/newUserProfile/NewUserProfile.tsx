@@ -29,6 +29,8 @@ import FormGroupRows from "../../../common/forms/layout/FormGroupRows";
 import FormGroupCols from "../../../common/forms/layout/FormGroupCols";
 import { isValidEmail } from "../../../common/forms/validation";
 import "./NewUserProfile.css";
+import { Match } from "../../../../types/matchProfile";
+
 
 enum FormStep {
   VerifyEmail,
